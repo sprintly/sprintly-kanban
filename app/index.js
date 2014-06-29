@@ -6,11 +6,9 @@ Backbone.$ = $
 var Products = require('./collections/products')
 var AppView = require('./views/app')
 
-
 window.React = React
 
 $(function() {
-
   var email = window.localStorage.getItem('email') || window.prompt('sprintly email:');
   var key = window.localStorage.getItem('key') || window.prompt('sprintly API key:');
 

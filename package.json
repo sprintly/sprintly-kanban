@@ -13,7 +13,7 @@
     "watchify": "^0.10.2",
     "backbone-route-control": "^0.1.0",
     "browserify-swap": "^0.2.1",
-    "supermodel": "git://github.com/pathable/supermodel.git",
+    "supermodel": "git://github.com/wookiehangover/supermodel.git",
     "topcoat": "git://github.com/topcoat/topcoat.git",
     "topcoat-icons": "^0.2.0"
   },

@@ -7,7 +7,6 @@ module.exports = Backbone.Collection.extend({
 
   url: function() {
     var qs = $.param(this.config.toJSON())
-
     return config.BASE_URL + '/products/' + this.productId + '/items.json?' + qs
   },
 

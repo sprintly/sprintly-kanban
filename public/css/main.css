@@ -75,7 +75,15 @@ body {
    =================== */
 
 .header-container {
-    border-bottom: 20px solid #111;
+    border-bottom: 2px solid #111;
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
+}
+
+.header-container h1.title {
+  padding: 0;
+  margin: 0.5rem 0;
 }
 
 .footer-container,
@@ -173,7 +181,7 @@ body, html {
   height: 100%;
   position: fixed;
   left: 18rem;
-  padding: 0 1rem;
+  padding: 2rem 1rem 1rem;
   overflow: auto;
   width: calc(100% - 20rem);
 }
@@ -199,7 +207,7 @@ body, html {
 .column .item-list {
   list-style: none;
   margin: 0;
-  padding: 0 1rem 0 0;
+  padding: 0 1rem 1rem 0;
   transition: all 200ms;
 }
 
@@ -233,7 +241,7 @@ body, html {
 
 .column {
   position: relative;
-  padding-top: 1rem;
+  padding: 1rem 0;
 }
 
 .column:hover header .close {
@@ -261,12 +269,12 @@ body, html {
 
 .column > header .close {
   position: absolute;
-  top: 1rem;
-  right: 1rem;
+  top: 1.4rem;
+  right: 0.1rem;
   opacity: 0;
   transition: all 300ms;
   font-size: 0.7rem;
-  color: #aaa;
+  color: #444;
   cursor: pointer;
 }
 
@@ -350,10 +358,19 @@ h1.title {
       -ms-animation: rainbows 16s infinite;
 }
 
+h1.title span {
+  line-height: 1rem;
+  font-size: 2.7em;
+  position: relative;
+  top: 1.2rem;
+  color: #fff !important;
+  font-weight: normal;
+}
+
 body.hide-nav #product-nav {
-  position: absolute;
   transition: transform 300ms ease-in;
   transform: translateX(-15rem);
+  position: fixed;
 }
 
 body.hide-nav #product-nav .next {
@@ -361,6 +378,7 @@ body.hide-nav #product-nav .next {
 }
 
 body.hide-nav #product-nav:hover {
+  position: absolute;
   transform: translateX(0);
 }
 
@@ -378,7 +396,7 @@ body.hide-nav .main {
   background: #fff;
   z-index: 100;
   width: 16rem;
-  padding: 1rem;
+  padding: 3rem 1rem 1rem;
   border-right: 1px solid #444;
 }
 
@@ -407,8 +425,8 @@ body.hide-nav .main {
 
 #product-nav .next {
   position: absolute;
-  right: 0.5rem;
-  top: 1rem;
+  right: 0;
+  top: 0;
   display: none;
 }
 
@@ -418,10 +436,20 @@ body.hide-nav .main {
 
 #product-nav ul li button.active {
   border: 1px solid rgb(157, 172, 169);
-  background-color: rgb(210, 214, 214);
+  background-color: rgb(165, 165, 165);
   box-shadow: inset 0 1px rgba(0, 0, 0, 0.1);
+  text-shadow: none;
 }
 
+#product-nav ul li .control-group {
+  font-size: 1rem;
+  padding-top: 1rem;
+}
+
+#product-nav ul li .control-group label {
+  line-height: 1;
+  margin-left: 2rem;
+}
 
 
 
@@ -473,7 +501,6 @@ body.hide-nav .main {
     WIDE: CSS3 Effects
    ==================== */
 
-    .header-container,
     .main aside {
         -webkit-box-shadow: 0 5px 10px #aaa;
            -moz-box-shadow: 0 5px 10px #aaa;

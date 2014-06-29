@@ -8,9 +8,11 @@ var Product = require('./item')
 var ProductNav = React.createClass({
 
   componentDidMount: function() {
-    this.props.config.on('update', function() {
+    var forceUpdate = function(){
       this.forceUpdate()
-    }, this);
+    }.bind(this)
+
+    this.props.config.on('update change', forceUpdate, this);
   },
 
   componentDidUnmount: function() {
@@ -21,7 +23,6 @@ var ProductNav = React.createClass({
     return (
       <ul>
         <li className="header">
-          <h2>Products</h2>
           <span className="icomatic next">nextlight</span>
         </li>
         {this.props.products.map(function(product) {
