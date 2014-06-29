@@ -2,6 +2,7 @@ var _ = require('lodash');
 var $ = require('jquery')
 var React = require('react')
 var Backbone = require('backdash')
+Backbone.$ = $;
 
 var User = require('../models/user')
 var Router = require('../router')
@@ -31,8 +32,16 @@ module.exports = Backbone.View.extend({
     Backbone.history.start()
   },
 
+  store: {
+    get: window.localStorage.getItem.bind(window.localStorage),
+    set: window.localStorage.setItem.bind(window.localStorage),
+    clear: window.localStorage.clear.bind(window.localStorage)
+  },
+
   setupColumns: function() {
-    var cols = window.localStorage.getItem('cols');
+    var cols = this.store.get('cols');
+
+    console.log(cols)
 
     this.config = new Backbone.Model({
       columns: (cols ? cols.split(',') : [])
@@ -44,7 +53,7 @@ module.exports = Backbone.View.extend({
 
   update: function() {
     this.toggleSmallNav()
-    window.localStorage.setItem('cols', this.config.get('columns').join(','));
+    this.store.set('cols', this.config.get('columns').join(','));
   },
 
   toggleSmallNav: function() {
