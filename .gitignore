@@ -1,0 +1,17 @@
+node_modules
+dist
+.tmp
+.sass-cache
+app/components
+config/production.js
+config/runtime.json
+.env
+.DS_Store
+.wercker
+deploy
+public/font/icomatic.html
+public/font/icomatic.js
+public/font/icomatic.html
+public/js/manifold.js
+test/app/bundle.js
+.vagrant

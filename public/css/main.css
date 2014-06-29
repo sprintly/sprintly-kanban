@@ -1,0 +1,674 @@
+/*! HTML5 Boilerplate v4.3.0 | MIT License | http://h5bp.com/ */
+
+html,
+button,
+input,
+select,
+textarea {
+    color: #222;
+}
+
+html {
+    font-size: 1em;
+    line-height: 1.4;
+}
+
+::-moz-selection {
+    background: #b3d4fc;
+    text-shadow: none;
+}
+
+::selection {
+    background: #b3d4fc;
+    text-shadow: none;
+}
+
+hr {
+    display: block;
+    height: 1px;
+    border: 0;
+    border-top: 1px solid #ccc;
+    margin: 1em 0;
+    padding: 0;
+}
+
+audio,
+canvas,
+img,
+video {
+    vertical-align: middle;
+}
+
+fieldset {
+    border: 0;
+    margin: 0;
+    padding: 0;
+}
+
+textarea {
+    resize: vertical;
+}
+
+.browsehappy {
+    margin: 0.2em 0;
+    background: #ccc;
+    color: #000;
+    padding: 0.2em 0;
+}
+
+
+/* ===== Initializr Styles ==================================================
+   Author: Jonathan Verrecchia - verekia.com/initializr/responsive-template
+   ========================================================================== */
+
+body {
+    font: 16px/26px Helvetica, Helvetica Neue, Arial;
+}
+
+.wrapper {
+    width: 90%;
+    margin: 0 5%;
+}
+
+/* ===================
+    ALL: Orange Theme
+   =================== */
+
+.header-container {
+    border-bottom: 20px solid #111;
+}
+
+.footer-container,
+.main aside {
+    border-top: 20px solid #444;
+}
+
+.header-container,
+.footer-container,
+.main aside {
+    background: #232323;
+}
+
+.title {
+    color: rgba(120, 87, 179,0.3);
+}
+
+/* ==============
+    MOBILE: Menu
+   ============== */
+
+nav ul {
+    margin: 0;
+    padding: 0;
+}
+
+nav a {
+  display: block;
+
+  text-align: center;
+  text-decoration: none;
+
+  color: black;
+}
+
+nav a:hover,
+nav a:visited {
+    color: white;
+}
+
+nav a:hover {
+    text-decoration: underline;
+}
+
+/* ==============
+    MOBILE: Main
+   ============== */
+
+.main {
+    padding: 30px 0;
+}
+
+.main article h1 {
+    font-size: 2em;
+}
+
+.main aside {
+    color: white;
+    padding: 0px 5% 10px;
+}
+
+.footer-container footer {
+    color: white;
+    padding: 20px 0;
+}
+
+/* ===============
+    ALL: IE Fixes
+   =============== */
+
+.ie7 .title {
+    padding-top: 20px;
+}
+
+/* ==========================================================================
+   Author's custom styles
+   ========================================================================== */
+
+
+body, html {
+  height: 100%;
+}
+
+.main-container {
+  position: relative;
+  height: 100%;
+}
+
+/*
+ * Column Tray
+ */
+
+.main {
+  transition: transform 300ms ease-in;
+  height: 100%;
+  position: fixed;
+  left: 18rem;
+  padding: 0 1rem;
+  overflow: auto;
+  width: calc(100% - 20rem);
+}
+
+.main > div {
+  float: left;
+  height: 100%;
+}
+
+.main > div > section {
+  width: 19rem;
+  border-right: 1px dashed #ccc;
+  padding-left: 1rem;
+  height: 95%;
+  float: left;
+  overflow: auto;
+}
+
+/*
+ * Item Cards
+ */
+
+.column .item-list {
+  list-style: none;
+  margin: 0;
+  padding: 0 1rem 0 0;
+  transition: all 200ms;
+}
+
+.column .item-list li {
+  padding: 0.5rem 1rem;
+  border-bottom: 1px solid #444;
+  color: rgb(92, 92, 92);
+  margin-bottom: 1rem;
+}
+
+.column .item-list li h3 {
+  font-size: 0.8rem;
+  font-weight: normal;
+  margin: 0;
+  padding: 0.5rem 0;
+  line-height: 1.4rem;
+}
+
+.column .item-list li header img {
+  border-radius: 2px;
+}
+
+.column .item-list li header small {
+  padding-left: 0.5rem;
+  line-height: 18px;
+}
+
+/*
+ * Column Header
+ */
+
+.column {
+  position: relative;
+  padding-top: 1rem;
+}
+
+.column:hover header .close {
+  opacity: 1;
+}
+
+.column > header {
+  color: #444;
+}
+
+.column > header h2 .icomatic {
+  position: absolute;
+  left: -0.3rem;
+  color: #aaa;
+}
+
+.column > header h2.no-label {
+  text-align: center;
+}
+
+.column > header h2.no-label small {
+  float: none;
+  text-align: center;
+}
+
+.column > header .close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  opacity: 0;
+  transition: all 300ms;
+  font-size: 0.7rem;
+  color: #aaa;
+  cursor: pointer;
+}
+
+.column > header small {
+  float: right;
+  padding-right: 1rem;
+  font-size: 0.875rem;
+  color: #666;
+  position: relative;
+}
+
+/*
+ * Drag and Drop
+ */
+
+.main > div > section.column.over {
+  background: rgba(166, 184, 255, 0.5);
+  opacity: 0.5;
+}
+
+.main > div > section.column.merge {
+  opacity: 1;
+  position: relative;
+}
+
+.main > div > section.column.merge ul,
+.main > div > section.column.merge header {
+  opacity: 0.4 !important;
+}
+
+.main > div > section.column.merge::before {
+  content: 'Merge Columns';
+  text-align: center;
+  position: absolute;
+  color: #000;
+  font-weight: bold;
+  font-size: 2rem;
+  top:1rem; left: 0; right: 0;
+}
+
+.main > div > h2.tout {
+  margin-top: 4em;
+  text-align: center;
+}
+
+.main > div > section.column.dragging {
+  opacity: 0.5;
+  background: #fff;
+}
+
+/*
+ * Item Types
+ */
+
+.story {
+  background: rgba(228, 239, 207, 0.5);
+}
+
+.defect {
+  border-top: 1px solid #F0D1CF;
+  background: #F5E3E3;
+}
+
+.task {
+  border-top: 1px solid #CBCBC6;
+  background: #EAEAE4;
+}
+
+.test {
+  border-top: 1px solid rgba(80, 158, 179, 0.25);
+  background: rgb(217, 236, 240);
+}
+
+/*
+ * Product Nav
+ */
+
+h1.title {
+  -webkit-animation: rainbows 16s infinite;
+     -moz-animation: rainbows 16s infinite;
+      -ms-animation: rainbows 16s infinite;
+}
+
+body.hide-nav #product-nav {
+  position: absolute;
+  transition: transform 300ms ease-in;
+  transform: translateX(-15rem);
+}
+
+body.hide-nav #product-nav .next {
+  display: block;
+}
+
+body.hide-nav #product-nav:hover {
+  transform: translateX(0);
+}
+
+body.hide-nav #product-nav:hover .next {
+ display: none;
+}
+
+body.hide-nav .main {
+  left: 2rem;
+  width: 100%;
+}
+
+#product-nav {
+  position: absolute;
+  background: #fff;
+  z-index: 100;
+  width: 16rem;
+  padding: 1rem;
+  border-right: 1px solid #444;
+}
+
+#product-nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+#product-nav ul li {
+  display: inline-block;
+  width: 100%;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #ccc;
+}
+
+#product-nav ul li h3 {
+  font-weight: normal;
+}
+
+#product-nav ul li.header {
+  position: relative;
+  padding: 0;
+  border: none;
+}
+
+#product-nav .next {
+  position: absolute;
+  right: 0.5rem;
+  top: 1rem;
+  display: none;
+}
+
+#product-nav ul li nav {
+  width: 100%;
+}
+
+#product-nav ul li button.active {
+  border: 1px solid rgb(157, 172, 169);
+  background-color: rgb(210, 214, 214);
+  box-shadow: inset 0 1px rgba(0, 0, 0, 0.1);
+}
+
+
+
+
+
+
+
+
+
+
+/* ==========================================================================
+   Media Queries
+   ========================================================================== */
+
+@media only screen and (min-width: 480px) {
+
+/* ====================
+    INTERMEDIATE: Menu
+   ==================== */
+
+    nav a {
+        float: left;
+
+    }
+
+    nav li:first-child a {
+        margin-left: 0;
+    }
+
+    nav li:last-child a {
+        margin-right: 0;
+    }
+
+/* ========================
+    INTERMEDIATE: IE Fixes
+   ======================== */
+
+    nav ul li {
+        display: inline;
+    }
+
+    .oldie nav a {
+        margin: 0 0.7%;
+    }
+}
+
+@media only screen and (min-width: 768px) {
+
+/* ====================
+    WIDE: CSS3 Effects
+   ==================== */
+
+    .header-container,
+    .main aside {
+        -webkit-box-shadow: 0 5px 10px #aaa;
+           -moz-box-shadow: 0 5px 10px #aaa;
+                box-shadow: 0 5px 10px #aaa;
+    }
+
+/* ============
+    WIDE: Menu
+   ============ */
+
+    .title {
+        float: left;
+        text-indent: 1rem;
+    }
+
+    nav {
+        float: right;
+        width: 38%;
+    }
+
+/* ============
+    WIDE: Main
+   ============ */
+
+    .main article {
+        float: left;
+        width: 57%;
+    }
+
+    .main aside {
+        float: right;
+        width: 28%;
+    }
+}
+
+@media only screen and (min-width: 1140px) {
+
+/* ===============
+    Maximal Width
+   =============== */
+
+    .wrapper {
+        width: 1026px; /* 1140px - 10% for margins */
+        margin: 0 auto;
+    }
+}
+
+/* ==========================================================================
+   Helper classes
+   ========================================================================== */
+
+.ir {
+    background-color: transparent;
+    border: 0;
+    overflow: hidden;
+    *text-indent: -9999px;
+}
+
+.ir:before {
+    content: "";
+    display: block;
+    width: 0;
+    height: 150%;
+}
+
+.hidden {
+    display: none !important;
+    visibility: hidden;
+}
+
+.visuallyhidden {
+    border: 0;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+}
+
+.visuallyhidden.focusable:active,
+.visuallyhidden.focusable:focus {
+    clip: auto;
+    height: auto;
+    margin: 0;
+    overflow: visible;
+    position: static;
+    width: auto;
+}
+
+.invisible {
+    visibility: hidden;
+}
+
+.clearfix:before,
+.clearfix:after {
+    content: " ";
+    display: table;
+}
+
+.clearfix:after {
+    clear: both;
+}
+
+.clearfix {
+    *zoom: 1;
+}
+
+/* ==========================================================================
+   Print styles
+   ========================================================================== */
+
+@media print {
+    * {
+        background: transparent !important;
+        color: #000 !important;
+        box-shadow: none !important;
+        text-shadow: none !important;
+    }
+
+    a,
+    a:visited {
+        text-decoration: underline;
+    }
+
+    a[href]:after {
+        content: " (" attr(href) ")";
+    }
+
+    abbr[title]:after {
+        content: " (" attr(title) ")";
+    }
+
+    .ir a:after,
+    a[href^="javascript:"]:after,
+    a[href^="#"]:after {
+        content: "";
+    }
+
+    pre,
+    blockquote {
+        border: 1px solid #999;
+        page-break-inside: avoid;
+    }
+
+    thead {
+        display: table-header-group;
+    }
+
+    tr,
+    img {
+        page-break-inside: avoid;
+    }
+
+    img {
+        max-width: 100% !important;
+    }
+
+    @page {
+        margin: 0.5cm;
+    }
+
+    p,
+    h2,
+    h3 {
+        orphans: 3;
+        widows: 3;
+    }
+
+    h2,
+    h3 {
+        page-break-after: avoid;
+    }
+}
+
+@-webkit-keyframes rainbows { 
+  0%   { color: rgb(0, 14, 96); }
+  25%  { color: rgb(255, 0, 94); }
+  50% { color: rgb(255, 217, 102); }
+  75% { color: rgb(0, 240, 77); }
+  100%   { color: rgb(0, 14, 96); }
+}
+@-moz-keyframes rainbows { 
+  0%   { color: rgb(0, 14, 96); }
+  25%  { color: rgb(255, 0, 94); }
+  50% { color: rgb(255, 217, 102); }
+  75% { color: rgb(0, 240, 77); }
+  100%   { color: rgb(0, 14, 96); }
+}
+@-ms-keyframes rainbows {
+  0%   { color: rgb(0, 14, 96); }
+  25%  { color: rgb(255, 0, 94); }
+  50% { color: rgb(255, 217, 102); }
+  75% { color: rgb(0, 240, 77); }
+  100%   { color: rgb(0, 14, 96); }
+}
+
