@@ -9,7 +9,6 @@ var ItemColumn = require('../components/item-column')
 var Items = React.createClass({
 
   componentDidMount: function() {
-    console.log(this.props.config)
     this.props.config.on('update', function() {
       this.forceUpdate()
     }.bind(this))
