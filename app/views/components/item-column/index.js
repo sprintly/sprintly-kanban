@@ -58,7 +58,7 @@ var ItemColumn = React.createClass(_.extend({
 
         <ul className="item-list">
           {this.props.items.map(function(model) {
-            return Item({ item: model.toJSON() })
+            return Item({ item: model.toJSON(), key: model.id })
           })}
         </ul>
       </section>

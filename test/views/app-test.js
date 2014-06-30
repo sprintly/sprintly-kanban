@@ -5,11 +5,11 @@ var AppView = require('views/app')
 test('AppView: initialize', function(t) {
   this.sinon = sinon.sandbox.create()
 
-  t.plan(4)
+  t.plan(3)
 
   t.throws(
     function() { new AppView() },
-    'Missing require dependencies: Products Collection',
+    'Missing require dependencies: Products Collection, User Model',
     'enforces dependencies'
   )
 
@@ -18,15 +18,13 @@ test('AppView: initialize', function(t) {
   var historyStart = this.sinon.stub(Backbone.history, 'start')
   var setupColumns = this.sinon.stub(AppView.prototype, 'setupColumns')
   var User = Backbone.Model.extend({
-    constructor: sinon.stub()
+    fetch: sinon.stub()
   })
-  AppView.__set__('User', User)
 
-  var app = new AppView({ products: new Backbone.Collection() })
+  var app = new AppView({ products: new Backbone.Collection(), user: new User() })
 
   t.ok(setupColumns.called, 'calls setupColumns')
   t.ok(historyStart.called, 'starts Backbone.history')
-  t.ok(User.prototype.constructor.called)
 
   this.sinon.restore()
 });

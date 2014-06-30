@@ -4,7 +4,6 @@ var React = require('react')
 var Backbone = require('backdash')
 Backbone.$ = $;
 
-var User = require('../models/user')
 var Router = require('../router')
 var attachDeps = require('../lib/mixins').attachDeps
 var ProductNav = require('./components/product-nav')
@@ -14,7 +13,8 @@ module.exports = Backbone.View.extend({
   el: $('body'),
 
   dependencies: {
-    products: 'Products Collection'
+    products: 'Products Collection',
+    user: 'User Model'
   },
 
   initialize: function(options) {
@@ -26,7 +26,7 @@ module.exports = Backbone.View.extend({
       }
     })
 
-    this.user = new User()
+    this.user.fetch()
     this.setupColumns()
 
     Backbone.history.start()
@@ -40,8 +40,6 @@ module.exports = Backbone.View.extend({
 
   setupColumns: function() {
     var cols = this.store.get('cols');
-
-    console.log(cols)
 
     this.config = new Backbone.Model({
       columns: (cols ? cols.split(',') : [])

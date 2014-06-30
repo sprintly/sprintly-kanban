@@ -3,8 +3,9 @@ var React = require('react')
 var Backbone = require('backdash')
 Backbone.$ = $
 
-var Products = require('./collections/products')
+var sprintly = require('sprintly-sdk')
 var AppView = require('./views/app')
+
 
 // Enable React dev tools
 window.React = React
@@ -17,20 +18,6 @@ $(function() {
   window.localStorage.setItem('email', email);
   window.localStorage.setItem('key', key);
 
-  var apiKey = new Backbone.Model({
-    email: email,
-    key: key
-  })
+  window.manifold = new AppView(sprintly.createClient(email, key))
 
-  var authHeader = window.btoa(apiKey.get('email') + ":" + apiKey.get('key'))
-
-  $.ajaxSetup({
-    headers: {
-      "Authorization": "Basic " + authHeader
-    }
-  })
-
-  window.manifold = new AppView({
-    products: new Products()
-  })
 })

@@ -26,7 +26,7 @@ var ProductNav = React.createClass({
           <span className="icomatic next">nextlight</span>
         </li>
         {this.props.products.map(function(product) {
-          return Product({ product: product, config: this.props.config })
+          return Product({ product: product, config: this.props.config, key: product.id })
         }, this)}
       </ul>
     )

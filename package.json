@@ -11,16 +11,15 @@
     "browserify": "^4.2.0",
     "tape": "^2.13.3",
     "watchify": "^0.10.2",
-    "backbone-route-control": "^0.1.0",
-    "browserify-swap": "^0.2.1",
-    "supermodel": "git://github.com/wookiehangover/supermodel.git",
+    "backbone-route-control": "git://github.com/wookiehangover/backbone-route-control.git",
     "topcoat": "git://github.com/topcoat/topcoat.git",
     "topcoat-icons": "^0.2.0",
     "es5-shim": "^3.4.0",
     "faucet": "0.0.1",
     "testling": "^1.7.0",
     "rewireify": "0.0.9",
-    "sinon": "^1.10.2"
+    "sinon": "^1.10.2",
+    "sprintly-sdk": "git+ssh://git@github.com:sprintly/sprintly-sdk.git"
   },
   "scripts": {
     "test": "testling | faucet",

@@ -1,10 +1,5 @@
 node_modules
-dist
 .tmp
-.sass-cache
-app/components
-config/production.js
-config/runtime.json
 .env
 .DS_Store
 .wercker
@@ -15,3 +10,4 @@ public/font/icomatic.html
 public/js/manifold.js
 test/bundle.js
 .vagrant
+npm-debug.log

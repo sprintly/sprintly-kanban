@@ -33,9 +33,7 @@ var Product = React.createClass({
   },
 
   addAllColumns: function(e) {
-    console.log(e)
     var columns = this.props.config.get('columns');
-
     var allColumns = this.allColumns()
     var diff = _.difference(allColumns, columns)
 
