@@ -19,7 +19,12 @@ $ make server
 Browserify watch task:
 
 ```bash
-$ npm run watch
+$ make watch
 ```
 
+Run tests:
+
+```bash
+$ npm test
+```
 

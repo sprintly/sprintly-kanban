@@ -10,6 +10,10 @@ install:
 server:
 	cd public && python -m SimpleHTTPServer 9001
 
+watch:
+	@npm run watch &
+	@npm run watch-test
+
 build:
 	@npm run build-production
 
