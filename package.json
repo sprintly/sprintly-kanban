@@ -19,6 +19,7 @@
     "testling": "^1.7.0",
     "rewireify": "0.0.9",
     "sinon": "^1.10.2",
+    "uglify-js": "^2.4.14",
     "sprintly-sdk": "git+ssh://git@github.com:sprintly/sprintly-sdk.git"
   },
   "scripts": {
