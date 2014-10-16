@@ -1,14 +1,14 @@
-var $ = require('jquery')
-var React = require('react')
-var Backbone = require('backdash')
-Backbone.$ = $
+var $ = require('jquery');
+var React = require('react');
+var Backbone = require('backdash');
+Backbone.$ = $;
 
-var AppView = require('./views/app')
 var sprintly = require('sprintly-data');
+var AppView = require('./views/app');
 
 
 // Enable React dev tools
-window.React = React
+window.React = React;
 
 $(function() {
   // wat up, sync DOM APIs?
