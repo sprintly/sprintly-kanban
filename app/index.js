@@ -15,9 +15,10 @@ $(function() {
   var email = window.localStorage.getItem('email') || window.prompt('sprintly email:');
   var key = window.localStorage.getItem('key') || window.prompt('sprintly API key:');
 
-  window.localStorage.setItem('email', email);
-  window.localStorage.setItem('key', key);
+  if (email && key) {
+    window.localStorage.setItem('email', email);
+    window.localStorage.setItem('key', key);
 
-  window.manifold = new AppView(sprintly.createClient(email, key))
-
-})
+    window.manifold = new AppView(sprintly.createClient(email, key));
+  }
+});
