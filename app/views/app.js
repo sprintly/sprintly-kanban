@@ -65,7 +65,7 @@ module.exports = Backbone.View.extend({
   render: function() {
     this.nav = React.renderComponent(
       ProductNav({
-        products: _.invoke(this.products.where({ archived: 0 }), 'toJSON'),
+        products: _.invoke(this.products.where({ archived: false }), 'toJSON'),
         config: this.config
       }),
       this.$('#product-nav').get(0)
