@@ -3,8 +3,8 @@ var React = require('react')
 var Backbone = require('backdash')
 Backbone.$ = $
 
-var sprintly = require('sprintly-sdk')
 var AppView = require('./views/app')
+var sprintly = require('sprintly-data');
 
 
 // Enable React dev tools

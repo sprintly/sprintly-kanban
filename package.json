@@ -20,7 +20,7 @@
     "rewireify": "0.0.9",
     "sinon": "^1.10.2",
     "uglify-js": "^2.4.14",
-    "sprintly-sdk": "git+ssh://git@github.com:sprintly/sprintly-sdk.git"
+    "sprintly-data": "git+ssh://git@github.com:sprintly/sprintly-data.git"
   },
   "scripts": {
     "test": "testling | faucet",
