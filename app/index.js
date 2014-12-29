@@ -1,11 +1,8 @@
 var $ = require('jquery');
 var React = require('react');
-var Backbone = require('backdash');
-Backbone.$ = $;
-
 var sprintly = require('sprintly-data');
-var AppView = require('./views/app');
 
+var AppView = require('./views/app');
 
 // Enable React dev tools
 window.React = React;

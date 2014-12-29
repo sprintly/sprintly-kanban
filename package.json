@@ -3,41 +3,41 @@
   "version": "0.0.1",
   "devDependencies": {
     "backdash": "^1.1.2-2.4.1",
+    "bootstrap": "^3.3.1",
+    "browserify": "^8.0.2",
+    "flux": "^2.0.1",
+    "gulp": "^3.8.10",
+    "gulp-csso": "^0.2.9",
+    "gulp-less": "^2.0.1",
+    "gulp-rename": "^1.2.0",
+    "gulp-sourcemaps": "^1.2.8",
+    "jquery": "^2.1.3",
     "lodash": "^2.4.1",
-    "jquery": "^2.1.1",
-    "envify": "^1.2.1",
-    "react": "^0.10.0",
-    "reactify": "^0.13.1",
-    "browserify": "^4.2.0",
-    "tape": "^2.13.3",
-    "watchify": "^0.10.2",
-    "backbone-route-control": "git://github.com/wookiehangover/backbone-route-control.git",
-    "topcoat": "git://github.com/topcoat/topcoat.git",
-    "topcoat-icons": "^0.2.0",
-    "es5-shim": "^3.4.0",
-    "faucet": "0.0.1",
-    "testling": "^1.7.0",
-    "rewireify": "0.0.9",
-    "sinon": "^1.10.2",
+    "moment": "^2.8.4",
+    "react": "^0.12.2",
+    "react-bootstrap": "^0.13.0",
+    "reactify": "^0.17.1",
+    "router": "git://github.com/tildeio/router.js",
+    "sprintly-data": "git+ssh://git@github.com:sprintly/sprintly-data.git",
     "uglify-js": "^2.4.14",
-    "sprintly-data": "git+ssh://git@github.com:sprintly/sprintly-data.git"
+    "watchify": "^2.2.1"
   },
   "scripts": {
     "test": "testling | faucet",
-    "watch": "watchify app -o public/js/manifold.js -v -d",
+    "watchify": "watchify app -o public/js/manifold.js -v -d",
     "watch-test": "NODE_PATH=$NODE_PATH:./app watchify test -o test/bundle.js -t reactify -t rewireify -v -d",
     "build": "browserify app -o public/js/manifold.js -d && NODE_PATH=./app:$NODE_PATH browserify test -o test/bundle.js -t reactify -t rewireify -d",
-    "build-production": "NODE_ENV=production browserify app | uglifyjs -cm > public/js/manifold.min.js"
+    "build-production": "NODE_ENV=production browserify app | uglifyjs -cm > public/js/manifold.min.js",
+    "build-less": "gulp less"
   },
   "browserify": {
     "transform": [
-      "reactify"
+      [
+        "reactify",
+        {
+          "es6": true
+        }
+      ]
     ]
-  },
-  "testling": {
-    "browsers": [
-      "firefox/28.0"
-    ],
-    "scripts": "test/bundle.js"
   }
 }

@@ -1,0 +1,172 @@
+@import "bootstrap/bootstrap.less";
+@import "icomoon.less";
+
+html, body {
+  height: 100%;
+}
+
+.main {
+  position: fixed;
+  padding: 2em 2em 0;
+  overflow: auto;
+  box-sizing: border-box;
+  height: 100%;
+  width: 100%;
+}
+
+.tray {
+  width: 2400px;
+  height: 100%;
+  float: left;
+}
+
+@column-border: #979797;
+@card-border: #E0E0E0;
+@card-text: #B8B8B8;
+
+.tray .column {
+  box-sizing: border-box;
+  float: left;
+  height: 100%;
+  padding: 1em;
+  overflow: auto;
+
+  @media (min-width: @screen-lg-min) {
+    width: 480px;
+    border-right: 1px solid @column-border;
+  }
+
+  @media (min-width: @screen-md-min) and (max-width: @screen-lg-min) {
+    width: 320px;
+    border-right: 1px solid @column-border;
+
+    .item-card .title {
+      font-size: 1.8em;
+    }
+  }
+
+}
+
+@task-bg: #FAFAFA;
+@task-text: #8C8C8C;
+@defect-bg: #FF8480;
+@defect-text: #FFF;
+@controls-text: #CCC;
+
+.column .item-card {
+  box-sizing: border-box;
+  border: 1px solid @card-border;
+  padding: 1em;
+  margin-bottom: 1em;
+  float: left;
+  width: 100%;
+
+  .title {
+    font-family: Georgia;
+    margin: 0;
+    word-wrap: break-word;
+  }
+
+}
+
+// Item Card Controls
+.column .item-card .controls {
+  float: right;
+  margin-top: 1em;
+
+  a {
+    font-size: 2.6em;
+    color: @card-text;
+    margin-left: 1rem;
+    text-decoration: none;
+    .transition(color 200ms ease-in-out);
+  }
+}
+
+.column .item-card {
+  &.defect {
+    background: @defect-bg;
+    border-color: @defect-bg;
+
+    .controls > a {
+      color: @defect-text;
+    }
+  }
+
+  &.task {
+    background: @task-bg;
+
+    .controls > a {
+      color: @task-text;
+    }
+  }
+
+  .controls > a:hover {
+    color: #444;
+  }
+}
+// End Item Card Controls
+
+
+// Item Card Summary
+.column .item-card .summary {
+  float: left;
+  margin-top: 1em;
+  .opacity(0);
+  .transition(opacity 300ms ease-in);
+
+  .owner-avatar {
+    float: left;
+    img {
+      border-radius: 36px;
+    }
+  }
+
+  .summary-details {
+    float: left;
+    margin-left: 0.5em;
+    color: @card-text;
+    line-height: 1.2;
+
+    a {
+      color: @card-text;
+    }
+  }
+
+  .summary-supplement {
+    .clearfix;
+  }
+}
+
+.column .item-card {
+  &.defect .summary .summary-details,
+  &.defect .summary .summary-details a {
+    color: @defect-text;
+  }
+
+  &.task .summary .summary-details,
+  &.task .summary .summary-details a {
+    color: @task-text;
+  }
+}
+
+.column .item-card:hover .summary {
+  .opacity(1);
+}
+// End Item Card Summary
+
+
+// Product Modal
+.main .modal-tout {
+  text-align: center;
+
+  h1 {
+    font-weight: 100;
+  }
+}
+
+.main .modal-footer {
+  text-align: center;
+}
+// End Product Modal
+

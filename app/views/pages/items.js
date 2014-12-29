@@ -5,62 +5,65 @@
 var _ = require('lodash')
 var React = require('react')
 var ItemColumn = require('../components/item-column')
+var BS = require('react-bootstrap');
 
 var Items = React.createClass({
 
+  getInitialState: function() {
+    return {
+      product: null
+    }
+  },
+
   componentDidMount: function() {
-    this.props.config.on('update', function() {
-      this.forceUpdate()
-    }.bind(this))
+    this.props.config.on('update', () => { this.forceUpdate() })
   },
 
-  reorderColumns: function(a, b) {
-    var columns = this.props.config.get('columns');
-    var at = _.indexOf(columns, a)
-    var previousIndex = _.indexOf(columns, b)
-    columns = _.without(columns, b)
-    columns.splice(at, 0, b)
-    this.props.config.set('columns', columns).trigger('update')
+  handleHide: function(e) {
+    this.setState({ product: this.refs.product.getValue() });
   },
 
-  removeColumn: function(col, e) {
-    e.preventDefault()
-    var columns = this.props.config.get('columns');
-    columns = _.without(columns, col)
-    this.props.config.set('columns', columns).trigger('update')
+  renderColumns: function() {
+    var product = this.props.products.get(this.state.product);
+
+    var cols = _.map(product.ItemModel.ITEM_STATUSES, function(label, status) {
+      return <ItemColumn product={product} status={status} />;
+    });
+
+    return cols;
+  },
+
+  renderModal: function() {
+    return (
+      <div className="static-modal">
+        <BS.Modal
+          backdrop={true}
+          animation={false}>
+          <div className="modal-body">
+            <div className="modal-tout">
+              <h1>Build & Create</h1>
+              <img src="https://sprintly-wasatch.global.ssl.fastly.net/4957/static/images/briefcase.png"/>
+            </div>
+            <BS.Input type="select" label="Choose a Product" ref="product">
+              {this.props.products.map((product) => {
+                return <option value={product.get('id')}>{product.get('name')}</option>
+              })}
+            </BS.Input>
+          </div>
+          <div className="modal-footer">
+            <BS.Button bsSize="large" onClick={this.handleHide}>Get Started!</BS.Button>
+          </div>
+        </BS.Modal>
+      </div>
+    );
   },
 
   render: function() {
-    var cols = this.props.config.get('columns')
-
-    var columns = cols.map(function(colName, i) {
-      var params = colName.split('#')
-      var id = params[0]
-      var type = params[1]
-      var product = this.props.products.get(id)
-      var items = product.getItemsByStatus(type)
-      var prev = cols[i - 1]
-      var hideLabel = (prev && prev.split('#')[0] == id)
-
-      return ItemColumn({
-        key: colName,
-        items: items,
-        hideLabel: hideLabel,
-        product: product.toJSON(),
-        reorder: this.reorderColumns,
-        removeColumn: this.removeColumn
-      })
-    }, this)
-
-    var style = {
-      width: columns.length > 0 ? columns.length * 21 + 'rem' : '100%'
-    }
-
     return (
-      <div style={style}>
-        {columns.length > 0 ?
-          columns :
-          <h2 className="tout">Add some Products!</h2>
+      <div className="tray">
+        {this.state.product ?
+          this.renderColumns() :
+          this.renderModal()
         }
       </div>
     )
