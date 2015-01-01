@@ -1,10 +1,9 @@
 var $ = require('jquery');
-var React = require('react');
 var sprintly = require('sprintly-data');
-
-var AppView = require('./views/app');
+var router = require('./router');
 
 // Enable React dev tools
+var React = require('react');
 window.React = React;
 
 $(function() {
@@ -16,6 +15,7 @@ $(function() {
     window.localStorage.setItem('email', email);
     window.localStorage.setItem('key', key);
 
-    window.manifold = new AppView(sprintly.createClient(email, key));
+    window.manifold = router(sprintly.createClient(email, key));
   }
+
 });

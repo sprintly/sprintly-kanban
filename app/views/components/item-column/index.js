@@ -4,30 +4,81 @@
 
 var _ = require('lodash')
 var React = require('react')
-var Item = require('../item')
-var draggable = require('./draggable')
-
+var ItemCard = require('../item-card')
+var Backbone = require('backdash');
 var Header = require('./header')
+var Loading = require('react-loading');
 
 var ItemColumn = React.createClass({
+
+  mixins: [Backbone.Events],
 
   propTypes: {
     status: React.PropTypes.string.isRequired,
     product: React.PropTypes.object.isRequired
   },
 
+  getInitialState: function() {
+    return {
+      isLoading: true
+    }
+  },
+
+  getItems: function(product) {
+    if (this.items) {
+      this.stopListening(this.items);
+    }
+    this.items = product.getItemsByStatus(this.props.status);
+    this.listenTo(this.items, {
+      sync: () => { this.setState({ isLoading: false }) },
+      change: () => { this.forceUpdate() }
+    });
+
+    switch(this.props.status) {
+      case 'someday':
+        this.items.config.set({ limit: 50 });
+        break;
+
+      case 'accepted':
+        this.items.config.set({ limit: 5 });
+        break;
+
+      default:
+        break;
+    }
+
+    return this.items.fetch();
+  },
+
   componentWillMount: function() {
-    this.items = this.props.product.getItemsByStatus(this.props.status);
-    this.items.fetch();
-    this.items.on('change sync', () => { this.forceUpdate() });
+    this.getItems(this.props.product);
+  },
+
+  componentWillReceiveProps: function(nextProps) {
+    if (nextProps.product.id !== this.props.product.id) {
+      this.setState({ isLoading: true });
+      this.getItems(nextProps.product);
+    }
   },
 
   render: function() {
+    var limit = this.items.length;
+    var classes = "column " + this.props.status;
+
     return (
-      <div className="column">
-        {this.items.map(function(model) {
-          return <Item item={model} key={model.id} />
-        })}
+      <div className={classes}>
+        {this.state.isLoading ?
+          <div className="loading"><Loading type="bubbles" color="#ccc"/></div> :
+          this.items.map(function(model, index) {
+            var active = (this.props.activeItem && model.id === this.props.activeItem.id)
+            return <ItemCard
+              item={model}
+              key={model.id}
+              active={active}
+              onClick={_.partial(this.props.selectItem, model)}
+            />
+          }, this)
+        }
       </div>
     )
   }

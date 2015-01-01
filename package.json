@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "devDependencies": {
     "backdash": "^1.1.2-2.4.1",
+    "bluebird": "^2.5.3",
     "bootstrap": "^3.3.1",
     "browserify": "^8.0.2",
     "flux": "^2.0.1",
@@ -13,11 +14,12 @@
     "gulp-sourcemaps": "^1.2.8",
     "jquery": "^2.1.3",
     "lodash": "^2.4.1",
+    "marked": "^0.3.2",
     "moment": "^2.8.4",
     "react": "^0.12.2",
     "react-bootstrap": "^0.13.0",
+    "react-router": "^0.11.6",
     "reactify": "^0.17.1",
-    "router": "git://github.com/tildeio/router.js",
     "sprintly-data": "git+ssh://git@github.com:sprintly/sprintly-data.git",
     "uglify-js": "^2.4.14",
     "watchify": "^2.2.1"
