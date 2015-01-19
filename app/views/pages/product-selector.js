@@ -1,11 +1,7 @@
-/**
- * @jsx React.DOM
- */
+import React from "react";
+import { Link } from "react-router";
 
-var React = require('react');
-var Link = require('react-router').Link;
-
-var ProductSelector = React.createClass({
+export default React.createClass({
 
   propTypes: {
     products: React.PropTypes.object.isRequired
@@ -19,14 +15,12 @@ var ProductSelector = React.createClass({
           <img src="https://sprintly-wasatch.global.ssl.fastly.net/4957/static/images/briefcase.png"/>
         </div>
         <div className="col-sm-6">
-          {this.props.products.map((product) => {
-            return <Link to="product" params={{ id: product.get('id')}}>{product.get('name')}</Link>
+          {this.props.products.map(function(product) {
+            return <Link to="product" params={{ id: product.get('id') }}>{product.get('name')}</Link>
           })}
         </div>
       </div>
     );
   }
 
-})
-
-module.exports = ProductSelector;
+});

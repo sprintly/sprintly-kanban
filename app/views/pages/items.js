@@ -1,45 +1,22 @@
-/**
- * @jsx React.DOM
- */
+import _ from "lodash";
+import React from "react";
+import Loading from "react-loading"
+import ItemColumn from "../components/item-column";
+import Toolbar from "../components/toolbar";
 
-var _ = require('lodash')
-var React = require('react')
-var ItemColumn = require('../components/item-column')
-var Loading = require('react-loading');
-var Label = require('react-bootstrap').Label;
-
-var Items = React.createClass({
+export default React.createClass({
   getInitialState: function() {
     return {
       activeItem: false
     }
   },
 
-  selectItem: function(item, event) {
-    this.setState({ activeItem: item });
+  selectItem: function(activeItem, event) {
+    this.setState({ activeItem });
   },
 
-  renderToolbar: function() {
-    var item = this.state.activeItem;
-    return (
-      <div className="toolbar container-flex">
-        <div className="toolbar__item-number">
-          <h1><span className="hash">#</span>{item.id}</h1>
-        </div>
-        <div className="toolbar__score">
-          <h1>{item.get('score')}</h1>
-        </div>
-        <div className="toolbar__item-controls">
-          <a href="#item-settings"><small>{item.get('counts').comments}</small><i className="icon-chat"/></a>
-          <a href="#item-settings" className="icon-settings"></a>
-        </div>
-        <div className="toolbar__tags col-md-2">
-        {item.get('tags').map(function(tag) {
-          return <Label>{tag}</Label>
-        })}
-        </div>
-      </div>
-    );
+  handleKeyDown: function(e) {
+    console.log(e);
   },
 
   render: function() {
@@ -51,19 +28,16 @@ var Items = React.createClass({
       );
     }
 
-    var cols = _.map(product.ItemModel.ITEM_STATUSES, function(label, status) {
-      return <ItemColumn selectItem={this.selectItem} activeItem={this.state.activeItem} product={product} status={status} />;
-    }, this);
+    var cols = _.map(product.ItemModel.ITEM_STATUSES, (label, status) => {
+      return <ItemColumn selectItem={this.selectItem} activeItem={this.state.activeItem} product={product} status={status} key={(product.id + status)}/>;
+    });
 
     return (
       <div className="container-tray">
         <div className="tray">{cols}</div>
-        {this.state.activeItem ? this.renderToolbar() : ''}
+        {this.state.activeItem ? <Toolbar item={this.state.activeItem} /> : ''}
       </div>
     );
   }
 
-
-})
-
-module.exports = Items
+});

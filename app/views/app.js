@@ -1,9 +1,8 @@
-var _ = require('lodash');
-var React = require('react')
-var Promise = require('bluebird');
-var RouteHandler = require('react-router').RouteHandler;
+import React from "react";
+import { RouteHandler } from "react-router";
+import Promise from "bluebird";
 
-var App = React.createClass({
+export default React.createClass({
 
   propTypes: {
     user: React.PropTypes.object.isRequired,
@@ -16,7 +15,7 @@ var App = React.createClass({
       this.props.products.fetch()
     ]).then(() => {
       this.forceUpdate();
-    })
+    });
   },
 
   render: function() {
@@ -28,5 +27,3 @@ var App = React.createClass({
   }
 
 });
-
-module.exports = App;

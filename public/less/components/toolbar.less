@@ -1,0 +1,84 @@
+
+// @toolbar-bg: #092432;
+@toolbar-bg: #fff;
+@toolbar-color: #666;
+@toolbar-lt-color: #B8B8B8;
+
+// Item Card Toolbar
+.toolbar {
+  width: 100%;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  padding: 1em;
+  line-height: 1;
+  height: 64px;
+  border-top: 1px solid #eaeaea;
+  background: @toolbar-bg;
+
+}
+
+.toolbar__item-number {
+  float: left;
+  margin-right: 1em;
+
+  h1 {
+    margin: 0;
+    line-height: 1;
+    color: @toolbar-color;
+  }
+  .hash {
+    font-size: 0.5em;
+    position: relative;
+    top: -0.5rem;
+    left: -0.25rem;
+    color: @toolbar-lt-color;
+  }
+}
+
+.toolbar__item-controls {
+  float: left;
+
+  a {
+    color: @toolbar-color;
+    font-size: 2.6em;
+    text-decoration: none;
+    margin-right: 1rem;
+  }
+
+  small {
+    font-size: 1.2rem;
+  }
+}
+
+.toolbar__score {
+  float: left;
+  width: 36px;
+  text-align: center;
+  margin-right: 1em;
+
+  box-sizing: content-box;
+  margin-top: -1em;
+  padding: 1em;
+
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+
+  h1 {
+    margin: 0;
+    line-height: 1;
+    color: lighten(@toolbar-color, 30%);
+  }
+}
+
+.toolbar__tags {
+  float: left;
+
+  .label {
+    float: left;
+    margin: 0 4px 4px 0;
+  }
+}
+// End Item Card Toolbar
+
+

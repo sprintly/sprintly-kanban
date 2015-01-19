@@ -1,9 +1,5 @@
-/**
- * @jsx React.DOM
- */
-
-var React = require('react')
-var _ = require('lodash')
+import React from "react";
+import _ from "lodash";
 
 var ITEM_TYPES = {
   'in-progress': 'Current',
@@ -13,8 +9,7 @@ var ITEM_TYPES = {
   'accepted': 'Accepted'
 }
 
-var ButtonBarItem = React.createClass({
-
+export default React.createClass({
   render: function() {
     var classList = ['topcoat-button-bar__button']
     var key = this.props.productId + '#' + this.props.status
@@ -31,6 +26,4 @@ var ButtonBarItem = React.createClass({
       </div>
     )
   }
-})
-
-module.exports = ButtonBarItem
+});

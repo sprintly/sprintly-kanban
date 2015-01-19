@@ -1,0 +1,81 @@
+// Item Column Tray
+.container-tray {
+  position: fixed;
+  overflow: auto;
+  box-sizing: border-box;
+  padding: 2em 2em 0;
+  height: 100%;
+  width: 100%;
+}
+
+.tray {
+  height: 100%;
+  width: 100%;
+  float: left;
+}
+
+@column-border: #E0E0E0;
+
+.tray .column {
+  box-sizing: border-box;
+  float: left;
+  overflow: auto;
+  height: 100%;
+  width: 100%;
+  padding: 1em;
+  position: relative;
+}
+
+// @column-bg: #eaeaea;
+
+.column {
+  // &.someday {
+  //   background: @column-bg;
+  // }
+  // &.backlog {
+  //   background: darken(@column-bg, 20%);
+  // }
+  // &.in-progress {
+  //   background: darken(@column-bg, 30%);
+  // }
+  // &.completed {
+  //   background: darken(@column-bg, 50%);
+  // }
+  &.accepted {
+    // background: darken(@column-bg, 70%);
+    .opacity(0.4);
+    .transition(opacity 300ms ease-in-out);
+    &:hover {
+      .opacity(1);
+    }
+  }
+}
+
+@media (min-width: 1400px) {
+  .tray {
+    width: 2400px;
+
+    .column {
+      width: 480px;
+      border-right: 1px solid @column-border;
+    }
+  }
+}
+
+@media (min-width: 720px) and (max-width: 1399px) {
+  .tray {
+    width: 1600px;
+
+    .column {
+      width: 320px;
+      border-right: 1px solid @column-border;
+
+      .item-card .title {
+        font-size: 1.8em;
+      }
+    }
+  }
+}
+// End Item Column Tray
+
+

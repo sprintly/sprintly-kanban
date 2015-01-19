@@ -1,18 +1,14 @@
-/**
- * @jsx React.DOM
- */
-
-var _ = require('lodash')
-var React = require('react')
-var ButtonBarItem = require('./button-bar-item')
-var Toggle = require('./toggle')
+import _ from 'lodash';
+import React from 'react';
+import ButtonBarItem from './button-bar-item';
+import Toggle from './toggle';
 
 var ITEM_TYPES = {
   'in-progress': 'Current',
   'completed': 'Done',
   'someday': 'Someday',
   'backlog': 'Backlog',
-  // 'accepted': 'Accepted'
+  'accepted': 'Accepted'
 }
 
 var Product = React.createClass({

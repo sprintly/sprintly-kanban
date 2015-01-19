@@ -25,7 +25,7 @@ var Owner = React.createClass({
 
   render: function() {
     return (
-      <div className="owner-avatar">
+      <div className="item-card__owner-avatar">
         {this.props.person === 'unassigned' ? this.defaultImage() : this.getAvatar(this.props.person.email)}
       </div>
     )
