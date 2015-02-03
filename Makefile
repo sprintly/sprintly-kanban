@@ -1,12 +1,9 @@
 
-all: install topcoat
+all: install bootstrap
 
 install:
 	@npm install
 	@npm run build
-
-server:
-	cd public && python -m SimpleHTTPServer 9001
 
 watch:
 	@npm run watch &
@@ -19,5 +16,5 @@ bootstrap:
 	mkdir -p public/less/bootstrap
 	cp -r node_modules/bootstrap/less/* public/less/bootstrap
 
-.PHONY: all install deps server
+.PHONY: all install server
 
