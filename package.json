@@ -7,6 +7,8 @@
     "bluebird": "^2.5.3",
     "bootstrap": "^3.3.1",
     "browserify": "^8.0.2",
+    "envify": "^3.2.0",
+    "es5-shim": "^4.0.6",
     "flux": "^2.0.1",
     "gulp": "^3.8.10",
     "gulp-csso": "^0.2.9",
@@ -22,7 +24,10 @@
     "react-d3": "0.0.13",
     "react-router": "^0.11.6",
     "reactify": "^0.17.1",
+    "rewireify": "0.0.13",
+    "sinon": "^1.12.2",
     "sprintly-data": "git+ssh://git@github.com:sprintly/sprintly-data.git",
+    "tape": "^3.5.0",
     "uglify-js": "^2.4.14",
     "watchify": "^2.2.1"
   },
@@ -40,5 +45,15 @@
         "6to5ify"
       ]
     ]
+  },
+  "dependencies": {
+    "bell": "^2.1.0",
+    "config": "^1.10.0",
+    "good": "^5.1.1",
+    "good-console": "^4.1.0",
+    "hapi": "^8.1.0",
+    "hapi-auth-cookie": "^2.0.0",
+    "react-loading": "0.0.1",
+    "swig": "^1.4.2"
   }
 }
