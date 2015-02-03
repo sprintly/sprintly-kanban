@@ -4,7 +4,7 @@ var path = require('path');
 
 server.connection({
   host: '0.0.0.0',
-  port: 3600
+  port: process.env.PORT || 3600
 });
 
 server.views({
