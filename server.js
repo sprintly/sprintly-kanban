@@ -3,7 +3,7 @@ var server = new Hapi.Server();
 var path = require('path');
 
 server.connection({
-  host: '0.0.0.0',
+  host: process.env.HOST || '0.0.0.0',
   port: process.env.PORT || 3600
 });
 
