@@ -19,6 +19,7 @@
     "lodash": "^2.4.1",
     "marked": "^0.3.2",
     "moment": "^2.8.4",
+    "nodemon": "^1.3.6",
     "react": "^0.12.2",
     "react-bootstrap": "^0.13.0",
     "react-d3": "0.0.13",
@@ -47,13 +48,14 @@
     ]
   },
   "dependencies": {
-    "bell": "^2.1.0",
+    "bell": "git://github.com/wookiehangover/bell",
     "config": "^1.10.0",
     "good": "^5.1.1",
     "good-console": "^4.1.0",
     "hapi": "^8.1.0",
     "hapi-auth-cookie": "^2.0.0",
     "react-loading": "0.0.1",
-    "swig": "^1.4.2"
+    "swig": "^1.4.2",
+    "tv": "^4.0.0"
   }
 }

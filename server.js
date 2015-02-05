@@ -3,7 +3,7 @@ var server = new Hapi.Server();
 var path = require('path');
 
 server.connection({
-  host: process.env.HOST || '0.0.0.0',
+  host: '0.0.0.0',
   port: process.env.PORT || 3600
 });
 
@@ -26,7 +26,7 @@ server.register([
       reporters: [
         {
           reporter: require('good-console'),
-          args: [{ log: '*', response: '*', error: '*' }]
+          args: [{ log: '*', request: '*', response: '*' }]
         }
       ]
     }
