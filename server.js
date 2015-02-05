@@ -26,7 +26,7 @@ server.register([
       reporters: [
         {
           reporter: require('good-console'),
-          args: [{ log: '*', request: '*', response: '*' }]
+          args: [{ log: '*', request: '*', error: '*' }]
         }
       ]
     }
@@ -46,6 +46,7 @@ server.route([
       auth: 'session'
     },
     handler: function(request, reply) {
+      console.log(request.auth)
       reply.view('layout.html', {
         token: request.auth.credentials.token
       })
