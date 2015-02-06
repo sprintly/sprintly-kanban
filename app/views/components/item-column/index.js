@@ -70,14 +70,8 @@ var ItemColumn = React.createClass({
         {this.state.isLoading ?
           <div className="loading"><Loading type="bubbles" color="#ccc"/></div> :
           this.items.map(function(model, index) {
-            var active = (this.props.activeItem && model.id === this.props.activeItem.id)
-            return <ItemCard
-              item={model}
-              key={model.id}
-              active={active}
-              onClick={_.partial(this.props.selectItem, model)}
-            />
-          }, this)
+            return <ItemCard item={model} key={model.id} />
+          })
         }
       </div>
     )

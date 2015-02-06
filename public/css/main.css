@@ -6552,21 +6552,12 @@ body {
   width: 100%;
   margin: 1.4em 0 0;
 }
-.main .product-selector {
+.product-selector {
   text-align: center;
 }
-.main .product-selector img {
-  margin: 1em 0;
-}
-.main .product-selector h1 {
-  font-weight: 100;
-}
-.main .product-selector select {
-  width: 80%;
-  margin: 1em 0 1em 10%;
-}
-.main .modal-footer {
-  text-align: center;
+.product-selector .btn {
+  margin-top: 1em;
+  width: 60%;
 }
 .toolbar {
   width: 100%;

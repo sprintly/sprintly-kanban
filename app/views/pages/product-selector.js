@@ -9,15 +9,18 @@ export default React.createClass({
 
   render: function() {
     return (
-      <div className="container">
-        <div className="col-sm-6 product-selector">
-          <h1>Build & Create</h1>
+      <div className="container product-selector">
+        <div className="col-sm-6 col-sm-offset-3">
           <img src="https://sprintly-wasatch.global.ssl.fastly.net/4957/static/images/briefcase.png"/>
-        </div>
-        <div className="col-sm-6">
+          <ul className="list-unstyled">
           {this.props.products.map(function(product) {
-            return <Link to="product" params={{ id: product.get('id') }}>{product.get('name')}</Link>
+            return (
+              <li>
+                <Link to="product" params={{ id: product.get('id') }} className="btn btn-default">{product.get('name')}</Link>
+              </li>
+            );
           })}
+          </ul>
         </div>
       </div>
     );
