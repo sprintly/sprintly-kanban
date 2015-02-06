@@ -29,13 +29,12 @@ export default React.createClass({
     }
 
     var cols = _.map(product.ItemModel.ITEM_STATUSES, (label, status) => {
-      return <ItemColumn selectItem={this.selectItem} activeItem={this.state.activeItem} product={product} status={status} key={(product.id + status)}/>;
+      return <ItemColumn product={product} status={status} key={(product.id + status)}/>;
     });
 
     return (
       <div className="container-tray">
         <div className="tray">{cols}</div>
-        {this.state.activeItem ? <Toolbar item={this.state.activeItem} /> : ''}
       </div>
     );
   }
