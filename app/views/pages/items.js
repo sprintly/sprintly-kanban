@@ -4,12 +4,16 @@ import Loading from "react-loading"
 import ItemColumn from "../components/item-column";
 import Toolbar from "../components/toolbar";
 
+function getColumnsState() {
+  return {
+    activeItem: false,
+    'show-accepted': false,
+    'show-someday': false,
+  }
+}
+
 export default React.createClass({
-  getInitialState: function() {
-    return {
-      activeItem: false
-    }
-  },
+  getInitialState: getColumnsState,
 
   selectItem: function(activeItem, event) {
     this.setState({ activeItem });
@@ -17,6 +21,12 @@ export default React.createClass({
 
   handleKeyDown: function(e) {
     console.log(e);
+  },
+
+  showHiddenColumn: function(status) {
+    var state = getColumnsState();
+    state[`show-${status}`] = true;
+    this.setState(state);
   },
 
   render: function() {
@@ -29,12 +39,28 @@ export default React.createClass({
     }
 
     var cols = _.map(product.ItemModel.ITEM_STATUSES, (label, status) => {
-      return <ItemColumn product={product} status={status} key={(product.id + status)}/>;
+      var props = {
+        status,
+        product,
+        key: product.id + status,
+      }
+
+      if (_.contains(['someday', 'accepted'], status)) {
+        props.onMouseEnter = _.partial(this.showHiddenColumn, status);
+        props.onMouseLeave = () => this.setState(getColumnsState())
+      }
+      return <ItemColumn {...props} key={(product.id + status)}/>;
     });
+
+    var classes = {
+      tray: true,
+      'show-accepted': this.state['show-accepted'],
+      'show-someday': this.state['show-someday']
+    }
 
     return (
       <div className="container-tray">
-        <div className="tray">{cols}</div>
+        <div className={React.addons.classSet(classes)}>{cols}</div>
       </div>
     );
   }

@@ -1,3 +1,4 @@
+var _ = require('lodash');
 var $ = require('jquery');
 var sprintly = require('sprintly-data');
 var router = require('./router');
