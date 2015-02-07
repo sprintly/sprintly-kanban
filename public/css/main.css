@@ -6394,55 +6394,80 @@ body {
   text-align: center;
 }
 .container-tray {
-  position: fixed;
-  overflow: auto;
+  position: absolute;
+  overflow-x: hidden;
   box-sizing: border-box;
-  padding: 2em 2em 0;
   height: 100%;
   width: 100%;
 }
 .tray {
   height: 100%;
-  width: 100%;
   float: left;
+  -webkit-transition: all 400ms cubic-bezier(0.19, 1, 0.22, 1);
+  -o-transition: all 400ms cubic-bezier(0.19, 1, 0.22, 1);
+  transition: all 400ms cubic-bezier(0.19, 1, 0.22, 1);
+  width: 120%;
+  -webkit-transform: translate(-8%, 0);
+  -ms-transform: translate(-8%, 0);
+  -o-transform: translate(-8%, 0);
+  transform: translate(-8%, 0);
+}
+.tray.show-accepted {
+  -webkit-transform: translate(-16.8%, 0);
+  -ms-transform: translate(-16.8%, 0);
+  -o-transform: translate(-16.8%, 0);
+  transform: translate(-16.8%, 0);
+}
+.tray.show-someday {
+  -webkit-transform: translate(0, 0);
+  -ms-transform: translate(0, 0);
+  -o-transform: translate(0, 0);
+  transform: translate(0, 0);
 }
 .tray .column {
   box-sizing: border-box;
   float: left;
-  overflow: auto;
+  overflow: scroll;
   height: 100%;
   width: 100%;
-  padding: 1em;
+  padding: 2em 1em 1em;
   position: relative;
+  width: 20%;
+  border-right: 1px solid #e0e0e0;
 }
-.column.accepted {
+.column.accepted,
+.column.someday {
   opacity: 0.4;
   filter: alpha(opacity=40);
   -webkit-transition: opacity 300ms ease-in-out;
   -o-transition: opacity 300ms ease-in-out;
   transition: opacity 300ms ease-in-out;
 }
-.column.accepted:hover {
+.column.accepted:hover,
+.column.someday:hover {
   opacity: 1;
   filter: alpha(opacity=100);
 }
-@media (min-width: 1400px) {
-  .tray {
-    width: 2400px;
-  }
-  .tray .column {
-    width: 480px;
-    border-right: 1px solid #e0e0e0;
-  }
+.column header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 2em;
+  line-height: 2em;
+  text-align: center;
+  text-transform: capitalize;
+  width: 100%;
+  background: white;
+  -webkit-transition: opacity 200ms ease-out;
+  -o-transition: opacity 200ms ease-out;
+  transition: opacity 200ms ease-out;
+  box-shadow: 0px -1px 1px 1px #cccccc;
+}
+.column.scrolling header {
+  opacity: 0;
+  filter: alpha(opacity=0);
 }
 @media (min-width: 720px) and (max-width: 1399px) {
-  .tray {
-    width: 1600px;
-  }
-  .tray .column {
-    width: 320px;
-    border-right: 1px solid #e0e0e0;
-  }
   .tray .column .item-card .title {
     font-size: 1.8em;
   }
