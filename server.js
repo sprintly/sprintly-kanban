@@ -46,7 +46,6 @@ server.route([
       auth: 'session'
     },
     handler: function(request, reply) {
-      console.log(request.auth)
       reply.view('layout.html', {
         token: request.auth.credentials.token
       })
