@@ -48,7 +48,7 @@ var ItemCard = React.createClass({
   renderDetails: function() {
     var details = [];
 
-    var description = this.props.item.get('description');
+    var description = this.props.item.description;
     if (description) {
       details.push(
         <div className="item-card__details">
@@ -68,13 +68,13 @@ var ItemCard = React.createClass({
       'item-card': true,
       'active': this.props.active || this.state.showDetails
     };
-    classes[this.props.item.get('type')] = true;
+    classes[this.props.item.type] = true;
 
-    var owner = this.props.item.get('assigned_to');
+    var owner = this.props.item.assigned_to;
 
     return (
       <div className={React.addons.classSet(classes)} {...this.props}>
-        <h2 className="item-card__title">{this.props.item.get('title')}</h2>
+        <h2 className="item-card__title">{this.props.item.title}</h2>
         <div className="item-card__summary">
           <OwnerAvatar person={owner || 'unassigned'} />
           <div className="item-card__summary-details">
@@ -82,13 +82,13 @@ var ItemCard = React.createClass({
               {owner ? [owner.first_name, owner.last_name.substr(0,1) ].join(' ') : 'Unassigned' }
             </a>
             <span className="item-card__summary-supplement">
-            {moment(this.props.item.get('last_modified')).fromNow()}
+            {moment(this.props.item.last_modified).fromNow()}
             </span>
           </div>
         </div>
         <Controls
           showDetails={this.state.showDetails}
-          status={this.props.item.get('status')}
+          status={this.props.item.status}
           toggleDetails={this.toggleDetails} />
         {this.state.showDetails ? this.renderDetails() : ''}
       </div>
