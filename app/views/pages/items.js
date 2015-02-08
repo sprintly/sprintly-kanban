@@ -2,10 +2,13 @@ import _ from "lodash";
 import React from "react";
 import Loading from "react-loading"
 import ItemColumn from "../components/item-column";
-import Toolbar from "../components/toolbar";
+import ProductStore from '../../stores/product-store';
+import ProductAction from '../../actions/product-actions';
+import {State} from 'react-router';
 
-function getColumnsState() {
+function getColumnsState(id) {
   return {
+    product: ProductStore.get(id),
     activeItem: false,
     'show-accepted': false,
     'show-someday': false,
@@ -13,7 +16,25 @@ function getColumnsState() {
 }
 
 export default React.createClass({
-  getInitialState: getColumnsState,
+
+  mixins: [State],
+
+  getInitialState: function() {
+    return getColumnsState(this.getParams().id)
+  },
+
+  _onChange: function() {
+    this.setState(getColumnsState(this.getParams().id));
+  },
+
+  componentDidMount: function() {
+    ProductStore.on('change', this._onChange);
+    ProductAction.init();
+  },
+
+  componentWillUnmount: function() {
+    ProductStore.off('change', this._onChange);
+  },
 
   selectItem: function(activeItem, event) {
     this.setState({ activeItem });
@@ -24,13 +45,13 @@ export default React.createClass({
   },
 
   showHiddenColumn: function(status) {
-    var state = getColumnsState();
+    var state = getColumnsState(this.getParams().id);
     state[`show-${status}`] = true;
     this.setState(state);
   },
 
   render: function() {
-    var product = this.props.products.get(this.props.params.id);
+    var product = this.state.product;
 
     if (product === undefined) {
       return (
@@ -47,7 +68,7 @@ export default React.createClass({
 
       if (_.contains(['someday', 'accepted'], status)) {
         props.onMouseEnter = _.partial(this.showHiddenColumn, status);
-        props.onMouseLeave = () => this.setState(getColumnsState())
+        props.onMouseLeave = () => this.setState(getColumnsState(this.getParams().id))
       }
       return <ItemColumn {...props} key={(product.id + status)}/>;
     });
@@ -60,7 +81,18 @@ export default React.createClass({
 
     return (
       <div className="container-tray">
-        <div className={React.addons.classSet(classes)}>{cols}</div>
+        <div className={React.addons.classSet(classes)}>
+          <header>
+            {_.map(product.ItemModel.ITEM_STATUSES, function(label, status) {
+              return (
+                <nav>
+                  <h3>{label}</h3>
+                </nav>
+              );
+            })}
+          </header>
+          {cols}
+        </div>
       </div>
     );
   }

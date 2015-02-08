@@ -1,12 +1,9 @@
-var React = require('react');
-var Router = require('react-router');
-var Route = Router.Route;
-var DefaultRoute = Router.DefaultRoute;
+import React from 'react'
+import Router, { Route, DefaultRoute } from 'react-router';
 
-
-var App = require('./views/app');
-var ProductSelector = require('./views/pages/product-selector');
-var Items = require('./views/pages/items');
+import App from './views/app';
+import ProductSelector from './views/pages/product-selector';
+import Items from './views/pages/items';
 
 var routes = (
   <Route name="app" path="/" handler={App}>

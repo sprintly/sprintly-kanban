@@ -6430,10 +6430,32 @@ body {
   overflow: scroll;
   height: 100%;
   width: 100%;
-  padding: 2em 1em 1em;
+  padding: 3em 1em 1em;
   position: relative;
   width: 20%;
   border-right: 1px solid #e0e0e0;
+}
+.tray > header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  width: 100%;
+  background: #1e495f;
+  color: white;
+}
+.tray > header nav {
+  width: 20%;
+  display: inline-block;
+  height: 2em;
+  border-right: 1px solid #ababab;
+}
+.tray > header nav h3 {
+  text-align: center;
+  font-size: 0.875em;
+  font-weight: normal;
+  margin: 0;
+  line-height: 2em;
 }
 .column.accepted,
 .column.someday {
@@ -6457,7 +6479,8 @@ body {
   text-align: center;
   text-transform: capitalize;
   width: 100%;
-  background: white;
+  background: #1e495f;
+  color: white;
   -webkit-transition: opacity 200ms ease-out;
   -o-transition: opacity 200ms ease-out;
   transition: opacity 200ms ease-out;

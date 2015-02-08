@@ -1,13 +1,19 @@
-/**
- * @jsx React.DOM
- */
+import _ from 'lodash';
+import React from 'react/addons';
+import ItemCard from '../item-card';
+import Backbone from 'backdash';
+import Header from './header';
+import Loading from 'react-loading';
+import ProductStore from '../../../stores/product-store';
+import ProductActions from '../../../actions/product-actions';
 
-var _ = require('lodash')
-var React = require('react/addons')
-var ItemCard = require('../item-card')
-var Backbone = require('backdash');
-var Header = require('./header')
-var Loading = require('react-loading');
+function getColumnState(items=[]) {
+  return {
+    items,
+    isLoading: false,
+    scrolling: false
+  }
+}
 
 var ItemColumn = React.createClass({
 
@@ -19,34 +25,24 @@ var ItemColumn = React.createClass({
   },
 
   getInitialState: function() {
-    return {
-      isLoading: true,
-      headerOffset: 0,
-      scrolling: false
-    }
+    return getColumnState();
+  },
+
+  _onChange: function() {
+    var state = _.cloneDeep(this.state);
+    state.items = this.items.toJSON();
+    state.isLoading = false;
+    this.setState(state);
   },
 
   getItems: function(product) {
     if (this.items) {
-      this.stopListening(this.items);
+      this.stopListening(this.items, 'change sync', this.items);
     }
-    this.items = product.getItemsByStatus(this.props.status);
-    this.listenTo(this.items, {
-      sync: () => { this.setState({ isLoading: false }) },
-      change: () => { this.forceUpdate() }
-    });
-
-    switch(this.props.status) {
-      case 'accepted':
-        this.items.config.set({ limit: 5 });
-        break;
-
-      default:
-        this.items.config.set({ limit: 50 });
-        break;
-    }
-
-    return this.items.fetch();
+    this.items = ProductStore.getItemsForProduct(product, this.props.status);
+    this.listenTo(this.items, 'change sync', this._onChange);
+    this.setState({ isLoading: true });
+    ProductActions.getItems(this.items);
   },
 
   componentWillMount: function() {
@@ -60,26 +56,6 @@ var ItemColumn = React.createClass({
     }
   },
 
-  setHeaderOffset: _.debounce(function() {
-    this.setState({
-      headerOffset: this.getDOMNode().scrollTop,
-      scrolling: false
-    })
-  }, 300),
-
-  hideHeader: _.throttle(function() {
-    this.setState({
-      scrolling: true
-    })
-  }, 20),
-
-  onScroll: function() {
-    this.setState({
-      scrolling: true
-    })
-    this.setHeaderOffset();
-  },
-
   render: function() {
     var limit = this.items.length;
     var classes = {
@@ -89,18 +65,13 @@ var ItemColumn = React.createClass({
     };
 
     return (
-      <div className={React.addons.classSet(classes)} {...this.props} onScroll={_.throttle(this.onScroll, 30)}>
-        <header style={{ top: this.state.headerOffset }}>
-          {this.props.status}
-        </header>
-        <div className="column__inner">
-        {this.state.isLoading ?
-          <div className="loading"><Loading type="bubbles" color="#ccc"/></div> :
-          this.items.map(function(model, index) {
-            return <ItemCard item={model} key={model.id} />
-          })
-        }
-        </div>
+      <div className={React.addons.classSet(classes)} {...this.props}>
+      {this.state.isLoading ?
+        <div className="loading"><Loading type="bubbles" color="#ccc"/></div> :
+        _.map(this.state.items, function(item, index) {
+          return <ItemCard item={item} key={`item-${item.number}`} />
+        })
+      }
       </div>
     )
   }
