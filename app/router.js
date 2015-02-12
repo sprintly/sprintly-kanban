@@ -14,11 +14,7 @@ var routes = (
 
 module.exports = function(sprintlyClient) {
   sprintlyClient.router = Router.run(routes, function(Handler, state) {
-    var params = state.params
-    React.render(
-      <Handler user={sprintlyClient.user} products={sprintlyClient.products} params={params}/>,
-      document.body
-    );
+    React.render(<Handler />, document.body);
   });
 
   return sprintlyClient;
