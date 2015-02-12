@@ -82,7 +82,7 @@ var ItemCard = React.createClass({
               {owner ? [owner.first_name, owner.last_name.substr(0,1) ].join(' ') : 'Unassigned' }
             </a>
             <span className="item-card__summary-supplement">
-            {moment(this.props.item.last_modified).fromNow()}
+              {moment(this.props.item.created_at).fromNow()}
             </span>
           </div>
         </div>
