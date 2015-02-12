@@ -1,21 +1,88 @@
+import _ from 'lodash';
 import Promise from 'bluebird';
 import AppDispatcher from '../dispatchers/app-dispatcher';
 import ProductConstants from '../constants/product-constants';
 import { products, user } from '../lib/sprintly-client';
 
-function initProducts() {
-  if (products.length > 0 && user.id) {
-    return products.trigger('change');
+export var internals = {
+  initProducts() {
+    if (products.length > 0 && user.id) {
+      return products.trigger('change');
+    }
+
+    Promise.all([
+      user.fetch(),
+      products.fetch({ silent: true })
+    ]).then(() => {
+      products.trigger('change')
+    });
+  },
+
+  updateItem(product, item_data) {
+    var item = product.items.get(item_data.number);
+    item.ingest(_.omit(item_data, 'number'));
+
+    if (item.hasChanged('status')) {
+      let prevCollection = product._filters[item.previous('status')];
+      if (prevCollection) {
+        prevCollection.remove(item);
+      }
+
+      let newCollection = product._filters[item.get('status')];
+      if (newCollection) {
+        newCollection.add(item);
+      }
+
+      return;
+    }
+
+    product.items.trigger('change', item);
+  },
+
+  createItem(product, item_data) {
+    let item = product.createItem(item_data);
+    let collection = product.getItemsByStatus(item.get('status'))
+    if (collection) {
+      collection.add(item);
+    }
+  },
+
+  createSubscription(product) {
+    // TODO: move config value into server rendered js
+    var channelName = `private-product_sprintly-development-justinlilly_${product.id}`
+    var options = {
+      encrypted: false,
+      auth: {
+        params: {
+          product: product.id
+        }
+      }
+    };
+
+    // TODO: move config value into server rendered js
+    var socket = new window.Pusher('***REMOVED***', options);
+    var productChannel = socket.subscribe(channelName);
+
+    productChannel.bind('changed', function(msg) {
+      console.log(msg)
+      let model = msg['class'];
+
+      switch(model) {
+        case 'Item':
+          if (msg.created) {
+            internals.createItem(product, msg.api_payload);
+          } else {
+            internals.updateItem(product, msg.api_payload);
+          }
+          break
+      }
+    });
+
+    productChannel.bind('deleted', function(data) {
+      console.log(data);
+    });
   }
-
-  Promise.all([
-    user.fetch(),
-    products.fetch({ silent: true })
-  ]).then(() => {
-    products.trigger('change')
-  });
-}
-
+};
 
 var ProductStore = {
   getAll: function() {
@@ -36,9 +103,9 @@ var ProductStore = {
 
     return items;
   }
-}
+};
 
-var proxyMethods = ['get', 'on', 'off', 'listenTo', 'stopListening']
+var proxyMethods = ['get', 'on', 'off', 'once', 'listenTo', 'stopListening']
 
 proxyMethods.forEach(function(method) {
   ProductStore[method] = products[method].bind(products);
@@ -48,11 +115,15 @@ AppDispatcher.register(function(action) {
 
   switch(action.actionType) {
     case ProductConstants.INIT_PRODUCTS:
-      initProducts();
+      internals.initProducts();
       break;
 
     case ProductConstants.GET_ITEMS:
       action.itemCollection.fetch();
+      break;
+
+    case ProductConstants.SUBSCRIBE:
+      internals.createSubscription(action.id);
       break;
 
     default:
