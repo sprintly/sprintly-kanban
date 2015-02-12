@@ -1,6 +1,6 @@
-# Sprintly Manifold
+# Sprintly 5 Columns
 
-> CORS API client playground
+> Oauth2 Client App w/ Hapi
 
 ## Setup
 
@@ -13,13 +13,13 @@ $ make install
 ```
 
 ```bash
-$ make server
+$ node server
 ```
 
-Browserify watch task:
+Browserify/Less watch task:
 
 ```bash
-$ make watch
+$ gulp
 ```
 
 Run tests:
