@@ -1,6 +1,7 @@
 var Hapi = require('hapi');
 var server = new Hapi.Server();
 var path = require('path');
+var config = require('config');
 
 server.connection({
   host: '0.0.0.0',
@@ -49,6 +50,16 @@ server.route([
       reply.view('layout.html', {
         token: request.auth.credentials.token
       })
+    }
+  },
+  {
+    method: 'POST',
+    path: '/pusher/auth',
+    handler: {
+      proxy: {
+        uri: config.sprintly_api_root + '/ajax/wasatch/product_pusher_auth.json',
+        passThrough: true
+      }
     }
   },
   {
