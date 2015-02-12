@@ -45,10 +45,6 @@ export default React.createClass({
     this.setState({ activeItem });
   },
 
-  handleKeyDown: function(e) {
-    console.log(e);
-  },
-
   showHiddenColumn: function(status) {
     var state = getColumnsState(this.getParams().id);
     state[`show-${status}`] = true;
@@ -75,7 +71,7 @@ export default React.createClass({
         props.onMouseEnter = _.partial(this.showHiddenColumn, status);
         props.onMouseLeave = () => this.setState(getColumnsState(this.getParams().id))
       }
-      return <ItemColumn {...props} key={(product.id + status)}/>;
+      return <ItemColumn {...props} key={(product.number + status)}/>;
     });
 
     var classes = {
@@ -90,7 +86,7 @@ export default React.createClass({
           <header>
             {_.map(product.ItemModel.ITEM_STATUSES, function(label, status) {
               return (
-                <nav>
+                <nav key={`header-nav-${status}`}>
                   <h3>{label}</h3>
                 </nav>
               );
