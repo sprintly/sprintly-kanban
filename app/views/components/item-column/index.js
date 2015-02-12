@@ -10,8 +10,7 @@ import ProductActions from '../../../actions/product-actions';
 function getColumnState(items=[]) {
   return {
     items,
-    isLoading: false,
-    scrolling: false
+    isLoading: false
   }
 }
 
@@ -35,12 +34,18 @@ var ItemColumn = React.createClass({
     this.setState(state);
   },
 
-  getItems: function(product) {
+  getItems: function(product, options={}) {
     if (this.items) {
-      this.stopListening(this.items, 'change sync', this.items);
+      if (!options.refresh) {
+        return;
+      }
+      this.stopListening(this.items);
     }
     this.items = ProductStore.getItemsForProduct(product, this.props.status);
-    this.listenTo(this.items, 'change sync', this._onChange);
+    this.items.comparator = function(model) {
+      return -new Date(model.get('last_modified'));
+    };
+    this.listenTo(this.items, 'change sync add remove', this._onChange);
     this.setState({ isLoading: true });
     ProductActions.getItems(this.items);
   },
@@ -49,19 +54,25 @@ var ItemColumn = React.createClass({
     this.getItems(this.props.product);
   },
 
+  componentDidMount: function() {
+    this.getItems(this.props.product);
+  },
+
+  componentWillUnmount: function() {
+    this.stopListening(this.items);
+  },
+
   componentWillReceiveProps: function(nextProps) {
     if (nextProps.product.id !== this.props.product.id) {
       this.setState({ isLoading: true });
-      this.getItems(nextProps.product);
+      this.getItems(nextProps.product, { refresh: true });
     }
   },
 
   render: function() {
-    var limit = this.items.length;
     var classes = {
       column: true,
-      [this.props.status]: true,
-      scrolling: this.state.scrolling
+      [this.props.status]: true
     };
 
     return (
