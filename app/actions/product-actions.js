@@ -14,6 +14,13 @@ var ProductActions = {
       actionType: ProductConstants.GET_ITEMS,
       itemCollection
     });
+  },
+
+  subscribe: function(id) {
+    AppDispatcher.dispatch({
+      actionType: ProductConstants.SUBSCRIBE,
+      id
+    });
   }
 
 };
