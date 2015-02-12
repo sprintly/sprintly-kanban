@@ -29,6 +29,11 @@ export default React.createClass({
 
   componentDidMount: function() {
     ProductStore.on('change', this._onChange);
+    ProductStore.once('sync', () => {
+      var product = ProductStore.get(this.getParams().id);
+      product.items.on('change', this._onChange);
+      ProductAction.subscribe(product);
+    });
     ProductAction.init();
   },
 
