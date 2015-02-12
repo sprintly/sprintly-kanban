@@ -6470,26 +6470,6 @@ body {
   opacity: 1;
   filter: alpha(opacity=100);
 }
-.column header {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 2em;
-  line-height: 2em;
-  text-align: center;
-  text-transform: capitalize;
-  width: 100%;
-  background: #1e495f;
-  color: white;
-  -webkit-transition: opacity 200ms ease-out;
-  -o-transition: opacity 200ms ease-out;
-  transition: opacity 200ms ease-out;
-  box-shadow: 0px -1px 1px 1px #cccccc;
-}
-.column.scrolling header {
-  opacity: 0;
-  filter: alpha(opacity=0);
-}
 @media (min-width: 720px) and (max-width: 1399px) {
   .tray .column .item-card .title {
     font-size: 1.8em;
