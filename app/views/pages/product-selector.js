@@ -37,7 +37,7 @@ export default React.createClass({
           <ul className="list-unstyled">
           {_.map(this.state.products, function(product) {
             return (
-              <li>
+              <li key={`product-selector-${product.id}`}>
                 <Link to="product" params={{ id: product.id }} className="btn btn-default">{product.name}</Link>
               </li>
             );
