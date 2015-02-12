@@ -1,5 +1,6 @@
 {
-  "name": "manifold",
+  "name": "sprintly-5columns",
+  "private": true,
   "version": "0.0.1",
   "devDependencies": {
     "6to5ify": "^3.1.0",
