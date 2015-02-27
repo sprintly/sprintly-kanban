@@ -4,13 +4,13 @@ import AppDispatcher from '../dispatchers/app-dispatcher';
 import ProductConstants from '../constants/product-constants';
 import { products, user } from '../lib/sprintly-client';
 
-export var internals = {
+var internals = {
   initProducts() {
     if (products.length > 0 && user.id) {
       return products.trigger('change');
     }
 
-    Promise.all([
+    return Promise.all([
       user.fetch(),
       products.fetch({ silent: true })
     ]).then(() => {
@@ -88,8 +88,10 @@ var ProductStore = {
   getAll: function() {
     return products.toJSON();
   },
-  getItemsForProduct: function(product, status) {
+  getItemsForProduct: function(product, status, filters) {
     var items = product.getItemsByStatus(status);
+
+    items.config.set(filters);
 
     switch(status) {
       case 'accepted':
@@ -97,7 +99,10 @@ var ProductStore = {
         break;
 
       default:
-        items.config.set({ limit: 50 });
+        items.config.set({
+          children: true,
+          limit: 25
+        });
         break;
     }
 
@@ -119,7 +124,7 @@ AppDispatcher.register(function(action) {
       break;
 
     case ProductConstants.GET_ITEMS:
-      action.itemCollection.fetch();
+      action.itemCollection.fetch({ reset: true });
       break;
 
     case ProductConstants.SUBSCRIBE:
@@ -133,3 +138,7 @@ AppDispatcher.register(function(action) {
 });
 
 export default ProductStore;
+
+if (process.env.NODE_ENV === 'test') {
+  exports.internals = internals;
+}

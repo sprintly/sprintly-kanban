@@ -11,34 +11,99 @@
 
 @card-border: #E0E0E0;
 
+.item-card__details {
+  float: left;
+  width: 100%;
+  margin: 1.4em 0 0;
+  margin-top: 1rem;
+}
+
+.item-card__description {
+  margin-top: 1rem;
+  background: #eee;
+  border-radius: 2px;
+  box-shadow: none;
+  border:none;
+}
+
+.item-card__tags {
+  width: 100%;
+  background: #eee;
+  border-radius: 2px;
+  padding: 0.5em;
+  margin-top: 1rem;
+
+  .item-card__tags-label {
+    font-size: 11px;
+    margin-right: 4px;
+    position: relative;
+    top: -4px;
+  }
+
+  .btn {
+    padding: 3px 4px;
+    margin-right: 4px;
+  }
+}
+
+.item-card__extra-controls {
+  background: #666;
+  width: 100%;
+  box-sizing: content-box;
+  position: relative;
+  left: -1.5rem;
+  padding: 16px 1.5rem 14px;
+  text-align: center;
+
+  a {
+    font-size: 40px;
+    margin-right: 10px;
+    background: #444;
+    border-radius: 20px;
+    color: #fff;
+    text-decoration: none;
+    &:last-of-type {
+      margin-right: 0;
+    }
+  }
+}
+
 .item-card {
+  position: relative;
   box-sizing: border-box;
-  padding: 1em;
+  padding: 1em 0;
   margin-bottom: 1em;
   float: left;
   width: 100%;
   border: 1px solid @card-border;
+  border-radius: 2px;
 
   &.active {
     border: 1px solid darken(@card-border, 30%);
   }
 
+  .row {
+    margin: 0;
+  }
+
   // Background variants
 
   &.story {
-    background: @story-bg;
+    background: #fff;
+    border-left: 5px solid @story-bg;
   }
 
   &.defect {
-    background: @defect-bg;
+    background: #fff;
+    border-left: 5px solid @defect-bg;
   }
 
   &.task {
-    background: @task-bg;
+    border-left: 5px solid @task-bg;
   }
 
   &.test {
-    background: @test-bg;
+    border-left: 5px solid @test-bg;
   }
 
   &:hover .item-card__controls a {
@@ -50,49 +115,60 @@
   }
 }
 
-
 .item-card__title {
-  font-family: Georgia;
   margin: 0;
+  padding: 0 0 0 1em;
+  border-left: 1px solid #eaeaea;
   word-wrap: break-word;
+  font-weight: normal;
+  font-size: 16px;
+  float: left;
 }
-
 
 .item-card__controls {
-  float: right;
-  margin-top: 1em;
+  // margin-top: 1em;
+  padding: 0 1em;
+  float: left;
 
   a {
-    font-size: 2.6em;
+    font-size: 2em;
     color: @card-text;
-    margin-left: 1rem;
     text-decoration: none;
-    .transition(all 200ms ease-in-out);
+    // .transition(all 200ms ease-in-out);
 
     &.details-toggle {
-      .transition(opacity 300ms ease-in-out 120ms);
-      .opacity(0);
+      // .transition(opacity 300ms ease-in-out 120ms);
+      .opacity(0)
     }
   }
 }
 
+.item-card__number {
+  float: left;
+  width: 100%;
+  text-align: center;
+  color: #909090;
+  font-size: 12px;
+}
+
+.item-card__owner-avatar {
+  float: left;
+  width: 100%;
+  text-align: center;
+  img {
+    border-radius: 36px;
+  }
+}
 
 .item-card__summary {
-  float: left;
-  margin-top: 1em;
-  .opacity(0);
-  .transition(opacity 300ms ease-in);
-
-  .item-card__owner-avatar {
-    float: left;
-    img {
-      border-radius: 36px;
-    }
-  }
+  margin-top: -1rem;
 
   .item-card__summary-details {
     float: left;
-    margin-left: 0.5em;
+    width: 100%;
+    margin-top: 1rem;
+    text-align: center;
+    font-size: 11px;
     color: @card-text;
     line-height: 1.2;
 
@@ -114,8 +190,4 @@
 }
 
 
-.item-card__details {
-  float: left;
-  width: 100%;
-  margin: 1.4em 0 0;
-}
+

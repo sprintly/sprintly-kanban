@@ -46,51 +46,65 @@ var ItemCard = React.createClass({
   },
 
   renderDetails: function() {
-    var details = [];
+    var description = '';
+    if (this.props.item.description) {
+      description = (
+        <div className="item-card__description well"
+          dangerouslySetInnerHTML={{
+            __html: marked(this.props.item.description)
+          }}></div>
+      );
+    }
 
-    var description = this.props.item.description;
-    if (description) {
-      details.push(
-        <div className="item-card__details">
-          <div className="item-card__description"
-            dangerouslySetInnerHTML={{
-              __html: marked(description)
-            }}></div>
+    var tags = '';
+    if (this.props.item.tags) {
+      tags =(
+        <div className="item-card__tags">
+          <span className="item-card__tags-label">Tags:</span>
+          {_.map(this.props.item.tags.split(','), (tag) => <span className="btn btn-default">{tag}</span>)}
         </div>
       );
     }
 
-    return details;
+    return (
+      <div className="item-card__details">
+        <div className="item-card__extra-controls">
+          <a href="#promote" className="icon-down" title="Move to Bottom"></a>
+          <a href="#promote" className="icon-add" title="Move to Top"></a>
+          <a href="#promote" className="icon-down" title="Move Down"></a>
+          <a href="#promote" className="icon-add" title="Move Up"></a>
+        </div>
+        {tags}
+        {description}
+      </div>
+    );
   },
 
   render: function() {
     var classes = {
       'item-card': true,
-      'active': this.props.active || this.state.showDetails
+      'active': this.props.active || this.state.showDetails,
     };
     classes[this.props.item.type] = true;
 
     var owner = this.props.item.assigned_to;
 
     return (
-      <div className={React.addons.classSet(classes)} {...this.props}>
-        <h2 className="item-card__title">{this.props.item.title}</h2>
-        <div className="item-card__summary">
-          <OwnerAvatar person={owner || 'unassigned'} />
-          <div className="item-card__summary-details">
-            <a className="item-card__owner-name" href="#">
-              {owner ? [owner.first_name, owner.last_name.substr(0,1) ].join(' ') : 'Unassigned' }
-            </a>
-            <span className="item-card__summary-supplement">
-              {moment(this.props.item.created_at).fromNow()}
-            </span>
+      <div className={React.addons.classSet(classes)} {...this.props} onClick={this.toggleDetails}>
+        <div className="row">
+          <Controls
+            showDetails={this.state.showDetails}
+            status={this.props.item.status}
+            toggleDetails={this.toggleDetails} />
+          <h2 className="item-card__title col-sm-8">{this.props.item.title}</h2>
+          <div className="item-card__summary col-sm-2">
+            <div className="item-card__number">#{this.props.item.number}</div>
+            <OwnerAvatar person={owner}/>
           </div>
         </div>
-        <Controls
-          showDetails={this.state.showDetails}
-          status={this.props.item.status}
-          toggleDetails={this.toggleDetails} />
-        {this.state.showDetails ? this.renderDetails() : ''}
+        <div className="row">
+          {this.state.showDetails ? this.renderDetails() : ''}
+        </div>
       </div>
     )
   }
