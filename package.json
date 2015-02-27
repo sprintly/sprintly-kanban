@@ -3,11 +3,13 @@
   "private": true,
   "version": "0.0.1",
   "devDependencies": {
+    "6to5-jest": "^3.0.0",
     "6to5ify": "^3.1.0",
     "backdash": "^1.1.2-2.4.1",
     "bluebird": "^2.5.3",
     "bootstrap": "^3.3.1",
     "browserify": "^8.0.2",
+    "confidence": "^1.0.0",
     "envify": "^3.2.0",
     "es5-shim": "^4.0.6",
     "flux": "^2.0.1",
@@ -16,6 +18,7 @@
     "gulp-less": "^2.0.1",
     "gulp-rename": "^1.2.0",
     "gulp-sourcemaps": "^1.2.8",
+    "jest-cli": "^0.2.2",
     "jquery": "^2.1.3",
     "keymirror": "^0.1.1",
     "lodash": "^2.4.1",
@@ -24,6 +27,7 @@
     "nodemon": "^1.3.6",
     "react": "^0.12.2",
     "react-bootstrap": "^0.13.0",
+    "react-component-scrollload": "^0.2.2",
     "react-d3": "0.0.13",
     "react-router": "^0.11.6",
     "reactify": "^0.17.1",
@@ -35,7 +39,7 @@
     "watchify": "^2.2.1"
   },
   "scripts": {
-    "test": "testling | faucet",
+    "test": "NODE_ENV=test jest",
     "watchify": "watchify app -o public/js/manifold.js -v -d",
     "watch-test": "NODE_PATH=$NODE_PATH:./app watchify test -o test/bundle.js -t reactify -t rewireify -v -d",
     "build": "browserify app -o public/js/manifold.js -d && NODE_PATH=./app:$NODE_PATH browserify test -o test/bundle.js -t 6to5ify -t rewireify -d",
@@ -59,5 +63,23 @@
     "react-loading": "0.0.1",
     "swig": "^1.4.2",
     "tv": "^4.0.0"
+  },
+  "jest": {
+    "rootDir": "./app",
+    "scriptPreprocessor": "../node_modules/6to5-jest",
+    "testFileExtensions": [
+      "es6",
+      "js"
+    ],
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "es6"
+    ],
+    "unmockedModulePathPatterns": [
+      "../node_modules/react",
+      "../node_modules/bluebird",
+      "../node_modules/sprintly-data"
+    ]
   }
 }
