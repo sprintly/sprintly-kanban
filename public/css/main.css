@@ -6467,7 +6467,7 @@ body {
   padding: 8em 1em 1em;
   position: relative;
   width: 20%;
-  border-right: 1px solid #979797;
+  border-right: 1px dashed #979797;
 }
 .tray .column__nav {
   position: fixed;
@@ -6482,7 +6482,7 @@ body {
   width: 20%;
   display: inline-block;
   height: 2em;
-  border-right: 1px solid #ababab;
+  border-right: 1px dashed #ababab;
 }
 .tray .column__nav nav h3 {
   text-align: center;
@@ -6551,11 +6551,6 @@ body {
 }
 .column__sort-options .btn:last-of-type::after {
   display: none;
-}
-@media (min-width: 720px) and (max-width: 1399px) {
-  .tray .column .item-card .title {
-    font-size: 1.8em;
-  }
 }
 .item-card__details {
   float: left;
@@ -6656,6 +6651,11 @@ body {
 .item-card__controls {
   padding: 0 1em;
   float: left;
+}
+@media (min-width: 720px) and (max-width: 1399px) {
+  .item-card__controls {
+    padding: 0 0.4em;
+  }
 }
 .item-card__controls a {
   font-size: 2em;
