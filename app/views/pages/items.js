@@ -1,6 +1,7 @@
 import _ from "lodash";
 import React from "react/addons";
 import Loading from "react-loading"
+import Filter from '../components/filters/filter'
 import ItemColumn from "../components/item-column";
 import ProductStore from '../../stores/product-store';
 import ProductAction from '../../actions/product-actions';
@@ -17,8 +18,6 @@ function resetColumnsState(id) {
 }
 
 export default React.createClass({
-
-
 
   mixins: [State],
 
@@ -102,11 +101,9 @@ export default React.createClass({
           </svg>
           <h1>{this.state.product.get('name')}</h1>
         </header>
-        <form className="filters__toolbar container-fluid">
-          <div className="col-sm-2">
-            <input name="filters__tags" ref="tags" type="text" placeholder="tags" className="form-control" onChange={_.debounce(this.updateTagFilter, 500)} defaultValue={this.state.filters.tags}/>
-          </div>
-        </form>
+        <div className="filters__toolbar container-fluid">
+          <Filter label="Type" criteriaOptions={['Story', 'Task', 'Defect', 'Test']} />
+        </div>
         <div className={React.addons.classSet(classes)}>
           <div className="column__nav">
             {_.map(product.ItemModel.ITEM_STATUSES, function(label, status) {
