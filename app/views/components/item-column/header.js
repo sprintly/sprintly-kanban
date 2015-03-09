@@ -1,7 +1,3 @@
-/**
- * @jsx React.DOM
- */
-
 var _ = require('lodash')
 var React = require('react')
 
@@ -38,7 +34,11 @@ var Header = React.createClass({
             let handler = (ev) => this.props.setSortCriteria(field);
             let active = field === this.props.sortField ? 'js-active' : '';
             var classes = `btn btn-default ${active}`;
-            return <button className={classes} onClick={handler}>{label}</button>
+            return (
+              <button className={classes} onClick={handler} key={`sort-options-${this.props.status}-${field}`}>
+                {label}
+              </button>
+            );
           }, this)}
           <button
             className="btn btn-default sort-direction"
