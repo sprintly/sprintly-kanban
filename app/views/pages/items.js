@@ -56,9 +56,27 @@ export default React.createClass({
     });
   },
 
-  updateTagFilter: function(ev) {
-    let node = this.refs.tags.getDOMNode();
-    this.setState({ filters: { tags: node.value } });
+  updateFilters: function(value) {
+    let filters = React.addons.update(this.state.filters, value);
+    this.setState({ filters });
+  },
+
+  renderColumn: function(label, status) {
+    var product = this.state.product;
+    var props = {
+      status,
+      product,
+      key: product.id + status,
+    };
+
+    if (_.contains(['someday', 'accepted'], status)) {
+      props.onMouseEnter = _.partial(this.showHiddenColumn, status);
+      props.onMouseLeave = () => this.setState({
+        'show-accepted': false,
+        'show-someday': false
+      })
+    }
+    return <ItemColumn {...props} filters={this.state.filters} key={(product.number + status)}/>;
   },
 
   render: function() {
@@ -70,22 +88,7 @@ export default React.createClass({
       );
     }
 
-    var cols = _.map(product.ItemModel.ITEM_STATUSES, (label, status) => {
-      var props = {
-        status,
-        product,
-        key: product.id + status,
-      }
-
-      if (_.contains(['someday', 'accepted'], status)) {
-        props.onMouseEnter = _.partial(this.showHiddenColumn, status);
-        props.onMouseLeave = () => this.setState({
-          'show-accepted': false,
-          'show-someday': false
-        })
-      }
-      return <ItemColumn {...props} filters={this.state.filters} key={(product.number + status)}/>;
-    });
+    var cols = _.map(product.ItemModel.ITEM_STATUSES, this.renderColumn);
 
     var classes = {
       tray: true,
@@ -102,7 +105,18 @@ export default React.createClass({
           <h1>{this.state.product.get('name')}</h1>
         </header>
         <div className="filters__toolbar container-fluid">
-          <Filter label="Type" criteriaOptions={['Story', 'Task', 'Defect', 'Test']} />
+          <Filter
+            name="type"
+            label="Type"
+            criteria={this.state.filters.type}
+            updateFilters={this.updateFilters}
+            options={[
+              { field: 'story', label: 'Story', default: true },
+              { field: 'task', label: 'Task', default: true },
+              { field: 'defect', label: 'Defect', default: true},
+              { field: 'test', label: 'Test', default: true }
+            ]}
+          />
         </div>
         <div className={React.addons.classSet(classes)}>
           <div className="column__nav">

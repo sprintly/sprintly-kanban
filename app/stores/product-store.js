@@ -107,6 +107,22 @@ var ProductStore = {
     }
 
     return items;
+  },
+  getItemsByFilter: function(product, filter) {
+    return product.items.filter(function(model) {
+      if (filter.type && _.contains(filter.type, model.get('type'))) {
+        return true;
+      }
+
+      if (filter.status && model.get('status') === filter.status) {
+        return true;
+      }
+
+      if (filter.tags && _.intersection(model.get('tags'), filter.tags).length > 0) {
+        return true;
+      }
+      return false;
+    });
   }
 };
 
