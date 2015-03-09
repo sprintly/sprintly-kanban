@@ -39,6 +39,7 @@
 
 
 @column-border: #979797;
+@column-border-style: dashed;
 
 .tray {
   height: 100%;
@@ -64,7 +65,7 @@
     padding: 8em 1em 1em;
     position: relative;
     width: 20%;
-    border-right: 1px solid @column-border;
+    border-right: 1px @column-border-style @column-border;
   }
 
 }
@@ -82,7 +83,7 @@
     width: 20%;
     display: inline-block;
     height: 2em;
-    border-right: 1px solid #ababab;
+    border-right: 1px @column-border-style #ababab;
   }
 
   nav h3 {
@@ -161,13 +162,11 @@
 }
 
 @media (min-width: 1400px) {
-  .tray {}
+
 }
 
 @media (min-width: 720px) and (max-width: 1399px) {
-  .tray .column .item-card .title {
-    font-size: 1.8em;
-  }
+
 }
 // End Item Column Tray
 

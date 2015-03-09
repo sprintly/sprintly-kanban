@@ -126,20 +126,11 @@
 }
 
 .item-card__controls {
-  // margin-top: 1em;
   padding: 0 1em;
   float: left;
 
-  a {
-    font-size: 2em;
-    color: @card-text;
-    text-decoration: none;
-    // .transition(all 200ms ease-in-out);
-
-    &.details-toggle {
-      // .transition(opacity 300ms ease-in-out 120ms);
-      .opacity(0)
-    }
+  @media (min-width: 720px) and (max-width: 1399px) {
+    padding: 0 0.4em;
   }
 }
 
@@ -188,6 +179,5 @@
     .opacity(1);
   }
 }
-
 
 
