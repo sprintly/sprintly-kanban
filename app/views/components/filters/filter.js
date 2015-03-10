@@ -48,9 +48,7 @@ var Filter = React.createClass({
       return false;
     }
 
-    let filter = {}
-    filter[this.props.name] = { $set: criteria };
-    this.props.updateFilters(filter);
+    this.props.updateFilters(this.props.name, criteria);
   },
 
   renderCriteriaFormField: function(option) {
