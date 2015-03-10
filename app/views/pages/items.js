@@ -1,32 +1,39 @@
 import _ from "lodash";
 import React from "react/addons";
-import Loading from "react-loading"
-import Filter from '../components/filters/filter'
-import ItemColumn from "../components/item-column";
-import ProductStore from '../../stores/product-store';
-import ProductAction from '../../actions/product-actions';
 import {State} from 'react-router';
 
-function resetColumnsState(id) {
-  return {
-    product: ProductStore.get(id),
-    activeItem: false,
-    'show-accepted': false,
-    'show-someday': false,
-    filters: {}
-  }
-}
+// Components
+import Loading from "react-loading"
+import Filter from '../components/filters/filter';
+import ItemColumn from "../components/item-column";
+
+// Flux
+import FiltersStore from '../../stores/filters-store';
+import FiltersAction from '../../actions/filter-actions';
+import ProductStore from '../../stores/product-store';
+import ProductAction from '../../actions/product-actions';
 
 export default React.createClass({
 
   mixins: [State],
 
   getInitialState: function() {
-    return resetColumnsState(this.getParams().id)
+    return {
+      filters: FiltersStore.getActiveOrDefault(),
+      filtersObject: FiltersStore.getFlatObject(),
+      product: ProductStore.get(this.getParams().id),
+      activeItem: false,
+      'show-accepted': false,
+      'show-someday': false
+    }
   },
 
   _onChange: function() {
-    this.setState({ product: ProductStore.get(this.getParams().id) });
+    this.setState({
+      filters: FiltersStore.getActiveOrDefault(),
+      filtersObject: FiltersStore.getFlatObject(),
+      product: ProductStore.get(this.getParams().id)
+    });
   },
 
   componentDidMount: function() {
@@ -37,10 +44,12 @@ export default React.createClass({
       ProductAction.subscribe(product);
     });
     ProductAction.init();
+    FiltersStore.on('change', this._onChange);
   },
 
   componentWillUnmount: function() {
     ProductStore.off('change', this._onChange);
+    FiltersStore.off('change', this._onChange);
   },
 
   selectItem: function(activeItem, event) {
@@ -56,17 +65,16 @@ export default React.createClass({
     });
   },
 
-  updateFilters: function(value) {
-    let filters = React.addons.update(this.state.filters, value);
-    this.setState({ filters });
+  updateFilters: function(field, criteria) {
+    FiltersAction.update(field, criteria);
   },
 
   renderColumn: function(label, status) {
-    var product = this.state.product;
     var props = {
       status,
-      product,
-      key: product.id + status,
+      product: this.state.product,
+      filters: this.state.filtersObject,
+      key: `col-${this.state.product.number}-${status}`,
     };
 
     if (_.contains(['someday', 'accepted'], status)) {
@@ -76,7 +84,7 @@ export default React.createClass({
         'show-someday': false
       })
     }
-    return <ItemColumn {...props} filters={this.state.filters} key={(product.number + status)}/>;
+    return <ItemColumn {...props}/>;
   },
 
   render: function() {
@@ -105,18 +113,17 @@ export default React.createClass({
           <h1>{this.state.product.get('name')}</h1>
         </header>
         <div className="filters__toolbar container-fluid">
-          <Filter
-            name="type"
-            label="Type"
-            criteria={this.state.filters.type}
-            updateFilters={this.updateFilters}
-            options={[
-              { field: 'story', label: 'Story', default: true },
-              { field: 'task', label: 'Task', default: true },
-              { field: 'defect', label: 'Defect', default: true},
-              { field: 'test', label: 'Test', default: true }
-            ]}
-          />
+          {_.map(this.state.filters, function(filter) {
+            return (
+              <Filter
+                name={filter.field}
+                label={filter.label}
+                criteria={filter.criteria}
+                updateFilters={this.updateFilters}
+                options={filter.criteriaOptions}
+              />
+            )
+          }, this)}
         </div>
         <div className={React.addons.classSet(classes)}>
           <div className="column__nav">

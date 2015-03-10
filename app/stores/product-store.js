@@ -90,8 +90,8 @@ var ProductStore = {
   },
   getItemsForProduct: function(product, status, filters) {
     var items = product.getItemsByStatus(status);
-
-    items.config.set(filters);
+    var defaultFilters = items.config.defaults();
+    items.config.set(_.extend(defaultFilters, filters));
 
     switch(status) {
       case 'accepted':
