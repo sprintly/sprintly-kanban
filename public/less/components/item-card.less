@@ -1,8 +1,13 @@
 // Item Card
-@story-bg: #C4FFCC;
-@task-bg: #E0E0E0;
-@defect-bg: #FFC4C4;
-@test-bg: #C4E1FF;
+@story-bg: #E4EFCF;
+@task-bg: #E8E8E8;
+@test-bg: #EBF7FA;
+@defect-bg: #F8E6E6;
+
+@story-border: #B2CD81;
+@task-border: #D3D3D3;
+@defect-border: #FFC4C4;
+@test-border: #C4E1FF;
 
 @card-text: #666;
 @task-text: #8C8C8C;
@@ -21,7 +26,7 @@
 .item-card__description {
   margin-top: 1rem;
   background: #eee;
-  border-radius: 2px;
+  border-radius: 4px;
   box-shadow: none;
   border:none;
 }
@@ -68,15 +73,40 @@
   }
 }
 
+.item-card__title {
+  float: right;
+  min-height: 80px;
+  padding: 10px 14px 6px;
+  border-radius: 4px;
+}
+
+.item-card__title-left {
+  width: 80%;
+  float: left;
+  color: @card-text;
+  font-size: 14px;
+  font-weight: normal;
+  line-height: 18px;
+  word-wrap: break-word;
+  margin: 0 0 18px 0;
+}
+
+.item-card__title-right {
+  width: 20%;
+  min-width: 40px;
+  float: left;
+}
+
 .item-card {
   position: relative;
-  box-sizing: border-box;
-  padding: 1em 0;
-  margin-bottom: 1em;
   float: left;
   width: 100%;
+  background-color: #FFF;
+  padding: 10px 12px 10px 0;
+  margin-bottom: 10px;
   border: 1px solid @card-border;
-  border-radius: 2px;
+  border-radius: 4px;
+  box-sizing: border-box;
 
   &.active {
     border: 1px solid darken(@card-border, 30%);
@@ -88,22 +118,24 @@
 
   // Background variants
 
-  &.story {
-    background: #fff;
-    border-left: 5px solid @story-bg;
+  &.story .item-card__title {
+    background-color: @story-bg;
+    border: 1px solid @story-border;
   }
 
-  &.defect {
-    background: #fff;
-    border-left: 5px solid @defect-bg;
+  &.defect .item-card__title {
+    background-color: @defect-bg;
+    border: 1px solid @defect-border;
   }
 
-  &.task {
-    border-left: 5px solid @task-bg;
+  &.task .item-card__title {
+    background-color: @task-bg;
+    border: 1px solid @task-border;
   }
 
-  &.test {
-    border-left: 5px solid @test-bg;
+  &.test .item-card__title {
+    background-color: @test-bg;
+    border: 1px solid @test-border;
   }
 
   &:hover .item-card__controls a {
@@ -115,20 +147,9 @@
   }
 }
 
-.item-card__title {
-  margin: 0;
-  padding: 0 0 0 1em;
-  border-left: 1px solid #eaeaea;
-  word-wrap: break-word;
-  font-weight: normal;
-  font-size: 16px;
-  float: left;
-}
-
 .item-card__controls {
-  // margin-top: 1em;
-  padding: 0 1em;
-  float: left;
+  width: 100%;
+  text-align: center;
 
   a {
     font-size: 2em;
@@ -144,24 +165,34 @@
 }
 
 .item-card__number {
-  float: left;
-  width: 100%;
-  text-align: center;
+  position: absolute;
+  top: 6px;
+  right: 14px;
+  text-align: right;
   color: #909090;
   font-size: 12px;
 }
 
 .item-card__owner-avatar {
-  float: left;
-  width: 100%;
-  text-align: center;
+  position: absolute;
+  top: 26px;
+  right: 14px;
+
   img {
-    border-radius: 36px;
+    width: 28px;
+    height: 28px;
+    border-radius: 14px;
   }
 }
 
 .item-card__summary {
-  margin-top: -1rem;
+  width: 100%;
+  overflow: hidden;
+  margin-top: 2px;
+
+  .estimator__score {
+    text-align: center;
+  }
 
   .item-card__summary-details {
     float: left;
