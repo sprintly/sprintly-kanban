@@ -10,4 +10,4 @@ public/font/icomatic.html
 public/js/manifold.js
 test/bundle.js
 .vagrant
-npm-debug.log
+npm-debug.log*

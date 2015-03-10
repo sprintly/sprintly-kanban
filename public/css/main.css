@@ -6399,7 +6399,7 @@ body {
   box-sizing: border-box;
   height: 100%;
   width: 100%;
-  background: #FAFAFA;
+  background: #fafafa;
 }
 .running-man {
   float: left;
@@ -6408,31 +6408,27 @@ body {
 .running-man-svg {
   fill-rule: evenodd;
   clip-rule: evenodd;
-  fill: #ED1F24;
+  fill: #21718d;
 }
 .product__header {
-  background: #333;
+  background: #333333;
   position: fixed;
   top: 0;
   width: 100%;
-  height: 40px;
   z-index: 200;
 }
 .product__header h1 {
   padding-top: 12px;
   float: left;
-  color: #909090;
+  color: #efefef;
   margin: 0;
-  font-size: 16px;
+  font-size: 28px;
   font-weight: normal;
 }
 .filters__toolbar {
-  position: fixed;
-  top: 40px;
-  height: 40px;
-  background: #666;
-  width: 100%;
-  z-index: 200;
+  float: left;
+  background-color: #333333;
+  margin: 12px 20px;
 }
 .tray {
   height: 100%;
@@ -6467,26 +6463,31 @@ body {
   padding: 8em 1em 1em;
   position: relative;
   width: 20%;
+  min-width: 390px;
+  max-width: 500px;
   border-right: 1px solid #979797;
 }
 .tray .column__nav {
   position: fixed;
-  top: 80px;
+  top: 60px;
   left: 0;
   z-index: 100;
   width: 100%;
   background: #D8D8D8;
-  color: 666666;
+  color: #333333;
+  white-space: nowrap;
 }
 .tray .column__nav nav {
   width: 20%;
+  min-width: 390px;
+  max-width: 500px;
+  height: 34px;
   display: inline-block;
-  height: 2em;
   border-right: 1px solid #ababab;
 }
 .tray .column__nav nav h3 {
   text-align: center;
-  font-size: 1em;
+  font-size: 16px;
   font-weight: normal;
   margin: 0;
   line-height: 2em;
@@ -6566,7 +6567,7 @@ body {
 .item-card__description {
   margin-top: 1rem;
   background: #eee;
-  border-radius: 2px;
+  border-radius: 4px;
   box-shadow: none;
   border: none;
 }
@@ -6607,15 +6608,37 @@ body {
 .item-card__extra-controls a:last-of-type {
   margin-right: 0;
 }
+.item-card__title {
+  float: right;
+  min-height: 80px;
+  padding: 10px 14px 6px;
+  border-radius: 4px;
+}
+.item-card__title-left {
+  width: 80%;
+  float: left;
+  color: #666666;
+  font-size: 14px;
+  font-weight: normal;
+  line-height: 18px;
+  word-wrap: break-word;
+  margin: 0 0 18px 0;
+}
+.item-card__title-right {
+  width: 20%;
+  min-width: 40px;
+  float: left;
+}
 .item-card {
   position: relative;
-  box-sizing: border-box;
-  padding: 1em 0;
-  margin-bottom: 1em;
   float: left;
   width: 100%;
+  background-color: #FFF;
+  padding: 10px 12px 10px 0;
+  margin-bottom: 10px;
   border: 1px solid #e0e0e0;
-  border-radius: 2px;
+  border-radius: 4px;
+  box-sizing: border-box;
 }
 .item-card.active {
   border: 1px solid #939393;
@@ -6623,19 +6646,21 @@ body {
 .item-card .row {
   margin: 0;
 }
-.item-card.story {
-  background: #fff;
-  border-left: 5px solid #c4ffcc;
+.item-card.story .item-card__title {
+  background-color: #e4efcf;
+  border: 1px solid #b2cd81;
 }
-.item-card.defect {
-  background: #fff;
-  border-left: 5px solid #ffc4c4;
+.item-card.defect .item-card__title {
+  background-color: #f8e6e6;
+  border: 1px solid #ffc4c4;
 }
-.item-card.task {
-  border-left: 5px solid #e0e0e0;
+.item-card.task .item-card__title {
+  background-color: #e8e8e8;
+  border: 1px solid #d3d3d3;
 }
-.item-card.test {
-  border-left: 5px solid #c4e1ff;
+.item-card.test .item-card__title {
+  background-color: #ebf7fa;
+  border: 1px solid #c4e1ff;
 }
 .item-card:hover .item-card__controls a {
   opacity: 100;
@@ -6644,18 +6669,9 @@ body {
 .item-card .item-card__controls > a:hover {
   color: #444;
 }
-.item-card__title {
-  margin: 0;
-  padding: 0 0 0 1em;
-  border-left: 1px solid #eaeaea;
-  word-wrap: break-word;
-  font-weight: normal;
-  font-size: 16px;
-  float: left;
-}
 .item-card__controls {
-  padding: 0 1em;
-  float: left;
+  width: 100%;
+  text-align: center;
 }
 .item-card__controls a {
   font-size: 2em;
@@ -6667,22 +6683,30 @@ body {
   filter: alpha(opacity=0);
 }
 .item-card__number {
-  float: left;
-  width: 100%;
-  text-align: center;
+  position: absolute;
+  top: 6px;
+  right: 14px;
+  text-align: right;
   color: #909090;
   font-size: 12px;
 }
 .item-card__owner-avatar {
-  float: left;
-  width: 100%;
-  text-align: center;
+  position: absolute;
+  top: 26px;
+  right: 14px;
 }
 .item-card__owner-avatar img {
-  border-radius: 36px;
+  width: 28px;
+  height: 28px;
+  border-radius: 14px;
 }
 .item-card__summary {
-  margin-top: -1rem;
+  width: 100%;
+  overflow: hidden;
+  margin-top: 2px;
+}
+.item-card__summary .estimator__score {
+  text-align: center;
 }
 .item-card__summary .item-card__summary-details {
   float: left;

@@ -7,6 +7,7 @@ var React = require('react/addons');
 var moment = require('moment');
 var OwnerAvatar = require('./owner');
 var Controls = require('./controls');
+var Estimator = require('sprintly-ui').Estimator;
 var marked = require('marked');
 
 marked.setOptions({
@@ -61,7 +62,7 @@ var ItemCard = React.createClass({
       tags =(
         <div className="item-card__tags">
           <span className="item-card__tags-label">Tags:</span>
-          {_.map(this.props.item.tags.split(','), (tag) => <span className="btn btn-default">{tag}</span>)}
+          {_.map(this.props.item.tags.split(','), (tag) => <span>{tag}</span>)}
         </div>
       );
     }
@@ -92,14 +93,28 @@ var ItemCard = React.createClass({
     return (
       <div className={React.addons.classSet(classes)} {...this.props} onClick={this.toggleDetails}>
         <div className="row">
-          <Controls
-            showDetails={this.state.showDetails}
-            status={this.props.item.status}
-            toggleDetails={this.toggleDetails} />
-          <h2 className="item-card__title col-sm-8">{this.props.item.title}</h2>
-          <div className="item-card__summary col-sm-2">
-            <div className="item-card__number">#{this.props.item.number}</div>
-            <OwnerAvatar person={owner}/>
+          <div className="col-sm-2">
+            <Controls
+              showDetails={this.state.showDetails}
+              status={this.props.item.status}
+              toggleDetails={this.toggleDetails}
+            />
+            <div className="item-card__summary">
+              <Estimator
+                modelId={[this.props.item.product.id, this.props.item.number]}
+                itemType={this.props.item.type}
+                score={this.props.item.score}
+                readOnly={true}
+                estimateChanger={{}}
+              />
+            </div>
+          </div>
+          <div className="item-card__title col-sm-10">
+            <h2 className="item-card__title-left">{this.props.item.title}</h2>
+            <div className="item-card__title-right">
+              <div className="item-card__number">#{this.props.item.number}</div>
+              <OwnerAvatar person={owner} />
+            </div>
           </div>
         </div>
         <div className="row">
