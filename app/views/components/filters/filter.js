@@ -1,13 +1,20 @@
 var _ = require('lodash');
 var React = require('react/addons');
 var Input = require('react-bootstrap').Input;
+var CheckboxFilter = require('./checkbox-filter');
+var DropdownFilter = require('./dropdown-filter');
+var TagsFilter = require('./tags-filter');
 
 var Filter = React.createClass({
 
   propTypes: {
+    type: React.PropTypes.oneOf(['checkbox', 'dropdown', 'tags']).isRequired,
     name: React.PropTypes.string.isRequired,
     label: React.PropTypes.string.isRequired,
-    criteria: React.PropTypes.array,
+    criteria: React.PropTypes.oneOfType([
+      React.PropTypes.array,
+      React.PropTypes.string,
+    ]),
     updateFilters: React.PropTypes.func,
     options: React.PropTypes.array
   },
@@ -15,7 +22,7 @@ var Filter = React.createClass({
   getDefaultProps: function() {
     return {
       criteria: [],
-      criteriaOptions: [],
+      options: [],
       defaultCriteriaLabel: 'All',
       updateFilters: function() {}
     }
@@ -31,38 +38,56 @@ var Filter = React.createClass({
     this.setState({ selectorVisible: !this.state.selectorVisible });
   },
 
-  update: function(field, ev) {
-    // TODO needs to handle other input types
-    let value = ev.target.checked;
-    let criteria = this.props.criteria.length === 0 ?
-      _.pluck(this.props.options, 'field') : _.clone(this.props.criteria);
+  renderLabel: function() {
+    let criteriaLabel = this.props.defaultCriteriaLabel;
 
-    if (value && _.contains(criteria, field) === false) {
-      criteria.push(field);
-    } else if (value === false) {
-      criteria = _.without(criteria, field);
+    if (_.isArray(this.props.criteria)) {
+      if(this.props.criteria.length > 0) {
+        criteriaLabel = this.props.criteria.join(', ')
+      }
+
+      if (this.props.criteria.length === this.props.options.length) {
+        criteriaLabel = this.props.defaultCriteriaLabel;
+      }
     }
 
-    if (criteria && criteria.length < 1) {
-      ev.preventDefault();
-      return false;
+    if (_.isString(this.props.criteria)) {
+      if (this.props.criteria === '') {
+        criteriaLabel = this.props.defaultCriteriaLabel;
+      } else {
+        criteriaLabel = this.props.criteria;
+      }
     }
 
-    this.props.updateFilters(this.props.name, criteria);
+    return (
+      <div className="filter__criteria">{criteriaLabel}</div>
+    );
   },
 
-  renderCriteriaFormField: function(option) {
-     let checked = this.props.criteria.length === 0 ? option.default :
-      _.contains(this.props.criteria, option.field);
-    return (
-      <Input
-        key={`filter-checkbox-${option.field}`}
-        type="checkbox"
-        label={option.label}
-        wrapperClassName="col-xs-offset-1"
-        onChange={_.partial(this.update, option.field)}
-        defaultChecked={checked} />
-    );
+  renderForm: function() {
+    var form;
+    var formProps = {
+      name: this.props.name,
+      updateFilters: this.props.updateFilters,
+      options: this.props.options,
+      criteria: this.props.criteria,
+      visible: this.state.selectorVisible
+    };
+    switch (this.props.type) {
+      case 'dropdown':
+        form = <DropdownFilter {...formProps} />
+        break;
+      case 'checkbox':
+        form = <CheckboxFilter {...formProps} />
+        break;
+      case 'tags':
+        form = <TagsFilter {...formProps} />
+        break;
+      default:
+        form = '';
+        break;
+    }
+    return form;
   },
 
   render: function() {
@@ -71,23 +96,16 @@ var Filter = React.createClass({
       'filter__criteria-selector': true,
       visible: this.state.selectorVisible
     });
-    var criteriaLabels = this.props.criteria.join(', ') || this.props.defaultCriteriaLabel;
-
-    if (this.props.criteria.length === this.props.options.length) {
-      criteriaLabels = this.props.defaultCriteriaLabel;
-    }
 
     return (
       <div className="filter" onClick={this.toggleSelector}>
         <button className="btn filter__label">{this.props.label}</button>
-        <div className="filter__criteria">{criteriaLabels}</div>
-        <form className={criteriaFormClasses} onClick={(e) => e.stopPropagation() }>
-          {_.map(this.props.options, this.renderCriteriaFormField)}
-        </form>
+        {this.renderLabel()}
+        {this.renderForm()}
       </div>
     )
   }
-})
+});
 
 module.exports = Filter
 
