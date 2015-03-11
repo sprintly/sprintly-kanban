@@ -90,7 +90,7 @@ var ProductStore = {
   },
   getItemsForProduct: function(product, status, filters) {
     var items = product.getItemsByStatus(status);
-    var defaultFilters = items.config.defaults();
+    var defaultFilters = items.config.toJSON();
     items.config.set(_.extend(defaultFilters, filters));
 
     switch(status) {
@@ -123,6 +123,10 @@ var ProductStore = {
       }
       return false;
     });
+  },
+
+  getMembers: function(product) {
+    return product.members.toJSON();
   }
 };
 
