@@ -2,12 +2,19 @@ import AppDispatcher from '../dispatchers/app-dispatcher';
 import FiltersConstants from '../constants/filters-constants';
 
 var FiltersActions = {
+  init: function(product) {
+    AppDispatcher.dispatch({
+      actionType: FiltersConstants.INIT_FILTERS,
+      product
+    })
+  },
 
-  update: function(field, criteria) {
+  update: function(field, criteria, options={}) {
     AppDispatcher.dispatch({
       actionType: FiltersConstants.UPDATE_FILTER,
+      unset: options.unset === true,
       field,
-      criteria
+      criteria,
     });
   }
 

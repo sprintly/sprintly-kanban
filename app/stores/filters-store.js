@@ -2,6 +2,7 @@ import _ from 'lodash';
 import {Model, Collection} from 'backdash';
 import AppDispatcher from '../dispatchers/app-dispatcher';
 import FiltersConstants from '../constants/filters-constants';
+import Promise from 'bluebird';
 
 // TODO this needs it's own file eventually
 export var FiltersModel = Model.extend({
@@ -23,12 +24,12 @@ export var FiltersCollection = Collection.extend({
 });
 
 var filters = new FiltersCollection([
-
   {
-    field: 'type',
+    type: 'checkbox',
     label: 'Type',
     active: false,
-    default: true,
+    alwaysVisible: true,
+    field: 'type',
     criteria: [],
     criteriaOptions: [
       { field: 'story', label: 'Story', default: true },
@@ -36,14 +37,69 @@ var filters = new FiltersCollection([
       { field: 'defect', label: 'Defect', default: true},
       { field: 'test', label: 'Test', default: true }
     ]
+  },
+  {
+    type: 'dropdown',
+    label: 'Assigned to',
+    active: false,
+    alwaysVisible: false,
+    defaultCriteriaLabel: 'None',
+    field: 'assigned_to',
+    criteria: '',
+    criteriaOptions: [
+      { field: 'unassigned', label: 'Unassigned', default: false }
+    ]
+  },
+  {
+    type: 'tags',
+    label: 'Tagged with',
+    active: false,
+    alwaysVisible: true,
+    defaultCriteriaLabel: 'None',
+    field: 'tags',
+    criteria: '',
+    criteriaOptions: []
   }
-
 ]);
+
+var internals = {
+  init: function(product) {
+    Promise.all([
+      product.members.fetch(),
+      product.tags.fetch()
+    ])
+    .then(function() {
+      // TODO this should be broadened to all filters that need members data
+      let needsMembers = filters.findWhere({ field: 'assigned_to' })
+      if (needsMembers) {
+        let options = _.clone(needsMembers.get('criteriaOptions'));
+        options.unshift({ members: product.members.toJSON() });
+        needsMembers.set('criteriaOptions', options);
+      }
+
+      let needsTags = filters.findWhere({ field: 'tags' });
+      if (needsTags) {
+        needsTags.set('criteriaOptions', product.tags.toJSON());
+      }
+    });
+  },
+
+  update: function(field, criteria, unset) {
+    let filter = filters.findWhere({ field: field });
+    if (filter) {
+      if (unset) {
+        filter.set({ active: false });
+      } else {
+        filter.set({ active: true, criteria: criteria });
+      }
+    }
+  },
+};
 
 var FiltersStore = {
   getActiveOrDefault: function() {
     return _.invoke(filters.filter(function(model) {
-      return model.get('active') || model.get('default');
+      return model.get('active') || model.get('alwaysVisible');
     }), 'toJSON');
   },
 
@@ -60,14 +116,11 @@ proxyMethods.forEach(function(method) {
 
 AppDispatcher.register(function(action) {
   switch(action.actionType) {
+    case FiltersConstants.INIT_FILTERS:
+      internals.init(action.product);
+      break;
     case FiltersConstants.UPDATE_FILTER:
-      let filter = filters.findWhere({ field: action.field });
-      if (filter) {
-        filter.set({
-          active: true,
-          criteria: action.criteria
-        });
-      }
+      internals.update(action.field, action.criteria, action.unset);
       break;
     default:
       break;
