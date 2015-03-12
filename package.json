@@ -34,7 +34,7 @@
     "rewireify": "0.0.13",
     "sinon": "^1.12.2",
     "sprintly-data": "git+ssh://git@github.com:sprintly/sprintly-data.git",
-    "sprintly-ui": "git+ssh://git@github.com:sprintly/sprintly-ui.git#inline-to-less",
+    "sprintly-ui": "git+ssh://git@github.com:sprintly/sprintly-ui.git#v1.0.0",
     "tape": "^3.5.0",
     "uglify-js": "^2.4.14",
     "watchify": "^2.2.1"

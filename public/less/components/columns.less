@@ -12,6 +12,7 @@
   box-sizing: border-box;
   height: 100%;
   width: 100%;
+  min-width: 1700px;
   background: @background;
 }
 
@@ -38,7 +39,7 @@
     float: left;
     color: @header-title;
     margin: 0;
-    font-size: 28px;
+    font-size: 26px;
     font-weight: normal;
   }
 }
@@ -47,6 +48,10 @@
   float: left;
   background-color: @header;
   margin: 12px 20px;
+
+  .form-control {
+    height: 32px;
+  }
 }
 
 .tray {
@@ -73,7 +78,6 @@
     padding: 8em 1em 1em;
     position: relative;
     width: 20%;
-    min-width: 390px;
     max-width: 500px;
     border-right: 1px solid @column-border;
   }
@@ -86,13 +90,13 @@
   left: 0;
   z-index: 100;
   width: 100%;
-  background: #D8D8D8;
+  background: #ECECEC;
   color: @header;
   white-space: nowrap;
+  box-shadow: 1px 1px 3px #CFCFCF;
 
   nav {
     width: 20%;
-    min-width: 390px;
     max-width: 500px;
     height: 34px;
     display: inline-block;
@@ -101,11 +105,11 @@
 
   nav h3 {
     text-align: center;
-    font-size: 16px;
-    font-weight: normal;
+    font-size: 14px;
+    font-weight: bold;
     margin: 0;
-    line-height: 2em;
-    color: #666;
+    line-height: 2.4em;
+    color: #333;
   }
 
 }

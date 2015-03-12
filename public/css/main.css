@@ -6399,6 +6399,7 @@ body {
   box-sizing: border-box;
   height: 100%;
   width: 100%;
+  min-width: 1700px;
   background: #fafafa;
 }
 .running-man {
@@ -6422,13 +6423,16 @@ body {
   float: left;
   color: #efefef;
   margin: 0;
-  font-size: 28px;
+  font-size: 26px;
   font-weight: normal;
 }
 .filters__toolbar {
   float: left;
   background-color: #333333;
   margin: 12px 20px;
+}
+.filters__toolbar .form-control {
+  height: 32px;
 }
 .tray {
   height: 100%;
@@ -6463,7 +6467,6 @@ body {
   padding: 8em 1em 1em;
   position: relative;
   width: 20%;
-  min-width: 390px;
   max-width: 500px;
   border-right: 1px solid #979797;
 }
@@ -6473,13 +6476,13 @@ body {
   left: 0;
   z-index: 100;
   width: 100%;
-  background: #D8D8D8;
+  background: #ECECEC;
   color: #333333;
   white-space: nowrap;
+  box-shadow: 1px 1px 3px #CFCFCF;
 }
 .tray .column__nav nav {
   width: 20%;
-  min-width: 390px;
   max-width: 500px;
   height: 34px;
   display: inline-block;
@@ -6487,11 +6490,11 @@ body {
 }
 .tray .column__nav nav h3 {
   text-align: center;
-  font-size: 16px;
-  font-weight: normal;
+  font-size: 14px;
+  font-weight: bold;
   margin: 0;
-  line-height: 2em;
-  color: #666;
+  line-height: 2.4em;
+  color: #333;
 }
 .column.accepted,
 .column.someday {
