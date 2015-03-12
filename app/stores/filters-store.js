@@ -11,6 +11,7 @@ export var FiltersModel = Model.extend({
 
 // TODO this needs it's own file eventually
 export var FiltersCollection = Collection.extend({
+
   model: FiltersModel,
 
   active: function() {
@@ -39,7 +40,33 @@ var filters = new FiltersCollection([
     ]
   },
   {
-    type: 'dropdown',
+    type: 'checkbox',
+    label: 'Estimate',
+    active: false,
+    alwaysVisible: true,
+    defaultCriterLabel: 'All',
+    field: 'estimate',
+    criteria: [],
+    criteriaOptions: [
+      { field: '~', label: 'Unestimated', default: true },
+      { field: 's', label: 'Small', default: true },
+      { field: 'm', label: 'Medium', default: true },
+      { field: 'l', label: 'Large', default: true },
+      { field: 'xl', label: 'Extra Large', default: true }
+    ]
+  },
+  {
+    type: 'tags',
+    label: 'Tagged with',
+    active: false,
+    alwaysVisible: false,
+    defaultCriteriaLabel: 'None',
+    field: 'tags',
+    criteria: '',
+    criteriaOptions: []
+  },
+  {
+    type: 'members',
     label: 'Assigned to',
     active: false,
     alwaysVisible: false,
@@ -47,16 +74,16 @@ var filters = new FiltersCollection([
     field: 'assigned_to',
     criteria: '',
     criteriaOptions: [
-      { field: 'unassigned', label: 'Unassigned', default: false }
+      { field: 'unassigned', value: '', label: 'Unassigned', default: false }
     ]
   },
   {
-    type: 'tags',
-    label: 'Tagged with',
+    type: 'members',
+    label: 'Created by',
     active: false,
-    alwaysVisible: true,
+    alwaysVisible: false,
     defaultCriteriaLabel: 'None',
-    field: 'tags',
+    field: 'created_by',
     criteria: '',
     criteriaOptions: []
   }
