@@ -2,10 +2,12 @@ import AppDispatcher from '../dispatchers/app-dispatcher';
 import FiltersConstants from '../constants/filters-constants';
 
 var FiltersActions = {
-  init: function(product) {
+  init: function(product, user, query) {
     AppDispatcher.dispatch({
       actionType: FiltersConstants.INIT_FILTERS,
-      product
+      product,
+      user,
+      query
     })
   },
 
