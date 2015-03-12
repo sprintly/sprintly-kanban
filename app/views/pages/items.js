@@ -4,8 +4,8 @@ import {State} from 'react-router';
 
 // Components
 import Loading from "react-loading"
-import Filter from '../components/filters/filter';
 import ItemColumn from "../components/item-column";
+import FiltersToolbar from '../components/filters/filters-toolbar';
 
 // Flux
 import FiltersStore from '../../stores/filters-store';
@@ -18,33 +18,40 @@ export default React.createClass({
   mixins: [State],
 
   getInitialState: function() {
+    var product = ProductStore.get(this.getParams().id);
     return {
-      filters: FiltersStore.getActiveOrDefault(),
+      allFilters: FiltersStore.all(),
+      activeFilters: FiltersStore.getActiveOrDefault(),
       filtersObject: FiltersStore.getFlatObject(),
-      product: ProductStore.get(this.getParams().id),
+      members: product && product.members.toJSON(),
+      product,
       activeItem: false,
-      'show-accepted': false,
-      'show-someday': false
+      showAccepted: false,
+      showSomeday: false,
     }
   },
 
   _onChange: function() {
+    var product = ProductStore.get(this.getParams().id);
     this.setState({
-      filters: FiltersStore.getActiveOrDefault(),
+      allFilters: FiltersStore.all(),
+      activeFilters: FiltersStore.getActiveOrDefault(),
       filtersObject: FiltersStore.getFlatObject(),
-      product: ProductStore.get(this.getParams().id)
+      members: product && product.members.toJSON(),
+      product
     });
   },
 
   componentDidMount: function() {
+    FiltersStore.on('change', this._onChange);
     ProductStore.on('change', this._onChange);
     ProductStore.once('sync', () => {
       var product = ProductStore.get(this.getParams().id);
       product.items.on('change', this._onChange);
       ProductAction.subscribe(product);
+      FiltersAction.init(product, this.props.user, this.getQuery());
     });
     ProductAction.init();
-    FiltersStore.on('change', this._onChange);
   },
 
   componentWillUnmount: function() {
@@ -60,13 +67,9 @@ export default React.createClass({
     let someday = status === 'someday';
     let accepted = status === 'accepted';
     this.setState({
-      'show-someday': someday,
-      'show-accepted': accepted
+      showSomeday: someday,
+      showAccepted: accepted
     });
-  },
-
-  updateFilters: function(field, criteria) {
-    FiltersAction.update(field, criteria);
   },
 
   renderColumn: function(label, status) {
@@ -80,12 +83,13 @@ export default React.createClass({
     if (_.contains(['someday', 'accepted'], status)) {
       props.onMouseEnter = _.partial(this.showHiddenColumn, status);
       props.onMouseLeave = () => this.setState({
-        'show-accepted': false,
-        'show-someday': false
+        showAccepted: false,
+        showSomeday: false
       })
     }
     return <ItemColumn {...props}/>;
   },
+
 
   render: function() {
     var product = this.state.product;
@@ -100,8 +104,8 @@ export default React.createClass({
 
     var classes = {
       tray: true,
-      'show-accepted': this.state['show-accepted'],
-      'show-someday': this.state['show-someday']
+      'show-accepted': this.state.showAccepted,
+      'show-someday': this.state.showSomeday
     };
 
     return (
@@ -112,19 +116,12 @@ export default React.createClass({
           </svg>
           <h1>{this.state.product.get('name')}</h1>
         </header>
-        <div className="filters__toolbar container-fluid">
-          {_.map(this.state.filters, function(filter) {
-            return (
-              <Filter
-                name={filter.field}
-                label={filter.label}
-                criteria={filter.criteria}
-                updateFilters={this.updateFilters}
-                options={filter.criteriaOptions}
-              />
-            )
-          }, this)}
-        </div>
+        <FiltersToolbar
+          user={this.props.user}
+          allFilters={this.state.allFilters}
+          activeFilters={this.state.activeFilters}
+          members={this.state.members}
+        />
         <div className={React.addons.classSet(classes)}>
           <div className="column__nav">
             {_.map(product.ItemModel.ITEM_STATUSES, function(label, status) {

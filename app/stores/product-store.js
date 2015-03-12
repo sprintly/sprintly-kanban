@@ -91,7 +91,16 @@ var ProductStore = {
   getItemsForProduct: function(product, status, filters) {
     var items = product.getItemsByStatus(status);
     var defaultFilters = items.config.toJSON();
-    items.config.set(_.extend(defaultFilters, filters));
+    var updatedFilters = _.extend(defaultFilters, filters);
+
+    // unset previously-set global filters
+    _.each(['tags', 'assigned_to', 'estimate', 'members'], function(field) {
+      if (_.has(filters, field) === false && _.has(updatedFilters, field)) {
+        items.config.unset(field, { silent: true });
+        delete updatedFilters[field];
+      }
+    });
+    items.config.set(updatedFilters);
 
     switch(status) {
       case 'accepted':

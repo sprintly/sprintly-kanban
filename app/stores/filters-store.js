@@ -63,18 +63,22 @@ var filters = new FiltersCollection([
 ]);
 
 var internals = {
-  init: function(product) {
+  init: function(product, user) {
     Promise.all([
       product.members.fetch(),
       product.tags.fetch()
     ])
     .then(function() {
       // TODO this should be broadened to all filters that need members data
-      let needsMembers = filters.findWhere({ field: 'assigned_to' })
-      if (needsMembers) {
-        let options = _.clone(needsMembers.get('criteriaOptions'));
-        options.unshift({ members: product.members.toJSON() });
-        needsMembers.set('criteriaOptions', options);
+      let needsMembers = filters.where({ type: 'members' })
+      if (needsMembers.length > 0) {
+        _.each(needsMembers, function(filter) {
+          let options = _.clone(filter.get('criteriaOptions'));
+          let members = _.invoke(product.members.where({ revoked: false }), 'toJSON');
+          options.unshift({ field: 'me', value: user.id, label: 'Me', default: false });
+          options.unshift({ members: members });
+          filter.set('criteriaOptions', options);
+        })
       }
 
       let needsTags = filters.findWhere({ field: 'tags' });
@@ -88,9 +92,9 @@ var internals = {
     let filter = filters.findWhere({ field: field });
     if (filter) {
       if (unset) {
-        filter.set({ active: false });
+        filter.set({ active: false, criteria });
       } else {
-        filter.set({ active: true, criteria: criteria });
+        filter.set({ active: true, criteria });
       }
     }
   },
@@ -105,7 +109,11 @@ var FiltersStore = {
 
   getFlatObject: function() {
     return filters.flatObject();
-  }
+  },
+
+  all: function() {
+    return filters.toJSON();
+  },
 };
 
 var proxyMethods = ['on', 'off', 'once', 'listenTo', 'stopListening']
@@ -117,7 +125,7 @@ proxyMethods.forEach(function(method) {
 AppDispatcher.register(function(action) {
   switch(action.actionType) {
     case FiltersConstants.INIT_FILTERS:
-      internals.init(action.product);
+      internals.init(action.product, action.user, action.query);
       break;
     case FiltersConstants.UPDATE_FILTER:
       internals.update(action.field, action.criteria, action.unset);
