@@ -45,7 +45,7 @@ var CheckboxFilter = React.createClass({
         label={option.label}
         wrapperClassName="col-xs-offset-1"
         onChange={_.partial(this.update, option.field)}
-        defaultChecked={checked} />
+        checked={checked} />
     );
   },
 

@@ -2,21 +2,24 @@ var _ = require('lodash');
 var React = require('react/addons');
 var Input = require('react-bootstrap').Input;
 var CheckboxFilter = require('./checkbox-filter');
-var DropdownFilter = require('./dropdown-filter');
+var MembersFilter = require('./members-filter');
 var TagsFilter = require('./tags-filter');
 
 var Filter = React.createClass({
 
   propTypes: {
-    type: React.PropTypes.oneOf(['checkbox', 'dropdown', 'tags']).isRequired,
-    name: React.PropTypes.string.isRequired,
+    members: React.PropTypes.array.isRequired,
+    user: React.PropTypes.object.isRequired,
+    type: React.PropTypes.oneOf(['checkbox', 'members', 'tags']).isRequired,
+    field: React.PropTypes.string.isRequired,
     label: React.PropTypes.string.isRequired,
     criteria: React.PropTypes.oneOfType([
       React.PropTypes.array,
       React.PropTypes.string,
+      React.PropTypes.number
     ]),
     updateFilters: React.PropTypes.func,
-    options: React.PropTypes.array
+    criteriaOptions: React.PropTypes.array
   },
 
   getDefaultProps: function() {
@@ -38,6 +41,15 @@ var Filter = React.createClass({
     this.setState({ selectorVisible: !this.state.selectorVisible });
   },
 
+  clearFilter: function(ev) {
+    ev.preventDefault();
+    this.props.updateFilters(
+      this.props.field,
+      _.isArray(this.props.criteria) ? [] : '',
+      { unset: true }
+    );
+  },
+
   renderLabel: function() {
     let criteriaLabel = this.props.defaultCriteriaLabel;
 
@@ -46,7 +58,7 @@ var Filter = React.createClass({
         criteriaLabel = this.props.criteria.join(', ')
       }
 
-      if (this.props.criteria.length === this.props.options.length) {
+      if (this.props.criteria.length === this.props.criteriaOptions.length) {
         criteriaLabel = this.props.defaultCriteriaLabel;
       }
     }
@@ -59,23 +71,41 @@ var Filter = React.createClass({
       }
     }
 
+    if (this.props.type === 'members') {
+      if (this.props.user.id == this.props.criteria) {
+        criteriaLabel = 'Me';
+      }
+
+      if (this.props.criteria === '') {
+        criteriaLabel = 'Unassigned';
+      } else {
+        let member = _.findWhere(this.props.members, { id: parseInt(this.props.criteria, 10) });
+        criteriaLabel = `${member.first_name} ${member.last_name.slice(0,1)}.`;
+      }
+    }
+
     return (
-      <div className="filter__criteria">{criteriaLabel}</div>
+      <div className="filter__criteria">
+        {criteriaLabel}
+        {this.props.alwaysVisible ? '' :
+          <a href="#" onClick={this.clearFilter} className="glyphicon glyphicon-remove"></a>
+        }
+      </div>
     );
   },
 
   renderForm: function() {
     var form;
     var formProps = {
-      name: this.props.name,
+      name: this.props.field,
       updateFilters: this.props.updateFilters,
-      options: this.props.options,
+      options: this.props.criteriaOptions,
       criteria: this.props.criteria,
       visible: this.state.selectorVisible
     };
     switch (this.props.type) {
-      case 'dropdown':
-        form = <DropdownFilter {...formProps} />
+      case 'members':
+        form = <MembersFilter {...formProps}/>
         break;
       case 'checkbox':
         form = <CheckboxFilter {...formProps} />
