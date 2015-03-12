@@ -22,13 +22,17 @@ var DropdownFilter = React.createClass({
     this.props.updateFilters(this.props.name, value)
   },
 
-  update: function(field, ev) {
-    let value = ev.target.checked;
+  update: function(field, value, ev) {
+    let checked = ev.target.checked;
     let criteria = '';
     let options = {};
 
-    if (!value) {
+    if (!checked) {
       options.unset = true;
+    }
+
+    if (checked && field === 'me') {
+      criteria = value;
     }
     this.props.updateFilters(this.props.name, criteria, options);
   },
@@ -36,7 +40,7 @@ var DropdownFilter = React.createClass({
   renderCriteriaFormField: function(option) {
     if (option.members) {
       return (
-        <select onChange={this.onChange}>
+        <select onChange={this.onChange} value={this.props.criteria}>
           <option></option>
           {_.map(option.members, function(member) {
             return (
@@ -58,7 +62,7 @@ var DropdownFilter = React.createClass({
         type="checkbox"
         label={option.label}
         wrapperClassName="col-xs-offset-1"
-        onChange={_.partial(this.update, option.field)}
+        onChange={_.partial(this.update, option.field, option.value)}
         defaultChecked={checked} />
     );
   },

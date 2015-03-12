@@ -18,7 +18,11 @@ var TagsFilter = React.createClass({
   },
 
   update: function(tags) {
-    this.props.updateFilters(this.props.name, _.clone(tags));
+    var options = {};
+    if (tags.length === 0) {
+      options.unset = true;
+    }
+    this.props.updateFilters(this.props.name, _.clone(tags), options);
   },
 
   render: function() {
