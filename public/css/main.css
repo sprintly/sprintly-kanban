@@ -6386,6 +6386,9 @@ button.close {
 html,
 body {
   height: 100%;
+  color: #323232;
+  font-family: "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
 .loading {
   position: absolute;
@@ -6423,8 +6426,8 @@ body {
   float: left;
   color: #efefef;
   margin: 0;
-  font-size: 26px;
-  font-weight: normal;
+  font-size: 25px;
+  font-weight: bold;
 }
 .filters__toolbar {
   float: left;
@@ -6490,7 +6493,7 @@ body {
 }
 .tray .column__nav nav h3 {
   text-align: center;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: bold;
   margin: 0;
   line-height: 2.4em;
@@ -6569,41 +6572,23 @@ body {
 }
 .item-card__description {
   margin-top: 1rem;
-  background: #eee;
   border-radius: 4px;
   box-shadow: none;
   border: none;
 }
-.item-card__tags {
-  width: 100%;
-  background: #eee;
-  border-radius: 2px;
-  padding: 0.5em;
-  margin-top: 1rem;
-}
-.item-card__tags .item-card__tags-label {
-  font-size: 11px;
-  margin-right: 4px;
-  position: relative;
-  top: -4px;
-}
-.item-card__tags .btn {
-  padding: 3px 4px;
-  margin-right: 4px;
-}
 .item-card__extra-controls {
-  background: #666;
+  background: #666666;
   width: 100%;
   box-sizing: content-box;
   position: relative;
-  left: -1.5rem;
-  padding: 16px 1.5rem 14px;
+  left: -1.4rem;
+  padding: 12px 1.4rem;
   text-align: center;
 }
 .item-card__extra-controls a {
-  font-size: 40px;
-  margin-right: 10px;
-  background: #444;
+  font-size: 32px;
+  margin-right: 18px;
+  background: #444444;
   border-radius: 20px;
   color: #fff;
   text-decoration: none;
@@ -6613,16 +6598,14 @@ body {
 }
 .item-card__title {
   float: right;
-  min-height: 80px;
+  min-height: 75px;
   padding: 10px 14px 6px;
   border-radius: 4px;
 }
 .item-card__title-left {
   width: 80%;
   float: left;
-  color: #666666;
   font-size: 14px;
-  font-weight: normal;
   line-height: 18px;
   word-wrap: break-word;
   margin: 0 0 18px 0;
@@ -6637,14 +6620,11 @@ body {
   float: left;
   width: 100%;
   background-color: #FFF;
-  padding: 10px 12px 10px 0;
+  padding: 8px 8px 8px 0;
   margin-bottom: 10px;
   border: 1px solid #e0e0e0;
   border-radius: 4px;
   box-sizing: border-box;
-}
-.item-card.active {
-  border: 1px solid #939393;
 }
 .item-card .row {
   margin: 0;
@@ -6670,14 +6650,14 @@ body {
   filter: alpha(opacity=10000);
 }
 .item-card .item-card__controls > a:hover {
-  color: #444;
+  color: #444444;
 }
 .item-card__controls {
   width: 100%;
   text-align: center;
 }
 .item-card__controls a {
-  font-size: 2em;
+  font-size: 24px;
   color: #666666;
   text-decoration: none;
 }
@@ -6706,10 +6686,8 @@ body {
 .item-card__summary {
   width: 100%;
   overflow: hidden;
-  margin-top: 2px;
-}
-.item-card__summary .estimator__score {
   text-align: center;
+  margin-top: 2px;
 }
 .item-card__summary .item-card__summary-details {
   float: left;
@@ -6743,6 +6721,69 @@ body {
 .item-card.active .item-card__summary {
   opacity: 1;
   filter: alpha(opacity=100);
+}
+.item-card__show-details {
+  width: 100%;
+  background: transparent;
+  color: #666666;
+  font-size: 20px;
+  line-height: 1em;
+  text-align: center;
+  border: none;
+}
+.item-card__show-details:focus {
+  outline: none;
+}
+.estimator__menu {
+  width: 150px;
+  margin-left: 4px;
+  z-index: 100;
+}
+.estimator__score {
+  margin-left: 0;
+}
+.estimator__list .estimator__score {
+  margin-left: 4px;
+}
+.estimator__button {
+  font-size: 10px;
+}
+.estimator__button:focus,
+.tag_editor__tag {
+  outline: none;
+}
+.item-card__tags {
+  margin: 0 14px 4px 22px;
+}
+.tags__list.expanded {
+  width: auto;
+}
+.tags__tag,
+.tag_editor__tag span {
+  font-size: 12px;
+  font-weight: bold;
+}
+.tag_editor__wrapper.in-menu span {
+  display: inline-block;
+  font-size: 11px;
+  margin-top: 6px;
+}
+.tag_editor__menu {
+  padding: 4px;
+  margin-top: -26px;
+  z-index: 100;
+}
+.tag_editor__menu:before {
+  border-right: 12px solid #fff;
+  border-top: 12px solid transparent;
+  border-bottom: 12px solid transparent;
+  margin-left: -15px;
+}
+.tag_editor__menu form {
+  font-size: 11px;
+}
+.tag_editor__menu .add-tag {
+  margin-bottom: 0px;
 }
 .product-selector {
   text-align: center;
