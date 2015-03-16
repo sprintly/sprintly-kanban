@@ -32,3 +32,7 @@ Run tests:
 $ npm test
 ```
 
+## Architectural Decisions
+
+Backbone collections and models will live as implementation details of the store, not in views. [Document here](https://docs.google.com/a/quickleft.com/document/d/128zIqfwTGUDdFF38nH-CD4IHVNFkbiZqoDGN8p-rmbw/edit#heading=h.1491m6n30hmq)
+
