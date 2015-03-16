@@ -7,7 +7,7 @@ var React = require('react/addons');
 var moment = require('moment');
 var OwnerAvatar = require('./owner');
 var Controls = require('./controls');
-var Estimator = require('sprintly-ui').Estimator;
+var SprintlyUI = require('sprintly-ui');
 var marked = require('marked');
 
 marked.setOptions({
@@ -46,37 +46,35 @@ var ItemCard = React.createClass({
     this.setState({ showDetails: !this.state.showDetails })
   },
 
-  renderDetails: function() {
-    var description = '';
-    if (this.props.item.description) {
-      description = (
-        <div className="item-card__description well"
-          dangerouslySetInnerHTML={{
-            __html: marked(this.props.item.description)
-          }}></div>
-      );
-    }
+  filterByTag: function() {
+    // not sure how we're going to use this yet?
+    // ie, clicking tag filters 5cols or sends to tag-filtered
+    // reports/organizer/etc.?
+    return;
+  },
 
-    var tags = '';
-    if (this.props.item.tags) {
-      tags =(
-        <div className="item-card__tags">
-          <span className="item-card__tags-label">Tags:</span>
-          {_.map(this.props.item.tags.split(','), (tag) => <span>{tag}</span>)}
-        </div>
-      );
-    }
+  editTags: function(modelId, currentTags, changedTag, action) {},
+
+  changeScore: function(modelId, newScore) {},
+
+  changeStatus: function() {},
+
+  renderDetails: function() {
+    var tags = this.props.item.tags ? this.props.item.tags.split(',') : [];
 
     return (
       <div className="item-card__details">
-        <div className="item-card__extra-controls">
-          <a href="#promote" className="icon-down" title="Move to Bottom"></a>
-          <a href="#promote" className="icon-add" title="Move to Top"></a>
-          <a href="#promote" className="icon-down" title="Move Down"></a>
-          <a href="#promote" className="icon-add" title="Move Up"></a>
+        <div className="item-card__tags">
+          <SprintlyUI.TagEditor
+            modelId={[this.props.item.product.id, this.props.item.pk]}
+            tags={tags}
+            tagChanger={{addOrRemove: this.editTags}}
+          />
+          <SprintlyUI.Tags
+            tags={tags}
+            altOnTagClick={this.filterByTag}
+          />
         </div>
-        {tags}
-        {description}
       </div>
     );
   },
@@ -91,23 +89,22 @@ var ItemCard = React.createClass({
     var owner = this.props.item.assigned_to;
 
     return (
-      <div className={React.addons.classSet(classes)} {...this.props} onClick={this.toggleDetails}>
+      <div className={React.addons.classSet(classes)} {...this.props}>
         <div className="row">
           <div className="col-sm-2">
             <Controls
-              showDetails={this.state.showDetails}
               status={this.props.item.status}
-              toggleDetails={this.toggleDetails}
+              toggleDetails={this.changeStatus}
             />
             <div className="item-card__summary">
-              <Estimator
+              <SprintlyUI.Estimator
                 modelId={[this.props.item.product.id, this.props.item.number]}
                 itemType={this.props.item.type}
                 score={this.props.item.score}
-                readOnly={true}
-                estimateChanger={{}}
+                estimateChanger={{changeScore: this.changeScore}}
               />
             </div>
+            <button className="item-card__show-details" onClick={this.toggleDetails}>...</button>
           </div>
           <div className="item-card__title col-sm-10">
             <h2 className="item-card__title-left">{this.props.item.title}</h2>
