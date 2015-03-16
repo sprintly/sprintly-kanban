@@ -5,13 +5,12 @@ import FiltersConstants from '../constants/filters-constants';
 import Promise from 'bluebird';
 
 // TODO this needs it's own file eventually
-export var FiltersModel = Model.extend({
+var FiltersModel = Model.extend({
 
 });
 
 // TODO this needs it's own file eventually
-export var FiltersCollection = Collection.extend({
-
+var FiltersCollection = Collection.extend({
   model: FiltersModel,
 
   active: function() {
@@ -89,45 +88,7 @@ var filters = new FiltersCollection([
   }
 ]);
 
-var internals = {
-  init: function(product, user) {
-    Promise.all([
-      product.members.fetch(),
-      product.tags.fetch()
-    ])
-    .then(function() {
-      // TODO this should be broadened to all filters that need members data
-      let needsMembers = filters.where({ type: 'members' })
-      if (needsMembers.length > 0) {
-        _.each(needsMembers, function(filter) {
-          let options = _.clone(filter.get('criteriaOptions'));
-          let members = _.invoke(product.members.where({ revoked: false }), 'toJSON');
-          options.unshift({ field: 'me', value: user.id, label: 'Me', default: false });
-          options.unshift({ members: members });
-          filter.set('criteriaOptions', options);
-        })
-      }
-
-      let needsTags = filters.findWhere({ field: 'tags' });
-      if (needsTags) {
-        needsTags.set('criteriaOptions', product.tags.toJSON());
-      }
-    });
-  },
-
-  update: function(field, criteria, unset) {
-    let filter = filters.findWhere({ field: field });
-    if (filter) {
-      if (unset) {
-        filter.set({ active: false, criteria });
-      } else {
-        filter.set({ active: true, criteria });
-      }
-    }
-  },
-};
-
-var FiltersStore = {
+var FiltersStore = module.exports = {
   getActiveOrDefault: function() {
     return _.invoke(filters.filter(function(model) {
       return model.get('active') || model.get('alwaysVisible');
@@ -149,6 +110,57 @@ proxyMethods.forEach(function(method) {
   FiltersStore[method] = filters[method].bind(filters);
 });
 
+var internals = FiltersStore.internals = {
+  init: function(product, user) {
+    let members = product.members;
+    let tags = product.tags;
+    return Promise.all([
+      members.fetch(),
+      tags.fetch()
+    ])
+    .then(function() {
+      internals.decorateMembers(members, user);
+      internals.decorateTags(tags);
+    });
+  },
+
+  decorateMembers: function(members, user) {
+    let needsMembers = filters.where({ type: 'members' });
+    let activeMembers = _.invoke(members.where({ revoked: false }), 'toJSON');
+    if (needsMembers.length > 0) {
+      _.each(needsMembers, function(filter) {
+        let options = _.clone(filter.get('criteriaOptions'));
+        options.unshift({
+          field: 'me',
+          label: 'Me',
+          default: false,
+          value: user.id
+        });
+        options.unshift({ members: activeMembers });
+        filter.set('criteriaOptions', options);
+      });
+    }
+  },
+
+  decorateTags: function(tags) {
+    let needsTags = filters.findWhere({ type: 'tags' });
+    if (needsTags) {
+      needsTags.set('criteriaOptions', tags.toJSON());
+    }
+  },
+
+  update: function(field, criteria, unset) {
+    let filter = filters.findWhere({ field: field });
+    if (filter) {
+      if (unset) {
+        filter.set({ active: false, criteria });
+      } else {
+        filter.set({ active: true, criteria });
+      }
+    }
+  },
+};
+
 AppDispatcher.register(function(action) {
   switch(action.actionType) {
     case FiltersConstants.INIT_FILTERS:
@@ -161,5 +173,3 @@ AppDispatcher.register(function(action) {
       break;
   }
 });
-
-export default FiltersStore;
