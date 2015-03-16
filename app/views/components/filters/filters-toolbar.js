@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import Filter from './filter';
+import Filter from './filters-toolbar-filter';
 import FiltersMenu from './filters-menu';
 import FilterAction from '../../../actions/filter-actions';
 import React from 'react/addons';
