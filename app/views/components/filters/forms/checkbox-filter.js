@@ -1,6 +1,6 @@
-var _ = require('lodash');
-var React = require('react/addons');
-var Input = require('react-bootstrap').Input;
+import _ from 'lodash';
+import React from 'react/addons';
+import {Input} from 'react-bootstrap';
 
 var CheckboxFilter = React.createClass({
 
@@ -63,4 +63,4 @@ var CheckboxFilter = React.createClass({
   }
 })
 
-module.exports = CheckboxFilter;
+export default CheckboxFilter;

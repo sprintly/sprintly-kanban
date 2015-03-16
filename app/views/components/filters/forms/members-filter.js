@@ -1,6 +1,6 @@
-var _ = require('lodash');
-var React = require('react/addons');
-var Input = require('react-bootstrap').Input;
+import _ from 'lodash';
+import React from 'react/addons';
+import {Input} from 'react-bootstrap';
 
 var DropdownFilter = React.createClass({
 
@@ -81,4 +81,4 @@ var DropdownFilter = React.createClass({
   }
 })
 
-module.exports = DropdownFilter;
+export default DropdownFilter;
