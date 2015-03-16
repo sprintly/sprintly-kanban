@@ -1,7 +1,7 @@
-var _ = require('lodash');
-var React = require('react/addons');
-var Input = require('react-bootstrap').Input;
-var Tokenizer = require('react-typeahead').Tokenizer;
+import _ from 'lodash';
+import React from 'react/addons';
+import {Input} from 'react-bootstrap';
+import {Tokenizer} from 'react-typeahead';
 
 var TagsFilter = React.createClass({
 
@@ -46,5 +46,4 @@ var TagsFilter = React.createClass({
   }
 })
 
-module.exports = TagsFilter;
-
+export default TagsFilter;

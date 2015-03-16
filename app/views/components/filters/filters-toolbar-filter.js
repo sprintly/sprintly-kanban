@@ -1,9 +1,9 @@
-var _ = require('lodash');
-var React = require('react/addons');
-var Input = require('react-bootstrap').Input;
-var CheckboxFilter = require('./checkbox-filter');
-var MembersFilter = require('./members-filter');
-var TagsFilter = require('./tags-filter');
+import _ from 'lodash';
+import React from 'react/addons';
+import {Input} from 'react-bootstrap';
+import CheckboxFilter from './forms/checkbox-filter';
+import MembersFilter from './forms/members-filter';
+import TagsFilter from './forms/tags-filter';
 
 var Filter = React.createClass({
 
@@ -137,5 +137,4 @@ var Filter = React.createClass({
   }
 });
 
-module.exports = Filter
-
+export default Filter;
