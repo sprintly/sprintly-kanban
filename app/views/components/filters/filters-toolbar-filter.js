@@ -74,9 +74,7 @@ var Filter = React.createClass({
     if (this.props.type === 'members') {
       if (this.props.user.id == this.props.criteria) {
         criteriaLabel = 'Me';
-      }
-
-      if (this.props.criteria === '') {
+      } else if (this.props.criteria == '') {
         criteriaLabel = 'Unassigned';
       } else {
         let member = _.findWhere(this.props.members, { id: parseInt(this.props.criteria, 10) });
@@ -86,9 +84,9 @@ var Filter = React.createClass({
 
     return (
       <div className="filter__criteria">
-        {criteriaLabel}
+        <span className="filter__criteria-labl">{criteriaLabel}</span>
         {this.props.alwaysVisible ? '' :
-          <a href="#" onClick={this.clearFilter} className="glyphicon glyphicon-remove"></a>
+          <a href="#" onClick={this.clearFilter} className="filter__remove glyphicon glyphicon-remove"></a>
         }
       </div>
     );
@@ -114,7 +112,7 @@ var Filter = React.createClass({
         form = <TagsFilter {...formProps} />
         break;
       default:
-        form = '';
+        form = <span/>;
         break;
     }
     return form;
