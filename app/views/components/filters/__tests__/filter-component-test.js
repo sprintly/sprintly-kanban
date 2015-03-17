@@ -77,13 +77,13 @@ describe('FilterComponent', function() {
         mockFilter.criteria = ['story', 'defect'];
         var filter = TestUtils.renderIntoDocument(<Filter {...mockFilter}/>);
         var label = TestUtils.findRenderedDOMComponentWithTag(filter, 'span');
-        assert.equal(label.getDOMNode().innerText, 'story, defect');
+        assert.equal(label.getDOMNode().textContent, 'story, defect');
       });
 
       it('renders default values', function() {
         var filter = TestUtils.renderIntoDocument(<Filter {...mockFilter}/>);
         var label = TestUtils.findRenderedDOMComponentWithTag(filter, 'span');
-        assert.equal(label.getDOMNode().innerText, 'All');
+        assert.equal(label.getDOMNode().textContent, 'All');
       });
     });
 
@@ -92,13 +92,13 @@ describe('FilterComponent', function() {
         mockFilter.criteria = 'Foo';
         var filter = TestUtils.renderIntoDocument(<Filter {...mockFilter}/>);
         var label = TestUtils.findRenderedDOMComponentWithTag(filter, 'span');
-        assert.equal(label.getDOMNode().innerText, 'Foo');
+        assert.equal(label.getDOMNode().textContent, 'Foo');
       });
 
       it('renders default labels', function() {
         var filter = TestUtils.renderIntoDocument(<Filter {...mockFilter}/>);
         var label = TestUtils.findRenderedDOMComponentWithTag(filter, 'span');
-        assert.equal(label.getDOMNode().innerText, 'All');
+        assert.equal(label.getDOMNode().textContent, 'All');
       });
     });
 
@@ -108,7 +108,7 @@ describe('FilterComponent', function() {
         mockFilter.criteria = mockFilter.user.id;
         var filter = TestUtils.renderIntoDocument(<Filter {...mockFilter}/>);
         var label = TestUtils.findRenderedDOMComponentWithTag(filter, 'span');
-        assert.equal(label.getDOMNode().innerText, 'Me');
+        assert.equal(label.getDOMNode().textContent, 'Me');
       });
 
       it('correctly labels unassigned', function() {
@@ -116,7 +116,7 @@ describe('FilterComponent', function() {
         mockFilter.criteria = '';
         var filter = TestUtils.renderIntoDocument(<Filter {...mockFilter}/>);
         var label = TestUtils.findRenderedDOMComponentWithTag(filter, 'span');
-        assert.equal(label.getDOMNode().innerText, 'Unassigned');
+        assert.equal(label.getDOMNode().textContent, 'Unassigned');
       });
 
       it('shows the name of the active user', function() {
@@ -124,7 +124,7 @@ describe('FilterComponent', function() {
         mockFilter.criteria = 1;
         var filter = TestUtils.renderIntoDocument(<Filter {...mockFilter}/>);
         var label = TestUtils.findRenderedDOMComponentWithTag(filter, 'span');
-        assert.equal(label.getDOMNode().innerText, 'Some U.');
+        assert.equal(label.getDOMNode().textContent, 'Some U.');
       });
     });
 
