@@ -51,6 +51,9 @@
     "watchify": "watchify app -o public/js/manifold.js -v -d",
     "build": "browserify app -o public/js/manifold.js -d",
     "build-production": "NODE_ENV=production browserify app | uglifyjs -cm > public/js/manifold.min.js",
+    "watch-test": "NODE_PATH=$NODE_PATH:./app watchify test -o test/bundle.js -t reactify -t rewireify -v -d",
+    "build": "browserify app -o public/js/manifold.js -d && NODE_PATH=./app:$NODE_PATH browserify test -o test/bundle.js -t 6to5ify -t rewireify -d",
+    "build-production": "NODE_ENV=production browserify app | uglifyjs -cm > public/js/manifold.min.js && gulp cssmin",
     "build-less": "gulp less"
   },
   "browserify": {
@@ -67,12 +70,31 @@
     "envify": "^3.3.1",
     "good": "^5.1.1",
     "good-console": "^4.1.0",
-    "hapi": "^8.1.0",
+    "hapi": "8.1.0",
     "hapi-auth-cookie": "^2.0.0",
     "react-bootstrap": "^0.16.1",
     "react-loading": "0.0.1",
-    "react-typeahead": "^1.0.1",
-    "swig": "^1.4.2",
-    "tv": "^4.0.0"
+    "swig": "^1.4.2"
+  },
+  "jest": {
+    "rootDir": "./app",
+    "scriptPreprocessor": "../node_modules/6to5-jest",
+    "testFileExtensions": [
+      "es6",
+      "js"
+    ],
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "es6"
+    ],
+    "unmockedModulePathPatterns": [
+      "../node_modules/react",
+      "../node_modules/bluebird",
+      "../node_modules/sprintly-data"
+    ]
+  },
+  "engines": {
+    "node": "0.10.x"
   }
 }
