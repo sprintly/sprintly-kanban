@@ -44,7 +44,7 @@
     "watchify": "watchify app -o public/js/manifold.js -v -d",
     "watch-test": "NODE_PATH=$NODE_PATH:./app watchify test -o test/bundle.js -t reactify -t rewireify -v -d",
     "build": "browserify app -o public/js/manifold.js -d && NODE_PATH=./app:$NODE_PATH browserify test -o test/bundle.js -t 6to5ify -t rewireify -d",
-    "build-production": "NODE_ENV=production browserify app | uglifyjs -cm > public/js/manifold.min.js",
+    "build-production": "NODE_ENV=production browserify app | uglifyjs -cm > public/js/manifold.min.js && gulp cssmin",
     "build-less": "gulp less"
   },
   "browserify": {
