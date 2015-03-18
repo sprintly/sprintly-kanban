@@ -1,4 +1,4 @@
-box: wercker/nodejs
+box: dignifiedquire/node-firefox-headless@0.3.0
 build:
   steps:
     - npm-install
