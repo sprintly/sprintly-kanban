@@ -126,8 +126,8 @@ var internals = FiltersStore.internals = {
 
   decorateMembers: function(members, user) {
     let needsMembers = filters.where({ type: 'members' });
-    let activeMembers = _.invoke(members.where({ revoked: false }), 'toJSON');
     if (needsMembers.length > 0) {
+      let activeMembers = _.invoke(members.where({ revoked: false }), 'toJSON');
       _.each(needsMembers, function(filter) {
         let options = _.clone(filter.get('criteriaOptions'));
         options.unshift({
