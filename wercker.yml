@@ -1,0 +1,10 @@
+box: wercker/nodejs
+build:
+  steps:
+    - npm-install
+    - npm-test
+    - script:
+        name: Build and Cache Production Assets
+        code: |
+          npm run build-production
+          rsync -avzv "$WERCKER_SOURCE_DIR/public" "$WERCKER_CACHE_DIR/$WERCKER_GIT_COMMIT/"
