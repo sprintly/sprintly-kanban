@@ -112,6 +112,7 @@ var ItemColumn = React.createClass({
   },
 
   render: function() {
+    console.count();
     var items = this.state.items.slice(0, this.state.perPage)
 
     var classes = {

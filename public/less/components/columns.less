@@ -1,3 +1,10 @@
+@header: #333333;
+@background: #FAFAFA;
+@column-border: #979797;
+
+@header-title: #EFEFEF;
+@running-man: #21718D;
+
 // Item Column Tray
 .container-tray {
   position: absolute;
@@ -5,7 +12,8 @@
   box-sizing: border-box;
   height: 100%;
   width: 100%;
-  background: #FAFAFA;
+  min-width: 1700px;
+  background: @background;
 }
 
 .running-man {
@@ -16,30 +24,35 @@
 .running-man-svg {
   fill-rule:  evenodd;
   clip-rule:  evenodd;
-  fill: #ED1F24;
+  fill: @running-man;
 }
 
 .product__header {
-  background: #333;
+  background: @header;
   position: fixed;
   top: 0;
   width: 100%;
-  height: 40px;
   z-index: 200;
 
   h1 {
     padding-top: 12px;
     float: left;
-    color: #909090;
+    color: @header-title;
     margin: 0;
-    font-size: 16px;
-    font-weight: normal;
+    font-size: 25px;
+    font-weight: bold;
   }
 }
 
+.filters__toolbar {
+  float: left;
+  background-color: @header;
+  margin: 12px 20px;
 
-@column-border: #979797;
-@column-border-style: dashed;
+  .form-control {
+    height: 32px;
+  }
+}
 
 .tray {
   height: 100%;
@@ -65,34 +78,38 @@
     padding: 8em 1em 1em;
     position: relative;
     width: 20%;
-    border-right: 1px @column-border-style @column-border;
+    max-width: 500px;
+    border-right: 1px solid @column-border;
   }
 
 }
 
 .tray .column__nav {
   position: fixed;
-  top: 80px;
+  top: 60px;
   left: 0;
   z-index: 100;
   width: 100%;
-  background: #D8D8D8;
-  color: 666666;
+  background: #ECECEC;
+  color: @header;
+  white-space: nowrap;
+  box-shadow: 1px 1px 3px #CFCFCF;
 
   nav {
     width: 20%;
+    max-width: 500px;
+    height: 34px;
     display: inline-block;
-    height: 2em;
-    border-right: 1px @column-border-style #ababab;
+    border-right: 1px solid #ababab;
   }
 
   nav h3 {
     text-align: center;
-    font-size: 1em;
-    font-weight: normal;
+    font-size: 15px;
+    font-weight: bold;
     margin: 0;
-    line-height: 2em;
-    color: #666;
+    line-height: 2.4em;
+    color: #333;
   }
 
 }
@@ -162,11 +179,13 @@
 }
 
 @media (min-width: 1400px) {
-
+  .tray {}
 }
 
 @media (min-width: 720px) and (max-width: 1399px) {
-
+  .tray .column .item-card .title {
+    font-size: 1.8em;
+  }
 }
 // End Item Column Tray
 
