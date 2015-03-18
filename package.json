@@ -82,5 +82,8 @@
       "../node_modules/bluebird",
       "../node_modules/sprintly-data"
     ]
+  },
+  "engines": {
+    "node": "0.10.x"
   }
 }
