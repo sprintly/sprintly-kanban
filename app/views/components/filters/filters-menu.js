@@ -1,8 +1,8 @@
 import _ from 'lodash';
 import React from 'react/addons';
-import MembersFilter from './members-filter';
-import CheckboxFilter from './checkbox-filter';
-import TagsFilter from './tags-filter';
+import MembersFilter from './forms/members-filter';
+import CheckboxFilter from './forms/checkbox-filter';
+import TagsFilter from './forms/tags-filter';
 
 var FiltersMenu = React.createClass({
 
@@ -67,7 +67,7 @@ var FiltersMenu = React.createClass({
     })
     return (
       <div className={classes}>
-        <button className="btn btn-success filters-menu__button" onClick={this.toggleFiltersMenu}>Filters</button>
+        <button className="btn btn-default filters-menu__button" onClick={this.toggleFiltersMenu}>Add Filter</button>
         <div className="col-sm-12 filters-menu__popup">
           <div className="filters-menu__scroll-wrapper">
             <ul className="filters-menu__list">
