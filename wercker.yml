@@ -8,3 +8,24 @@ build:
         code: |
           npm run build-production
           rsync -avzv "$WERCKER_SOURCE_DIR/public" "$WERCKER_CACHE_DIR/$WERCKER_GIT_COMMIT/"
+
+deploy:
+  steps:
+    - npm-install
+    - script:
+        name: Build assets
+        code: |
+          if test -d "$WERCKER_CACHE_DIR/$WERCKER_GIT_COMMIT"; then rsync -avzv "$WERCKER_CACHE_DIR/$WERCKER_GIT_COMMIT/" "$WERCKER_SOURCE_DIR" ; else npm run build-production ; fi
+    - analogj/git-configure@0.0.3
+    - script:
+        name: Commit Assets
+        code: |
+          git config --global user.email "sam@quickleft.com"
+          git config --global user.name "Wercker Bot"
+          git checkout -b wercker-build
+          git add .
+          git commit -am 'asset compile'
+    - heroku-deploy:
+        key-name: DEPLOY_KEY
+
+
