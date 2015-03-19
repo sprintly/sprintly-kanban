@@ -152,11 +152,7 @@ var internals = FiltersStore.internals = {
   update: function(field, criteria, unset) {
     let filter = filters.findWhere({ field: field });
     if (filter) {
-      if (unset) {
-        filter.set({ active: false, criteria });
-      } else {
-        filter.set({ active: true, criteria });
-      }
+      filter.set({ active: unset !== true, criteria });
     }
   },
 };
