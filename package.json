@@ -53,7 +53,8 @@
     "watchify": "watchify app -o public/js/manifold.js -v -d",
     "build": "browserify app -o public/js/manifold.js -d",
     "build-production": "NODE_ENV=production browserify app | uglifyjs -cm > public/js/manifold.min.js && gulp cssmin",
-    "build-less": "gulp less"
+    "build-less": "gulp less",
+    "prepublish": "npm run build-less"
   },
   "browserify": {
     "transform": [
