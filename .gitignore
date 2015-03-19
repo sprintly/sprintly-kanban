@@ -8,6 +8,7 @@ public/font/icomatic.html
 public/font/icomatic.js
 public/font/icomatic.html
 public/js/manifold.js
+public/css/main.css*
 test/bundle.js
 .vagrant
 npm-debug.log*
