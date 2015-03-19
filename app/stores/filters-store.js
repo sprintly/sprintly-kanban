@@ -5,14 +5,7 @@ import FiltersConstants from '../constants/filters-constants';
 import Promise from 'bluebird';
 
 // TODO this needs it's own file eventually
-var FiltersModel = Model.extend({
-
-});
-
-// TODO this needs it's own file eventually
 var FiltersCollection = Collection.extend({
-  model: FiltersModel,
-
   active: function() {
     return this.where({ active: true });
   },
