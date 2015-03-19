@@ -92,15 +92,26 @@ var ItemColumn = React.createClass({
   },
 
   componentWillReceiveProps: function(nextProps) {
-    if (nextProps.product.id !== this.props.product.id ||
-        _.isEqual(nextProps.filters, this.props.filters) === false ) {
+    var reload = false;
+
+    if (nextProps.product.id !== this.props.product.id) {
+      reload = true;
+    }
+
+    if (_.isEqual(nextProps.filters, this.props.filters) === false) {
+      reload = true;
+    }
+
+    if (reload) {
       this.setState({ isLoading: true });
-      this.getItems(nextProps.product, { refresh: true, filters: nextProps.filters });
+      this.getItems(nextProps.product, {
+        refresh: true,
+        filters: nextProps.filters
+      });
     }
   },
 
   render: function() {
-    console.count();
     var items = this.state.items.slice(0, this.state.perPage)
 
     var classes = {

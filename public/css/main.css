@@ -6429,14 +6429,6 @@ body {
   font-size: 25px;
   font-weight: bold;
 }
-.filters__toolbar {
-  float: left;
-  background-color: #333333;
-  margin: 12px 20px;
-}
-.filters__toolbar .form-control {
-  height: 32px;
-}
 .tray {
   height: 100%;
   float: left;
@@ -6467,7 +6459,7 @@ body {
   overflow: scroll;
   height: 100%;
   width: 100%;
-  padding: 8em 1em 1em;
+  padding: 10em 1em 1em;
   position: relative;
   width: 20%;
   max-width: 500px;
@@ -6475,7 +6467,7 @@ body {
 }
 .tray .column__nav {
   position: fixed;
-  top: 60px;
+  top: 100px;
   left: 0;
   z-index: 100;
   width: 100%;
@@ -6792,67 +6784,143 @@ body {
   margin-top: 1em;
   width: 60%;
 }
-.toolbar {
-  width: 100%;
+.filters__toolbar {
   position: fixed;
-  bottom: 0;
-  left: 0;
-  padding: 1em;
-  line-height: 1;
-  height: 64px;
-  border-top: 1px solid #eaeaea;
-  background: #ffffff;
+  top: 60px;
+  height: 40px;
+  background: #666;
+  width: 100%;
+  z-index: 200;
+  padding: 0.5em 0;
 }
-.toolbar__item-number {
+.filter {
   float: left;
   margin-right: 1em;
-}
-.toolbar__item-number h1 {
-  margin: 0;
-  line-height: 1;
-  color: #666666;
-}
-.toolbar__item-number .hash {
-  font-size: 0.5em;
   position: relative;
-  top: -0.5rem;
-  left: -0.25rem;
-  color: #b8b8b8;
 }
-.toolbar__item-controls {
+.filter .filter__label {
+  font-weight: 300;
+  font-size: 13px;
+  color: #444345;
   float: left;
+  background-color: #dad9d9;
+  border: none;
+  border-right: 1px solid black;
+  border-radius: 2px 0 0 2px;
+  padding: 4px 20px 4px 12px;
+  position: relative;
 }
-.toolbar__item-controls a {
-  color: #666666;
-  font-size: 2.6em;
-  text-decoration: none;
-  margin-right: 1rem;
+.filter .filter__label::after {
+  content: '';
+  position: absolute;
+  top: 12px;
+  right: 6px;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 4px 3px 0 3px;
+  border-color: #575757 transparent transparent transparent;
 }
-.toolbar__item-controls small {
-  font-size: 1.2rem;
-}
-.toolbar__score {
+.filter .filter__criteria {
+  font-weight: 300;
+  font-size: 13px;
+  color: #444345;
   float: left;
-  width: 36px;
-  text-align: center;
-  margin-right: 1em;
-  box-sizing: content-box;
-  margin-top: -1em;
+  background-color: #b9b9b1;
+  padding: 4px 12px;
+  border-radius: 0 2px 2px 0;
+}
+.filter .filter__criteria-selector {
+  display: none;
+  position: absolute;
+  left: 10%;
+  top: 2.8em;
+  float: left;
+  background: #fff;
+  min-width: 150px;
   padding: 1em;
-  border-left: 1px solid #ccc;
-  border-right: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 1px 2px 7px -1px #6e6e6e;
 }
-.toolbar__score h1 {
+.filter .filter__criteria-selector.visible {
+  display: block;
+}
+.filter .filter__criteria-selector::before {
+  content: '';
+  position: absolute;
+  top: -9px;
+  left: 20%;
+  width: 0px;
+  height: 0px;
+  border-style: solid;
+  border-width: 0 8px 10px 8px;
+  border-color: transparent transparent #fff transparent;
+}
+.filter .filter__criteria-selector .form-group {
   margin: 0;
-  line-height: 1;
-  color: #b3b3b3;
 }
-.toolbar__tags {
-  float: left;
+.filters-menu {
+  position: relative;
 }
-.toolbar__tags .label {
+.filters-menu.show-popup .filters-menu__popup {
+  display: block;
+}
+.filters-menu__button {
+  float: right;
+  padding: 4px 12px;
+  font-size: 13px;
+}
+.filters-menu__popup {
+  display: none;
+  position: absolute;
+  min-height: 500px;
+  min-width: 300px;
+  right: 1em;
+  top: 2.8em;
   float: left;
-  margin: 0 4px 4px 0;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 1px 2px 7px -1px #6e6e6e;
+}
+.filters-menu__popup .filters-menu__scroll-wrapper {
+  overflow-y: scroll;
+  height: 500px;
+  padding-bottom: 2em;
+}
+.filters-menu__popup::before {
+  content: '';
+  position: absolute;
+  top: -9px;
+  left: 20%;
+  width: 0px;
+  height: 0px;
+  border-style: solid;
+  border-width: 0 8px 10px 8px;
+  border-color: transparent transparent #fff transparent;
+  left: auto;
+  right: 10%;
+}
+.filters-menu__list {
+  list-style: none;
+  padding: 0;
+}
+.filters-menu__list .form-horizontal .form-group {
+  margin: 0;
+}
+.filters-menu__list h3 {
+  font-size: 1.2em;
+  font-weight: 300;
+  color: #175574;
+  cursor: pointer;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #ccc;
+}
+.filters-menu__list form {
+  display: none;
+}
+.filters-menu__list li.show-form form {
+  display: block;
 }
 
 /*# sourceMappingURL=main.css.map */
