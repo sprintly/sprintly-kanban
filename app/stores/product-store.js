@@ -4,7 +4,7 @@ import AppDispatcher from '../dispatchers/app-dispatcher';
 import ProductConstants from '../constants/product-constants';
 import { products, user } from '../lib/sprintly-client';
 
-var internals = {
+export var internals = {
   initProducts() {
     if (products.length > 0 && user.id) {
       return products.trigger('change');
@@ -81,6 +81,20 @@ var internals = {
     productChannel.bind('deleted', function(data) {
       console.log(data);
     });
+  },
+
+  mergeFilters(configModel, filters) {
+    var defaultFilters = configModel.toJSON();
+    var updatedFilters = _.extend(defaultFilters, filters);
+
+    // unset previously-set global filters
+    _.each(['tags', 'assigned_to', 'created_by', 'estimate', 'members'], function(field) {
+      if (_.has(filters, field) === false && _.has(updatedFilters, field)) {
+        configModel.unset(field, { silent: true });
+        delete updatedFilters[field];
+      }
+    });
+    return updatedFilters;
   }
 };
 
@@ -90,23 +104,21 @@ var ProductStore = {
   },
   getItemsForProduct: function(product, status, filters) {
     var items = product.getItemsByStatus(status);
+    var updatedFilters = internals.mergeFilters(items.config, filters);
 
-    items.config.set(filters);
-
-    switch(status) {
-      case 'accepted':
-        items.config.set({ limit: 5 });
-        break;
-
-      default:
-        items.config.set({
-          children: true,
-          limit: 25
-        });
-        break;
+    if(status === 'accepted') {
+      updatedFilters.limit = 5;
     }
 
+    // Set additional defaults for fetching products
+    updatedFilters.limit = 25;
+    updatedFilters.children = true;
+
+    items.config.set(updatedFilters);
     return items;
+  },
+  getMembers: function(product) {
+    return product.members.toJSON();
   }
 };
 
@@ -116,7 +128,7 @@ proxyMethods.forEach(function(method) {
   ProductStore[method] = products[method].bind(products);
 });
 
-AppDispatcher.register(function(action) {
+ProductStore.dispatchToken = AppDispatcher.register(function(action) {
 
   switch(action.actionType) {
     case ProductConstants.INIT_PRODUCTS:
@@ -138,7 +150,3 @@ AppDispatcher.register(function(action) {
 });
 
 export default ProductStore;
-
-if (process.env.NODE_ENV === 'test') {
-  exports.internals = internals;
-}
