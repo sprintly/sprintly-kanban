@@ -54,19 +54,14 @@ var Filter = React.createClass({
     let criteriaLabel = this.props.defaultCriteriaLabel;
 
     if (_.isArray(this.props.criteria)) {
-      if(this.props.criteria.length > 0) {
+      if(this.props.criteria.length > 0 &&
+         this.props.criteria.length !== this.props.criteriaOptions.length) {
         criteriaLabel = this.props.criteria.join(', ')
-      }
-
-      if (this.props.criteria.length === this.props.criteriaOptions.length) {
-        criteriaLabel = this.props.defaultCriteriaLabel;
       }
     }
 
     if (_.isString(this.props.criteria)) {
-      if (this.props.criteria === '') {
-        criteriaLabel = this.props.defaultCriteriaLabel;
-      } else {
+      if (this.props.criteria !== '') {
         criteriaLabel = this.props.criteria;
       }
     }
