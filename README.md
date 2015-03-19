@@ -38,3 +38,6 @@ $ npm test
 
 Backbone collections and models will live as implementation details of the store, not in views. [Document here](https://docs.google.com/a/quickleft.com/document/d/128zIqfwTGUDdFF38nH-CD4IHVNFkbiZqoDGN8p-rmbw/edit#heading=h.1491m6n30hmq)
 
+Dependencies between Stores should be resolved with the Flux Dispatcher `waitFor` mechanism. [Document here](https://docs.google.com/a/quickleft.com/document/d/1zUSyoRTvRBleuU2FTvnnRqhaS-tcM1ACcabqahiOkMk/edit)
+
+Pusher connections should be managed by a class with access to the app Dispatcher. [Document here](https://docs.google.com/a/quickleft.com/document/d/17bfOLwwM1avXcr7u3qMZPfJt1pMOv1r3VaLUiejbME4/edit)
