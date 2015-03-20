@@ -113,7 +113,8 @@ export var internals = {
 var ProductStore = {
 
   getAll: function() {
-    return products.toJSON();
+    let activeProducts = products.where({ archived: false });
+    return _.sortBy(_.invoke(activeProducts, 'toJSON'), 'name');
   },
   getItemsForProduct: function(product, status, filters) {
     var items = product.getItemsByStatus(status);
