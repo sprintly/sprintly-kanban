@@ -4,7 +4,38 @@ import AppDispatcher from '../dispatchers/app-dispatcher';
 import ProductConstants from '../constants/product-constants';
 import { products, user } from '../lib/sprintly-client';
 
-export var internals = {
+var ProductStore = module.exports = {
+  getAll: function() {
+    let activeProducts = products.where({ archived: false });
+    return _.sortBy(_.invoke(activeProducts, 'toJSON'), 'name');
+  },
+  getItemsForProduct: function(product, status, filters) {
+    var items = product.getItemsByStatus(status);
+    var updatedFilters = internals.mergeFilters(items.config, filters);
+
+    if(status === 'accepted') {
+      updatedFilters.limit = 5;
+    }
+
+    // Set additional defaults for fetching products
+    updatedFilters.limit = 25;
+    updatedFilters.children = true;
+
+    items.config.set(updatedFilters);
+    return items;
+  },
+  getMembers: function(product) {
+    return product.members.toJSON();
+  }
+};
+
+var proxyMethods = ['get', 'on', 'off', 'once', 'listenTo', 'stopListening']
+
+proxyMethods.forEach(function(method) {
+  ProductStore[method] = products[method].bind(products);
+});
+
+var internals = ProductStore.internals = {
   initProducts() {
     if (products.length > 0 && user.id) {
       return products.trigger('change');
@@ -109,35 +140,6 @@ export var internals = {
   }
 };
 
-
-var ProductStore = {
-
-  getAll: function() {
-    let activeProducts = products.where({ archived: false });
-    return _.sortBy(_.invoke(activeProducts, 'toJSON'), 'name');
-  },
-  getItemsForProduct: function(product, status, filters) {
-    var items = product.getItemsByStatus(status);
-    var updatedFilters = internals.mergeFilters(items.config, filters);
-
-    // Set additional defaults for fetching products
-    updatedFilters.limit = status === 'accepted' ? 5 : 25;
-    updatedFilters.children = true;
-
-    items.config.set(updatedFilters);
-    return items;
-  },
-  getMembers: function(product) {
-    return product.members.toJSON();
-  }
-};
-
-var proxyMethods = ['get', 'on', 'off', 'once', 'listenTo', 'stopListening']
-
-proxyMethods.forEach(function(method) {
-  ProductStore[method] = products[method].bind(products);
-});
-
 ProductStore.dispatchToken = AppDispatcher.register(function(action) {
 
   switch(action.actionType) {
@@ -162,5 +164,3 @@ ProductStore.dispatchToken = AppDispatcher.register(function(action) {
   }
 
 });
-
-export default ProductStore;
