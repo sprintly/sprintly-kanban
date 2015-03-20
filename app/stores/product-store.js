@@ -18,6 +18,17 @@ export var internals = {
     });
   },
 
+  loadMoreItems(coll) {
+    var currentOffset = coll.config.get('offset');
+    var newOffset = coll.config.get('status') === 'accepted' ? currentOffset + 5 :
+      currentOffset + 25;
+
+    coll.config.set({ offset: newOffset });
+    coll.fetch({ silent:true, remove:false}).then((res) => {
+      coll.trigger('change', { count: res.length });
+    });
+  },
+
   updateItem(product, item_data) {
     var item = product.items.get(item_data.number);
     item.ingest(_.omit(item_data, 'number'));
@@ -98,7 +109,9 @@ export var internals = {
   }
 };
 
+
 var ProductStore = {
+
   getAll: function() {
     return products.toJSON();
   },
@@ -106,12 +119,8 @@ var ProductStore = {
     var items = product.getItemsByStatus(status);
     var updatedFilters = internals.mergeFilters(items.config, filters);
 
-    if(status === 'accepted') {
-      updatedFilters.limit = 5;
-    }
-
     // Set additional defaults for fetching products
-    updatedFilters.limit = 25;
+    updatedFilters.limit = status === 'accepted' ? 5 : 25;
     updatedFilters.children = true;
 
     items.config.set(updatedFilters);
@@ -137,6 +146,10 @@ ProductStore.dispatchToken = AppDispatcher.register(function(action) {
 
     case ProductConstants.GET_ITEMS:
       action.itemCollection.fetch({ reset: true });
+      break;
+
+    case ProductConstants.LOAD_MORE:
+      internals.loadMoreItems(action.itemCollection);
       break;
 
     case ProductConstants.SUBSCRIBE:
