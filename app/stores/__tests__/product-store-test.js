@@ -63,7 +63,17 @@ describe('ProductStore', function() {
     });
   });
 
-  describe('getItemsForProduct', function() {
+  describe('getAll', function() {
+    it('only returns active products', function() {
+      let products = ProductStore.__get__('products');
+      products.reset([{ name: 'sprintly', archived: false, id: 1 }, { name: 'old project', archived: true, id: 2 }]);
+      let activeProducts = ProductStore.getAll();
+      assert.lengthOf(activeProducts, 1);
+      products.reset([]);
+    });
+  });
+
+  xdescribe('getItemsForProduct', function() {
     it('returns an items collection', function() {
 
     });
