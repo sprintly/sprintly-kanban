@@ -12,6 +12,7 @@ function getColumnState(items=[]) {
   return {
     items,
     isLoading: false,
+    hideLoadMore: false,
     sortField: 'last_modified',
     sortDirection: 'desc',
     perPage: 10
@@ -31,10 +32,15 @@ var ItemColumn = React.createClass({
     return getColumnState();
   },
 
-  _onChange: function() {
+  _onChange: function(payload) {
     var state = _.cloneDeep(this.state);
     state.items = this.items.toJSON();
     state.isLoading = false;
+
+    if (payload.count) {
+      state.hideLoadMore = this.props.status === 'accepted' ?
+        payload.count < 5 : payload.count < 25;
+    }
     this.setState(state);
   },
 
@@ -71,12 +77,19 @@ var ItemColumn = React.createClass({
       }
       this.stopListening(this.items);
     }
+
     let filters = options.filters || this.props.filters;
     this.items = ProductStore.getItemsForProduct(product, this.props.status, filters);
     this.listenTo(this.items, 'change sync add remove', _.throttle(this._onChange, 200));
+
     this.setState({ isLoading: true });
     this.setSortCriteria();
+
     ProductActions.getItems(this.items);
+  },
+
+  loadMoreItems: function() {
+    ProductActions.loadMoreItems(this.items);
   },
 
   componentWillMount: function() {
@@ -124,6 +137,9 @@ var ItemColumn = React.createClass({
       this.setSortCriteria(this.state.sortField, direction);
     };
 
+    var buttonClasses = this.state.isLoading || this.state.hideLoadMore ? "load-more loading" : "load-more";
+    var loadMore = <button className={buttonClasses} onClick={this.loadMoreItems}>Load More</button>;
+
     return (
       <div className={React.addons.classSet(classes)} {...this.props}>
         <ColumnHeader {...this.props}
@@ -138,8 +154,9 @@ var ItemColumn = React.createClass({
             return <ItemCard item={item} key={`item-${item.number}`} />
           })
         }
+        {loadMore}
       </div>
-    )
+    );
   }
 });
 
