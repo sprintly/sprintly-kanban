@@ -28,6 +28,15 @@ var ProductActions = {
       actionType: ProductConstants.SUBSCRIBE,
       id
     });
+  },
+
+  updateItem: function(productId, itemId, payload) {
+    AppDispatcher.dispatch({
+      actionType: ProductConstants.UPDATE_ITEM,
+      productId,
+      itemId,
+      payload
+    });
   }
 
 };

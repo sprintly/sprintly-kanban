@@ -219,6 +219,10 @@ ProductStore.dispatchToken = AppDispatcher.register(function(action) {
       internals.createSubscription(action.id);
       break;
 
+    case ProductConstants.UPDATE_ITEM:
+      internals.updateItem(action.productId, action.itemId, action.payload);
+      break;
+
     default:
       break;
   }
