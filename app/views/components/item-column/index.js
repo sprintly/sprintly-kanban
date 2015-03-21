@@ -34,7 +34,7 @@ var ItemColumn = React.createClass({
 
   _onChange: function(payload) {
     var state = _.cloneDeep(this.state);
-    state.items = this.items.toJSON();
+    state.items = this.items.sort().toJSON();
     state.isLoading = false;
 
     if (payload.count) {
@@ -80,7 +80,7 @@ var ItemColumn = React.createClass({
 
     let filters = options.filters || this.props.filters;
     this.items = ProductStore.getItemsForProduct(product, this.props.status, filters);
-    this.listenTo(this.items, 'change sync add remove', _.throttle(this._onChange, 200));
+    this.listenTo(this.items, 'change sync add remove', this._onChange);
 
     this.setState({ isLoading: true });
     this.setSortCriteria();
@@ -139,6 +139,7 @@ var ItemColumn = React.createClass({
 
     var buttonClasses = this.state.isLoading || this.state.hideLoadMore ? "load-more loading" : "load-more";
     var loadMore = <button className={buttonClasses} onClick={this.loadMoreItems}>Load More</button>;
+    var productId = this.props.product.id;
 
     return (
       <div className={React.addons.classSet(classes)} {...this.props}>
@@ -151,7 +152,7 @@ var ItemColumn = React.createClass({
         {this.state.isLoading ?
           <div className="loading"><Loading type="bubbles" color="#ccc"/></div> :
           _.map(this.state.items, function(item, index) {
-            return <ItemCard item={item} key={`item-${item.number}`} />
+            return <ItemCard item={item} productId={productId} key={`item-${item.number}`} />
           })
         }
         {loadMore}

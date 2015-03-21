@@ -60,25 +60,32 @@ var internals = ProductStore.internals = {
     });
   },
 
-  updateItem(product, item_data) {
+  ingestItem(product, item_data) {
     var item = product.items.get(item_data.number);
-    item.ingest(_.omit(item_data, 'number'));
-
-    if (item.hasChanged('status')) {
-      let prevCollection = product._filters[item.previous('status')];
-      if (prevCollection) {
-        prevCollection.remove(item);
+    if (item) {
+      // Ignore stale timestamps. By using optimistic timestamps, items stay in
+      // the correct positions relative to one another.
+      if (item_data.last_modified < item.get('last_modified')) {
+        item_data.last_modified = item.get('last_modified');
       }
+      _.each(['closed_at', 'started_at', 'accepted_at'], function(attr) {
+        if (item.get('progress') && item_data[attr] < item.get('progress')[attr]) {
+          item_data.progress[attr] = item.get('progress')[attr];
+        }
+      });
 
-      let newCollection = product._filters[item.get('status')];
-      if (newCollection) {
-        newCollection.add(item);
-      }
-
-      return;
+      item.set(item.parse(_.omit(item_data, 'number')));
+    } else {
+      internals.createItem(product, item_data.number, item_data);
     }
 
     product.items.trigger('change', item);
+  },
+
+  updateItem(productId, itemId, payload) {
+    let product = products.get(productId);
+    let item = product.items.get(itemId);
+    item.save(payload);
   },
 
   createItem(product, item_data) {
@@ -90,8 +97,65 @@ var internals = ProductStore.internals = {
   },
 
   createSubscription(product) {
+    product.items.on('change', function(model) {
+      model.attributes.last_modified = +new Date();
+    });
+
+    product.items.on('change:status', function(model) {
+      let previousStatus = model.previous('status');
+      let status = model.get('status');
+
+      // Set the timestamp affected by the status change. This is happening
+      // "now" so setting this optimistically to the current timestamp makes
+      // items stay in the correct relative positions. This will get reset by
+      // any filter change that triggers a reset.
+      if (model.attributes.progress) {
+        if (status === 'in-progress') {
+          model.attributes.progress.started_at = +new Date();
+        } else if (status === 'completed') {
+          model.attributes.progress.closed_at = +new Date();
+        } else if (status === 'accepted') {
+          model.attributes.progress.accepted_at = +new Date();
+        }
+      }
+
+      let collection = product._filters[status];
+      let config = collection.config.toJSON();
+
+      var filterCount = 0;
+      var matchesFilter = _.filter(['tags', 'assigned_to', 'created_by', 'estimate', 'type'], function(field) {
+        let criteria = config[field];
+        if (criteria) {
+          filterCount++;
+          if (_.isArray(criteria)) {
+            if (_.isArray(model.get(field))) {
+              return _.intersection(criteria, model.get(field)).length > 0;
+            } else {
+              return _.contains(criteria, model.get(field))
+            }
+          } else {
+            if (field === 'assigned_to' || field === 'created_by') {
+              return model.get(field).id === criteria;
+            } else {
+              return model.get(field) === criteria;
+            }
+          }
+        } else {
+          return false;
+        }
+      });
+
+      if (matchesFilter.length === filterCount) {
+        // Swap items between status collections.
+        let previousCollection = product._filters[previousStatus];
+        previousCollection.remove(model);
+        collection.add(model);
+      }
+
+    });
+
     // TODO: move config value into server rendered js
-    var channelName = `private-product_sprintly-development-justinlilly_${product.id}`
+    var channelName = `api-product_sprintly-development-justinlilly_${product.id}`
     var options = {
       encrypted: false,
       auth: {
@@ -111,11 +175,7 @@ var internals = ProductStore.internals = {
 
       switch(model) {
         case 'Item':
-          if (msg.created) {
-            internals.createItem(product, msg.api_payload);
-          } else {
-            internals.updateItem(product, msg.api_payload);
-          }
+          internals.ingestItem(product, msg.data);
           break
       }
     });
