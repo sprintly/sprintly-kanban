@@ -5,6 +5,17 @@ var OwnerAvatar = require('./owner');
 var Controls = require('./controls');
 var SprintlyUI = require('sprintly-ui');
 var marked = require('marked');
+var ProductActions = require('../../../actions/product-actions');
+
+const SCORE_MAP = {
+  '~': 0,
+  'S': 1,
+  'M': 3,
+  'L': 5,
+  'XL': 8
+}
+
+const REVERSE_SCORE_MAP = _.zipObject(_.values(SCORE_MAP), _.keys(SCORE_MAP))
 
 marked.setOptions({
   renderer: new marked.Renderer(),
@@ -28,6 +39,7 @@ var ITEM_STATUSES = {
 var ItemCard = React.createClass({
 
   propTypes: {
+    productId: React.PropTypes.number.isRequired,
     item: React.PropTypes.object.isRequired
   },
 
@@ -51,7 +63,9 @@ var ItemCard = React.createClass({
 
   editTags: function(modelId, currentTags, changedTag, action) {},
 
-  changeScore: function(modelId, newScore) {},
+  changeScore: function([productId, itemId], score) {
+    ProductActions.updateItem(productId, itemId, { score: REVERSE_SCORE_MAP[score] });
+  },
 
   changeStatus: function() {},
 
