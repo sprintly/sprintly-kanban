@@ -56,18 +56,23 @@
 
 .item-card__title {
   float: right;
-  min-height: 75px;
   padding: 10px 14px 6px;
   border-radius: 4px;
 }
 
+
+.item-card__title-verb,
+.item-card__title-subject {
+  font-weight: 200;
+  font-style: italic;
+}
+
 .item-card__title-left {
-  width: 80%;
   float: left;
   font-size: 14px;
   line-height: 18px;
   word-wrap: break-word;
-  margin: 0 0 18px 0;
+  margin: 0;
 }
 
 .item-card__title-right {
@@ -81,7 +86,7 @@
   float: left;
   width: 100%;
   background-color: #FFF;
-  padding: 8px 8px 8px 0;
+  padding: 8px 4px 4px;
   margin-bottom: 10px;
   border: 1px solid @card-border;
   border-radius: 4px;
@@ -97,22 +102,18 @@
 
   &.story .item-card__title {
     background-color: @story-bg;
-    border: 1px solid @story-border;
   }
 
   &.defect .item-card__title {
     background-color: @defect-bg;
-    border: 1px solid @defect-border;
   }
 
   &.task .item-card__title {
     background-color: @task-bg;
-    border: 1px solid @task-border;
   }
 
   &.test .item-card__title {
     background-color: @test-bg;
-    border: 1px solid @test-border;
   }
 
   &:hover .item-card__controls a {
@@ -124,38 +125,60 @@
   }
 }
 
+.item-card__header {
+  padding: 0 4px;
+}
+
 .item-card__controls {
-  width: 100%;
-  text-align: center;
+  display: inline-block;
+  position: absolute;
 
-  a {
-    font-size: 24px;
-    color: @dark-grey;
-    text-decoration: none;
-    // .transition(all 200ms ease-in-out);
-
-    &.details-toggle {
-      // .transition(opacity 300ms ease-in-out 120ms);
-      .opacity(0)
-    }
+  button + button {
+    margin-left: 0.5rem;
+    .opacity(0);
   }
 }
 
+.item-card:hover .item-card__controls button {
+  .opacity(1);
+}
+
 .item-card__number {
-  position: absolute;
-  top: 6px;
-  right: 14px;
+  display: inline-block;
+  color: @medium-grey;
+  margin-right: 0.5em;
+}
+
+.item-card__header-right {
+  width: 60%;
+  float: right;
+  padding: 0.5em 0;
   text-align: right;
+}
+
+.item-card__header-right > .estimator__score > .estimator__button {
+  width: 28px;
+  height: 28px;
+  border-radius: 14px;
+  margin-right: 0.5rem;
+  background: #fff;
+  border: 1px solid @medium-grey;
   color: @medium-grey;
   font-size: 12px;
+  line-height: 28px;
 }
 
 .item-card__owner-avatar {
-  position: absolute;
-  top: 26px;
-  right: 14px;
+  display: inline-block;
 
-  img {
+  .item-card__owner-unassigned {
+    display: block;
+    line-height: 25px;
+    text-align: center;
+  }
+
+  .item-card__owner-unassigned, img {
+    border: 1px solid @medium-grey;
     width: 28px;
     height: 28px;
     border-radius: 14px;
@@ -200,7 +223,7 @@
   color: @dark-grey;
   font-size: 20px;
   line-height: 1em;
-  text-align: center;
+  text-align: right;
   border: none;
   &:focus {
     outline: none;
@@ -209,8 +232,11 @@
 
 .estimator__menu {
   width: 150px;
-  margin-left: 4px;
-  z-index: 100;
+  margin-left: -190px;
+  z-index: 200;
+  &::before {
+    content: none;
+  }
 }
 
 .estimator__score {
