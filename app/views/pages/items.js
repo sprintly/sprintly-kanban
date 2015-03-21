@@ -92,7 +92,6 @@ export default React.createClass({
 
 
   render: function() {
-    console.count();
     var product = this.state.product;
 
     if (product === undefined) {
