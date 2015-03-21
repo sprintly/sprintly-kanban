@@ -84,30 +84,48 @@ var ItemCard = React.createClass({
 
     var owner = this.props.item.assigned_to;
 
+    var title = this.props.item.title
+
+    if (this.props.item.what) {
+      let article = this.props.item.title.split(this.props.item.who)[0];
+      title = [
+        <span className="item-card__title-subject">
+          {article}
+          <span className="item-card__title-who">{this.props.item.who}</span>
+        </span>,
+        <span className="item-card__title-verb"> I want </span>,
+        <span className="item-card__title-predicate">
+          <span className="item-card__title-what">{this.props.item.what}</span>
+          <span> so that </span>
+          <span className="item-card__title-why">{this.props.item.why}</span>
+        </span>
+      ]
+    }
+
     return (
       <div className={React.addons.classSet(classes)} {...this.props}>
         <div className="row">
-          <div className="col-sm-2">
+          <div className="item-card__header col-sm-12">
             <Controls
+              productId={this.props.productId}
+              number={this.props.item.number}
               status={this.props.item.status}
               toggleDetails={this.changeStatus}
             />
-            <div className="item-card__summary">
+            <div className="item-card__header-right">
+              <div className="item-card__number">#{this.props.item.number}</div>
               <SprintlyUI.Estimator
-                modelId={[this.props.item.product.id, this.props.item.number]}
+                modelId={[this.props.productId, this.props.item.number]}
                 itemType={this.props.item.type}
                 score={this.props.item.score}
                 estimateChanger={{changeScore: this.changeScore}}
               />
-            </div>
-            <button className="item-card__show-details" onClick={this.toggleDetails}>...</button>
-          </div>
-          <div className="item-card__title col-sm-10">
-            <h2 className="item-card__title-left">{this.props.item.title}</h2>
-            <div className="item-card__title-right">
-              <div className="item-card__number">#{this.props.item.number}</div>
               <OwnerAvatar person={owner} />
             </div>
+          </div>
+          <div className="item-card__title col-sm-12">
+            <h2 className="item-card__title-left">{title}</h2>
+            <button className="item-card__show-details" onClick={this.toggleDetails}>...</button>
           </div>
         </div>
         <div className="row">

@@ -12,7 +12,7 @@
   box-sizing: border-box;
   height: 100%;
   width: 100%;
-  min-width: 1700px;
+  min-width: 1430px;
   background: @background;
 }
 
@@ -32,7 +32,7 @@
   position: fixed;
   top: 0;
   width: 100%;
-  z-index: 200;
+  z-index: 300;
 
   h1 {
     padding-top: 12px;
@@ -63,13 +63,13 @@
     box-sizing: border-box;
     float: left;
     overflow: scroll;
-    height: 100%;
+    min-height: 100%;
     width: 100%;
     padding: 10em 1em 1em;
     position: relative;
     width: 20%;
     max-width: 500px;
-    border-right: 1px solid @column-border;
+    // border-right: 1px solid @column-border;
   }
 
 }
@@ -188,13 +188,31 @@
   }
 }
 
-@media (min-width: 1400px) {
-  .tray {}
+@media (min-width: 2000px) {
+  .tray {
+    width: 100%;
+    .translate(0, 0);
+
+    &.show-accepted,
+    &.show-someday {
+      .translate(0, 0);
+    }
+
+    .column {
+      &.accepted, &.someday {
+        .opacity(1);
+      }
+    }
+  }
 }
 
 @media (min-width: 720px) and (max-width: 1399px) {
   .tray .column .item-card .title {
     font-size: 1.8em;
+  }
+
+  .container-tray {
+    min-width: auto;
   }
 }
 // End Item Column Tray
