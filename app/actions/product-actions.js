@@ -16,6 +16,13 @@ var ProductActions = {
     });
   },
 
+  loadMoreItems: function(itemCollection) {
+    AppDispatcher.dispatch({
+      actionType: ProductConstants.LOAD_MORE,
+      itemCollection
+    });
+  },
+
   subscribe: function(id) {
     AppDispatcher.dispatch({
       actionType: ProductConstants.SUBSCRIBE,
