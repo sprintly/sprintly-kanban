@@ -6,6 +6,7 @@ var Controls = require('./controls');
 var SprintlyUI = require('sprintly-ui');
 var marked = require('marked');
 var ProductActions = require('../../../actions/product-actions');
+var FilterActions = require('../../../actions/filter-actions');
 
 const SCORE_MAP = {
   '~': 0,
@@ -54,10 +55,8 @@ var ItemCard = React.createClass({
     this.setState({ showDetails: !this.state.showDetails })
   },
 
-  filterByTag: function() {
-    // not sure how we're going to use this yet?
-    // ie, clicking tag filters 5cols or sends to tag-filtered
-    // reports/organizer/etc.?
+  filterByTag: function(tag) {
+    FilterActions.update('tags', [tag]);
     return;
   },
 
