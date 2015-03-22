@@ -1,32 +1,40 @@
-var _ = require('lodash')
-var React = require('react')
+var _ = require('lodash');
+var React = require('react/addons');
 
 var defaultSortOptions = {
+  'Created': 'created_at',
   'Recent': 'last_modified',
-  'Priority': 'sort'
 };
 
 const SORT_OPTIONS = {
   someday: _.extend({
-    'Created': 'created_at'
+    'Priority': 'priority',
   }, defaultSortOptions),
   backlog: _.extend({
-    'Created': 'created_at'
+    'Priority': 'priority',
   }, defaultSortOptions),
   'in-progress': _.extend({
-    'Started': 'progress.started_at'
+    'Priority': 'priority',
   }, defaultSortOptions),
   completed: _.extend({
-    'Complete': 'progress.closed_at'
+    // 'Complete': 'progress.closed_at'
   }, defaultSortOptions),
   accepted: _.extend({
-    'Accepted': 'progress.accepted_at'
+    // 'Accepted': 'progress.accepted_at'
   }, defaultSortOptions)
 };
 
 
 var Header = React.createClass({
   render: function() {
+
+    var directionClasses = {
+      'glyphicon': true,
+      'glyphicon-sort-by-attributes': this.props.sortDirection === 'desc',
+      'glyphicon-sort-by-attributes-alt': this.props.sortDirection === 'asc',
+      'hidden': this.props.sortField === 'priority'
+    };
+
     return (
       <header>
         <div className="column__sort-options">
@@ -40,11 +48,7 @@ var Header = React.createClass({
               </button>
             );
           }, this)}
-          <button
-            className="btn btn-default sort-direction"
-            onClick={this.props.reverse}>
-              {this.props.sortDirection === 'desc' ? '∴' : '∵'}
-          </button>
+          <span onClick={this.props.reverse} className={React.addons.classSet(directionClasses)}/>
         </div>
       </header>
     )
