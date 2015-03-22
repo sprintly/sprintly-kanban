@@ -81,7 +81,7 @@ var Filter = React.createClass({
       <div className="filter__criteria">
         <span className="filter__criteria-labl">{criteriaLabel}</span>
         {this.props.alwaysVisible ? '' :
-          <a href="#" onClick={this.clearFilter} className="filter__remove glyphicon glyphicon-remove"></a>
+          <a href="#" onClick={this.clearFilter} className="filter__remove glyphicon glyphicon-remove-circle"></a>
         }
       </div>
     );

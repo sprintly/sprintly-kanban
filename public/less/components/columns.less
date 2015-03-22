@@ -60,7 +60,7 @@
   .column {
     box-sizing: border-box;
     float: left;
-    overflow: scroll;
+    // overflow: scroll;
     min-height: 100%;
     width: 100%;
     padding: 10em 1em 1em;
@@ -114,7 +114,7 @@
 
 .column__sort-options {
   float: right;
-  padding-bottom: 0.2em;
+  padding-bottom: 0.5em;
   .opacity(0.5);
 
   &:hover {
@@ -128,13 +128,6 @@
     padding: 0;
     display: inline-block;
     background: transparent;
-
-    &.sort-direction {
-      font-size: 1.4em;
-      position: relative;
-      top: -2px;
-      margin-left: 0.5em;
-    }
 
     &.js-active {
       text-decoration: underline;
@@ -162,6 +155,12 @@
     &:last-of-type::after {
       display: none;
     }
+  }
+
+  > span {
+    margin-left: 1em;
+    top: 4px;
+    font-size: 12px;
   }
 
 }
