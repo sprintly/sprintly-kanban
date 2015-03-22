@@ -4,6 +4,7 @@ var moment = require('moment');
 var OwnerAvatar = require('./owner');
 var Controls = require('./controls');
 var SprintlyUI = require('sprintly-ui');
+var Bootstrap = require('react-bootstrap');
 var marked = require('marked');
 var ProductActions = require('../../../actions/product-actions');
 var FilterActions = require('../../../actions/filter-actions');
@@ -71,9 +72,35 @@ var ItemCard = React.createClass({
   renderDetails: function() {
     var tags = this.props.item.tags ? this.props.item.tags.split(',') : [];
 
+    var statuses = {
+      'someday': 'Someday',
+      'backlog': 'Backlog',
+      'in-progress': 'Current',
+      'completed': 'Complete',
+      'accepted': 'Accepted'
+    };
+
+    var statusOptions = _.omit(statuses, this.props.item.status);
+
     return (
       <div className="item-card__details">
-        <div className="item-card__tags">
+        <div className="col-sm-6 item-card__summary">
+          Created by {this.props.item.created_by.first_name} {this.props.item.created_by.last_name.slice(0,1)} {moment(this.props.item.created_at).fromNow()} ago.
+        </div>
+        <div className="col-sm-6 item-card__extra-controls">
+          <Bootstrap.DropdownButton bsStyle="default" bsSize="small" title="Reorder">
+            <Bootstrap.MenuItem eventKey="1">Move Up</Bootstrap.MenuItem>
+            <Bootstrap.MenuItem eventKey="2">Move Down</Bootstrap.MenuItem>
+            <Bootstrap.MenuItem eventKey="3">Move to Top</Bootstrap.MenuItem>
+            <Bootstrap.MenuItem eventKey="3">Move to Bottom</Bootstrap.MenuItem>
+          </Bootstrap.DropdownButton>
+          <Bootstrap.DropdownButton bsStyle="default" bsSize="small" title={<span className="glyphicon glyphicon-cog"/>} noCaret>
+            {_.map(statusOptions, function(label, status) {
+              return <Bootstrap.MenuItem eventKey={status}>Move to {label}</Bootstrap.MenuItem>
+            })}
+          </Bootstrap.DropdownButton>
+        </div>
+        <div className="item-card__tags col-sm-12">
           <SprintlyUI.TagEditor
             modelId={[this.props.item.product.id, this.props.item.pk]}
             tags={tags}
@@ -138,7 +165,9 @@ var ItemCard = React.createClass({
           </div>
           <div className="item-card__title col-sm-12">
             <h2 className="item-card__title-left">{title}</h2>
-            <button className="item-card__show-details" onClick={this.toggleDetails}>...</button>
+            <button className="item-card__show-details" onClick={this.toggleDetails}>
+              <span className="glyphicon glyphicon-option-horizontal" />
+            </button>
           </div>
         </div>
         <div className="row">
