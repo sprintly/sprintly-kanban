@@ -55,7 +55,7 @@ var internals = ProductStore.internals = {
       currentOffset + 25;
 
     coll.config.set({ offset: newOffset });
-    coll.fetch({ silent:true, remove:false}).then((res) => {
+    coll.fetch({ silent:true, remove:false}).fin((res) => {
       coll.trigger('change', { count: res.length });
     });
   },
@@ -96,62 +96,78 @@ var internals = ProductStore.internals = {
     }
   },
 
-  createSubscription(product) {
-    product.items.on('change', function(model) {
-      model.attributes.last_modified = +new Date();
-    });
+  getUpdatedTimestamps: function(model, status) {
+    // Set the timestamp affected by the status change. This is happening
+    // "now" so setting this optimistically to the current timestamp makes
+    // items stay in the correct relative positions. This will get reset by
+    // any filter change that triggers a reset.
+    let attrs = {
+      last_modified: +new Date()
+    };
+    let progress = model.get('progress');
 
-    product.items.on('change:status', function(model) {
-      let previousStatus = model.previous('status');
-      let status = model.get('status');
-
-      // Set the timestamp affected by the status change. This is happening
-      // "now" so setting this optimistically to the current timestamp makes
-      // items stay in the correct relative positions. This will get reset by
-      // any filter change that triggers a reset.
-      if (model.attributes.progress) {
-        if (status === 'in-progress') {
-          model.attributes.progress.started_at = +new Date();
-        } else if (status === 'completed') {
-          model.attributes.progress.closed_at = +new Date();
-        } else if (status === 'accepted') {
-          model.attributes.progress.accepted_at = +new Date();
-        }
+    if (progress) {
+      if (status === 'in-progress') {
+        progress.started_at = +new Date();
+      } else if (status === 'completed') {
+        progress.closed_at = +new Date();
+      } else if (status === 'accepted') {
+        progress.accepted_at = +new Date();
       }
+      attrs.progress = progress;
+    }
 
-      let collection = product._filters[status];
-      let config = collection.config.toJSON();
+    return attrs
+  },
 
-      var filterCount = 0;
-      var matchesFilter = _.filter(['tags', 'assigned_to', 'created_by', 'estimate', 'type'], function(field) {
-        let criteria = config[field];
-        if (criteria) {
-          filterCount++;
-          if (_.isArray(criteria)) {
-            if (_.isArray(model.get(field))) {
-              return _.intersection(criteria, model.get(field)).length > 0;
-            } else {
-              return _.contains(criteria, model.get(field))
-            }
+  matchesFilter: function(item, filter) {
+    let fields = ['tags', 'assigned_to', 'created_by', 'estimate', 'type'];
+    let activeFilters = 0;
+    let matchingFilters = _.filter(fields, function(field) {
+      let criteria = filter[field];
+      if (criteria) {
+        activeFilters++;
+        if (_.isArray(criteria)) {
+          if (_.isArray(item.get(field))) {
+            return _.intersection(criteria, item.get(field)).length > 0;
           } else {
-            if (field === 'assigned_to' || field === 'created_by') {
-              return model.get(field).id === criteria;
-            } else {
-              return model.get(field) === criteria;
-            }
+            return _.contains(criteria, item.get(field))
           }
         } else {
-          return false;
+          if (field === 'assigned_to' || field === 'created_by') {
+            return item.get(field).id === criteria;
+          } else {
+            return item.get(field) === criteria;
+          }
         }
-      });
+      } else {
+        return false;
+      }
+    });
 
-      if (matchesFilter.length === filterCount) {
+    return [activeFilters, matchingFilters];
+  },
+
+  createSubscription(product) {
+    // product.items.on('change', function(model) {
+    //   model.attributes.last_modified = +new Date();
+    // });
+
+    product.items.on('change:status', function(model) {
+      let status = model.get('status');
+      let collection = product._filters[status];
+      let config = collection.config.toJSON();
+      // Prevent "jumpy" items
+      model.set(internals.getUpdatedTimestamps(model, status), { silent: true });
+
+      let [activeFilterCount, matchingFilters] = internals.matchesFilter(model, config);
+      if (activeFilterCount === matchingFilters.length) {
         // Swap items between status collections.
+        let previousStatus = model.previous('status');
         let previousCollection = product._filters[previousStatus];
         previousCollection.remove(model);
         collection.add(model);
       }
-
     });
 
     // TODO: move config value into server rendered js
