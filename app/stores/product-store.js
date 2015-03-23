@@ -150,10 +150,6 @@ var internals = ProductStore.internals = {
   },
 
   createSubscription(product) {
-    // product.items.on('change', function(model) {
-    //   model.attributes.last_modified = +new Date();
-    // });
-
     product.items.on('change:status', function(model) {
       let status = model.get('status');
       let collection = product._filters[status];
