@@ -2,6 +2,64 @@ import _ from 'lodash';
 import React from 'react/addons';
 import ProductActions from '../../../actions/product-actions';
 
+const CONTROL_BUTTONS = {
+  'someday': [
+    {
+      status: 'backlog',
+      style: 'default',
+      label: 'Schedule'
+    },
+    {
+      label: 'Delete',
+      style: 'danger'
+    }
+  ],
+  'backlog': [
+    {
+      status: 'in-progress',
+      style: 'default',
+      label: 'Start'
+    },
+    {
+      status: 'someday',
+      style: 'primary',
+      label: 'Reject'
+    }
+  ],
+  'in-progress': [
+    {
+      status: 'completed',
+      style: 'default',
+      label: 'Finish'
+    },
+    {
+      status: 'someday',
+      style: 'info',
+      label: 'Stop'
+    }
+  ],
+  'completed': [
+    {
+      status: 'accepted',
+      style: 'default',
+      label: 'Accept'
+    },
+    {
+      status: 'in-progress',
+      style: 'warning',
+      label: 'Not Done'
+    }
+  ],
+  'accepted': [
+    {
+      status: 'in-progress',
+      style: 'default',
+      label: 'Reject'
+    }
+  ]
+
+}
+
 var Controls = React.createClass({
 
   propTypes: {
@@ -21,53 +79,21 @@ var Controls = React.createClass({
     ProductActions.updateItem(this.props.productId, this.props.number, payload);
   },
 
-  render: function() {
-    var status = this.props.status;
-    var nextAction = '';
-    var prevAction = '';
-
-    switch(status) {
-      case 'someday':
-        nextAction = [
-          <button className="btn btn-default" onClick={_.partial(this.updateItemStatus, 'backlog')}>Schedule</button>,
-          <button className="btn btn-danger">Delete</button>,
-        ]
-        break;
-
-      case 'backlog':
-        nextAction = [
-          <button className="btn btn-default" onClick={_.partial(this.updateItemStatus, 'in-progress')}>Start</button>,
-          <button className="btn btn-primary" onClick={_.partial(this.updateItemStatus, 'someday')}>Reject</button>
-        ]
-        break;
-
-      case 'in-progress':
-        nextAction = [
-          <button className="btn btn-default" onClick={_.partial(this.updateItemStatus, 'completed')}>Finish</button>,
-          <button className="btn btn-info" onClick={_.partial(this.updateItemStatus, 'backlog')}>Stop</button>,
-        ];
-        break;
-
-      case 'completed':
-        nextAction = [
-          <button className="btn btn-default" onClick={_.partial(this.updateItemStatus, 'accepted')}>Accept</button>,
-          <button className="btn btn-warning" onClick={_.partial(this.updateItemStatus, 'in-progress', 'incomplete')}>Not Done</button>
-        ]
-        break;
-
-      case 'accepted':
-        nextAction = [
-          <button className="btn btn-default" onClick={_.partial(this.updateItemStatus, 'in-progress')}>Reject</button>
-        ]
-        break;
-
-      default:
-        break;
+  renderButtons: function(action, i) {
+    var props = {
+      className: `btn btn-${action.style}`,
     }
+    if (action.status) {
+      props.onClick = _.partial(this.updateItemStatus, action.status);
+    }
+    return <button key={i} {...props}>{action.label}</button>;
+  },
+
+  render: function() {
 
     return (
       <div className="item-card__controls">
-        {nextAction}
+        {_.map(CONTROL_BUTTONS[this.props.status], this.renderButtons)}
       </div>
     );
   }
