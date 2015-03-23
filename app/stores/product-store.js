@@ -55,7 +55,7 @@ var internals = ProductStore.internals = {
       currentOffset + 25;
 
     coll.config.set({ offset: newOffset });
-    coll.fetch({ silent:true, remove:false}).fin((res) => {
+    coll.fetch({ silent:true, remove:false}).then((res) => {
       coll.trigger('change', { count: res.length });
     });
   },
