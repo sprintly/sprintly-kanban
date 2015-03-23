@@ -89,14 +89,14 @@ var ItemCard = React.createClass({
         </div>
         <div className="col-sm-6 item-card__extra-controls">
           <Bootstrap.DropdownButton bsStyle="default" bsSize="small" title="Reorder">
-            <Bootstrap.MenuItem eventKey="1">Move Up</Bootstrap.MenuItem>
-            <Bootstrap.MenuItem eventKey="2">Move Down</Bootstrap.MenuItem>
-            <Bootstrap.MenuItem eventKey="3">Move to Top</Bootstrap.MenuItem>
-            <Bootstrap.MenuItem eventKey="3">Move to Bottom</Bootstrap.MenuItem>
+            <Bootstrap.MenuItem eventKey="1" key="1">Move Up</Bootstrap.MenuItem>
+            <Bootstrap.MenuItem eventKey="2" key="2">Move Down</Bootstrap.MenuItem>
+            <Bootstrap.MenuItem eventKey="3" key="3">Move to Top</Bootstrap.MenuItem>
+            <Bootstrap.MenuItem eventKey="3" key="4">Move to Bottom</Bootstrap.MenuItem>
           </Bootstrap.DropdownButton>
           <Bootstrap.DropdownButton bsStyle="default" bsSize="small" title={<span className="glyphicon glyphicon-cog"/>} noCaret>
             {_.map(statusOptions, function(label, status) {
-              return <Bootstrap.MenuItem eventKey={status}>Move to {label}</Bootstrap.MenuItem>
+              return <Bootstrap.MenuItem eventKey={status} key={status}>Move to {label}</Bootstrap.MenuItem>
             })}
           </Bootstrap.DropdownButton>
         </div>
@@ -129,12 +129,12 @@ var ItemCard = React.createClass({
     if (this.props.item.what) {
       let article = this.props.item.title.split(this.props.item.who)[0];
       title = [
-        <span className="item-card__title-subject">
+        <span key="subject" className="item-card__title-subject">
           {article}
           <span className="item-card__title-who">{this.props.item.who}</span>
         </span>,
-        <span className="item-card__title-verb"> I want </span>,
-        <span className="item-card__title-predicate">
+        <span key="verb" className="item-card__title-verb"> I want </span>,
+        <span key="predicate" className="item-card__title-predicate">
           <span className="item-card__title-what">{this.props.item.what}</span>
           <span> so that </span>
           <span className="item-card__title-why">{this.props.item.why}</span>

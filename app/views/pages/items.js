@@ -80,7 +80,7 @@ export default React.createClass({
       status,
       product: this.state.product,
       filters: this.state.filtersObject,
-      key: `col-${this.state.product.number}-${status}`,
+      key: `col-${this.state.product.id}-${status}`,
     };
 
     if (_.contains(['someday', 'accepted'], status)) {
