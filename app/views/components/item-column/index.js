@@ -66,7 +66,9 @@ var ItemColumn = React.createClass({
       return;
     }
 
-    this.setComparator(field, direction);
+    if (field === 'priority') {
+      direction = 'asc';
+    }
 
     this.setState({
       sortField: field,
@@ -83,15 +85,11 @@ var ItemColumn = React.createClass({
   setComparator: function(field=this.state.sortField, direction=this.state.sortDirection) {
     var presenter = (o) => +new Date(o);
 
-    if (field === 'priority') {
-      field = 'sort';
-      presenter = _.identity;
-    }
-
     this.items.comparator = (model) => {
-      let criteria = field.indexOf('.') > -1 ?
-        model.get('progress')[field.split('.')[1]]:
-        model.get(field);
+      let criteria = model.get(field);
+      if (field === 'priority') {
+        return criteria;
+      }
       let value = presenter(criteria)
       return direction === 'desc' ? -value : value;
     };
@@ -113,8 +111,8 @@ var ItemColumn = React.createClass({
     this.items = ProductStore.getItemsForProduct(product, this.props.status, filters);
     this.listenTo(this.items, 'change sync add remove', this._onChange);
 
-    this.setState({ isLoading: !options.hideLoader });
     this.setComparator();
+    this.setState({ isLoading: !options.hideLoader });
 
     ProductActions.getItems(this.items);
   },

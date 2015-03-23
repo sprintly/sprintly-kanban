@@ -20,6 +20,7 @@ var ProductStore = module.exports = {
     // Set additional defaults for fetching products
     updatedFilters.limit = 25;
     updatedFilters.children = true;
+    updatedFilters.offset = 0;
 
     items.config.set(updatedFilters);
     return items;
