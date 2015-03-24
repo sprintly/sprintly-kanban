@@ -72,7 +72,7 @@ var Controls = React.createClass({
       status
     };
 
-    if(typeof closeReason === 'string') {
+    if (typeof closeReason === 'string') {
       payload.close_reason = closeReason;
     }
 
