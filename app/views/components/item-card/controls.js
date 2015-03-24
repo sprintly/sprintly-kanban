@@ -58,7 +58,7 @@ const CONTROL_BUTTONS = {
     }
   ]
 
-}
+};
 
 var Controls = React.createClass({
 
@@ -81,7 +81,7 @@ var Controls = React.createClass({
 
   renderButtons: function(action, i) {
     var props = {
-      className: `btn btn-${action.style}`,
+      className: `btn btn-${action.style} btn-sm`,
     }
     if (action.status) {
       props.onClick = _.partial(this.updateItemStatus, action.status);
