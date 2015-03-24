@@ -42,7 +42,6 @@ var ItemColumn = React.createClass({
     state.offset = this.items.config.get('offset');
 
     if (payload.count) {
-      console.log(payload.count)
       state.hideLoadMore = this.props.status === 'accepted' ?
         payload.count < 5 : payload.count < 25;
     }

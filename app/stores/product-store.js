@@ -13,14 +13,14 @@ var ProductStore = module.exports = {
     var items = product.getItemsByStatus(status);
     var updatedFilters = internals.mergeFilters(items.config, filters);
 
-    if(status === 'accepted') {
-      updatedFilters.limit = 5;
-    }
-
     // Set additional defaults for fetching products
     updatedFilters.limit = 25;
     updatedFilters.children = true;
     updatedFilters.offset = 0;
+
+    if(status === 'accepted') {
+      updatedFilters.limit = 5;
+    }
 
     items.config.set(updatedFilters);
     return items;
