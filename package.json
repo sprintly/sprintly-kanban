@@ -52,7 +52,8 @@
     "watch-test": "NODE_ENV=test ./node_modules/karma/bin/karma start",
     "watchify": "watchify app -o public/js/manifold.js -v -d",
     "build": "browserify app -o public/js/manifold.js -d",
-    "build-production": "NODE_ENV=production browserify app | uglifyjs -cm > public/js/manifold.min.js && gulp cssmin",
+    "build-production": "NODE_ENV=production browserify app | uglifyjs -cm > public/js/manifold.min.js && npm run build-production-css",
+    "build-production-css": "gulp css",
     "build-less": "gulp less"
   },
   "browserify": {
