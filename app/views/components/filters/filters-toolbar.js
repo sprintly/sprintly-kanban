@@ -31,9 +31,10 @@ var FiltersToolbar = React.createClass({
     return (
       <div className="filters__toolbar container-fluid">
         <div className="col-sm-10">
-        {_.map(this.props.activeFilters, function(filter) {
+        {_.map(this.props.activeFilters, function(filter, i) {
           return (
             <Filter
+              key={i}
               user={this.props.user}
               members={this.props.members}
               updateFilters={this.updateFilters}

@@ -14,11 +14,11 @@ describe('FiltersStore', function() {
 
   describe('getActiveOrDefault', function() {
     it('returns all active or always visible filters', function() {
-      assert.lengthOf(FiltersStore.getActiveOrDefault(), 2);
+      assert.lengthOf(FiltersStore.getActiveOrDefault(), 1);
       this.filters.last().set({ active: true });
-      assert.lengthOf(FiltersStore.getActiveOrDefault(), 3);
+      assert.lengthOf(FiltersStore.getActiveOrDefault(), 2);
       this.filters.findWhere({ type: 'members' }).set({ alwaysVisible: true });
-      assert.lengthOf(FiltersStore.getActiveOrDefault(), 4);
+      assert.lengthOf(FiltersStore.getActiveOrDefault(), 3);
       this.filters.reset(filtersJSON, { silent: true });
     });
   });
@@ -31,7 +31,7 @@ describe('FiltersStore', function() {
 
   describe('all', function() {
     it('returns all fitlers', function() {
-      assert.lengthOf(FiltersStore.all(), 5);
+      assert.lengthOf(FiltersStore.all(), 4);
     });
   });
 

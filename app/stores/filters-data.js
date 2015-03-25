@@ -14,22 +14,6 @@ export default [
     ]
   },
   {
-    type: 'checkbox',
-    label: 'Estimate',
-    active: false,
-    alwaysVisible: true,
-    defaultCriterLabel: 'All',
-    field: 'estimate',
-    criteria: [],
-    criteriaOptions: [
-      { field: '~', label: 'Unestimated', default: true },
-      { field: 's', label: 'Small', default: true },
-      { field: 'm', label: 'Medium', default: true },
-      { field: 'l', label: 'Large', default: true },
-      { field: 'xl', label: 'Extra Large', default: true }
-    ]
-  },
-  {
     type: 'tags',
     label: 'Tagged with',
     active: false,

@@ -1,42 +1,102 @@
-var React = require('react/addons');
+import _ from 'lodash';
+import React from 'react/addons';
+import ProductActions from '../../../actions/product-actions';
+
+const CONTROL_BUTTONS = {
+  'someday': [
+    {
+      status: 'backlog',
+      style: 'default',
+      label: 'Schedule'
+    },
+    {
+      label: 'Delete',
+      style: 'danger'
+    }
+  ],
+  'backlog': [
+    {
+      status: 'in-progress',
+      style: 'default',
+      label: 'Start'
+    },
+    {
+      status: 'someday',
+      style: 'primary',
+      label: 'Reject'
+    }
+  ],
+  'in-progress': [
+    {
+      status: 'completed',
+      style: 'default',
+      label: 'Finish'
+    },
+    {
+      status: 'someday',
+      style: 'info',
+      label: 'Stop'
+    }
+  ],
+  'completed': [
+    {
+      status: 'accepted',
+      style: 'default',
+      label: 'Accept'
+    },
+    {
+      status: 'in-progress',
+      style: 'warning',
+      label: 'Not Done'
+    }
+  ],
+  'accepted': [
+    {
+      status: 'in-progress',
+      style: 'default',
+      label: 'Reject'
+    }
+  ]
+
+};
 
 var Controls = React.createClass({
-  render: function() {
-    var status = this.props.status;
-    var nextAction = '';
-    var prevAction = '';
 
-    switch(status) {
-      case 'someday':
-        nextAction = <a href="#promote" className="icon-add" title="Add to Backlog"></a>;
-        break;
+  propTypes: {
+    productId: React.PropTypes.number.isRequired,
+    number: React.PropTypes.number.isRequired
+  },
 
-      case 'backlog':
-        nextAction = <a href="#start" className="icon-next" title="Start"></a>;
-        break;
+  updateItemStatus: function(status, closeReason) {
+    let payload = {
+      status
+    };
 
-      case 'in-progress':
-        nextAction = <a href="#complete" className="icon-complete" title="Accept"></a>;
-        break;
-
-      case 'completed':
-        nextAction = <a href="#accept" className="icon-complete complete" title="Start"></a>;
-        break;
-
-      case 'accepted':
-        nextAction = <a href="#restart" className="icon-refresh" title="Restart"></a>;
-        break;
-
-      default:
-        break;
+    if (typeof closeReason === 'string') {
+      payload.close_reason = closeReason;
     }
+
+    ProductActions.updateItem(this.props.productId, this.props.number, payload);
+  },
+
+  renderButtons: function(action, i) {
+    var props = {
+      className: `btn btn-${action.style} btn-sm`,
+    }
+    if (action.status) {
+      props.onClick = _.partial(this.updateItemStatus, action.status);
+    }
+    return <button key={i} {...props}>{action.label}</button>;
+  },
+
+  render: function() {
 
     return (
       <div className="item-card__controls">
-        {nextAction}
+        {_.map(CONTROL_BUTTONS[this.props.status], this.renderButtons)}
       </div>
     );
   }
 });
 
-module.exports = Controls;
+export default Controls;

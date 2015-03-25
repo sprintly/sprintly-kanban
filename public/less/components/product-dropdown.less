@@ -1,0 +1,37 @@
+.product__dropdown {
+  position: relative;
+  display: inline-block;
+
+  h1 .glyphicon {
+    font-size: 1rem;
+    padding-left: 1rem;
+  }
+}
+
+.product__dropdown ul {
+  border-top: 1px solid black;
+  position: absolute;
+  display: none;
+  margin: 0;
+  background: #333333;
+  list-style: none;
+  top: 53px;
+  left: 0;
+  padding: 1rem 2rem 1rem;
+  max-height: 400px;
+  min-width: 200px;
+  overflow: scroll;
+  border-radius: 0 0 5px 5px;
+
+  li {
+    padding-bottom: 1rem;
+  }
+
+  li a {
+    color: #fff;
+  }
+}
+
+.product__dropdown:hover ul {
+  display: block;
+}
