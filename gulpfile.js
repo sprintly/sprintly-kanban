@@ -36,5 +36,7 @@ gulp.task('watch', function() {
   gulp.watch('public/less/**/*.less', ['less']);
 });
 
+gulp.task('css', ['less', 'cssmin']);
+
 gulp.task('default', ['less', 'watch']);
 
