@@ -2,7 +2,7 @@
 
 > Oauth2 Client App w/ Hapi, React, Flux, and Sprinlty-Data
 
-[![wercker status](https://app.wercker.com/status/01a6dce093261e014308a7e7af9fd5c7/m "wercker status")](https://app.wercker.com/project/bykey/01a6dce093261e014308a7e7af9fd5c7)
+[![wercker status](https://app.wercker.com/status/01a6dce093261e014308a7e7af9fd5c7/m/master "wercker status")](https://app.wercker.com/project/bykey/01a6dce093261e014308a7e7af9fd5c7)
 
 ## Setup
 
