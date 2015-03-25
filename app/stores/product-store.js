@@ -9,8 +9,43 @@ var ProductStore = module.exports = {
     let activeProducts = products.where({ archived: false });
     return _.sortBy(_.invoke(activeProducts, 'toJSON'), 'name');
   },
+  getSortCriteria: function(collection) {
+    let orderBy = collection.config.get('order_by');
+    let direction;
+    let field = orderBy;
+
+    switch(orderBy) {
+      case 'stale':
+        field = 'last_modified';
+        direction = 'asc';
+        break;
+      case 'recent':
+        field = 'last_modified';
+        direction = 'desc';
+        break;
+      case 'oldest':
+        field = 'created_at';
+        direction = 'asc';
+        break;
+      case 'newest':
+        field = 'created_at'
+        direction = 'desc';
+        break;
+      case 'priority':
+        direction = 'asc';
+        break;
+      default:
+        break;
+    }
+
+    return [field, direction]
+  },
   getItemsForProduct: function(product, status, filters) {
     var items = product.getItemsByStatus(status);
+    // Set "Recent" as the default sort
+    if (items.config.get('order_by')) {
+      items.config.set('order_by', 'recent');
+    }
     var updatedFilters = internals.mergeFilters(items.config, filters);
 
     // Set additional defaults for fetching products
@@ -61,6 +96,40 @@ var internals = ProductStore.internals = {
     });
   },
 
+  changeSortCriteria: function(collection, field, direction) {
+    internals.setComparator(collection, field, direction);
+
+    if (field === 'last_modified') {
+      field = direction === 'asc' ? 'stale' : 'recent';
+    }
+
+    if (field === 'created_at') {
+      field = direction === 'asc' ? 'oldest' : 'newest';
+    }
+
+    collection.config.set({
+      order_by: field,
+      offset: 0
+    });
+
+    collection.fetch({ reset: true, silent: true }).then(function() {
+      collection.trigger('change');
+    })
+  },
+
+  setComparator: function(collection, field, direction) {
+    var presenter = (o) => +new Date(o);
+
+    collection.comparator = (model) => {
+      let criteria = model.get(field);
+      if (field === 'priority') {
+        return model.get('sort');
+      }
+      let value = presenter(criteria)
+      return direction === 'desc' ? -value : value;
+    };
+  },
+
   ingestItem(product, item_data) {
     var item = product.items.get(item_data.number);
     if (item) {
@@ -97,7 +166,7 @@ var internals = ProductStore.internals = {
     }
   },
 
-  getUpdatedTimestamps: function(model, status) {
+  getUpdatedTimestamps(model, status) {
     // Set the timestamp affected by the status change. This is happening
     // "now" so setting this optimistically to the current timestamp makes
     // items stay in the correct relative positions. This will get reset by
@@ -121,7 +190,7 @@ var internals = ProductStore.internals = {
     return attrs
   },
 
-  matchesFilter: function(item, filter) {
+  matchesFilter(item, filter) {
     let fields = ['tags', 'assigned_to', 'created_by', 'estimate', 'type'];
     let activeFilters = 0;
     let matchingFilters = _.filter(fields, function(field) {
@@ -220,7 +289,12 @@ ProductStore.dispatchToken = AppDispatcher.register(function(action) {
       internals.initProducts();
       break;
 
+    case ProductConstants.CHANGE_SORT_CRITERIA:
+      internals.changeSortCriteria(action.itemCollection, action.sortField, action.sortDirection);
+      break;
+
     case ProductConstants.GET_ITEMS:
+      internals.setComparator(action.itemCollection, action.sortField, action.sortDirection);
       action.itemCollection.fetch({ reset: true });
       break;
 

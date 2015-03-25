@@ -35,11 +35,15 @@ var ItemColumn = React.createClass({
   },
 
   _onChange: function(payload) {
-    var state = _.cloneDeep(this.state);
-    state.items = this.items.sort().toJSON();
-    state.isLoading = false;
-    state.limit = this.items.config.get('limit');
-    state.offset = this.items.config.get('offset');
+    let [sortField, sortDirection] = ProductStore.getSortCriteria(this.items);
+    let state = {
+      items: this.items.toJSON(),
+      limit: this.items.config.get('limit'),
+      offset: this.items.config.get('offset'),
+      isLoading: false,
+      sortDirection,
+      sortField
+    };
 
     if (payload.count) {
       state.hideLoadMore = this.props.status === 'accepted' ?
@@ -48,52 +52,13 @@ var ItemColumn = React.createClass({
     this.setState(state);
   },
 
-  getSortFilterValue: function(field=this.state.sortField, direction=this.state.sortDirection) {
-    if (field === 'last_modified') {
-      field = direction === 'asc' ? 'stale' : 'recent';
-    }
-
-    if (field === 'created_at') {
-      field = direction === 'asc' ? 'oldest' : 'newest';
-    }
-
-    return field;
-  },
-
   setSortCriteria: function(field=this.state.sortField, direction=this.state.sortDirection) {
     if (!this.items) {
       return;
     }
 
-    if (field === 'priority') {
-      direction = 'asc';
-    }
-
-    this.setState({
-      sortField: field,
-      sortDirection: direction,
-      items: this.items.toJSON()
-    });
-
-    this.getItems(this.props.product, {
-      refresh: true,
-      sort: this.getSortFilterValue(field, direction)
-    });
-  },
-
-  setComparator: function(field=this.state.sortField, direction=this.state.sortDirection) {
-    var presenter = (o) => +new Date(o);
-
-    this.items.comparator = (model) => {
-      let criteria = model.get(field);
-      if (field === 'priority') {
-        return criteria;
-      }
-      let value = presenter(criteria)
-      return direction === 'desc' ? -value : value;
-    };
-
-    this.items.sort();
+    this.setState({ isLoading: true });
+    ProductActions.changeSortCriteria(this.items, field, direction);
   },
 
   getItems: function(product, options={ hideLoader: false }) {
@@ -106,14 +71,11 @@ var ItemColumn = React.createClass({
 
     // update collection filter
     let filters = _.clone(options.filters || this.props.filters);
-    filters.order_by = options.sort || this.getSortFilterValue();
     this.items = ProductStore.getItemsForProduct(product, this.props.status, filters);
     this.listenTo(this.items, 'change sync add remove', this._onChange);
-
-    this.setComparator();
     this.setState({ isLoading: !options.hideLoader });
 
-    ProductActions.getItems(this.items);
+    ProductActions.getItems(this.items, this.state.sortField, this.state.sortDirection);
   },
 
   loadMoreItems: function() {
