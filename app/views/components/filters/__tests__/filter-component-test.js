@@ -41,7 +41,7 @@ describe('FilterComponent', function() {
     it('calls updateFilters', function() {
       var stub = mockFilter.updateFilters = sinon.stub();
       var filter = TestUtils.renderIntoDocument(<Filter {...mockFilter}/>);
-      var node = TestUtils.findRenderedDOMComponentWithClass(filter, 'filter__remove');
+      var node = TestUtils.findRenderedDOMComponentWithClass(filter, 'close');
       TestUtils.Simulate.click(node.getDOMNode());
       assert.isTrue(stub.calledWith('type'));
     });
@@ -76,13 +76,13 @@ describe('FilterComponent', function() {
       it('renders active criteria', function() {
         mockFilter.criteria = ['story', 'defect'];
         var filter = TestUtils.renderIntoDocument(<Filter {...mockFilter}/>);
-        var label = TestUtils.findRenderedDOMComponentWithTag(filter, 'span');
+        var label = TestUtils.findRenderedDOMComponentWithClass(filter, 'filter__criteria-label');
         assert.equal(label.getDOMNode().textContent, 'story, defect');
       });
 
       it('renders default values', function() {
         var filter = TestUtils.renderIntoDocument(<Filter {...mockFilter}/>);
-        var label = TestUtils.findRenderedDOMComponentWithTag(filter, 'span');
+        var label = TestUtils.findRenderedDOMComponentWithClass(filter, 'filter__criteria-label');
         assert.equal(label.getDOMNode().textContent, 'All');
       });
     });
@@ -91,13 +91,13 @@ describe('FilterComponent', function() {
       it('renders active criteria', function() {
         mockFilter.criteria = 'Foo';
         var filter = TestUtils.renderIntoDocument(<Filter {...mockFilter}/>);
-        var label = TestUtils.findRenderedDOMComponentWithTag(filter, 'span');
+        var label = TestUtils.findRenderedDOMComponentWithClass(filter, 'filter__criteria-label');
         assert.equal(label.getDOMNode().textContent, 'Foo');
       });
 
       it('renders default labels', function() {
         var filter = TestUtils.renderIntoDocument(<Filter {...mockFilter}/>);
-        var label = TestUtils.findRenderedDOMComponentWithTag(filter, 'span');
+        var label = TestUtils.findRenderedDOMComponentWithClass(filter, 'filter__criteria-label');
         assert.equal(label.getDOMNode().textContent, 'All');
       });
     });
@@ -107,7 +107,7 @@ describe('FilterComponent', function() {
         mockFilter.type = 'members'
         mockFilter.criteria = mockFilter.user.id;
         var filter = TestUtils.renderIntoDocument(<Filter {...mockFilter}/>);
-        var label = TestUtils.findRenderedDOMComponentWithTag(filter, 'span');
+        var label = TestUtils.findRenderedDOMComponentWithClass(filter, 'filter__criteria-label');
         assert.equal(label.getDOMNode().textContent, 'Me');
       });
 
@@ -115,7 +115,7 @@ describe('FilterComponent', function() {
         mockFilter.type = 'members'
         mockFilter.criteria = '';
         var filter = TestUtils.renderIntoDocument(<Filter {...mockFilter}/>);
-        var label = TestUtils.findRenderedDOMComponentWithTag(filter, 'span');
+        var label = TestUtils.findRenderedDOMComponentWithClass(filter, 'filter__criteria-label');
         assert.equal(label.getDOMNode().textContent, 'Unassigned');
       });
 
@@ -123,7 +123,7 @@ describe('FilterComponent', function() {
         mockFilter.type = 'members'
         mockFilter.criteria = 1;
         var filter = TestUtils.renderIntoDocument(<Filter {...mockFilter}/>);
-        var label = TestUtils.findRenderedDOMComponentWithTag(filter, 'span');
+        var label = TestUtils.findRenderedDOMComponentWithClass(filter, 'filter__criteria-label');
         assert.equal(label.getDOMNode().textContent, 'Some U.');
       });
     });

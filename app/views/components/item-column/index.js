@@ -6,6 +6,7 @@ import ColumnHeader from './header';
 import Loading from 'react-loading';
 import ProductStore from '../../../stores/product-store';
 import ProductActions from '../../../actions/product-actions';
+import FilterActions from '../../../actions/filter-actions';
 import Confidence from 'confidence';
 
 function getColumnState(items=[]) {
@@ -15,7 +16,8 @@ function getColumnState(items=[]) {
     hideLoadMore: false,
     sortField: 'last_modified',
     sortDirection: 'desc',
-    perPage: 10
+    offset: 0,
+    limit: 0
   }
 }
 
@@ -33,9 +35,15 @@ var ItemColumn = React.createClass({
   },
 
   _onChange: function(payload) {
-    var state = _.cloneDeep(this.state);
-    state.items = this.items.toJSON();
-    state.isLoading = false;
+    let [sortField, sortDirection] = ProductStore.getSortCriteria(this.items);
+    let state = {
+      items: this.items.toJSON(),
+      limit: this.items.config.get('limit'),
+      offset: this.items.config.get('offset'),
+      isLoading: false,
+      sortDirection,
+      sortField
+    };
 
     if (payload.count) {
       state.hideLoadMore = this.props.status === 'accepted' ?
@@ -49,28 +57,11 @@ var ItemColumn = React.createClass({
       return;
     }
 
-    var presenter = field === 'sort' ?
-      _.identity :
-      (o) => +new Date(o);
-
-    this.items.comparator = (model) => {
-      let criteria = field.indexOf('.') > -1 ?
-        model.get('progress')[field.split('.')[1]]:
-        model.get(field);
-      let value = presenter(criteria)
-      return direction === 'desc' ? -value : value;
-    };
-
-    this.items.sort();
-
-    this.setState({
-      sortField: field,
-      sortDirection: direction,
-      items: this.items.toJSON()
-    });
+    this.setState({ isLoading: true });
+    ProductActions.changeSortCriteria(this.items, field, direction);
   },
 
-  getItems: function(product, options={}) {
+  getItems: function(product, options={ hideLoader: false }) {
     if (this.items) {
       if (!options.refresh) {
         return;
@@ -78,22 +69,17 @@ var ItemColumn = React.createClass({
       this.stopListening(this.items);
     }
 
-    let filters = options.filters || this.props.filters;
+    // update collection filter
+    let filters = _.clone(options.filters || this.props.filters);
     this.items = ProductStore.getItemsForProduct(product, this.props.status, filters);
-    this.listenTo(this.items, 'change sync add remove', _.throttle(this._onChange, 200));
+    this.listenTo(this.items, 'change sync add remove', this._onChange);
+    this.setState({ isLoading: !options.hideLoader });
 
-    this.setState({ isLoading: true });
-    this.setSortCriteria();
-
-    ProductActions.getItems(this.items);
+    ProductActions.getItems(this.items, this.state.sortField, this.state.sortDirection);
   },
 
   loadMoreItems: function() {
     ProductActions.loadMoreItems(this.items);
-  },
-
-  componentWillMount: function() {
-    this.getItems(this.props.product);
   },
 
   componentDidMount: function() {
@@ -124,9 +110,17 @@ var ItemColumn = React.createClass({
     }
   },
 
-  render: function() {
-    var items = this.state.items.slice(0, this.state.perPage)
+  renderLoadMore: function() {
+    var loadMore = <button className="load-more" onClick={this.loadMoreItems}>Load More</button>;
 
+    if (this.state.isLoading || this.state.hideLoadMore || this.state.items.length < this.state.limit) {
+      return '';
+    }
+
+    return loadMore;
+  },
+
+  render: function() {
     var classes = {
       column: true,
       [this.props.status]: true
@@ -136,9 +130,7 @@ var ItemColumn = React.createClass({
       let direction = this.state.sortDirection === 'desc' ? 'asc' : 'desc';
       this.setSortCriteria(this.state.sortField, direction);
     };
-
-    var buttonClasses = this.state.isLoading || this.state.hideLoadMore ? "load-more loading" : "load-more";
-    var loadMore = <button className={buttonClasses} onClick={this.loadMoreItems}>Load More</button>;
+    var productId = this.props.product.id;
 
     return (
       <div className={React.addons.classSet(classes)} {...this.props}>
@@ -151,10 +143,10 @@ var ItemColumn = React.createClass({
         {this.state.isLoading ?
           <div className="loading"><Loading type="bubbles" color="#ccc"/></div> :
           _.map(this.state.items, function(item, index) {
-            return <ItemCard item={item} key={`item-${item.number}`} />
+            return <ItemCard item={item} productId={productId} key={`item-${item.number}`} />
           })
         }
-        {loadMore}
+        {this.renderLoadMore()}
       </div>
     );
   }

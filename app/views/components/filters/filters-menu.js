@@ -71,12 +71,12 @@ var FiltersMenu = React.createClass({
         <div className="col-sm-12 filters-menu__popup">
           <div className="filters-menu__scroll-wrapper">
             <ul className="filters-menu__list">
-            {_.map(this.props.allFilters, function(filter) {
+            {_.map(this.props.allFilters, function(filter, i) {
               var classes = React.addons.classSet({
                 'show-form': _.contains(this.state.visibleFilters, filter.field)
               });
               return (
-                <li className={classes}>
+                <li className={classes} key={i}>
                   <h3 onClick={_.partial(this.toggleVisible, filter.field)}>{filter.label}</h3>
                   {this.renderForm(filter)}
                 </li>

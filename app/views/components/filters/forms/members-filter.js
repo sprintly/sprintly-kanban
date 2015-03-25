@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import React from 'react/addons';
 import {Input} from 'react-bootstrap';
+import {SelectorMenu} from 'sprintly-ui';
 
 var DropdownFilter = React.createClass({
 
@@ -17,8 +18,8 @@ var DropdownFilter = React.createClass({
     }
   },
 
-  onChange: function(ev) {
-    let value = ev.target.value;
+  onChange: function(member) {
+    let value = member.value;
     this.props.updateFilters(this.props.name, value)
   },
 
@@ -37,20 +38,34 @@ var DropdownFilter = React.createClass({
     this.props.updateFilters(this.props.name, criteria, options);
   },
 
+  renderMembers: function(option) {
+    let defaultSelection = '';
+    let members = _.map(option.members, function(member) {
+      let title = `${member.first_name} ${member.last_name.slice(0,1)}.`;
+      if (this.props.criteria === member.id) {
+        defaultSelection = title;
+      }
+      return {
+        title,
+        value: member.id
+      }
+    }, this);
+    return (
+      <div className="form-group selector">
+        <SelectorMenu
+          optionsList={_.sortBy(members, 'title')}
+          defaultSelection={defaultSelection}
+          onSelectionChange={(title) => {
+            this.onChange(_.findWhere(members, { title }))
+          }}
+        />
+      </div>
+    );
+  },
+
   renderCriteriaFormField: function(option) {
     if (option.members) {
-      return (
-        <select onChange={this.onChange} value={this.props.criteria}>
-          <option></option>
-          {_.map(option.members, function(member) {
-            return (
-              <option value={member.id}>
-                {member.first_name} {member.last_name.slice(0,1)}.
-              </option>
-            );
-          })}
-        </select>
-      );
+      return this.renderMembers(option);
     }
 
     let checked = this.props.criteria.length === 0 ? option.default :

@@ -9,10 +9,21 @@ var ProductActions = {
     });
   },
 
-  getItems: function(itemCollection) {
+  changeSortCriteria: function(itemCollection, sortField, sortDirection) {
+    AppDispatcher.dispatch({
+      actionType: ProductConstants.CHANGE_SORT_CRITERIA,
+      itemCollection,
+      sortField,
+      sortDirection
+    });
+  },
+
+  getItems: function(itemCollection, sortField, sortDirection) {
     AppDispatcher.dispatch({
       actionType: ProductConstants.GET_ITEMS,
-      itemCollection
+      itemCollection,
+      sortField,
+      sortDirection
     });
   },
 
@@ -27,6 +38,15 @@ var ProductActions = {
     AppDispatcher.dispatch({
       actionType: ProductConstants.SUBSCRIBE,
       id
+    });
+  },
+
+  updateItem: function(productId, itemId, payload) {
+    AppDispatcher.dispatch({
+      actionType: ProductConstants.UPDATE_ITEM,
+      productId,
+      itemId,
+      payload
     });
   }
 

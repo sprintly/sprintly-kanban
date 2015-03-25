@@ -1,6 +1,6 @@
 .filters__toolbar {
   position: fixed;
-  top: 60px;
+  top: 53px;
   height: 40px;
   background: #666;
   width: 100%;
@@ -61,6 +61,12 @@
   background-color: #b9b9b1;
   padding: 4px 12px;
   border-radius: 0 2px 2px 0;
+
+  .close {
+    font-size: 16px;
+    margin-left: 4px;
+    margin-right: -6px;
+  }
 }
 
 .filter .filter__criteria-selector {
@@ -135,6 +141,15 @@
 
   .form-horizontal .form-group {
     margin: 0;
+    &.selector {
+      height: 42px;
+    }
+  }
+
+  .form-horizontal .form-group .selector__wrapper {
+    z-index: 300;
+    max-height: 23em;
+    overflow-y: scroll;
   }
 
   h3 {

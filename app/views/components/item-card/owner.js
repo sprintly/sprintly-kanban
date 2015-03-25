@@ -22,7 +22,7 @@ var Owner = React.createClass({
   },
 
   defaultImage: function() {
-    return <img src="http://placehold.it/36x36" />
+    return <span className="item-card__owner-unassigned">+</span>
   },
 
   getName: function() {
