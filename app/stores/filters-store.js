@@ -61,13 +61,22 @@ var internals = FiltersStore.internals = {
       let activeMembers = _.invoke(members.where({ revoked: false }), 'toJSON');
       _.each(needsMembers, function(filter) {
         let options = _.clone(filter.get('criteriaOptions'));
-        options.unshift({
-          field: 'me',
-          label: 'Me',
-          default: false,
-          value: user.id
+        let prevMembers = _.findWhere(options, function(opt) {
+          return _.has(opt, 'members');
         });
-        options.unshift({ members: activeMembers });
+
+        if (prevMembers) {
+          prevMembers.members = activeMembers;
+        } else {
+          options.unshift({
+            field: 'me',
+            label: 'Me',
+            default: false,
+            value: user.id
+          });
+          options.unshift({ members: activeMembers });
+        }
+
         filter.set('criteriaOptions', options);
       });
     }

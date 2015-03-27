@@ -63,6 +63,18 @@ describe('FiltersStore', function() {
         this.filters.reset(filtersJSON, { silent: true });
       });
 
+      it('updates the members key if it already exists', function() {
+        FiltersStore.internals.init(this.product, this.user);
+        let filter = this.filters.findWhere({ type: 'members' });
+        let criteria = filter.get('criteriaOptions');
+        let criteriaSize = _.size(criteria);
+        this.product.members.add({ id: 2, revoked: false });
+        FiltersStore.internals.init(this.product, this.user);
+        assert.lengthOf(criteria[0].members, this.product.members.length);
+        assert.equal(criteriaSize, _.size(criteria));
+        this.filters.reset(filtersJSON, { silent: true });
+      });
+
       it('decorates tags onto appropriate filters', function() {
         FiltersStore.internals.init(this.product, this.user);
         let filter = this.filters.findWhere({ type: 'tags' });
