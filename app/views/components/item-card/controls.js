@@ -33,7 +33,7 @@ const CONTROL_BUTTONS = {
       label: 'Finish'
     },
     {
-      status: 'someday',
+      status: 'backlog',
       style: 'info',
       label: 'Stop'
     }
