@@ -143,7 +143,7 @@ var ItemColumn = React.createClass({
         {this.state.isLoading ?
           <div className="loading"><Loading type="bubbles" color="#ccc"/></div> :
           _.map(this.state.items, function(item, index) {
-            return <ItemCard item={item} productId={productId} key={`item-${item.number}`} />
+            return <ItemCard item={item} productId={productId} key={`item-${productId}-${item.number}`} />
           })
         }
         {this.renderLoadMore()}
