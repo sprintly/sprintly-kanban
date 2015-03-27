@@ -9,11 +9,10 @@ import FiltersToolbar from '../components/filters/filters-toolbar';
 
 // Flux
 import FiltersStore from '../../stores/filters-store';
-import FiltersAction from '../../actions/filter-actions';
 import ProductStore from '../../stores/product-store';
-import ProductAction from '../../actions/product-actions';
+import ProductActions from '../../actions/product-actions';
 
-export default React.createClass({
+module.exports = React.createClass({
 
   mixins: [State],
 
@@ -48,13 +47,7 @@ export default React.createClass({
   componentDidMount: function() {
     FiltersStore.on('change', this._onChange);
     ProductStore.on('change', this._onChange);
-    ProductStore.once('sync', () => {
-      var product = ProductStore.get(this.getParams().id);
-      product.items.on('change', this._onChange);
-      ProductAction.subscribe(product);
-      FiltersAction.init(product, this.props.user, this.getQuery());
-    });
-    ProductAction.init();
+    ProductActions.init(this.getParams().id);
   },
 
   componentWillUnmount: function() {
@@ -95,7 +88,7 @@ export default React.createClass({
 
   componentWillReceiveProps: function(nextProps) {
     if (this.getParams().id !== this.state.product.id) {
-      this.setState({ product: ProductStore.get(this.getParams().id) });
+      ProductActions.init(this.getParams().id)
     }
   },
 

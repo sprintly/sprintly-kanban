@@ -3,9 +3,10 @@ import ProductConstants from '../constants/product-constants';
 
 var ProductActions = {
 
-  init: function() {
+  init: function(productId) {
     AppDispatcher.dispatch({
-      actionType: ProductConstants.INIT_PRODUCTS
+      actionType: ProductConstants.INIT_PRODUCTS,
+      productId
     });
   },
 

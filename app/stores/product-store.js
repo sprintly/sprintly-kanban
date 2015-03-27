@@ -3,6 +3,7 @@ import Promise from 'bluebird';
 import AppDispatcher from '../dispatchers/app-dispatcher';
 import ProductConstants from '../constants/product-constants';
 import { products, user } from '../lib/sprintly-client';
+import FiltersAction from '../actions/filter-actions';
 
 var ProductStore = module.exports = {
   getAll: function() {
@@ -72,16 +73,27 @@ proxyMethods.forEach(function(method) {
 });
 
 var internals = ProductStore.internals = {
-  initProducts() {
+  initProducts(productId) {
+    var dependencies;
     if (products.length > 0 && user.id) {
-      return products.trigger('change');
+      dependencies = [true];
+    } else {
+      dependencies = [
+        user.fetch(),
+        products.fetch({ silent: true })
+      ]
     }
 
-    return Promise.all([
-      user.fetch(),
-      products.fetch({ silent: true })
-    ]).then(() => {
-      products.trigger('change')
+    return Promise.all(dependencies).then(() => {
+      if (!productId) {
+        products.trigger('change');
+        return;
+      }
+      var product = products.get(productId);
+      FiltersAction.init(product, user);
+      internals.createSubscription(product);
+      products.trigger('change');
+      return product;
     });
   },
 
@@ -219,6 +231,10 @@ var internals = ProductStore.internals = {
   },
 
   createSubscription(product) {
+    product.items.on('change', function() {
+      products.trigger('change');
+    });
+
     product.items.on('change:status', function(model) {
       let status = model.get('status');
       let collection = product._filters[status];
@@ -286,7 +302,7 @@ ProductStore.dispatchToken = AppDispatcher.register(function(action) {
 
   switch(action.actionType) {
     case ProductConstants.INIT_PRODUCTS:
-      internals.initProducts();
+      internals.initProducts(action.productId);
       break;
 
     case ProductConstants.CHANGE_SORT_CRITERIA:
