@@ -8,6 +8,7 @@ var Bootstrap = require('react-bootstrap');
 var marked = require('marked');
 var ProductActions = require('../../../actions/product-actions');
 var FilterActions = require('../../../actions/filter-actions');
+var ItemCardDetails = require('./details');
 
 const SCORE_MAP = {
   '~': 0,
@@ -30,14 +31,6 @@ marked.setOptions({
   smartypants: false
 });
 
-var ITEM_STATUSES = {
-  'someday': 'Someday',
-  'backlog': 'Backlog',
-  'in-progress': 'Current',
-  'completed': 'Done',
-  'accepted': 'Accepted'
-};
-
 var ItemCard = React.createClass({
 
   propTypes: {
@@ -56,90 +49,38 @@ var ItemCard = React.createClass({
     this.setState({ showDetails: !this.state.showDetails })
   },
 
-  filterByTag: function(tag) {
-    FilterActions.update('tags', [tag]);
-    return;
-  },
-
-  editTags: function(modelId, currentTags, changedTag, action) {},
-
   changeScore: function([productId, itemId], score) {
     ProductActions.updateItem(productId, itemId, { score: REVERSE_SCORE_MAP[score] });
   },
 
-  changeStatus: function() {},
-
-  renderDetails: function() {
-    var tags = this.props.item.tags ? this.props.item.tags.split(',') : [];
-
-    var statuses = {
-      'someday': 'Someday',
-      'backlog': 'Backlog',
-      'in-progress': 'Current',
-      'completed': 'Complete',
-      'accepted': 'Accepted'
-    };
-
-    var statusOptions = _.omit(statuses, this.props.item.status);
-
-    return (
-      <div className="item-card__details">
-        <div className="col-sm-6 item-card__summary">
-          Created by {this.props.item.created_by.first_name} {this.props.item.created_by.last_name.slice(0,1)} {moment(this.props.item.created_at).fromNow()} ago.
-        </div>
-        <div className="col-sm-6 item-card__extra-controls">
-          <Bootstrap.DropdownButton bsStyle="default" bsSize="small" title="Reorder">
-            <Bootstrap.MenuItem eventKey="1" key="1">Move Up</Bootstrap.MenuItem>
-            <Bootstrap.MenuItem eventKey="2" key="2">Move Down</Bootstrap.MenuItem>
-            <Bootstrap.MenuItem eventKey="3" key="3">Move to Top</Bootstrap.MenuItem>
-            <Bootstrap.MenuItem eventKey="3" key="4">Move to Bottom</Bootstrap.MenuItem>
-          </Bootstrap.DropdownButton>
-          <Bootstrap.DropdownButton bsStyle="default" bsSize="small" title={<span className="glyphicon glyphicon-cog"/>} noCaret>
-            {_.map(statusOptions, function(label, status) {
-              return <Bootstrap.MenuItem eventKey={status} key={status}>Move to {label}</Bootstrap.MenuItem>
-            })}
-          </Bootstrap.DropdownButton>
-        </div>
-        <div className="item-card__tags col-sm-12">
-          <SprintlyUI.TagEditor
-            modelId={[this.props.item.product.id, this.props.item.pk]}
-            tags={tags}
-            tagChanger={{addOrRemove: this.editTags}}
-          />
-          <SprintlyUI.Tags
-            tags={tags}
-            altOnTagClick={this.filterByTag}
-          />
-        </div>
-      </div>
-    );
+  renderStoryTitle: function() {
+    let article = this.props.item.title.split(this.props.item.who)[0];
+    return [
+      <span key="subject" className="item-card__title-subject">
+        {article}
+        <span className="item-card__title-who">{this.props.item.who}</span>
+      </span>,
+      <span key="verb" className="item-card__title-verb"> I want </span>,
+      <span key="predicate" className="item-card__title-predicate">
+        <span className="item-card__title-what">{this.props.item.what}</span>
+        <span> so that </span>
+        <span className="item-card__title-why">{this.props.item.why}</span>
+      </span>
+    ]
   },
 
   render: function() {
     var classes = {
       'item-card': true,
       'active': this.props.active || this.state.showDetails,
+      [this.props.item.type]: true
     };
-    classes[this.props.item.type] = true;
 
     var owner = this.props.item.assigned_to;
-
     var title = this.props.item.title
 
-    if (this.props.item.what) {
-      let article = this.props.item.title.split(this.props.item.who)[0];
-      title = [
-        <span key="subject" className="item-card__title-subject">
-          {article}
-          <span className="item-card__title-who">{this.props.item.who}</span>
-        </span>,
-        <span key="verb" className="item-card__title-verb"> I want </span>,
-        <span key="predicate" className="item-card__title-predicate">
-          <span className="item-card__title-what">{this.props.item.what}</span>
-          <span> so that </span>
-          <span className="item-card__title-why">{this.props.item.why}</span>
-        </span>
-      ]
+    if (this.props.item.type === 'story') {
+      title = this.renderStoryTitle();
     }
 
     return (
@@ -175,7 +116,7 @@ var ItemCard = React.createClass({
           </div>
         </div>
         <div className="row">
-          {this.state.showDetails ? this.renderDetails() : ''}
+          {this.state.showDetails ? <ItemCardDetails {...this.props} /> : ''}
         </div>
       </div>
     )

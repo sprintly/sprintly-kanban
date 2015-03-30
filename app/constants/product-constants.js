@@ -5,5 +5,6 @@ export default keymirror({
   GET_ITEMS: null,
   SUBSCRIBE: null,
   UPDATE_ITEM: null,
-  CHANGE_SORT_CRITERIA: null
+  CHANGE_SORT_CRITERIA: null,
+  UPDATE_ITEM_PRIORITY: null
 });

@@ -37,7 +37,7 @@ var ItemColumn = React.createClass({
   _onChange: function(payload) {
     let [sortField, sortDirection] = ProductStore.getSortCriteria(this.items);
     let state = {
-      items: this.items.toJSON(),
+      items: this.items.sort().toJSON(),
       limit: this.items.config.get('limit'),
       offset: this.items.config.get('offset'),
       isLoading: false,
@@ -143,8 +143,15 @@ var ItemColumn = React.createClass({
         {this.state.isLoading ?
           <div className="loading"><Loading type="bubbles" color="#ccc"/></div> :
           _.map(this.state.items, function(item, index) {
-            return <ItemCard item={item} productId={productId} key={`item-${productId}-${item.number}`} />
-          })
+            return (
+              <ItemCard
+                item={item}
+                sortField={this.state.sortField}
+                productId={productId}
+                key={`item-${productId}-${item.number}`}
+              />
+            );
+          }, this)
         }
         {this.renderLoadMore()}
       </div>
