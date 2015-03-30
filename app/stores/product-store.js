@@ -158,6 +158,42 @@ var internals = ProductStore.internals = {
     item.save(payload);
   },
 
+  updateItemPriority(productId, itemId, priority) {
+    let product = products.get(productId);
+    let item = product.items.get(itemId);
+    let status = item.get('status');
+    let sort = item.get('sort');
+    let payload = {};
+    let col = product._filters[status].sortBy('sort');
+
+    switch(priority) {
+      case 'up':
+        let nextItem = _.find(col, (model) => {
+          return model.get('sort') < sort;
+        });
+        payload.sort = nextItem.get('sort') - 1;
+        break;
+      case 'down':
+        let prevItem = _.find(col, (model) => {
+          return model.get('sort') > sort;
+        });
+        payload.sort = prevItem.get('sort') + 1;
+        break;
+      case 'top':
+        let topItem = _.first(col);
+        payload.sort = topItem.get('sort') - 1;
+        break;
+      case 'bottom':
+        let bottomItem = _.last(col);
+        payload.sort = bottomItem.get('sort') + 1;
+        break;
+      default:
+        break;
+    }
+
+    item.save(payload);
+  },
+
   createItem(product, item_data) {
     let item = product.createItem(item_data);
     let collection = product.getItemsByStatus(item.get('status'))
@@ -304,6 +340,10 @@ ProductStore.dispatchToken = AppDispatcher.register(function(action) {
 
     case ProductConstants.SUBSCRIBE:
       internals.createSubscription(action.id);
+      break;
+
+    case ProductConstants.UPDATE_ITEM_PRIORITY:
+      internals.updateItemPriority(action.productId, action.itemId, action.priority);
       break;
 
     case ProductConstants.UPDATE_ITEM:

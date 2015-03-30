@@ -16,7 +16,7 @@ var Owner = React.createClass({
   getAvatar: function(email) {
     var hash = crypto.createHash('md5')
     hash.update(email.toLowerCase().trim())
-    var url = `http://www.gravatar.com/avatar/${hash.digest('hex')}.jpg\
+    var url = `//www.gravatar.com/avatar/${hash.digest('hex')}.jpg\
       ?d=identicon&s=${this.props.size}`;
     return <img src={url} />;
   },
