@@ -153,7 +153,9 @@ var ItemCard = React.createClass({
               toggleDetails={this.changeStatus}
             />
             <div className="item-card__header-right">
-              <div className="item-card__number">#{this.props.item.number}</div>
+              <div className="item-card__number">
+                <a href={`https://sprint.ly/product/${this.props.productId}/item/${this.props.item.number}`} target="_blank">#{this.props.item.number}</a>
+              </div>
               <SprintlyUI.Estimator
                 modelId={[this.props.productId, this.props.item.number]}
                 itemType={this.props.item.type}
@@ -164,7 +166,9 @@ var ItemCard = React.createClass({
             </div>
           </div>
           <div className="item-card__title col-sm-12">
-            <h2 className="item-card__title-left">{title}</h2>
+            <h2 className="item-card__title-left">
+              <a href={`https://sprint.ly/product/${this.props.productId}/item/${this.props.item.number}`} target="_blank">{title}</a>
+            </h2>
             <button className="item-card__show-details" onClick={this.toggleDetails}>
               <span className="glyphicon glyphicon-option-horizontal" />
             </button>

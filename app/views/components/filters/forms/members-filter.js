@@ -51,7 +51,7 @@ var DropdownFilter = React.createClass({
       }
     }, this);
     return (
-      <div className="form-group selector">
+      <div className="form-group selector" key="members-dropdown">
         <SelectorMenu
           optionsList={_.sortBy(members, 'title')}
           defaultSelection={defaultSelection}
