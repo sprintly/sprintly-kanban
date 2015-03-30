@@ -28,9 +28,13 @@ deploy:
           git config --global user.email "sam@quickleft.com"
           git config --global user.name "Wercker Bot"
           git checkout -b wercker-build
-          git add .
+          git add public/js/manifold.min.js
+          git add public/css/main.min.css
           git commit -am 'asset compile'
     - heroku-deploy:
         key-name: DEPLOY_KEY
+  after-steps:
+    - wantedly/pretty-slack-notify:
+        webhook_url: $SLACK_WEBHOOK_URL
 
 
