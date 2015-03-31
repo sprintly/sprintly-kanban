@@ -39,17 +39,17 @@ var DropdownFilter = React.createClass({
   },
 
   renderMembers: function(option) {
-    let defaultSelection = '';
+    let active = _.findWhere(option.members, { id: this.props.criteria });
+    let defaultSelection = active ? `${active.first_name} ${active.last_name.slice(0,1)}.` : '';
+
     let members = _.map(option.members, function(member) {
       let title = `${member.first_name} ${member.last_name.slice(0,1)}.`;
-      if (this.props.criteria === member.id) {
-        defaultSelection = title;
-      }
       return {
         title,
         value: member.id
       }
     }, this);
+
     return (
       <div className="form-group selector">
         <SelectorMenu
