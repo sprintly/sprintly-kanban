@@ -1,7 +1,6 @@
 import _ from 'lodash';
 import React from 'react/addons';
 import ItemCard from '../item-card';
-import Backbone from 'backdash';
 import ColumnHeader from './header';
 import Loading from 'react-loading';
 import ProductStore from '../../../stores/product-store';
@@ -22,8 +21,6 @@ function getColumnState(items=[]) {
 }
 
 var ItemColumn = React.createClass({
-
-  mixins: [Backbone.Events],
 
   propTypes: {
     status: React.PropTypes.string.isRequired,
@@ -66,13 +63,13 @@ var ItemColumn = React.createClass({
       if (!options.refresh) {
         return;
       }
-      this.stopListening(this.items);
+      this.items.off(null, this._onChange);
     }
 
     // update collection filter
     let filters = _.clone(options.filters || this.props.filters);
     this.items = ProductStore.getItemsForProduct(product, this.props.status, filters);
-    this.listenTo(this.items, 'change sync add remove', this._onChange);
+    this.items.on('change sync add remove', this._onChange, this)
     this.setState({ isLoading: !options.hideLoader });
 
     ProductActions.getItems(this.items, this.state.sortField, this.state.sortDirection);
@@ -87,7 +84,7 @@ var ItemColumn = React.createClass({
   },
 
   componentWillUnmount: function() {
-    this.stopListening(this.items);
+    this.items.off(null, this._onChange);
   },
 
   componentWillReceiveProps: function(nextProps) {
@@ -143,7 +140,7 @@ var ItemColumn = React.createClass({
         {this.state.isLoading ?
           <div className="loading"><Loading type="bubbles" color="#ccc"/></div> :
           _.map(this.state.items, function(item, index) {
-            return <ItemCard item={item} productId={productId} key={`item-${item.number}`} />
+            return <ItemCard item={item} productId={productId} key={`item-${index}`} />
           })
         }
         {this.renderLoadMore()}
