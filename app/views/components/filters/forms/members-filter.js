@@ -40,7 +40,7 @@ var DropdownFilter = React.createClass({
 
   renderMembers: function(option) {
     let active = _.findWhere(option.members, { id: this.props.criteria });
-    let defaultSelection = active ? `${active.first_name} ${active.last_name.slice(0,1)}.` : '';
+    let selection = active ? `${active.first_name} ${active.last_name.slice(0,1)}.` : '';
 
     let members = _.map(option.members, function(member) {
       let title = `${member.first_name} ${member.last_name.slice(0,1)}.`;
@@ -54,7 +54,7 @@ var DropdownFilter = React.createClass({
       <div className="form-group selector" key="members-dropdown">
         <SelectorMenu
           optionsList={_.sortBy(members, 'title')}
-          defaultSelection={defaultSelection}
+          selection={selection}
           onSelectionChange={(title) => {
             this.onChange(_.findWhere(members, { title }))
           }}
