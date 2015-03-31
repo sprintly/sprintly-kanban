@@ -66,7 +66,7 @@ var ProductStore = module.exports = {
   }
 };
 
-var proxyMethods = ['get', 'on', 'off', 'once', 'listenTo', 'stopListening']
+var proxyMethods = ['trigger', 'get', 'on', 'off', 'once', 'listenTo', 'stopListening']
 
 proxyMethods.forEach(function(method) {
   ProductStore[method] = products[method].bind(products);
@@ -231,10 +231,6 @@ var internals = ProductStore.internals = {
   },
 
   createSubscription(product) {
-    product.items.on('change', function() {
-      products.trigger('change');
-    });
-
     product.items.on('change:status', function(model) {
       let status = model.get('status');
       let collection = product._filters[status];
