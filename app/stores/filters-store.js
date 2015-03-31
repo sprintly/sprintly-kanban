@@ -43,6 +43,7 @@ proxyMethods.forEach(function(method) {
 
 var internals = FiltersStore.internals = {
   init: function(product, user) {
+    filters.reset(filtersData, { silent: true });
     let members = product.members;
     let tags = product.tags;
     return Promise.all([
