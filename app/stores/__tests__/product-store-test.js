@@ -78,14 +78,14 @@ describe('ProductStore', function() {
 
     afterEach(function() {
       this.resortStub.restore();
-    })
+    });
 
     after(function() {
       this.backlog.reset();
-    })
+    });
 
     it('throws when unexpected sort argument encountered', function() {
-      assert.throws(() => ProductStore.internals.updateItemPriority(1,1,'sideways'), /Invalid priority direction/)
+      assert.throws(() => ProductStore.internals.updateItemPriority(1,1,'sideways'), /Invalid priority direction/);
     });
 
     context('up', function() {
