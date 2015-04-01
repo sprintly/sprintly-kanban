@@ -165,33 +165,49 @@ var internals = ProductStore.internals = {
     let sort = item.get('sort');
     let payload = {};
     let col = product._filters[status].sortBy('sort');
+    let index = _.findIndex(col, function(item) {
+      return item.get('number') === itemId;
+    })
+
+    let previousItems = {
+      after: col[index - 2],
+      before: col[index - 1]
+    };
+    let nextItems = {
+      after: col[index + 1],
+      before: col[index + 2],
+    }
 
     switch(priority) {
       case 'up':
-        let nextItem = _.find(col, (model) => {
-          return model.get('sort') < sort;
-        });
-        payload.sort = nextItem.get('sort') - 1;
+        if (previousItems.before) {
+          payload[!previousItems.after ? 'after' : 'before'] = previousItems.before.get('number');
+        }
+        if (previousItems.after) {
+          payload[!previousItems.before ? 'before' : 'after'] = previousItems.after.get('number');
+        }
         break;
       case 'down':
-        let prevItem = _.find(col, (model) => {
-          return model.get('sort') > sort;
-        });
-        payload.sort = prevItem.get('sort') + 1;
+        if (nextItems.before) {
+          payload[!nextItems.after ? 'after' : 'before'] = nextItems.before.get('number');
+        }
+        if (nextItems.after) {
+          payload[!nextItems.before ? 'before' : 'after'] = nextItems.after.get('number');
+        }
         break;
       case 'top':
         let topItem = _.first(col);
-        payload.sort = topItem.get('sort') - 1;
+        payload.after = topItem.get('number');
         break;
       case 'bottom':
         let bottomItem = _.last(col);
-        payload.sort = bottomItem.get('sort') + 1;
+        payload.before = bottomItem.get('number');
         break;
       default:
         break;
     }
 
-    item.save(payload);
+    item.resort(payload);
   },
 
   createItem(product, item_data) {
