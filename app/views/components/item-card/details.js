@@ -47,7 +47,7 @@ var ItemCardDetails = React.createClass({
 
   renderMoveControls() {
     return this.props.sortField !== 'priority' ? (
-      <OverlayTrigger placement='top' overlay={<Tooltip>Sort by <strong>Priority</strong> to enable reordering.</Tooltip>}>
+      <OverlayTrigger placement='top' overlay={<Tooltip>Sort by <strong>Priority</strong> to reorder.</Tooltip>}>
         <Button bsStyle='default' bsSize="small">Reorder</Button>
       </OverlayTrigger>
     ) : (
