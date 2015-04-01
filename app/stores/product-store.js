@@ -184,12 +184,12 @@ var internals = ProductStore.internals = {
           payload[!previousItems.after ? 'after' : 'before'] = previousItems.before.get('number');
         }
         if (previousItems.after) {
-          payload[!previousItems.before ? 'before' : 'after'] = previousItems.after.get('number');
+          payload.after = previousItems.after.get('number');
         }
         break;
       case 'down':
         if (nextItems.before) {
-          payload[!nextItems.after ? 'after' : 'before'] = nextItems.before.get('number');
+          payload.before = nextItems.before.get('number');
         }
         if (nextItems.after) {
           payload[!nextItems.before ? 'before' : 'after'] = nextItems.after.get('number');
@@ -204,6 +204,7 @@ var internals = ProductStore.internals = {
         payload.before = bottomItem.get('number');
         break;
       default:
+        throw new Error('Invalid priority direction: '+ priority);
         break;
     }
 

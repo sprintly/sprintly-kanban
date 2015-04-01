@@ -63,6 +63,70 @@ describe('ProductStore', function() {
     });
   });
 
+  describe('updateItemPriority', function() {
+    beforeEach(function() {
+      this.products = ProductStore.__get__('products');
+      this.product = this.products.add({ id: 1 });
+      this.backlog = this.product.getItemsByStatus('backlog');
+      this.resortStub = sinon.stub(this.product.ItemModel.prototype, 'resort');
+      this.backlog.reset([
+        { number: 1, status: 'backlog', product: { id: 1 }, sort: 1 },
+        { number: 2, status: 'backlog', product: { id: 1 }, sort: 2 },
+        { number: 3, status: 'backlog', product: { id: 1 }, sort: 3 }
+      ]);
+    });
+
+    afterEach(function() {
+      this.resortStub.restore();
+    })
+
+    after(function() {
+      this.backlog.reset();
+    })
+
+    it('throws when unexpected sort argument encountered', function() {
+      assert.throws(() => ProductStore.internals.updateItemPriority(1,1,'sideways'), /Invalid priority direction/)
+    });
+
+    context('up', function() {
+      it('calls resort with the expected before and after values when both exist', function() {
+        ProductStore.internals.updateItemPriority(1, 3, 'up');
+        sinon.assert.calledWith(this.resortStub, { before: 2, after: 1 });
+      })
+
+      it('call resort with the expected arguments when no "after" item is found', function() {
+        ProductStore.internals.updateItemPriority(1, 2, 'up');
+        sinon.assert.calledWith(this.resortStub, { after: 1 });
+      })
+    });
+
+    context('down', function() {
+      it('calls resort with the expected before and after values when both "before" and "after" items exist', function() {
+        ProductStore.internals.updateItemPriority(1, 1, 'down');
+        sinon.assert.calledWith(this.resortStub, { before: 3, after: 2 });
+      })
+
+      it('call resort with the expected arguments when no "before" item is found', function() {
+        ProductStore.internals.updateItemPriority(1, 2, 'down');
+        sinon.assert.calledWith(this.resortStub, { before: 3 });
+      })
+    });
+
+    context('top', function() {
+      it('calls resort with the correct values', function() {
+        ProductStore.internals.updateItemPriority(1, 3, 'top');
+        sinon.assert.calledWith(this.resortStub, { after: 1 });
+      });
+    });
+
+    context('bottom', function() {
+      it('calls resort with the correct values', function() {
+        ProductStore.internals.updateItemPriority(1, 1, 'bottom');
+        sinon.assert.calledWith(this.resortStub, { before: 3 });
+      });
+    });
+  });
+
   describe('getAll', function() {
     it('only returns active products', function() {
       let products = ProductStore.__get__('products');
