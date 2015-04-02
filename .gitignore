@@ -12,3 +12,4 @@ public/css/main.css*
 test/bundle.js
 .vagrant
 npm-debug.log*
+test/test-bundle.js
