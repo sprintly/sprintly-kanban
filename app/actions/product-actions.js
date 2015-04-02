@@ -49,6 +49,15 @@ var ProductActions = {
       itemId,
       payload
     });
+  },
+
+  updateItemPriority: function(productId, itemId, priority) {
+    AppDispatcher.dispatch({
+      actionType: ProductConstants.UPDATE_ITEM_PRIORITY,
+      productId,
+      itemId,
+      priority
+    })
   }
 
 };

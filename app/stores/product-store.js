@@ -175,6 +175,59 @@ var internals = ProductStore.internals = {
     item.save(payload);
   },
 
+  updateItemPriority(productId, itemId, priority) {
+    let product = products.get(productId);
+    let item = product.items.get(itemId);
+    let status = item.get('status');
+    let sort = item.get('sort');
+    let payload = {};
+    let col = product._filters[status].sortBy('sort');
+    let index = _.findIndex(col, function(item) {
+      return item.get('number') === itemId;
+    })
+
+    let previousItems = {
+      after: col[index - 2],
+      before: col[index - 1]
+    };
+    let nextItems = {
+      after: col[index + 1],
+      before: col[index + 2],
+    }
+
+    switch(priority) {
+      case 'up':
+        if (previousItems.before) {
+          payload[!previousItems.after ? 'after' : 'before'] = previousItems.before.get('number');
+        }
+        if (previousItems.after) {
+          payload.after = previousItems.after.get('number');
+        }
+        break;
+      case 'down':
+        if (nextItems.before) {
+          payload.before = nextItems.before.get('number');
+        }
+        if (nextItems.after) {
+          payload[!nextItems.before ? 'before' : 'after'] = nextItems.after.get('number');
+        }
+        break;
+      case 'top':
+        let topItem = _.first(col);
+        payload.after = topItem.get('number');
+        break;
+      case 'bottom':
+        let bottomItem = _.last(col);
+        payload.before = bottomItem.get('number');
+        break;
+      default:
+        throw new Error('Invalid priority direction: '+ priority);
+        break;
+    }
+
+    item.resort(payload);
+  },
+
   createItem(product, item_data) {
     let item = product.createItem(item_data);
     let collection = product.getItemsByStatus(item.get('status'))
@@ -321,6 +374,10 @@ ProductStore.dispatchToken = AppDispatcher.register(function(action) {
 
     case ProductConstants.SUBSCRIBE:
       internals.createSubscription(action.id);
+      break;
+
+    case ProductConstants.UPDATE_ITEM_PRIORITY:
+      internals.updateItemPriority(action.productId, action.itemId, action.priority);
       break;
 
     case ProductConstants.UPDATE_ITEM:
