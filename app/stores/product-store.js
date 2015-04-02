@@ -155,6 +155,11 @@ var internals = ProductStore.internals = {
   updateItem(productId, itemId, payload) {
     let product = products.get(productId);
     let item = product.items.get(itemId);
+
+    if (payload.status) {
+      item.unset('close_reason', { silent: true });
+    }
+
     item.save(payload);
   },
 
