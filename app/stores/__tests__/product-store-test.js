@@ -8,26 +8,71 @@ var sinon = require('sinon');
 describe('ProductStore', function() {
 
   describe('internals.initProducts', function() {
-    before(function() {
+    beforeEach(function() {
+      this.sinon = sinon.sandbox.create();
       this.products = ProductStore.__get__('products');
       this.user = ProductStore.__get__('user');
+      this.FiltersAction = ProductStore.__get__('FiltersAction');
+      this.productsTriggerStub = sinon.stub()
       ProductStore.__set__('products', {
         fetch: () => true,
-        trigger: sinon.stub()
+        trigger: this.productsTriggerStub,
+        get: sinon.stub()
       });
       ProductStore.__set__('user', {
         fetch: () => true
-      })
+      });
+      this.filtersInitStub = sinon.stub();
+      ProductStore.__set__('FiltersAction', {
+        init: this.filtersInitStub
+      });
     });
 
-    after(function() {
+    afterEach(function() {
       ProductStore.__set__('products', this.products);
       ProductStore.__set__('user', this.user);
+      ProductStore.__set__('FiltersAction', this.FiltersAction);
+      this.sinon.restore();
     });
 
     it('should return a promise', function() {
-      var internals = ProductStore.internals;
-      return internals.initProducts();
+      return ProductStore.internals.initProducts();
+    });
+
+    context('after successful fetch', function() {
+      beforeEach(function() {
+        this.createSubscriptionStub = this.sinon.stub(ProductStore.internals, 'createSubscription');
+      });
+
+      it('initializes filters data', function(done) {
+        ProductStore.internals.initProducts(1).then(() => {
+          assert.isTrue(this.filtersInitStub.called);
+          done();
+        })
+      });
+
+      it('subscribes to product events', function(done) {
+        ProductStore.internals.initProducts(1).then(() => {
+          assert.isTrue(this.createSubscriptionStub.called);
+          done();
+        })
+      });
+
+      it('triggers a change event', function(done) {
+        ProductStore.internals.initProducts(1).then(() => {
+          assert.isTrue(this.productsTriggerStub.called);
+          done();
+        });
+      });
+
+      context('no product id', function() {
+        it('triggers a change event', function(done) {
+          ProductStore.internals.initProducts(1).then(() => {
+            assert.isTrue(this.productsTriggerStub.called);
+            done();
+          });
+        });
+      });
     });
   });
 

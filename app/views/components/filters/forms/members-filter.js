@@ -39,22 +39,22 @@ var DropdownFilter = React.createClass({
   },
 
   renderMembers: function(option) {
-    let defaultSelection = '';
+    let active = _.findWhere(option.members, { id: this.props.criteria });
+    let selection = active ? `${active.first_name} ${active.last_name.slice(0,1)}.` : 'All';
+
     let members = _.map(option.members, function(member) {
       let title = `${member.first_name} ${member.last_name.slice(0,1)}.`;
-      if (this.props.criteria === member.id) {
-        defaultSelection = title;
-      }
       return {
         title,
         value: member.id
       }
     }, this);
+
     return (
       <div className="form-group selector" key="members-dropdown">
         <SelectorMenu
           optionsList={_.sortBy(members, 'title')}
-          defaultSelection={defaultSelection}
+          selection={selection}
           onSelectionChange={(title) => {
             this.onChange(_.findWhere(members, { title }))
           }}
@@ -68,8 +68,7 @@ var DropdownFilter = React.createClass({
       return this.renderMembers(option);
     }
 
-    let checked = this.props.criteria.length === 0 ? option.default :
-      _.contains(this.props.criteria, option.field);
+    let checked = this.props.criteria === option.value
 
     return (
       <Input
@@ -78,7 +77,7 @@ var DropdownFilter = React.createClass({
         label={option.label}
         wrapperClassName="col-xs-offset-1"
         onChange={_.partial(this.update, option.field, option.value)}
-        defaultChecked={checked} />
+        checked={checked} />
     );
   },
 

@@ -14,7 +14,6 @@ var FiltersMenu = React.createClass({
   },
 
   propTypes: {
-    members: React.PropTypes.array.isRequired,
     allFilters: React.PropTypes.array.isRequired,
     updateFilters: React.PropTypes.func.isRequired
   },
@@ -44,7 +43,7 @@ var FiltersMenu = React.createClass({
     };
     switch (filter.type) {
       case 'members':
-        form = <MembersFilter {...formProps} members={this.props.members}/>
+        form = <MembersFilter {...formProps}/>
         break;
       case 'checkbox':
         form = <CheckboxFilter {...formProps} />
