@@ -1,5 +1,3 @@
-// PhantomJS isn't full es5, this gets it a little closer
-require('es5-shim')
-require('./views/app-test')
-require('./views/pages/items-test')
-
+require("../app/stores/__tests__/filters-store-test.js");
+require("../app/stores/__tests__/product-store-test.js");
+require("../app/views/components/filters/__tests__/filter-component-test.js");

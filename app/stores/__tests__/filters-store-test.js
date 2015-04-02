@@ -2,14 +2,12 @@ var _ = require('lodash');
 var FiltersStore = require('../filters-store');
 var assert = require('chai').assert;
 var Backbone = require('backdash');
+var sinon = require('sinon');
+var filtersJSON = require('../filters-data');
 
 describe('FiltersStore', function() {
-  var filtersJSON;
   before(function() {
     this.filters = FiltersStore.__get__('filters');
-  });
-  beforeEach(function() {
-    filtersJSON = this.filters.toJSON();
   });
 
   describe('getActiveOrDefault', function() {
@@ -55,20 +53,45 @@ describe('FiltersStore', function() {
         return FiltersStore.internals.init(this.product, this.user);
       });
 
-      it('decorates members onto appropriate filters', function() {
+      it('resets filters to their default state', function() {
+        let spy = sinon.spy(this.filters, 'reset');
         FiltersStore.internals.init(this.product, this.user);
-        let filter = this.filters.findWhere({ type: 'members' });
-        let criteria = filter.get('criteriaOptions');
-        assert.lengthOf(criteria[0].members, this.product.members.length);
-        this.filters.reset(filtersJSON, { silent: true });
+        sinon.assert.calledOnce(spy);
+        spy.restore();
       });
 
-      it('decorates tags onto appropriate filters', function() {
-        FiltersStore.internals.init(this.product, this.user);
-        let filter = this.filters.findWhere({ type: 'tags' });
-        let criteria = filter.get('criteriaOptions');
-        assert.deepEqual(criteria, this.product.tags.toJSON())
-        this.filters.reset(filtersJSON, { silent: true });
+      it('decorates members onto appropriate filters', function(done) {
+        FiltersStore.internals.init(this.product, this.user).then(() => {
+          let filter = this.filters.findWhere({ type: 'members' });
+          let criteria = filter.get('criteriaOptions');
+          assert.lengthOf(criteria[0].members, this.product.members.length);
+          this.filters.reset(filtersJSON, { silent: true });
+          done();
+        })
+      });
+
+      it('updates the members key if it already exists', function(done) {
+        FiltersStore.internals.init(this.product, this.user).then(() => {
+          let filter = this.filters.findWhere({ type: 'members' });
+          let criteria = filter.get('criteriaOptions');
+          let criteriaSize = _.size(criteria);
+          this.product.members.add({ id: 2, revoked: false });
+          FiltersStore.internals.init(this.product, this.user);
+          assert.lengthOf(criteria[0].members, this.product.members.length);
+          assert.equal(criteriaSize, _.size(criteria));
+          this.filters.reset(filtersJSON, { silent: true });
+          done();
+        });
+      });
+
+      it('decorates tags onto appropriate filters', function(done) {
+        FiltersStore.internals.init(this.product, this.user).then(() => {
+          let filter = this.filters.findWhere({ type: 'tags' });
+          let criteria = filter.get('criteriaOptions');
+          assert.deepEqual(criteria, this.product.tags.toJSON())
+          this.filters.reset(filtersJSON, { silent: true });
+          done();
+        });
       });
     });
 
