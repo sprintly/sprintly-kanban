@@ -76,10 +76,21 @@
   top: 2.8em;
   float: left;
   background: #fff;
-  min-width: 150px;
+  min-width: 200px;
   padding: 1em;
   border-radius: 5px;
   box-shadow: 1px 2px 7px -1px #6E6E6E;
+
+  .selector {
+    display: block;
+    height: 40px;
+    z-index: 300;
+  }
+
+  .selector__wrapper .inner-wrapper.expanded {
+    position: relative;
+    z-index: 300;
+  }
 
   &.visible {
     display: block;
