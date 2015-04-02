@@ -31,6 +31,32 @@ describe('ProductStore', function() {
     });
   });
 
+  describe('internals.updateItem', function() {
+    beforeEach(function() {
+      this.products = ProductStore.__get__('products');
+      this.product = this.products.add({ id: 1 });
+      this.item = this.product.items.add(
+        { id: 1, status: 'in-progress' }
+      );
+      this.item.save = sinon.stub();
+    });
+
+    afterEach(function() {
+      this.product.items.reset();
+    });
+
+    it('unsets the close reason if status is changing', function() {
+      this.item.set({ close_reason: 'fixed' });
+      ProductStore.internals.updateItem(1, 1, { status: 'current' });
+      assert.isUndefined(this.item.get('close_reason'));
+    });
+
+    it('calls item.save', function() {
+      ProductStore.internals.updateItem(1, 1, { status: 'current' });
+      sinon.assert.calledWith(this.item.save, { status: 'current' });
+    });
+  });
+
   describe('internals.loadMoreItems', function() {
     beforeEach(function() {
       this.collection = new Backbone.Collection();
