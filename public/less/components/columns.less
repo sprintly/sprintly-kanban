@@ -19,7 +19,7 @@
 .tray {
   height: 100%;
   float: left;
-  .transition(all 400ms cubic-bezier(0.19, 1, 0.22, 1));
+  .transition(all 400ms);
   width: 120%;
   .translate(-8%, 0);
 
@@ -36,19 +36,15 @@
     float: left;
     min-height: 100%;
     width: 100%;
-    padding: 10em 1em 1em;
+    padding: 1em;
     position: relative;
     width: 20%;
     max-width: 500px;
   }
-
 }
 
-.tray .column__nav {
-  position: fixed;
-  top: 93px;
-  left: 0;
-  z-index: 100;
+.column__nav {
+  margin-top: 93px;
   width: 100%;
   background: #ECECEC;
   color: @header;
