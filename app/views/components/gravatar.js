@@ -24,7 +24,7 @@ var Gravatar = React.createClass({
 
   render: function() {
     return this.props.email != null ?
-      this.getAvatar(this.props.email) : '';
+      this.getAvatar(this.props.email) : <span />;
   }
 });
 

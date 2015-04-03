@@ -104,7 +104,7 @@ module.exports = React.createClass({
 
     var cols = _.map(product.ItemModel.ITEM_STATUSES, this.renderColumn);
 
-    var classes = {
+    var trayClasses = {
       tray: true,
       'show-accepted': this.state.showAccepted,
       'show-someday': this.state.showSomeday
@@ -123,7 +123,7 @@ module.exports = React.createClass({
           activeFilters={this.state.activeFilters}
           members={this.state.members}
         />
-        <div className={React.addons.classSet(classes)}>
+        <div className={React.addons.classSet(trayClasses)}>
           <div className="column__nav">
             {_.map(product.ItemModel.ITEM_STATUSES, function(label, status) {
               return (
