@@ -4,6 +4,7 @@ import AppDispatcher from '../dispatchers/app-dispatcher';
 import ProductConstants from '../constants/product-constants';
 import { products, user } from '../lib/sprintly-client';
 import FiltersAction from '../actions/filter-actions';
+import {PUSHER_KEY, CHANNEL_PREFIX} from '../config';
 
 var ProductStore = module.exports = {
   getAll: function() {
@@ -306,8 +307,7 @@ var internals = ProductStore.internals = {
       }
     });
 
-    // TODO: move config value into server rendered js
-    var channelName = `api-product_sprintly-development-justinlilly_${product.id}`
+    var channelName = `${CHANNEL_PREFIX}_${product.id}`;
     var options = {
       encrypted: false,
       auth: {
@@ -317,12 +317,10 @@ var internals = ProductStore.internals = {
       }
     };
 
-    // TODO: move config value into server rendered js
-    var socket = new window.Pusher('***REMOVED***', options);
+    var socket = new window.Pusher(PUSHER_KEY, options);
     var productChannel = socket.subscribe(channelName);
 
     productChannel.bind('changed', function(msg) {
-      console.log(msg)
       let model = msg['class'];
 
       switch(model) {
