@@ -1,0 +1,59 @@
+@header: #333333;
+@header-title: #EFEFEF;
+@running-man: #21718D;
+
+.running-man {
+  float: left;
+  margin: 8px;
+}
+
+.running-man-svg {
+  fill-rule:  evenodd;
+  clip-rule:  evenodd;
+  fill: @running-man;
+}
+
+.product__header {
+  background: @header;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 300;
+
+  h1 {
+    padding: 19px 12px;
+    color: @header-title;
+    margin: 0;
+    font-size: 14px;
+  }
+}
+
+.product__account {
+  float: right;
+  padding: 13px;
+
+  &.product__dropdown ul {
+    right: -5px;
+    left: auto;
+  }
+}
+
+.product__account ul a {
+  width: 100%;
+}
+
+.product__account .dropdown-toggle {
+  background: transparent;
+  border: none;
+  color: @header-title;
+  margin: 0;
+  padding: 0;
+
+  .product__account-name, .glyphicon {
+    padding-left: 1rem;
+  }
+
+  .glyphicon {
+    font-size: 1rem;
+  }
+}

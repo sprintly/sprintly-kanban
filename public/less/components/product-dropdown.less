@@ -1,3 +1,6 @@
+@link-hover-background: #2e2e2e;
+@link-hover-color: #5895b5;
+
 .product__dropdown {
   position: relative;
   display: inline-block;
@@ -17,21 +20,49 @@
   list-style: none;
   top: 53px;
   left: 0;
-  padding: 1rem 2rem 1rem;
+  padding: 0;
   max-height: 400px;
   min-width: 200px;
   overflow: scroll;
   border-radius: 0 0 5px 5px;
 
   li {
-    padding-bottom: 1rem;
+    &:hover {
+      background: @link-hover-background;
+    }
   }
 
   li a {
     color: #fff;
+    width: 100%;
+    display: inline-block;
+    padding: 1rem 1.5rem;
+
+    &:hover {
+      text-decoration: none;
+      color: @link-hover-color;
+    }
+  }
+
+  li.logout {
+    box-sizing: content-box;
+    padding: 1rem;
+  }
+
+  li a.btn {
+    padding: 4px;
+    &:hover {
+      color: #fff;
+    }
   }
 }
 
-.product__dropdown:hover ul {
-  display: block;
+.product__dropdown:hover {
+  ul {
+    display: block;
+  }
+
+  h1 {
+    color: @link-hover-color;
+  }
 }
