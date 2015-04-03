@@ -56,7 +56,7 @@ server.route([
   },
   {
     method: 'GET',
-    path: '/product/{*p}',
+    path: '/product/{p*}',
     config: {
       auth: 'session',
       handler: serveApp
