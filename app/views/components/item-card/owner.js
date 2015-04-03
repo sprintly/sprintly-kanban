@@ -1,9 +1,5 @@
-/**
- * @jsx React.DOM
- */
-
-var React = require('react')
-var crypto = require('crypto')
+var React = require('react');
+var Gravatar = require('../gravatar');
 
 var Owner = React.createClass({
 
@@ -11,14 +7,6 @@ var Owner = React.createClass({
     return {
       size: 36
     };
-  },
-
-  getAvatar: function(email) {
-    var hash = crypto.createHash('md5')
-    hash.update(email.toLowerCase().trim())
-    var url = `//www.gravatar.com/avatar/${hash.digest('hex')}.jpg\
-      ?d=identicon&s=${this.props.size}`;
-    return <img src={url} />;
   },
 
   defaultImage: function() {
@@ -34,11 +22,11 @@ var Owner = React.createClass({
     return (
       <div className="item-card__owner-avatar">
         {this.props.person != null ?
-          this.getAvatar(this.props.person.email) :
+          <Gravatar email={this.props.person.email} size={this.props.size} /> :
           this.defaultImage() }
       </div>
     )
   }
-})
+});
 
-module.exports = Owner
+module.exports = Owner;
