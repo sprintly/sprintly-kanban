@@ -39,18 +39,28 @@ server.register([
   }
 });
 
+function serveApp(request, reply) {
+  reply.view('layout.html', {
+    token: request.auth.credentials.token
+  })
+}
+
 server.route([
   {
     method: 'GET',
     path: '/',
     config: {
-      auth: 'session'
+      auth: 'session',
+      handler: serveApp
     },
-    handler: function(request, reply) {
-      reply.view('layout.html', {
-        token: request.auth.credentials.token
-      })
-    }
+  },
+  {
+    method: 'GET',
+    path: '/product/{*p}',
+    config: {
+      auth: 'session',
+      handler: serveApp
+    },
   },
   {
     method: 'POST',
