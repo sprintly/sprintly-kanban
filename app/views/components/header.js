@@ -15,6 +15,12 @@ var Header = React.createClass({
     user: React.PropTypes.object
   },
 
+  getDefaultProps() {
+    return {
+      productName: 'Choose a Product'
+    }
+  },
+
   render() {
     return (
       <header className="product__header container-fluid">
