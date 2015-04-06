@@ -171,6 +171,11 @@ var internals = ProductStore.internals = {
 
     if (payload.status) {
       item.unset('close_reason', { silent: true });
+
+      if (_.contains(['backlog', 'someday'], item.get('status')) &&
+          _.contains(['in-progress', 'completed'], payload.status) ) {
+        payload.assigned_to = user.id;
+      }
     }
 
     item.save(payload);
