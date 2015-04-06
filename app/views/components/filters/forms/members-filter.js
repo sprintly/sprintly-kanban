@@ -68,16 +68,22 @@ var DropdownFilter = React.createClass({
       return this.renderMembers(option);
     }
 
-    let checked = this.props.criteria === option.value
+    let props = {
+      type: 'checkbox',
+      label: option.label,
+      wrapperClassName: 'col-xs-offset-1',
+      key: `filter-checkbox-${option.field}`,
+      checked: this.props.criteria === option.value,
+      onChange: _.partial(this.update, option.field, option.value)
+    }
+
+    if (option.value.length === 0 && this.props.criteria.length === 0 && option.default === false) {
+      delete props.checked;
+      props.defaultChecked = option.default;
+    }
 
     return (
-      <Input
-        key={`filter-checkbox-${option.field}`}
-        type="checkbox"
-        label={option.label}
-        wrapperClassName="col-xs-offset-1"
-        onChange={_.partial(this.update, option.field, option.value)}
-        checked={checked} />
+      <Input {...props}/>
     );
   },
 
