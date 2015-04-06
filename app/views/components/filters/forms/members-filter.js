@@ -3,11 +3,15 @@ import React from 'react/addons';
 import {Input} from 'react-bootstrap';
 import {SelectorMenu} from 'sprintly-ui';
 
-var DropdownFilter = React.createClass({
+var MembersFilter = React.createClass({
 
   propTypes: {
     name: React.PropTypes.string.isRequired,
     updateFilters: React.PropTypes.func,
+    criteria: React.PropTypes.oneOfType([
+      React.PropTypes.string,
+      React.PropTypes.number
+    ]),
     options: React.PropTypes.array
   },
 
@@ -28,13 +32,12 @@ var DropdownFilter = React.createClass({
     let criteria = '';
     let options = {};
 
-    if (!checked) {
+    if (checked) {
+      criteria = value;
+    } else {
       options.unset = true;
     }
 
-    if (checked && field === 'me') {
-      criteria = value;
-    }
     this.props.updateFilters(this.props.name, criteria, options);
   },
 
@@ -63,7 +66,7 @@ var DropdownFilter = React.createClass({
     );
   },
 
-  renderCriteriaFormField: function(option) {
+  renderCriteriaFormField: function(option, index) {
     if (option.members) {
       return this.renderMembers(option);
     }
@@ -72,14 +75,10 @@ var DropdownFilter = React.createClass({
       type: 'checkbox',
       label: option.label,
       wrapperClassName: 'col-xs-offset-1',
-      key: `filter-checkbox-${option.field}`,
+      key: index,
+      ref: `filter-checkbox-${option.field}`,
       checked: this.props.criteria === option.value,
       onChange: _.partial(this.update, option.field, option.value)
-    }
-
-    if (option.value.length === 0 && this.props.criteria.length === 0 && option.default === false) {
-      delete props.checked;
-      props.defaultChecked = option.default;
     }
 
     return (
@@ -101,4 +100,4 @@ var DropdownFilter = React.createClass({
   }
 })
 
-export default DropdownFilter;
+export default MembersFilter;
