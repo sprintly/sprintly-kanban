@@ -1,0 +1,71 @@
+.add-item .modal-content {
+  background: #fafafa;
+  border: none;
+  border-radius: 0px 4px 4px 4px;
+}
+
+.add-item .btn-primary {
+  background: #84b431;
+  color: #fff;
+  border: none;
+}
+
+.add-item textarea {
+  min-height: 6em;
+}
+
+.add-item__tabs {
+  position: relative;
+}
+
+.add-item__field {
+  display: inline-block;
+  margin-bottom: 2em;
+
+  > span {
+    font-size: 1.4em;
+    color: #20718F;
+  }
+
+  .input-group {
+    position: relative;
+    display: inline-block;
+  }
+
+  label {
+    position: absolute;
+    left: 38%;
+    bottom: -36px;
+    font-size: 11px;
+    font-weight: normal;
+  }
+
+  input.form-control {
+    border: none;
+    border-radius: 0;
+    display: inline-block;
+    margin: 0 8px -11px;
+    font-size: 1.2em;
+    padding: 12px;
+    border-bottom: 1px dashed #444;
+  }
+
+  &.who input.form-control {
+    width: 230px;
+  }
+
+  &.what input.form-control {
+    width: 373px;
+  }
+
+  &.why input.form-control {
+    width: 660px;
+  }
+}
+
+
+@media (min-width: 768px) {
+  .modal-dialog {
+    width: 768px;
+  }
+}
