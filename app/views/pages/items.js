@@ -113,6 +113,7 @@ module.exports = React.createClass({
     return (
       <div className="container-tray">
         <Header
+          productId={this.state.product.id}
           productName={this.state.product.get('name')}
           allProducts={this.state.allProducts}
           user={this.props.user}
