@@ -351,6 +351,10 @@ var internals = ProductStore.internals = {
         delete updatedFilters[field];
       }
     });
+
+    if (updatedFilters.assigned_to === 'unassigned') {
+      updatedFilters.assigned_to = '';
+    }
     return updatedFilters;
   }
 };

@@ -69,7 +69,7 @@ var Filter = React.createClass({
     if (this.props.type === 'members') {
       if (this.props.user.id == this.props.criteria) {
         criteriaLabel = 'Me';
-      } else if (this.props.criteria == '') {
+      } else if (this.props.criteria == 'unassigned' || this.props.criteria === '') {
         criteriaLabel = 'Unassigned';
       } else {
         let member = _.findWhere(this.props.members, { id: parseInt(this.props.criteria, 10) });

@@ -32,7 +32,7 @@ export default [
     field: 'assigned_to',
     criteria: '',
     criteriaOptions: [
-      { field: 'unassigned', value: '', label: 'Unassigned', default: false }
+      { field: 'unassigned', value: 'unassigned', label: 'Unassigned', default: false }
     ]
   },
   {
