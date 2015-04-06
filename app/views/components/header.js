@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React from 'react/addons';
 import Gravatar from './gravatar';
-import {Link} from 'react-router';
+import {Link, Navigation} from 'react-router';
 
 const ACCOUNT_SETTINGS = [
   'Profile', 'Plan', 'Billing', 'Invoices', 'Products', 'Members', 'Notifications', 'Services'
@@ -9,16 +9,58 @@ const ACCOUNT_SETTINGS = [
 
 var Header = React.createClass({
 
+  mixins: [Navigation],
+
   propTypes: {
+    id: React.PropTypes.number,
     productName: React.PropTypes.string,
     allProducts: React.PropTypes.array,
     user: React.PropTypes.object
   },
 
+  getInitialState() {
+    return {
+      scoped: true
+    }
+  },
+
   getDefaultProps() {
     return {
+      searchBar: true,
       productName: 'Choose a Product'
     }
+  },
+
+  search(ev) {
+    ev.preventDefault();
+    let value = this.refs.search.getDOMNode().value;
+    if (this.props.productId && this.state.scoped === true) {
+      value = `product:${this.props.productId} ${value}`;
+    }
+    let url = `/search?q=${encodeURIComponent(value)}`;
+    this.transitionTo(url);
+  },
+
+  onKeyDown(ev) {
+    if (ev.keyCode === 8 && ev.target.value === '') {
+      this.setState({ scoped: false });
+    }
+  },
+
+  renderSearch() {
+    let scope = '';
+    if (this.state.scoped && this.props.productId) {
+      scope = <span className="header-search__scope label label-info">{this.props.productName}</span>
+    }
+    return (
+      <form className="navbar-form navbar-right header-search" onSubmit={this.search} role="search">
+        <div className="form-group">
+          {scope}
+            <input className="form-control" type="search" name="q" placeholder="Search" ref="search" onKeyDown={this.onKeyDown} />
+        </div>
+        <input type="submit" className="hidden" />
+      </form>
+    );
   },
 
   render() {
@@ -52,6 +94,7 @@ var Header = React.createClass({
               </li>
             </ul>
           </nav>
+          {this.props.searchBar ? this.renderSearch() : ''}
         </header>
     );
   }

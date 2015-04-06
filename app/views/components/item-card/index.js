@@ -23,7 +23,8 @@ var ItemCard = React.createClass({
 
   propTypes: {
     productId: React.PropTypes.number.isRequired,
-    item: React.PropTypes.object.isRequired
+    item: React.PropTypes.object.isRequired,
+    sortField: React.PropTypes.string,
   },
 
   getInitialState: function() {
