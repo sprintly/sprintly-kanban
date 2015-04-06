@@ -5,7 +5,6 @@ var OwnerAvatar = require('./owner');
 var Controls = require('./controls');
 var SprintlyUI = require('sprintly-ui');
 var Bootstrap = require('react-bootstrap');
-var marked = require('marked');
 var ProductActions = require('../../../actions/product-actions');
 var FilterActions = require('../../../actions/filter-actions');
 var ItemCardDetails = require('./details');
@@ -19,17 +18,6 @@ const SCORE_MAP = {
 }
 
 const REVERSE_SCORE_MAP = _.zipObject(_.values(SCORE_MAP), _.keys(SCORE_MAP))
-
-marked.setOptions({
-  renderer: new marked.Renderer(),
-  gfm: true,
-  tables: true,
-  breaks: false,
-  pedantic: false,
-  sanitize: true,
-  smartLists: true,
-  smartypants: false
-});
 
 var ItemCard = React.createClass({
 
