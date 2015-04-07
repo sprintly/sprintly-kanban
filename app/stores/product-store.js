@@ -151,18 +151,11 @@ var internals = ProductStore.internals = {
       if (item_data.last_modified < item.get('last_modified')) {
         item_data.last_modified = item.get('last_modified');
       }
-      _.each(['closed_at', 'started_at', 'accepted_at'], function(attr) {
-        if (item.get('progress') && item_data[attr] < item.get('progress')[attr]) {
-          item_data.progress[attr] = item.get('progress')[attr];
-        }
-      });
 
-      item.set(item.parse(_.omit(item_data, 'number')));
+      item.set(_.omit(item_data, 'number'));
     } else {
-      internals.createItem(product, item_data.number, item_data);
+      item = internals.createItem(product, item_data.number, item_data);
     }
-
-    product.items.trigger('change', item);
   },
 
   updateItem(productId, itemId, payload) {

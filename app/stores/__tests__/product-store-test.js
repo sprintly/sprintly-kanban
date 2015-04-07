@@ -6,10 +6,16 @@ var assert = require('chai').assert;
 var sinon = require('sinon');
 
 describe('ProductStore', function() {
+  beforeEach(function() {
+    this.sinon = sinon.sandbox.create();
+  });
+
+  afterEach(function() {
+    this.sinon.restore();
+  });
 
   describe('internals.initProducts', function() {
     beforeEach(function() {
-      this.sinon = sinon.sandbox.create();
       this.products = ProductStore.__get__('products');
       this.user = ProductStore.__get__('user');
       this.FiltersAction = ProductStore.__get__('FiltersAction');
@@ -32,7 +38,6 @@ describe('ProductStore', function() {
       ProductStore.__set__('products', this.products);
       ProductStore.__set__('user', this.user);
       ProductStore.__set__('FiltersAction', this.FiltersAction);
-      this.sinon.restore();
     });
 
     it('should return a promise', function() {
@@ -151,21 +156,57 @@ describe('ProductStore', function() {
     });
   });
 
+  describe('ingestItem', function() {
+    beforeEach(function() {
+      this.products = ProductStore.__get__('products');
+      this.product = this.products.add({ id: 1 });
+      this.backlog = this.product.getItemsByStatus('backlog');
+      this.backlog.reset([
+        { number: 1234, status: 'backlog', last_modified: Date.now() }
+      ]);
+      this.setStub = this.sinon.spy(this.product.ItemModel.prototype, 'set');
+      this.createItemStub = this.sinon.spy(ProductStore.internals, 'createItem');
+      this.triggerStub = this.sinon.stub(this.product.items, 'trigger');
+    });
+
+    context('item already exists', function() {
+      it('should respect more recent last_modified timestamps', function() {
+        ProductStore.internals.ingestItem(this.product, { number: 1234, last_modified: 0, status: 'someday' });
+        let payload = this.setStub.getCall(0).args[0];
+        assert.isDefined(payload);
+        assert.notEqual(payload.last_modified, 0);
+      });
+
+      it('should trigger a change event', function() {
+        ProductStore.internals.ingestItem(this.product, { number: 1234, status: 'someday' });
+        sinon.assert.called(this.triggerStub);
+      });
+    });
+
+    context('item does not exist', function() {
+      it('should call internals.createItem', function() {
+        ProductStore.internals.ingestItem(this.product, { number: 4321, status: 'backlog' });
+        sinon.assert.called(this.createItemStub);
+      });
+
+      it('should trigger a "change" event', function() {
+        ProductStore.internals.ingestItem(this.product, { number: 4321, status: 'someday' });
+        sinon.assert.called(this.triggerStub);
+      });
+    });
+  });
+
   describe('updateItemPriority', function() {
     beforeEach(function() {
       this.products = ProductStore.__get__('products');
       this.product = this.products.add({ id: 1 });
       this.backlog = this.product.getItemsByStatus('backlog');
-      this.resortStub = sinon.stub(this.product.ItemModel.prototype, 'resort');
+      this.resortStub = this.sinon.stub(this.product.ItemModel.prototype, 'resort');
       this.backlog.reset([
         { number: 1, status: 'backlog', product: { id: 1 }, sort: 1 },
         { number: 2, status: 'backlog', product: { id: 1 }, sort: 2 },
         { number: 3, status: 'backlog', product: { id: 1 }, sort: 3 }
       ]);
-    });
-
-    afterEach(function() {
-      this.resortStub.restore();
     });
 
     after(function() {
