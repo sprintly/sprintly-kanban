@@ -78,6 +78,7 @@ describe('ProductStore', function() {
 
   describe('internals.updateItem', function() {
     beforeEach(function() {
+      this.user = ProductStore.__get__('user');
       this.products = ProductStore.__get__('products');
       this.product = this.products.add({ id: 1 });
       this.item = this.product.items.add(
@@ -92,13 +93,29 @@ describe('ProductStore', function() {
 
     it('unsets the close reason if status is changing', function() {
       this.item.set({ close_reason: 'fixed' });
-      ProductStore.internals.updateItem(1, 1, { status: 'current' });
+      ProductStore.internals.updateItem(1, 1, { status: 'in-progress' });
       assert.isUndefined(this.item.get('close_reason'));
     });
 
+    describe('assigns the issue to the user when upgrading backlog or someday items to in-progress or completed', function() {
+      beforeEach(function() {
+        this.user.set({ id: 2 });
+      })
+
+      _.each(['backlog', 'someday'], (status) => {
+        _.each(['in-progress', 'completed'], (newStatus) => {
+          it(`Moving item from ${status} to ${newStatus}`, function() {
+            this.item.set({ status: status, assigned_to: 1 });
+            ProductStore.internals.updateItem(1, 1, { status: newStatus });
+            sinon.assert.calledWith(this.item.save, { assigned_to: 2, status: newStatus });
+          });
+        });
+      });
+    });
+
     it('calls item.save', function() {
-      ProductStore.internals.updateItem(1, 1, { status: 'current' });
-      sinon.assert.calledWith(this.item.save, { status: 'current' });
+      ProductStore.internals.updateItem(1, 1, { status: 'completed' });
+      sinon.assert.calledWith(this.item.save, { status: 'completed' });
     });
   });
 
