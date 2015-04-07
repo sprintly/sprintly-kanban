@@ -171,6 +171,11 @@ var internals = ProductStore.internals = {
 
     if (payload.status) {
       item.unset('close_reason', { silent: true });
+
+      if (_.contains(['backlog', 'someday'], item.get('status')) &&
+          _.contains(['in-progress', 'completed'], payload.status) ) {
+        payload.assigned_to = user.id;
+      }
     }
 
     item.save(payload);
@@ -346,6 +351,10 @@ var internals = ProductStore.internals = {
         delete updatedFilters[field];
       }
     });
+
+    if (updatedFilters.assigned_to === 'unassigned') {
+      updatedFilters.assigned_to = '';
+    }
     return updatedFilters;
   }
 };
