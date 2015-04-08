@@ -145,7 +145,7 @@ var ItemColumn = React.createClass({
                 item={item}
                 sortField={this.state.sortField}
                 productId={productId}
-                key={`item-${index}`}
+                key={`item-${productId}${item.number}-${index}`}
               />
             );
           }, this)
