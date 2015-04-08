@@ -287,6 +287,14 @@ var internals = ProductStore.internals = {
     return [activeFilters, matchingFilters];
   },
 
+  deleteItem(product, item_data) {
+    product.items.remove(item_data.number);
+    let col = product._filters[item_data.status];
+    if (col) {
+      col.remove(item_data.number);
+    }
+  },
+
   createSubscription(product) {
     product.items.on('change:status', function(model) {
       let status = model.get('status');
@@ -324,12 +332,22 @@ var internals = ProductStore.internals = {
       switch(model) {
         case 'Item':
           internals.ingestItem(product, msg.data);
-          break
+          break;
+        default:
+          break;
       }
     });
 
-    productChannel.bind('deleted', function(data) {
-      console.log(data);
+    productChannel.bind('deleted', function(msg) {
+      let model = msg['class'];
+
+      switch(model) {
+        case 'Item':
+          internals.deleteItem(product, msg.data)
+          break;
+        default:
+          break;
+      }
     });
   },
 
