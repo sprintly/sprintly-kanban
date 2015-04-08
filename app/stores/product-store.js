@@ -154,7 +154,7 @@ var internals = ProductStore.internals = {
 
       item.set(_.omit(item_data, 'number'));
     } else {
-      item = internals.createItem(product, item_data.number, item_data);
+      internals.createItem(product, item_data);
     }
   },
 

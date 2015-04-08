@@ -156,7 +156,7 @@ describe('ProductStore', function() {
     });
   });
 
-  describe('ingestItem', function() {
+  describe('internals.ingestItem', function() {
     beforeEach(function() {
       this.products = ProductStore.__get__('products');
       this.product = this.products.add({ id: 1 });
@@ -186,7 +186,7 @@ describe('ProductStore', function() {
     context('item does not exist', function() {
       it('should call internals.createItem', function() {
         ProductStore.internals.ingestItem(this.product, { number: 4321, status: 'backlog' });
-        sinon.assert.called(this.createItemStub);
+        sinon.assert.calledWith(this.createItemStub, this.product, { number: 4321, status: 'backlog'});
       });
 
       it('should trigger a "change" event', function() {
