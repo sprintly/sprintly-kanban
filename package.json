@@ -37,7 +37,7 @@
     "react-component-scrollload": "^0.2.2",
     "react-d3": "0.0.13",
     "react-router": "^0.11.6",
-    "react-typeahead": "^1.0.1",
+    "react-typeahead": "1.0.1",
     "reactify": "^1.1.0",
     "rewireify": "0.0.13",
     "sinon": "^1.13.0",
