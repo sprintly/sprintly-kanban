@@ -78,24 +78,6 @@
     "react-loading": "0.0.1",
     "swig": "^1.4.2"
   },
-  "jest": {
-    "rootDir": "./app",
-    "scriptPreprocessor": "../node_modules/6to5-jest",
-    "testFileExtensions": [
-      "es6",
-      "js"
-    ],
-    "moduleFileExtensions": [
-      "js",
-      "json",
-      "es6"
-    ],
-    "unmockedModulePathPatterns": [
-      "../node_modules/react",
-      "../node_modules/bluebird",
-      "../node_modules/sprintly-data"
-    ]
-  },
   "engines": {
     "node": "0.10.x"
   }
