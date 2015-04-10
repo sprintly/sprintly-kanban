@@ -1,6 +1,8 @@
 import _ from 'lodash';
 import React from 'react/addons';
 import Gravatar from './gravatar';
+import AddItemModal from './add-item-modal';
+import {ModalTrigger} from 'react-bootstrap';
 import {Link, Navigation} from 'react-router';
 
 const ACCOUNT_SETTINGS = [
@@ -87,6 +89,9 @@ var Header = React.createClass({
             })}
             </ul>
           </nav>
+          <ModalTrigger modal={<AddItemModal />}>
+            <button className="btn btn-primary add-item"><span className="glyphicon glyphicon-plus-sign"/> Add Item</button>
+          </ModalTrigger>
           <nav className="product__dropdown product__account">
             <button className="btn btn-default dropdown-toggle">
               <Gravatar email={this.props.user.get('email')} className="img-rounded" size={26} />
