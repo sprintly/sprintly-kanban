@@ -1,8 +1,18 @@
-.add-item .modal-content {
-  background: #fafafa;
-  border: none;
-  border-radius: 0px 4px 4px 4px;
+.add-item.modal {
+  padding-top: 8em;
+
+  .modal-body {
+    background: #fafafa;
+    border-radius: 0px 4px 4px 4px;
+  }
+
+  .modal-content {
+    background: none;
+    border: none;
+    box-shadow: none;
+  }
 }
+
 
 .add-item .btn-primary {
   background: #84b431;
@@ -10,12 +20,68 @@
   border: none;
 }
 
-.add-item textarea {
+.add-item .react-mentions .control textarea {
   min-height: 6em;
+  .form-control;
 }
+
+
+@story-color: #84b431;
+@task-color: #454545;
+@defect-color: #D94949;
+@test-color: #5A96AB;
+
 
 .add-item__tabs {
   position: relative;
+  border: none;
+
+  li {
+    a {
+      color: #fff;
+      padding: 5px 25px;
+      font-size: 1.2em;
+    }
+
+    &.add-item__nav-story > a {
+      background-color: @story-color;
+
+      &:hover {
+        background-color: lighten(@story-color, 20%);
+      }
+    }
+
+    &.add-item__nav-task > a {
+      background-color: @task-color;
+
+      &:hover {
+        background-color: lighten(@task-color, 20%);
+      }
+    }
+
+    &.add-item__nav-defect > a {
+      background-color: @defect-color;
+
+      &:hover {
+        background-color: lighten(@defect-color, 20%);
+      }
+    }
+
+    &.add-item__nav-test > a {
+      background-color: @test-color;
+
+      &:hover {
+        background-color: lighten(@test-color, 20%);
+      }
+    }
+
+    &.active > a,
+    &.active > a:hover {
+      background: #fafafa;
+    }
+
+  }
+
 }
 
 .add-item__field {
@@ -64,8 +130,86 @@
 }
 
 
+.add-item__actions {
+  margin-top: 1em;
+
+  .btn {
+    margin-right: 5px;
+  }
+}
+
 @media (min-width: 768px) {
   .modal-dialog {
     width: 768px;
+  }
+}
+
+
+
+.react-mentions {
+  position: relative;
+  overflow-y: visible;
+
+  .control {
+    &.textarea {
+      font-weight: normal;
+
+      .highlighter {
+        padding: 6px 13px;
+        z-index: 1;
+
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        word-spacing: 0px;
+      }
+    }
+
+    .highlighter {
+      width: inherit;
+      position: absolute;
+      color: transparent;
+      overflow: hidden;
+      font-size: 14px;
+
+      strong {
+        font-weight: normal;
+        background: #cee4e5;
+        color: #444;
+      }
+    }
+  }
+
+  textarea {
+    resize: none;
+  }
+
+  .suggestions {
+    position: absolute;
+    z-index: 1;
+
+    border: 1px solid rgba(0,0,0,0.15);
+    background-color: white;
+    margin-top: 14px;
+    font-size: 10pt;
+
+    ul {
+      margin: 0;
+      padding: 0;
+      list-style-type: none;
+
+      li {
+        padding: 5px 15px;
+        cursor: pointer;
+        border-bottom: 1px solid rgba(0,0,0,0.15);;
+
+        &:last-child {
+          border-bottom: none;
+        }
+
+        &.focus {
+          background-color: #cee4e5;
+        }
+      }
+    }
   }
 }
