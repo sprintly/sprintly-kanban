@@ -5,7 +5,7 @@ var AddItemPage = React.createClass({
   render() {
     return (
       <div className="col-sm-8 col-offset-2 static-modal">
-        <AddItemModal />
+        <AddItemModal backdrop={false} animation={false}/>
       </div>
     )
   }
