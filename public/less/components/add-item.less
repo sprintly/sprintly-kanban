@@ -10,6 +10,7 @@
     background: none;
     border: none;
     box-shadow: none;
+    overflow: auto!important;
   }
 }
 
@@ -25,11 +26,81 @@
   .form-control;
 }
 
+.add-item__tags {
+  position: relative;
+  display: -webkit-flex;
+  display: flex;
+  flex-wrap: wrap;
+  background: #fff;
+  min-height: 34px;
+  border: 1px solid #cccccc;
+  border-radius: 4px;
+  padding: 6px 12px;
+
+  .label {
+    flex: none;
+    margin: 3px 6px 3px 0;
+  }
+
+  .typeahead-token-close {
+    color: #fff;
+    margin-left: 4px;
+  }
+}
+
+.typeahead {
+  flex: 1;
+  position: relative;
+
+  ul {
+    position: absolute;
+    border: 1px solid #ccc;
+    top: 26px;
+    left: -12px;
+    overflow: scroll;
+    list-style: none;
+    background: #fff;
+    max-height: 9em;
+    z-index: 1000;
+    padding: 0;
+    width: 220px;
+
+    li {
+      width: 100%;
+      display: inline-block;
+    }
+
+    a {
+      width: 100%;
+      padding: 6px 12px;
+    }
+  }
+
+  input {
+    float: left;
+    border: none;
+    outline: none;
+    width: 100%;
+  }
+
+}
+
 
 @story-color: #84b431;
 @task-color: #454545;
 @defect-color: #D94949;
 @test-color: #5A96AB;
+
+.add-item .selector {
+  margin-top: 1.4em;
+  min-height: 36px;
+
+  .selector__wrapper {
+    position: fixed;
+    max-height: 22em;
+    overflow: scroll;
+  }
+}
 
 
 .add-item__tabs {
@@ -41,13 +112,14 @@
       color: #fff;
       padding: 5px 25px;
       font-size: 1.2em;
+      border: none;
     }
 
     &.add-item__nav-story > a {
       background-color: @story-color;
 
       &:hover {
-        background-color: lighten(@story-color, 20%);
+        background-color: lighten(@story-color, 12%);
       }
     }
 
@@ -55,7 +127,7 @@
       background-color: @task-color;
 
       &:hover {
-        background-color: lighten(@task-color, 20%);
+        background-color: lighten(@task-color, 12%);
       }
     }
 
@@ -63,7 +135,7 @@
       background-color: @defect-color;
 
       &:hover {
-        background-color: lighten(@defect-color, 20%);
+        background-color: lighten(@defect-color, 12%);
       }
     }
 
@@ -71,7 +143,7 @@
       background-color: @test-color;
 
       &:hover {
-        background-color: lighten(@test-color, 20%);
+        background-color: lighten(@test-color, 12%);
       }
     }
 
@@ -155,7 +227,8 @@
       font-weight: normal;
 
       .highlighter {
-        padding: 6px 13px;
+        padding: 6px 12px;
+        border: 1px solid transparent;
         z-index: 1;
 
         white-space: pre-wrap;

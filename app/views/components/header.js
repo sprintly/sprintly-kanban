@@ -16,7 +16,9 @@ var Header = React.createClass({
   propTypes: {
     product: React.PropTypes.object,
     allProducts: React.PropTypes.array,
-    user: React.PropTypes.object
+    user: React.PropTypes.object,
+    members: React.PropTypes.array,
+    tags: React.PropTypes.array
   },
 
   getInitialState() {
@@ -48,6 +50,18 @@ var Header = React.createClass({
     if (ev.keyCode === 8 && ev.target.value === '') {
       this.setState({ scoped: false });
     }
+  },
+
+  renderAddItem() {
+    if (this.props.members && this.props.tags) {
+      return (
+        <ModalTrigger modal={<AddItemModal members={this.props.members} tags={this.props.tags}/>}>
+          <button className="btn btn-primary add-item"><span className="glyphicon glyphicon-plus-sign"/> Add Item</button>
+        </ModalTrigger>
+      );
+    }
+
+    return '';
   },
 
   renderSearch() {
@@ -89,9 +103,7 @@ var Header = React.createClass({
             })}
             </ul>
           </nav>
-          <ModalTrigger modal={<AddItemModal />}>
-            <button className="btn btn-primary add-item"><span className="glyphicon glyphicon-plus-sign"/> Add Item</button>
-          </ModalTrigger>
+          {this.renderAddItem()}
           <nav className="product__dropdown product__account">
             <button className="btn btn-default dropdown-toggle">
               <Gravatar email={this.props.user.get('email')} className="img-rounded" size={26} />
