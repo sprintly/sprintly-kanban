@@ -2,7 +2,7 @@ import _ from 'lodash';
 import AppDispatcher from '../dispatchers/app-dispatcher';
 import {EventEmitter} from 'events';
 
-var payload = {};
+var payload;
 
 var SearchStore = _.assign({}, EventEmitter.prototype, {
   getResults() {
