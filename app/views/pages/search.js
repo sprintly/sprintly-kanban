@@ -64,11 +64,12 @@ export default React.createClass({
   },
 
   search(query, options={}) {
-    if (options.loader !== false) {
+    if (options.loader !== false ) {
       this.loader();
     }
-    window.history.pushState(null, null, `?q=${encodeURIComponent(query)}`);
+    this.setState({ query: query.trim() });
     SearchActions.search(query);
+    this.transitionTo(`/search?q=${encodeURIComponent(query)}`);
   },
 
   loader: function() {
@@ -88,12 +89,23 @@ export default React.createClass({
 
   addProduct: function(value, ev) {
     let productFacet = `product:${value}`;
-    let query = this.state.query.indexOf(productFacet) > -1 ?
-      this.state.query.replace(productFacet, ''):
-      `${this.state.query} ${productFacet}`;
-
-    this.setState({ query: query.trim() });
+    let query = this.addFacet(productFacet);
     this.search(query, { loader: false });
+  },
+
+  addItemType(type, ev) {
+    ev.preventDefault();
+    let itemFacet = `type:${type}`;
+    let query = this.addFacet(itemFacet);
+    this.search(query, { loader: false });
+  },
+
+  addFacet(facet) {
+    let query = this.state.query.indexOf(facet) > -1 ?
+      this.state.query.replace(facet, ''):
+      `${this.state.query} ${facet}`;
+
+    return query.trim();
   },
 
   onSubmit(ev) {
@@ -120,10 +132,10 @@ export default React.createClass({
             }, this)}
           </ButtonGroup>
           <ListGroup>
-            <ListGroupItem bsStyle="success">Stories <Badge>{this.state.results.stories.length}</Badge></ListGroupItem>
-            <ListGroupItem bsStyle="warning">Defects <Badge>{this.state.results.defects.length}</Badge></ListGroupItem>
-            <ListGroupItem>Tasks <Badge>{this.state.results.tasks.length}</Badge></ListGroupItem>
-            <ListGroupItem bsStyle="info">Tests <Badge>{this.state.results.tests.length}</Badge></ListGroupItem>
+            <ListGroupItem href="#" onClick={_.partial(this.addItemType, 'story')} bsStyle="success">Stories <Badge>{this.state.results.stories.length}</Badge></ListGroupItem>
+            <ListGroupItem href="#" onClick={_.partial(this.addItemType, 'defect')} bsStyle="warning">Defects <Badge>{this.state.results.defects.length}</Badge></ListGroupItem>
+            <ListGroupItem href="#" onClick={_.partial(this.addItemType, 'task')}>Tasks <Badge>{this.state.results.tasks.length}</Badge></ListGroupItem>
+            <ListGroupItem href="#" onClick={_.partial(this.addItemType, 'test')} bsStyle="info">Tests <Badge>{this.state.results.tests.length}</Badge></ListGroupItem>
           </ListGroup>
         </div>
         <div className="col-sm-6 search__results">
