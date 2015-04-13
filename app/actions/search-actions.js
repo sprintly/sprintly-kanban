@@ -5,7 +5,7 @@ var SearchActions = {
 
   search(query, sort, order) {
     let options = client.getOptions(query, {
-      baseUrl: process.env.NODE_ENV === 'production' ? 'https://sprint.ly/' : 'https://local.sprint.ly:9000/',
+      baseUrl: process.env.NODE_ENV === 'production' ? 'https://sprint.ly' : 'https://local.sprint.ly:9000',
       token: window.__token
     });
 
