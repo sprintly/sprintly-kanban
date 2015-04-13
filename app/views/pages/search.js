@@ -12,12 +12,14 @@ import SearchStore from '../../stores/search-store';
 import ItemCard from '../components/item-card';
 
 function getSearchSelectorState() {
+  let results = SearchStore.getResults();
+
   return {
-    results: SearchStore.getResults(),
+    results,
     products: ProductStore.getAll(),
     currentPage: 1,
     perPage: 20,
-    loading: false,
+    loading: !results,
     progress: 0
   };
 }
