@@ -2,14 +2,14 @@ import _ from 'lodash';
 import React from "react";
 
 import {Link, State, Navigation} from "react-router";
-import {Badge, ListGroup, ListGroupItem, ButtonGroup, Button, SplitButton, MenuItem, ProgressBar} from 'react-bootstrap';
+import {ProgressBar} from 'react-bootstrap';
 import Header from '../components/header';
+import SearchResults from '../components/search-results';
 
 import ProductActions from '../../actions/product-actions';
 import ProductStore from '../../stores/product-store';
 import SearchActions from '../../actions/search-actions';
 import SearchStore from '../../stores/search-store';
-import ItemCard from '../components/item-card';
 
 function getSearchSelectorState() {
   let results = SearchStore.getResults();
@@ -17,20 +17,12 @@ function getSearchSelectorState() {
   return {
     results,
     products: ProductStore.getAll(),
-    currentPage: 1,
-    perPage: 20,
     loading: !results,
     progress: 0
   };
 }
 
-const SORT_OPTIONS = {
-  created_at: 'Created At',
-  priority: 'Priority',
-  last_modified: 'Recent'
-};
-
-export default React.createClass({
+var Search = React.createClass({
 
   mixins: [State, Navigation],
 
@@ -59,10 +51,6 @@ export default React.createClass({
     ProductStore.off('change', this._onChange);
   },
 
-  nextPage() {
-    this.setState({ currentPage: this.state.currentPage + 1 });
-  },
-
   search(query, options={}) {
     if (options.loader !== false ) {
       this.loader();
@@ -72,7 +60,7 @@ export default React.createClass({
     this.transitionTo(`/search?q=${encodeURIComponent(query)}`);
   },
 
-  loader: function() {
+  loader() {
     let count = 0;
     this.setState({ loading: true, progress: 25 });
 
@@ -87,27 +75,6 @@ export default React.createClass({
     setTimeout(tick, 30);
   },
 
-  addProduct: function(value, ev) {
-    let productFacet = `product:${value}`;
-    let query = this.addFacet(productFacet);
-    this.search(query, { loader: false });
-  },
-
-  addItemType(type, ev) {
-    ev.preventDefault();
-    let itemFacet = `type:${type}`;
-    let query = this.addFacet(itemFacet);
-    this.search(query, { loader: false });
-  },
-
-  addFacet(facet) {
-    let query = this.state.query.indexOf(facet) > -1 ?
-      this.state.query.replace(facet, ''):
-      `${this.state.query} ${facet}`;
-
-    return query.trim();
-  },
-
   onSubmit(ev) {
     ev.preventDefault();
     let value = this.refs.input.getDOMNode().value;
@@ -120,62 +87,31 @@ export default React.createClass({
   },
 
   renderResults() {
-    let items = this.state.results.items;
-    let page = items.slice(0, this.state.perPage * this.state.currentPage);
+    let results;
 
-    return (
-      <div className="row">
-        <div className="col-sm-2 search__filters">
-          <ButtonGroup vertical>
-            {_.map(this.state.results.products, function(product) {
-              return <button className="btn btn-default" onClick={_.partial(this.addProduct, product.id)}>{product.name}</button>
-            }, this)}
-          </ButtonGroup>
-          <ListGroup>
-            <ListGroupItem href="#" onClick={_.partial(this.addItemType, 'story')} bsStyle="success">Stories <Badge>{this.state.results.stories.length}</Badge></ListGroupItem>
-            <ListGroupItem href="#" onClick={_.partial(this.addItemType, 'defect')} bsStyle="warning">Defects <Badge>{this.state.results.defects.length}</Badge></ListGroupItem>
-            <ListGroupItem href="#" onClick={_.partial(this.addItemType, 'task')}>Tasks <Badge>{this.state.results.tasks.length}</Badge></ListGroupItem>
-            <ListGroupItem href="#" onClick={_.partial(this.addItemType, 'test')} bsStyle="info">Tests <Badge>{this.state.results.tests.length}</Badge></ListGroupItem>
-          </ListGroup>
+    if (this.state.loading) {
+      results = (
+        <div className="col-sm-10 col-sm-offset-1">
+          <small>Reticulating splines...</small>
+          <ProgressBar active bsStyle="info" now={this.state.progress}/>
         </div>
-        <div className="col-sm-6 search__results">
-          {_.map(page, function(item, index) {
-            return (
-              <ItemCard
-                key={index}
-                item={item}
-                productId={item.product.id}
-                sortField="relevance"
-              />
-            );
-          }, this)}
-          {items.length <= this.state.perPage * this.state.currentPage ? '' :
-            <button onClick={this.nextPage} className="btn btn-block btn-default">Load More</button>
-          }
-        </div>
-        <div className="col-sm-2">
-          <small><i>{this.state.results.items.length} matching items.</i></small>
-          <hr/>
-          <p>Learn about our <a href="https://sprint.ly/blog/search-api/" target="_BLANK">Beta Item Search API with Facets</a>.</p>
-        </div>
-      </div>
-    );
+      );
+    } else {
+      results = this.state.results.items && this.state.results.items.length > 0 ?
+        <SearchResults
+          search={this.search}
+          query={this.state.query}
+          results={this.state.results}
+        /> :
+        <div className="col-sm-offset-2">
+          <i>No items found. Try again with a different query.</i>
+        </div>;
+    }
+
+    return results;
   },
 
   render() {
-    let results = (
-      <div className="col-sm-10 col-sm-offset-1">
-        <small>Reticulating splines...</small>
-        <ProgressBar active bsStyle="info" now={this.state.progress}/>
-      </div>
-    );
-
-    if (this.state.loading === false) {
-      results = this.state.results.items && this.state.results.items.length > 0 ?
-        this.renderResults() :
-        <div className="col-sm-offset-2"><i>No items found. Try again with a different query.</i></div>;
-    }
-
     return (
       <div>
         <Header
@@ -187,17 +123,26 @@ export default React.createClass({
           <div className="row">
             <form onSubmit={this.onSubmit}>
               <div className="col-sm-6 col-sm-offset-2">
-                <input className="form-control" type="search" name="q" placeholder="Search" ref="input" value={this.state.query} onChange={this.updateQuery} spellcheck={false}/>
+                <input
+                  name="q"
+                  ref="input"
+                  type="search"
+                  spellcheck={false}
+                  placeholder="Search"
+                  value={this.state.query}
+                  className="form-control"
+                  onChange={this.updateQuery}
+                />
               </div>
               <button className="btn btn-primary">Go</button>
             </form>
           </div>
           <hr/>
-          {results}
+          {this.renderResults()}
         </div>
       </div>
     );
   }
-
 });
 
+module.exports = Search;
