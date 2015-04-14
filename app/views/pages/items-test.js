@@ -1,52 +1,24 @@
+var _ = require('lodash');
 var assert = require('chai').assert;
 var React = require('react/addons');
 var TestUtils = React.addons.TestUtils;
 var Items = require('./items');
 var sinon = require('sinon')
-var _ = require('lodash');
+var stubRouterContext = require('../../lib/stub-router-context');
 
-var stubRouterContext = (Component, props, stubs) => {
-  return React.createClass({
-    childContextTypes: {
-      getCurrentPath: React.PropTypes.func,
-      getCurrentRoutes: React.PropTypes.func,
-      getCurrentPathname: React.PropTypes.func,
-      getCurrentParams: React.PropTypes.func,
-      getCurrentQuery: React.PropTypes.func
-    },
-
-    getChildContext: function() {
-      return _.extend({
-        getCurrentPath () {},
-        getCurrentRoutes () {},
-        getCurrentPathname () {},
-        getCurrentParams () {},
-        getCurrentQuery () {}
-      }, stubs);
-    },
-
-    render: function() {
-      return <Component {...props} />;
-    }
-  });
-};
-
-describe('Items View Controller', function() {
-
+describe('Items ViewController', function() {
   beforeEach(function() {
+    this.sinon = sinon.sandbox.create();
     this.ProductActions = Items.__get__('ProductActions');
-    this.productInitStub = sinon.stub();
-    Items.__set__('ProductActions', {
-      init: this.productInitStub
-    })
+    this.productInitStub = this.sinon.stub(this.ProductActions, 'init');
   });
 
   afterEach(function() {
-    Items.__set__('ProductActions', this.ProductActions);
+    this.sinon.restore();
   });
 
   it('initializes the current product on mount', function() {
-    var ItemsStub = stubRouterContext(Items, { user: {} }, {
+    var ItemsStub = stubRouterContext(Items, { user: { get: function() {} } }, {
       getCurrentParams: ()=> {
         return { id: 1 }
       }
