@@ -17,12 +17,18 @@ var SearchActions = {
       options.qs.order = order;
     }
 
-    client.search(options).then(function(results) {
-      AppDispatcher.dispatch({
-        actionType: 'SEARCH',
-        payload: results
+    client.search(options)
+      .then(function(results) {
+        AppDispatcher.dispatch({
+          actionType: 'SEARCH',
+          payload: results
+        })
       })
-    });
+      .catch(function() {
+        AppDispatcher.dispatch({
+          actionType: 'SEARCH_ERROR'
+        });
+      });
   }
 
 };
