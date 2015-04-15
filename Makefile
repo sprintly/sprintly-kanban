@@ -1,15 +1,18 @@
 
-all: install bootstrap
+all: install build
 
 install:
 	@npm install
-	@npm run build
 
 watch:
-	@npm run watch &
-	@npm run watch-test
+	@node_modules/.bin/gulp
 
 build:
+	@npm run build &
+	@npm run build-less &
+	@npm run build-test &
+
+build-production:
 	@npm run build-production
 
 bootstrap:
@@ -17,14 +20,15 @@ bootstrap:
 	cp -r node_modules/bootstrap/less/* public/less/bootstrap
 
 test:
-	@npm run test
+	@npm test
 
 test-file:
-	find ./app -name *-test.js -print | awk '{print "require(\"."$$1"\");"}' > test/index.js
+	@find ./app -name *-test.js -print | awk '{print "require(\"."$$1"\");"}' > test/index.js
+	@echo "test/index.js written"
 
-browser-tests: test-file
+test-server: test-file
 	@npm run build-test
-	open test/index.html
+	@open http://localhost:8003/test/index.html
+	@python -m SimpleHTTPServer 8003
 
-.PHONY: all install server test
-
+.PHONY: all install server test watch
