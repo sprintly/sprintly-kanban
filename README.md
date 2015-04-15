@@ -42,7 +42,7 @@ $ npm test
 Run tests to run in a browser:
 
 ```bash
-$ make browser-tests
+$ make test-server
 ```
 
 ## Deploys
