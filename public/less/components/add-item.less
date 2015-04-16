@@ -26,64 +26,7 @@
   .form-control;
 }
 
-.add-item__tags {
-  position: relative;
-  display: -webkit-flex;
-  display: flex;
-  flex-wrap: wrap;
-  background: #fff;
-  min-height: 34px;
-  border: 1px solid #cccccc;
-  border-radius: 4px;
-  padding: 6px 12px;
 
-  .label {
-    flex: none;
-    margin: 3px 6px 3px 0;
-  }
-
-  .typeahead-token-close {
-    color: #fff;
-    margin-left: 4px;
-  }
-}
-
-.typeahead {
-  flex: 1;
-  position: relative;
-
-  ul {
-    position: absolute;
-    border: 1px solid #ccc;
-    top: 26px;
-    left: -12px;
-    overflow: scroll;
-    list-style: none;
-    background: #fff;
-    max-height: 9em;
-    z-index: 1000;
-    padding: 0;
-    width: 220px;
-
-    li {
-      width: 100%;
-      display: inline-block;
-    }
-
-    a {
-      width: 100%;
-      padding: 6px 12px;
-    }
-  }
-
-  input {
-    float: left;
-    border: none;
-    outline: none;
-    width: 100%;
-  }
-
-}
 
 
 @story-color: #84b431;
@@ -286,3 +229,50 @@
     }
   }
 }
+
+.add-item .tags-input {
+  position: relative;
+  display: -webkit-flex;
+  display: flex;
+  flex-wrap: wrap;
+  background: #fff;
+  min-height: 34px;
+  border: 1px solid #cccccc;
+  border-radius: 4px;
+  padding: 6px 12px;
+
+  .label {
+    flex: none;
+    margin: 3px 6px 3px 0;
+    display: inline-block;
+  }
+
+  .label button {
+    color: #fff;
+    margin-left: 4px;
+    line-height: 10px;
+    font-size: 14px;
+    .opacity(0.4);
+
+    &:hover {
+      .opacity(0.8);
+    }
+  }
+
+  input {
+    flex: 1;
+    border: none;
+    outline: none;
+    width: 100%;
+  }
+
+  .list-group {
+    left: 0;
+    position: absolute;
+    top: 34px;
+    width: 100%;
+    font-size: 11px;
+    z-index: 100;
+  }
+}
+

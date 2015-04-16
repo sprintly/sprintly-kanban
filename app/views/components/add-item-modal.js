@@ -5,6 +5,7 @@ import {MentionsInput, Mention} from 'react-mentions';
 import {SelectorMenu} from 'sprintly-ui';
 import {Tokenizer} from 'react-typeahead';
 import LocalStorageMixin from 'react-localstorage';
+import TagsInput from './tags-input';
 
 var AddItemModal = React.createClass({
 
@@ -118,8 +119,8 @@ var AddItemModal = React.createClass({
   },
 
   renderMembersDropdown: function() {
-    let active = _.findWhere(this.props.members, { id: this.state.assignee });
-    let selection = active ? `${active.first_name} ${active.last_name.slice(0,1)}.` : 'Unassigned';
+    let active = _.findWhere(this.props.members, { id: this.state.assigned_to });
+    let selection = 'Unassigned';
     let members = _.map(this.props.members, function(member) {
       let title = `${member.first_name} ${member.last_name.slice(0,1)}.`;
       return {
@@ -127,11 +128,17 @@ var AddItemModal = React.createClass({
         id: member.id
       }
     }, this);
+    members = _.sortBy(members, 'title');
+
+    if (active) {
+      selection = `${active.first_name} ${active.last_name.slice(0,1)}.`;
+      members.unshift({ title: 'Unassigned', id: '' });
+    }
 
     return (
       <div className="form-group selector" key="members-dropdown">
         <SelectorMenu
-          optionsList={_.sortBy(members, 'title')}
+          optionsList={members}
           selection={selection}
           onSelectionChange={(title) => {
             this.setState({
@@ -185,15 +192,7 @@ var AddItemModal = React.createClass({
               </MentionsInput>
             </div>
             <div className="form-group">
-              <Tokenizer
-                className="add-item__tags"
-                options={tags}
-                onTokenAdd={this.updateTags}
-                onTokenRemove={this.updateTags}
-                customClasses={{
-                  token: 'label label-default'
-                }}
-                placeholder="Tags" />
+              <TagsInput tags={tags} onChange={this.updateTags} value={this.state.tags}/>
             </div>
             <div className="row">
               <div className="col-xs-7">
