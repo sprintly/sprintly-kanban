@@ -4,10 +4,12 @@ import {Modal,Nav,NavItem} from 'react-bootstrap';
 import {MentionsInput, Mention} from 'react-mentions';
 import {SelectorMenu} from 'sprintly-ui';
 import {Tokenizer} from 'react-typeahead';
+import LocalStorageMixin from 'react-localstorage';
 
 var AddItemModal = React.createClass({
 
   mixins: [
+    LocalStorageMixin,
     React.addons.LinkedStateMixin
   ],
 
