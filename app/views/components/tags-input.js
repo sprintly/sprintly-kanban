@@ -20,16 +20,53 @@ var TagsInput = React.createClass({
     };
   },
 
-  addTag(ev, value) {
-    ev.preventDefault();
-    let tags = this.props.value || [];
-    React.addons.update(tags, { $push: [value] });
-    this.onChange(tags);
+  getInitialState() {
+    return {
+      filteredTags: []
+    }
   },
 
-  removeTag(ev, value) {
+  addTag(value) {
+    let tags = React.addons.update(this.props.value || [], { $push: [value] });
+    this.setState({ filteredTags: [] });
+    this.refs.input.getDOMNode().value = '';
+    this.props.onChange(_.unique(tags));
+  },
+
+  removeTag(value) {
     let tags = this.props.value || [];
-    this.onChange(_.without(tags, value));
+    this.props.onChange(_.without(tags, value));
+  },
+
+  filterTags(ev) {
+    let value = ev.target.value;
+    if (value === '') {
+      this.setState({ filteredTags: [] });
+      return;
+    }
+    let results = fuzzy.filter(value, this.props.tags);
+    this.setState({ filteredTags: _.pluck(results, 'string') });
+  },
+
+  onKeyDown(ev) {
+    let node = this.refs.input.getDOMNode();
+
+    switch (ev.keyCode) {
+      case 8: // backspace
+        if (node.value.length === 0) {
+          this.removeTag(_.last(this.props.value));
+        }
+        break;
+      case 9: // tab
+      case 188: // comma
+        if (node.value.length > 0 && ev.shiftKey !== true) {
+          ev.preventDefault();
+          this.addTag(node.value);
+        }
+        break;
+      default:
+        break;
+    }
   },
 
   renderValues() {
@@ -57,10 +94,18 @@ var TagsInput = React.createClass({
   },
 
   renderMenu() {
+    if (this.state.filteredTags.length === 0) {
+      return '';
+    }
+
     return (
       <ListGroup>
-        {_.map(this.props.tags, (value) => {
-          return <ListGroupItem onClick={_.partial(this.addTag, value)} />
+        {_.map(this.state.filteredTags.slice(0, 3), (value, index) => {
+          return (
+            <ListGroupItem onClick={_.partial(this.addTag, value)} href="#" key={index}>
+              {value}
+            </ListGroupItem>
+          );
         })}
       </ListGroup>
     )
@@ -68,12 +113,14 @@ var TagsInput = React.createClass({
 
   render() {
     return (
-      <div className="form-group tags-input" {...props}>
+      <div className="tags-input">
         {this.renderValues()}
-        <input className="form-control"  />
+        <input onChange={this.filterTags} onKeyDown={this.onKeyDown} placeholder="Add Tags..." ref="input" />
         {this.renderMenu()}
       </div>
     )
   }
 
 });
+
+export default TagsInput;
