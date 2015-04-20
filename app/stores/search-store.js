@@ -92,7 +92,12 @@ var SearchStore = _.assign({}, EventEmitter.prototype, {
 AppDispatcher.register(function(action) {
 
   switch(action.actionType) {
-    case 'SEARCH':
+    case 'SEARCH_START':
+      isLoading = true;
+      SearchStore.emitChange();
+      break;
+    case 'SEARCH_SUCCESS':
+      isLoading = false;
       payload = action.payload;
       SearchStore.emitChange();
       break;
