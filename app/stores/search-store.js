@@ -2,25 +2,11 @@ import _ from 'lodash';
 import AppDispatcher from '../dispatchers/app-dispatcher';
 import {EventEmitter} from 'events';
 
-var payload;
+var payload = [];
+var isLoading = false;
 
-var SearchStore = _.assign({}, EventEmitter.prototype, {
-  getResults() {
-    let results = {
-      items: payload,
-
-      stories: [],
-      defects: [],
-      tasks: [],
-      tests: [],
-
-      accepted: [],
-      complete: [],
-      current: [],
-      backlog: [],
-      someday: []
-    };
-
+var internals = {
+  populateCounts(results) {
     results.products = _.pluck(payload, 'product');
 
     if (results.products.length > 0) {
@@ -65,6 +51,28 @@ var SearchStore = _.assign({}, EventEmitter.prototype, {
     })
 
     return results;
+  }
+};
+
+var SearchStore = _.assign({}, EventEmitter.prototype, {
+  getResults() {
+    let results = {
+      loading: isLoading,
+      items: payload,
+
+      stories: [],
+      defects: [],
+      tasks: [],
+      tests: [],
+
+      accepted: [],
+      complete: [],
+      current: [],
+      backlog: [],
+      someday: []
+    };
+
+    return internals.populateCounts(results);
   },
 
   emitChange() {
