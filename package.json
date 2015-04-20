@@ -39,6 +39,7 @@
     "react-bootstrap": "^0.13.0",
     "react-component-scrollload": "^0.2.2",
     "react-d3": "0.0.13",
+    "react-dnd": "^0.9.8",
     "react-localstorage": "^0.2.2",
     "react-mentions": "^0.1.2",
     "react-router": "^0.11.6",
@@ -82,6 +83,7 @@
     "hapi-auth-cookie": "^2.0.0",
     "react-bootstrap": "^0.16.1",
     "react-loading": "0.0.1",
+    "superagent": "^1.2.0",
     "swig": "^1.4.2"
   },
   "engines": {
