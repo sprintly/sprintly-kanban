@@ -25,14 +25,14 @@ var SearchResults = React.createClass({
   addProduct: function(value, ev) {
     let productFacet = `product:${value}`;
     let query = this.addFacet(productFacet);
-    this.props.search(query, { loader: false });
+    this.props.search(query, { progressBar: false });
   },
 
   addItemType(type, ev) {
     ev.preventDefault();
     let itemFacet = `type:${type}`;
     let query = this.addFacet(itemFacet);
-    this.props.search(query, { loader: false });
+    this.props.search(query, { progressBar: false });
   },
 
   addFacet(facet) {
