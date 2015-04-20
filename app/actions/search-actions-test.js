@@ -45,13 +45,27 @@ describe('SearchActions', function() {
     });
 
     context('api success', function() {
-      it('dispatches a SEARCH event', function(done) {
+
+      it('dispatches a SEARCH_START event', function(done) {
         var dispatchStub = this.sinon.stub(this.appDispatcher, 'dispatch');
         this.searchStub.returns(this.success);
         SearchActions.search('foo');
         setTimeout(function(){
           sinon.assert.calledWith(dispatchStub, {
-            actionType: 'SEARCH',
+            actionType: 'SEARCH_START',
+            query: 'foo'
+          });
+          done()
+        }, 0);
+      });
+
+      it('dispatches a SEARCH_SUCCESS event', function(done) {
+        var dispatchStub = this.sinon.stub(this.appDispatcher, 'dispatch');
+        this.searchStub.returns(this.success);
+        SearchActions.search('foo');
+        setTimeout(function(){
+          sinon.assert.calledWith(dispatchStub, {
+            actionType: 'SEARCH_SUCCESS',
             payload: 'results'
           });
           done()
