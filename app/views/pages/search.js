@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React from "react";
 
-import {Link, State, Navigation} from "react-router";
+import {State, Navigation} from "react-router";
 import {ProgressBar} from 'react-bootstrap';
 import Header from '../components/header';
 import SearchResults from '../components/search-results';
@@ -17,7 +17,7 @@ function getSearchSelectorState() {
   return {
     results,
     products: ProductStore.getAll(),
-    loading: !results,
+    loading: results.loading,
     progress: 0
   };
 }
@@ -27,7 +27,10 @@ var Search = React.createClass({
   mixins: [State, Navigation],
 
   getInitialState() {
-    return getSearchSelectorState()
+    return _.assign(getSearchSelectorState(), {
+      showProgress: true,
+      loading: true
+    });
   },
 
   _onChange() {
@@ -41,7 +44,7 @@ var Search = React.createClass({
     let query = this.getQuery();
     if (query && query.q) {
       this.setState({ query: query.q });
-      this.loader();
+      this.updateProgressBar();
       SearchActions.search(query.q, query.sort, query.order);
     }
   },
@@ -51,18 +54,38 @@ var Search = React.createClass({
     ProductStore.off('change', this._onChange);
   },
 
-  search(query, options={}) {
-    if (options.loader !== false ) {
-      this.loader();
+  componentWillReceiveProps(nextProps) {
+    let query = this.getQuery();
+    if (this.state.loading === false && query && query.q) {
+      this.setState({ query: query.q });
+      this.updateProgressBar();
+      SearchActions.search(query.q, query.sort, query.order);
+    }
+  },
+
+  search(query, options={ progressBar: true }) {
+    if (options.progressBar) {
+      this.updateProgressBar();
+    } else {
+      this.setState({
+        loading: true,
+        showProgress: false
+      });
     }
     this.setState({ query: query.trim() });
     SearchActions.search(query);
-    this.transitionTo(`/search?q=${encodeURIComponent(query)}`);
+    setTimeout(() => {
+      this.transitionTo(`/search?q=${encodeURIComponent(query)}`);
+    }, 0);
   },
 
-  loader() {
+  updateProgressBar() {
     let count = 0;
-    this.setState({ loading: true, progress: 25 });
+    this.setState({
+      loading: true,
+      showProgress: true,
+      progress: 25
+    });
 
     let tick = () => {
       let progress = this.state.progress;
@@ -89,7 +112,7 @@ var Search = React.createClass({
   renderResults() {
     let results;
 
-    if (this.state.loading) {
+    if (this.state.loading && this.state.showProgress) {
       results = (
         <div className="col-sm-10 col-sm-offset-1">
           <small>Reticulating splines...</small>
