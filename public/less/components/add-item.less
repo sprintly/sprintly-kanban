@@ -2,8 +2,24 @@
   padding-top: 8em;
 
   .modal-body {
+    .transition(opacity 200ms);
     background: #fafafa;
     border-radius: 0px 4px 4px 4px;
+
+    &.dragging {
+      .opacity(0.8);
+      position: relative;
+      &::after {
+        content: 'Drop to attach.';
+        position: absolute;
+        top: 30%;
+        left: 0;
+        width: 100%;
+        text-align: center;
+        font-weight: bold;
+        font-size: 1.4em;
+      }
+    }
   }
 
   .modal-content {
@@ -21,10 +37,6 @@
   border: none;
 }
 
-.add-item .react-mentions .control textarea {
-  min-height: 6em;
-  .form-control;
-}
 
 
 
@@ -168,15 +180,31 @@
   .control {
     &.textarea {
       font-weight: normal;
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+
+      textarea {
+        min-height: 6em;
+        width: 100%;
+        padding: 6px 12px;
+        width: 100%;
+        display: block;
+        margin: 0;
+        border: none;
+        background: transparent;
+        position: relative;
+        outline: 0;
+        overflow: hidden;
+        resize: none;
+      }
 
       .highlighter {
         padding: 6px 12px;
-        border: 1px solid transparent;
-        z-index: 1;
-
-        white-space: pre-wrap;
-        word-wrap: break-word;
-        word-spacing: 0px;
+        width: inherit;
+        position: absolute;
+        color: transparent;
+        overflow: hidden;
       }
     }
 
@@ -273,6 +301,10 @@
     width: 100%;
     font-size: 11px;
     z-index: 100;
+  }
+
+  .list-group-item:first-child {
+    border-radius: none;
   }
 }
 

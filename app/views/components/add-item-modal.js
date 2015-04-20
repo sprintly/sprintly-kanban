@@ -1,18 +1,49 @@
-import _ from 'lodash';
-import React from 'react/addons';
+import _ from 'lodash'; import React from 'react/addons';
+
 import {Modal,Nav,NavItem} from 'react-bootstrap';
 import {MentionsInput, Mention} from 'react-mentions';
-import {SelectorMenu} from 'sprintly-ui';
-import {Tokenizer} from 'react-typeahead';
-import LocalStorageMixin from 'react-localstorage';
+import Title from './add-item/title';
 import TagsInput from './tags-input';
+import StoryTitle from './add-item/story-title';
+import MembersDropdown from './add-item/members-dropdown';
+
+import ItemActions from '../../actions/item-actions';
+import AttachmentActions from '../../actions/attachment-actions';
+import AttachmentStore from '../../stores/attachment-store';
+
+import LocalStorageMixin from 'react-localstorage';
+import {DragDropMixin, NativeDragItemTypes} from 'react-dnd';
+
+
+const NAV_ITEMS = [
+  { type: 'story', label: 'Story' },
+  { type: 'task', label: 'Task' },
+  { type: 'defect', label: 'Defect' },
+  { type: 'test', label: 'Test' },
+];
+
 
 var AddItemModal = React.createClass({
 
   mixins: [
-    LocalStorageMixin,
+    DragDropMixin,
+    // LocalStorageMixin,
     React.addons.LinkedStateMixin
   ],
+
+  statics: {
+    configureDragDrop(register) {
+      register(NativeDragItemTypes.FILE, {
+        dropTarget: {
+          acceptDrop(component, item) {
+            if (item.files && item.files[0]) {
+              AttachmentActions.createUpload(item.files[0]);
+            }
+          }
+        }
+      });
+    }
+  },
 
   getInitialState() {
     return {
@@ -25,6 +56,7 @@ var AddItemModal = React.createClass({
       tags: [],
       assigned_to: null,
       sendToBacklog: true,
+      attachments: AttachmentStore.getPendingAttachments()
     }
   },
 
@@ -36,14 +68,41 @@ var AddItemModal = React.createClass({
 
   getDefaultProps() {
     return {
-      members: [
-        {
-          id: 1,
-          first_name: 'John',
-          last_name: 'Doe'
-        }
-      ]
+      members: []
     }
+  },
+
+  componentDidMount() {
+    AttachmentStore.addChangeListener(this._onChange);
+  },
+
+  componentWillUnmount() {
+    AttachmentStore.removeChangeListener(this._onChange);
+  },
+
+  _onChange() {
+    let uploads = AttachmentStore.getActiveUploads();
+    let attachments = AttachmentStore.getPendingAttachments();
+    let description = this.state.description;
+
+    for(let i=0; i < uploads.length; i++) {
+      let embed = `![Uploading ${uploads[i].name}](...)`
+      if (description.indexOf(embed) < 0) {
+        description = _.compact([description, embed]).join('\n');
+      }
+    }
+
+    for(let i=0; i < attachments.length; i++) {
+      let image = attachments[i][':original'][0];
+      let embed = `![Uploading ${image.name}](...)`;
+      description = description
+        .replace(embed, `![${image.name}](${image.ssl_url})`, 'g');
+    }
+
+    this.setState({
+      description,
+      attachments
+    });
   },
 
   setDescription(ev, value) {
@@ -60,7 +119,10 @@ var AddItemModal = React.createClass({
 
   dismiss(ev) {
     ev.preventDefault();
-    this.props.onRequestHide(ev);
+    let state = this.getInitialState();
+    state.attachments = [];
+    this.setState(state);
+    this.props.onRequestHide();
   },
 
   createItem(ev) {
@@ -73,90 +135,23 @@ var AddItemModal = React.createClass({
       item.title = this.state.title;
     }
 
-    if (this.state.addToBacklog) {
+    if (this.state.sendToBacklog) {
       item.status = 'backlog';
     }
-  },
 
-  renderStoryTitle() {
-    let who = (
-      <div className="add-item__field who">
-        <span>As an</span>
-        <div className="input-group">
-          <label>Who</label>
-          <input className="form-control" type="text" name="who" placeholder="e.g. accountant" valueLink={this.linkState('who')}/>
-        </div>
-      </div>
-    );
-
-    let what = (
-      <div className="add-item__field what">
-        <span>I want</span>
-        <div className="input-group">
-          <label>What</label>
-          <input className="form-control" type="text" name="what" placeholder="e.g. Quickbooks integration" valueLink={this.linkState('what')}/>
-        </div>
-      </div>
-    );
-
-    let why = (
-      <div className="add-item__field why">
-        <span>so that</span>
-        <div className="input-group">
-          <label>Why</label>
-          <input className="form-control" type="text" name="what" placeholder="e.g. Quickbooks integration" valueLink={this.linkState('why')}/>
-        </div>
-      </div>
-    );
-
-    return [who, what, why];
-  },
-
-  renderTitle() {
-    return (
-      <input className="form-control" placeholder="What is it?" name="title" valueLink={this.linkState('title')}/>
-    );
-  },
-
-  renderMembersDropdown: function() {
-    let active = _.findWhere(this.props.members, { id: this.state.assigned_to });
-    let selection = 'Unassigned';
-    let members = _.map(this.props.members, function(member) {
-      let title = `${member.first_name} ${member.last_name.slice(0,1)}.`;
-      return {
-        title,
-        id: member.id
-      }
-    }, this);
-    members = _.sortBy(members, 'title');
-
-    if (active) {
-      selection = `${active.first_name} ${active.last_name.slice(0,1)}.`;
-      members.unshift({ title: 'Unassigned', id: '' });
-    }
-
-    return (
-      <div className="form-group selector" key="members-dropdown">
-        <SelectorMenu
-          optionsList={members}
-          selection={selection}
-          onSelectionChange={(title) => {
-            this.setState({
-              assigned_to: _.findWhere(members, { title }).id
-            });
-          }}
-        />
-      </div>
-    );
+    ItemActions.addItem(this.props.product.id, item).then(() => {
+      this.setState(this.getInitialState());
+      this.props.onRequestHide();
+    });
   },
 
   render() {
-    const NAV_ITEMS = [
-      { type: 'story', label: 'Story' },
-      { type: 'task', label: 'Task' },
-      { type: 'defect', label: 'Defect' },
-      { type: 'test', label: 'Test' },
-    ];
+    let fileDropState = this.getDropState(NativeDragItemTypes.FILE);
+
+    let bodyClasses = React.addons.classSet({
+      'modal-body': true,
+      'dragging': fileDropState.isHovering
+    });
 
     let mentions = _.map(this.props.members, function(member) {
       return {
@@ -167,22 +162,28 @@ var AddItemModal = React.createClass({
 
     let tags = _.pluck(this.props.tags, 'tag');
 
+    let title = this.state.type === 'story' ?
+      (<StoryTitle
+        who={this.linkState('who')}
+        what={this.linkState('what')}
+        why={this.linkState('why')}
+      />):
+      <Title title={this.linkState('title')} />;
+
     return (
       <Modal {...this.props} className="add-item">
         <Nav className="add-item__tabs" bsStyle='tabs' activeKey={this.state.type} onSelect={this.changeType}>
           {_.map(NAV_ITEMS, function(item) {
             return (
-              <NavItem eventKey={item.type} className={`add-item__nav-${item.type}`}>
+              <NavItem tabIndex="1" aria-role="tab" eventKey={item.type} className={`add-item__nav-${item.type}`}>
                 {item.label}
               </NavItem>
             )
           })}
         </Nav>
-        <div className="modal-body">
+        <div className={bodyClasses} {...this.dropTargetFor(NativeDragItemTypes.FILE)}>
           <form onSubmit={this.createItem}>
-            <div className="form-group">
-              {this.state.type === 'story' ? this.renderStoryTitle() : this.renderTitle()}
-            </div>
+            {title}
             <div className="form-group">
               <MentionsInput
                 value={this.state.description}
@@ -196,7 +197,13 @@ var AddItemModal = React.createClass({
             </div>
             <div className="row">
               <div className="col-xs-7">
-                {this.renderMembersDropdown()}
+                <MembersDropdown
+                  members={this.props.members}
+                  assiged_to={this.state.assigned_to}
+                  onChange={(assigned_to) => {
+                    this.setState({ assigned_to });
+                  }}
+                />
               </div>
               <div className="col-xs-5 add-item__actions">
                 <input type="submit" className="btn btn-primary btn-lg" value="Create Item"/>
