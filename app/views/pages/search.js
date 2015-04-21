@@ -4,7 +4,7 @@ import React from "react";
 import {State, Navigation} from "react-router";
 import {ProgressBar} from 'react-bootstrap';
 import Header from '../components/header';
-import SearchResults from '../components/search-results';
+import SearchResults from '../components/search-results/index';
 
 import ProductActions from '../../actions/product-actions';
 import ProductStore from '../../stores/product-store';
