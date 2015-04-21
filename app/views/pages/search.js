@@ -145,7 +145,7 @@ var Search = React.createClass({
         <div className="container search">
           <div className="row">
             <form onSubmit={this.onSubmit}>
-              <div className="col-sm-6 col-sm-offset-2">
+              <div className="col-xs-10 col-sm-6 col-sm-offset-2">
                 <input
                   name="q"
                   ref="input"
