@@ -8,6 +8,7 @@ var assert = require('chai').assert;
 
 var Search = require('./search');
 var ProgressBar = require('../components/header');
+var SearchResults = require('../components/search-results/index');
 var user = {
   user: { get: function() {} }
 };
@@ -33,26 +34,27 @@ describe('Search ViewController', function() {
   });
 
   context('componentDidMount', function() {
-    beforeEach(function() {
-      let Component = stubRouterContext(Search, user, {
-        getCurrentQuery: () => { return { q: 'foo' } }
-      });
-      this.component = TestUtils.renderIntoDocument(<Component/>);
-    });
-
-    it('fetches all products', function() {
-      sinon.assert.called(this.stubs.productInit);
-    });
-
-    it('listens to the Product Store for changes', function() {
-      sinon.assert.called(this.stubs.productListener);
-    });
-
-    it('listens to the Search Store for changes', function() {
-      sinon.assert.called(this.stubs.searchListener);
-    });
 
     describe('query present', function () {
+      beforeEach(function() {
+        let Component = stubRouterContext(Search, user, {
+          getCurrentQuery: () => { return { q: 'foo' } }
+        });
+        this.component = TestUtils.renderIntoDocument(<Component/>);
+      });
+
+      it('fetches all products', function() {
+        sinon.assert.called(this.stubs.productInit);
+      });
+
+      it('listens to the Product Store for changes', function() {
+        sinon.assert.called(this.stubs.productListener);
+      });
+
+      it('listens to the Search Store for changes', function() {
+        sinon.assert.called(this.stubs.searchListener);
+      });
+
       it('calls search', function() {
         sinon.assert.calledWith(this.stubs.search, 'foo');
       });
@@ -62,28 +64,52 @@ describe('Search ViewController', function() {
         assert.lengthOf(progressBar, 1);
       });
     });
-  });
 
-  describe('query not present', function () {
-    it('does not call the search api', function() {
-      this.stubs.search.reset();
-      let Component = stubRouterContext(Search, user, {});
-      TestUtils.renderIntoDocument(<Component/>);
-      sinon.assert.notCalled(this.stubs.search);
-    });
-
-    it('renders no-results message', function () {
-      let Component = stubRouterContext(Search, user, {});
-      var searchComponent = TestUtils.renderIntoDocument(<Component />);
-      searchComponent.refs.stub.setState({
-        loading: false,
-        showProgress: false,
-        results: { items: [] }
+    describe('query not present', function () {
+      beforeEach(function () {
+        let Component = stubRouterContext(Search, user, {});
+        this.component = TestUtils.renderIntoDocument(<Component/>);
       });
 
-      let noResults = TestUtils.scryRenderedDOMComponentsWithClass(searchComponent, 'no-results__message')
+      it('does not call the search api', function() {
+        sinon.assert.notCalled(this.stubs.search);
+      });
 
-      assert.lengthOf(noResults, 1);
+      it('renders no-results message', function () {
+        this.component.refs.stub.setState({
+          loading: false,
+          showProgress: false,
+          results: { items: [] }
+        });
+        let noResults = TestUtils.scryRenderedDOMComponentsWithClass(this.component, 'no-results__message')
+
+        assert.lengthOf(noResults, 1);
+      });
+    })
+  });
+
+  context('query returned results', function () {
+    beforeEach(function () {
+      let Component = stubRouterContext(Search, user, {});
+      this.component = TestUtils.renderIntoDocument(<Component/>);
+
+      this.component.refs.stub.setState({
+        loading: false,
+        showProgress: false,
+        results: {
+          items: [{ product: { id: '1' } }],
+          stories: [],
+          defects: [],
+          tasks: [],
+          tests: []
+        }
+      })
+    });
+
+    it('renders a search results component', function () {
+      let searchResults = TestUtils.scryRenderedComponentsWithType(this.component, SearchResults)
+
+      assert.lengthOf(searchResults, 1);
     });
   });
-});
+})
