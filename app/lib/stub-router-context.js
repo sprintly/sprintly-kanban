@@ -22,7 +22,8 @@ var stubRouterContext = (Component, props, stubs) => {
     },
 
     render: function() {
-      return <Component {...props} />;
+
+      return <Component ref='stub' {...props} />;
     }
   });
 };
