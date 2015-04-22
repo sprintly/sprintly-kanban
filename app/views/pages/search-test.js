@@ -5,9 +5,7 @@ var TestUtils = React.addons.TestUtils;
 var stubRouterContext = require('../../lib/stub-router-context');
 var sinon = require('sinon')
 var assert = require('chai').assert;
-
 var Search = require('./search');
-var ProgressBar = require('../components/header');
 var SearchResults = require('../components/search-results/index');
 var user = {
   user: { get: function() {} }
@@ -60,7 +58,7 @@ describe('Search ViewController', function() {
       });
 
       it('renders a progress bar', function () {
-        let progressBar = TestUtils.scryRenderedComponentsWithType(this.component, ProgressBar)
+        let progressBar = TestUtils.scryRenderedDOMComponentsWithClass(this.component, 'progress-bar')
         assert.lengthOf(progressBar, 1);
       });
     });
@@ -106,10 +104,23 @@ describe('Search ViewController', function() {
       })
     });
 
-    it('renders a search results component', function () {
+    it('renders a search result component', function () {
       let searchResults = TestUtils.scryRenderedComponentsWithType(this.component, SearchResults)
 
       assert.lengthOf(searchResults, 1);
     });
+
+    context('filtering results', function () {
+      it('does not render progressBar', function () {
+        this.component.refs.stub.setState({
+          loading: true,
+          showProgress: false
+        });
+
+        let progressBar = TestUtils.scryRenderedDOMComponentsWithClass(this.component, 'progress-bar')
+
+        assert.lengthOf(progressBar, 0);
+      });
+    })
   });
 })
