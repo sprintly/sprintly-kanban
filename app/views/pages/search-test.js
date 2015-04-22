@@ -171,72 +171,123 @@ describe('Search ViewController', function() {
 
     describe('filter by product', function () {
 
-      it('prompts the user to make a query', function () {
-        this.component.refs.stub.setState({
-          loading: false,
-          showProgress: false,
-          results: {
-            items: [],
-            stories: [],
-            defects: [],
-            tasks: [],
-            tests: []
-          }
+      describe('no products', function () {
+        it('prompts the user to make a query', function () {
+          this.component.refs.stub.setState({
+            results: {
+              items: [],
+              stories: [],
+              defects: [],
+              tasks: [],
+              tests: []
+            }
+          });
+
+          let noResults = TestUtils.scryRenderedDOMComponentsWithClass(this.component, 'no-products__message')
+
+          assert.lengthOf(noResults, 1);
+        });
+      });
+
+      describe('with products', function () {
+        beforeEach(function () {
+          this.component.refs.stub.setState({
+            results: {
+              items: [],
+              stories: [],
+              defects: [],
+              tasks: [],
+              tests: [],
+              products: [
+                {
+                  id: '1',
+                  name: 'A'
+                },
+                {
+                  id: '2',
+                  name: 'B'
+                },
+              ]
+            }
+          })
         });
 
-        let noResults = TestUtils.scryRenderedDOMComponentsWithClass(this.component, 'no-products__message')
+        it('lists all available projects', function () {
+          let productTypeButtons = TestUtils.scryRenderedDOMComponentsWithClass(this.component, 'product-control');
+          let productNames = _.chain(productTypeButtons)
+                              .map(function(node) {
+                                return node.getDOMNode().innerText
+                              })
+                              .value()
 
-        assert.lengthOf(noResults, 1);
-      });
+          assert.sameMembers(productNames, ['A','B']);
+        });
 
-      it('lists all available projects', function () {
-        this.component.refs.stub.setState({
-          results: {
-            items: [],
-            stories: [],
-            defects: [],
-            tasks: [],
-            tests: [],
-            products: [
-              {
-                id: '1',
-                name: 'A'
-              },
-              {
-                id: '2',
-                name: 'B'
-              },
-            ]
-          }
-        })
+        it('updates the search bar query', function () {
+          let productControl = TestUtils.scryRenderedDOMComponentsWithClass(this.component, 'product-control')[0];
+          TestUtils.Simulate.click(productControl);
 
-        let productTypeButtons = TestUtils.scryRenderedDOMComponentsWithClass(this.component, 'product-control');
-        let productNames = _.chain(productTypeButtons)
-                            .map(function(node) {
-                              return node.getDOMNode().innerText
-                            })
-                            .value()
+          let searchBar = TestUtils.findRenderedDOMComponentWithClass(this.component, 'search-bar');
+          let searchQuery = searchBar.getDOMNode().value;
 
-        assert.sameMembers(productNames, ['A','B']);
-      });
+          assert.equal(searchQuery, 'product:1');
+        });
 
-      it('updates the search bar query', function () {
-
-      });
-
-      it('makes the selection \'active\'', function () {
-
+        it('makes the selection \'active\'', function () {
+        });
       });
     });
 
   });
 
   context('search result', function () {
-    it('shows the total number of tickets', function () {
+    beforeEach(function () {
+      let Component = stubRouterContext(Search, user, {});
+      this.component = TestUtils.renderIntoDocument(<Component/>);
+      let story = { product: { id: '1' }, type: 'story' }
+      let defect = { product: { id: '2' }, type: 'defect' }
+      let task = { product: { id: '3' }, type: 'task' }
+      let test = { product: { id: '4' }, type: 'test' }
 
+      this.component.refs.stub.setState({
+        results: {
+          items: [ story, defect, task, test ],
+          stories: [ story ],
+          defects: [ defect ],
+          tasks: [ task ],
+          tests: [ test ]
+        }
+      })
+    });
+
+    it('shows the total number of tickets', function () {
+      let totalNode = TestUtils.findRenderedDOMComponentWithClass(this.component, 'total-issues');
+
+      let issueTotal = _.chain(totalNode.getDOMNode().children)
+                        .map(function(node) {
+                          return node.textContent
+                        })
+                        .join(' ')
+                        .value()
+
+      assert.equal(issueTotal, "4 matching issues");
     });
 
     it('shows ticket type breakdown', function () {
+      let issueTypes = ['stories', 'defects', 'tasks', 'tests'];
+
+      _.each(issueTypes, (type) => {
+        let storyNode = TestUtils.findRenderedDOMComponentWithClass(this.component, "total-" + type);
+
+        let storyTotal = _.chain(storyNode.getDOMNode().children)
+                          .map(function(node) {
+                            return node.textContent
+                          })
+                          .join(' ')
+                          .value()
+
+        assert.equal(storyTotal, "1 " + type);
+      });
     });
   })
 })
