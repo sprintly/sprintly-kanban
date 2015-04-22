@@ -77,8 +77,15 @@ describe('Search ViewController', function() {
         this.component.refs.stub.setState({
           loading: false,
           showProgress: false,
-          results: { items: [] }
+          results: {
+            items: [],
+            stories: [],
+            defects: [],
+            tasks: [],
+            tests: []
+          }
         });
+
         let noResults = TestUtils.scryRenderedDOMComponentsWithClass(this.component, 'no-results__message')
 
         assert.lengthOf(noResults, 1);
