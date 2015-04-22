@@ -42,6 +42,7 @@ var Search = React.createClass({
     ProductStore.on('change', this._onChange);
     ProductActions.init();
     let query = this.getQuery();
+
     if (query && query.q) {
       this.setState({ query: query.q });
       this.updateProgressBar();
@@ -56,6 +57,7 @@ var Search = React.createClass({
 
   componentWillReceiveProps(nextProps) {
     let query = this.getQuery();
+
     if (this.state.loading === false && query && query.q) {
       this.setState({ query: query.q });
       this.updateProgressBar();
@@ -110,28 +112,46 @@ var Search = React.createClass({
   },
 
   renderResults() {
-    let results;
-
     if (this.state.loading && this.state.showProgress) {
-      results = (
+      return (
         <div className="col-sm-10 col-sm-offset-1">
           <small>Reticulating splines...</small>
           <ProgressBar active bsStyle="info" now={this.state.progress}/>
         </div>
       );
     } else {
-      results = this.state.results.items && this.state.results.items.length > 0 ?
+      return this.state.results.items && this.state.results.items.length > 0 ?
         <SearchResults
           search={this.search}
           query={this.state.query}
           results={this.state.results}
         /> :
-        <div className="col-sm-offset-2">
-          <i>No items found. Try again with a different query.</i>
-        </div>;
+      <div className="col-sm-offset-2">
+        <i className='no-results__message'>No items found. Try again with a different query.</i>
+      </div>
     }
+  },
 
-    return results;
+  searchBar() {
+    return (
+      <div className="row">
+        <form onSubmit={this.onSubmit}>
+          <div className="col-xs-10 col-sm-6 col-sm-offset-2">
+            <input
+              name="q"
+              ref="input"
+              type="search"
+              spellcheck={false}
+              placeholder="Search"
+              value={this.state.query}
+              className="form-control"
+              onChange={this.updateQuery}
+            />
+          </div>
+          <button className="btn btn-primary">Go</button>
+        </form>
+      </div>
+    )
   },
 
   render() {
@@ -143,23 +163,7 @@ var Search = React.createClass({
           allProducts={this.state.products}
         />
         <div className="container search">
-          <div className="row">
-            <form onSubmit={this.onSubmit}>
-              <div className="col-xs-10 col-sm-6 col-sm-offset-2">
-                <input
-                  name="q"
-                  ref="input"
-                  type="search"
-                  spellcheck={false}
-                  placeholder="Search"
-                  value={this.state.query}
-                  className="form-control"
-                  onChange={this.updateQuery}
-                />
-              </div>
-              <button className="btn btn-primary">Go</button>
-            </form>
-          </div>
+          {this.searchBar()}
           <hr/>
           {this.renderResults()}
         </div>
