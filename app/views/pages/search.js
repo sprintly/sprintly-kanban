@@ -157,9 +157,9 @@ var Search = React.createClass({
       <table className="table">
         <thead></thead>
         <tbody>
-          <tr>
+          <tr className="total-issues">
             <td>{results.items.length}</td>
-            <td>matching items</td>
+            <td>matching issues</td>
           </tr>
           <tr></tr>
           {_.compact(issueTypes.map((type) => {
@@ -167,7 +167,7 @@ var Search = React.createClass({
               return ''
             } else {
               return (
-                <tr>
+                <tr className={"total-" + type}>
                   <td>{results[type].length}</td>
                   <td>{type}</td>
                 </tr>
