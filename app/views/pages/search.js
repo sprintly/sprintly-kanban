@@ -116,7 +116,7 @@ var Search = React.createClass({
               spellcheck={false}
               placeholder="Search"
               value={this.state.query}
-              className="form-control"
+              className="form-control search-bar"
               onChange={this.updateQuery}
             />
           </div>
@@ -139,11 +139,13 @@ var Search = React.createClass({
   },
 
   ticketControlLinks() {
+    var classes = "btn btn-default issue-control ";
+
     return ([
-      <a href="#" onClick={_.partial(this.addItemType, 'story')} className="btn btn-default story">Story</a>,
-      <a href="#" onClick={_.partial(this.addItemType, 'defect')} className="btn btn-default defect">Defect</a>,
-      <a href="#" onClick={_.partial(this.addItemType, 'task')} className="btn btn-default task">Task</a>,
-      <a href="#" onClick={_.partial(this.addItemType, 'test')} className="btn btn-default test">Test</a>
+      <a href="#" onClick={_.partial(this.addItemType, 'story')} className={classes+"story"}>Story</a>,
+      <a href="#" onClick={_.partial(this.addItemType, 'defect')} className={classes+"defect"}>Defect</a>,
+      <a href="#" onClick={_.partial(this.addItemType, 'task')} className={classes+"task"}>Task</a>,
+      <a href="#" onClick={_.partial(this.addItemType, 'test')} className={classes+"test"}>Test</a>
     ])
   },
 
@@ -200,18 +202,34 @@ var Search = React.createClass({
   },
 
   productControls() {
+    let products = this.state.results.products;
+    let content;
+
+    if (products && products.length) {
+      content = [
+        <i>Filter by Product</i>,
+        <ButtonGroup vertical className="hidden-xs">
+          {_.map(this.state.results.products, (product) => {
+            return (
+              <button className="btn btn-default product-control" onClick={_.partial(this.addProduct, product.id)}>
+                {product.name}
+              </button>
+            )
+          })}
+        </ButtonGroup>,
+        <DropdownButton block title="Products" className="visible-xs-inline-block" onSelect={(product) => { this.addProduct(product) }}>
+          {_.map(this.state.results.products, (product) => {
+            return <MenuItem eventKey={product.id}>{product.name}</MenuItem>
+          })}
+        </DropdownButton>
+      ]
+    } else {
+      content = <i className='no-products__message'>Make a query to filter by product</i>
+    }
+
     return ([
       <i>Filter by Product</i>,
-      <ButtonGroup vertical className="hidden-xs">
-        {_.map(this.state.results.products, (product) => {
-          return <button className="btn btn-default" onClick={_.partial(this.addProduct, product.id)}>{product.name}</button>
-        })}
-      </ButtonGroup>,
-      <DropdownButton block title="Products" className="visible-xs-inline-block" onSelect={(product) => { this.addProduct(product) }}>
-        {_.map(this.state.results.products, (product) => {
-          return <MenuItem eventKey={product.id}>{product.name}</MenuItem>
-        })}
-      </DropdownButton>
+      {content}
     ])
   },
 
@@ -258,7 +276,7 @@ var Search = React.createClass({
           <hr/>
           <div className="row">
             <div className="col-sm-2 search__filters">
-              <div className="search__filter-group">
+              <div className="search__filter-group ">
                 {this.ticketTypeControls()}
               </div>
               <hr className="hidden-xs"/>
