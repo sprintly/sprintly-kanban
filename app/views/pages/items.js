@@ -7,6 +7,7 @@ import Loading from "react-loading"
 import ItemColumn from "../components/item-column";
 import FiltersToolbar from '../components/filters/filters-toolbar';
 import Header from '../components/header';
+import ob from 'oblique-strategies';
 
 // Flux
 import FiltersStore from '../../stores/filters-store';
@@ -98,7 +99,17 @@ module.exports = React.createClass({
 
     if (product === undefined) {
       return (
-        <div className="loading"><Loading type="spin" color="#ccc" /></div>
+        <div className="container-tray">
+          <Header
+            allProducts={this.state.allProducts}
+            user={this.props.user}
+          />
+          <div className="loading">
+            <Loading type="spin" color="#ccc" />
+            <br/>
+            <small><i>{ob.draw()}</i></small>
+          </div>
+        </div>
       );
     }
 
@@ -113,7 +124,7 @@ module.exports = React.createClass({
     return (
       <div className="container-tray">
         <Header
-          productName={this.state.product.get('name')}
+          product={this.state.product.toJSON()}
           allProducts={this.state.allProducts}
           user={this.props.user}
         />
