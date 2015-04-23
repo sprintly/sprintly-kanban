@@ -30,12 +30,8 @@ var Search = React.createClass({
     return _.assign(getSearchSelectorState(), {
       showProgress: true,
       loading: true,
-      issueControls: {
-        story: false,
-        defect: false,
-        test: false,
-        task: false
-      }
+      issueControls: {},
+      productControls: {}
     });
   },
 
@@ -86,7 +82,7 @@ var Search = React.createClass({
 
   updateQuery(ev) {
     let query = this.refs.input.getDOMNode().value;
-    this.updateFilterControls(query);
+    this.updateControls(query);
     this.setState({ query });
   },
 
@@ -192,15 +188,16 @@ var Search = React.createClass({
   },
 
   addProduct(value, ev) {
+    this.toggleControlState(this.state.productControls, value);
+
     let productFacet = `product:${value}`;
     let query = this.addFacet(productFacet);
     this.search(query, { progressBar: false });
   },
 
-  toggleIssueTypeControl(type) {
-    var issueControls = this.state.issueControls;
-    issueControls[type] = (issueControls[type]) ? false : true;
-    this.setState(issueControls);
+  toggleControlState(controls, value) {
+    controls[value] = (controls[value]) ? false : true;
+    this.setState(controls);
   },
 
   addItemType(type, ev) {
@@ -208,7 +205,7 @@ var Search = React.createClass({
       ev.preventDefault();
     }
 
-    this.toggleIssueTypeControl(type)
+    this.toggleControlState(this.state.issueControls, type);
 
     let itemFacet = `type:${type}`;
     let query = this.addFacet(itemFacet);
@@ -237,11 +234,21 @@ var Search = React.createClass({
       content = [
         <ButtonGroup vertical className="hidden-xs">
           {_.map(this.state.results.products, (product) => {
+            // Duplicated Refactor Point
+            let productClass = {}
+            productClass[`product-${product.id}`] = true;
+
+            var classes = React.addons.classSet(_.extend({
+              "btn btn-default product-control": true,
+              "active": this.state.productControls[product.id]
+            }, productClass));
+
             return (
-              <button className="btn btn-default product-control" onClick={_.partial(this.addProduct, product.id)}>
+              <button className={classes} onClick={_.partial(this.addProduct, product.id)}>
                 {product.name}
               </button>
             )
+
           })}
         </ButtonGroup>,
         <DropdownButton block title="Products" className="visible-xs-inline-block" onSelect={(product) => { this.addProduct(product) }}>
@@ -260,18 +267,20 @@ var Search = React.createClass({
     ])
   },
 
-  updateFilterControls(query) {
-    var facetTypePattern = /(\btype:\b[^\s]+)/g;
-    var facets = query.match(facetTypePattern);
+  updateControls(query) {
+    var issuePattern = /(\btype:\b[^\s]+)/g;
+    var productPattern = /(\bproduct:\b[^\s]+)/g;
+    this.setControlsState(issuePattern, this.state.issueControls, query);
+    this.setControlsState(productPattern, this.state.productControls, query);
+  },
 
-    var issueControls = this.state.issueControls;
-
+  setControlsState(pattern, controls, query) {
+    var facets = query.match(pattern);
     _.each(facets, facet => {
       var type = _.last(facet.split(":"));
-      issueControls[type] = true;
+      controls[type] = true;
     })
-
-    this.setState(issueControls);
+    this.setState(controls);
   },
 
   // React Functions
@@ -285,7 +294,7 @@ var Search = React.createClass({
     if (query && query.q) {
       this.setState({ query: query.q });
       this.updateProgressBar();
-      this.updateFilterControls(query.q);
+      this.updateControls(query.q);
       SearchActions.search(query.q, query.sort, query.order);
     }
   },
