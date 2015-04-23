@@ -86,6 +86,7 @@ var Search = React.createClass({
 
   updateQuery(ev) {
     let query = this.refs.input.getDOMNode().value;
+    this.updateFilterControls(query);
     this.setState({ query });
   },
 
