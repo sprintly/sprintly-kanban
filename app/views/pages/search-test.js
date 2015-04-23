@@ -300,31 +300,52 @@ describe('Search ViewController', function() {
     beforeEach(function () {
       let Component = stubRouterContext(Search, user, {});
       this.component = TestUtils.renderIntoDocument(<Component/>);
-
-      this.searchBar = TestUtils.findRenderedDOMComponentWithClass(this.component, 'search-bar').getDOMNode();
-      this.searchBar.value = 'type:story type:defect product:1';
-      TestUtils.Simulate.change(this.searchBar);
-
-      let form = TestUtils.findRenderedDOMComponentWithTag(this.component, 'form').getDOMNode();
-      TestUtils.Simulate.submit(form);
-    });
-
-    it('sets the story type control to \'active\'', function () {
-      let storyTypeControl = TestUtils.scryRenderedDOMComponentsWithClass(this.component, 'story')[0];
-
-      assert.isTrue(storyTypeControl.getDOMNode().classList.contains('active'));
-    });
-
-    it('sets the product type control to \'active\'', function () {
       let results = _.extend(NO_ITEMS, STUB_PRODUCTS);
       this.component.refs.stub.setState({
         results: results
       });
 
-      let productControl = TestUtils.findRenderedDOMComponentWithClass(this.component, 'product-1');
+      this.searchBar = TestUtils.findRenderedDOMComponentWithClass(this.component, 'search-bar').getDOMNode();
+      this.searchBar.value = 'type:story type:defect product:1';
+      TestUtils.Simulate.change(this.searchBar);
 
-      assert.isTrue(productControl.getDOMNode().classList.contains('active'));
+      this.form = TestUtils.findRenderedDOMComponentWithTag(this.component, 'form').getDOMNode();
+      TestUtils.Simulate.submit(this.form);
     });
+
+    describe('sets active', function () {
+      it('story type control', function () {
+        let storyTypeControl = TestUtils.scryRenderedDOMComponentsWithClass(this.component, 'story')[0];
+
+        assert.isTrue(storyTypeControl.getDOMNode().classList.contains('active'));
+      });
+
+      it('product type control', function () {
+        let productControl = TestUtils.findRenderedDOMComponentWithClass(this.component, 'product-1');
+
+        assert.isTrue(productControl.getDOMNode().classList.contains('active'));
+      });
+    });
+
+    describe('sets in-active', function () {
+      beforeEach(function () {
+        this.searchBar.value = '';
+        TestUtils.Simulate.change(this.searchBar);
+        TestUtils.Simulate.submit(this.form);
+      });
+
+      it('story type control', function () {
+        let storyTypeControl = TestUtils.scryRenderedDOMComponentsWithClass(this.component, 'story')[0];
+
+        assert.isFalse(storyTypeControl.getDOMNode().classList.contains('active'));
+      });
+
+      it('product type control', function () {
+        let productControl = TestUtils.findRenderedDOMComponentWithClass(this.component, 'product-1');
+
+        assert.isFalse(productControl.getDOMNode().classList.contains('active'));
+      });
+    })
   });
 
   context('search result', function () {
