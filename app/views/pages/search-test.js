@@ -11,7 +11,7 @@ var user = {
   user: { get: function() {} }
 };
 
-describe('Search ViewController', function() {
+describe.only('Search ViewController', function() {
   beforeEach(function() {
     this.sinon = sinon.sandbox.create();
     this.ProductActions = Search.__get__('ProductActions');
@@ -259,19 +259,30 @@ describe('Search ViewController', function() {
         this.component = TestUtils.renderIntoDocument(<Component/>);
       });
 
-      it('when the query includes the type facet', function () {
-        this.storyTypeControl = TestUtils.scryRenderedDOMComponentsWithClass(this.component, 'story')[0];
-        this.defectTypeControl = TestUtils.scryRenderedDOMComponentsWithClass(this.component, 'defect')[0];
-        this.taskTypeControl = TestUtils.scryRenderedDOMComponentsWithClass(this.component, 'task')[0];
+      describe('issue type', function () {
+        it('when the query includes the type facet', function () {
+          let storyTypeControl = TestUtils.scryRenderedDOMComponentsWithClass(this.component, 'story')[0];
+          let defectTypeControl = TestUtils.scryRenderedDOMComponentsWithClass(this.component, 'defect')[0];
+          let taskTypeControl = TestUtils.scryRenderedDOMComponentsWithClass(this.component, 'task')[0];
 
-        assert.isTrue(this.storyTypeControl.getDOMNode().classList.contains('active'));
-        assert.isTrue(this.defectTypeControl.getDOMNode().classList.contains('active'));
-        assert.isFalse(this.taskTypeControl.getDOMNode().classList.contains('active'));
+          assert.isTrue(storyTypeControl.getDOMNode().classList.contains('active'));
+          assert.isTrue(defectTypeControl.getDOMNode().classList.contains('active'));
+          assert.isFalse(taskTypeControl.getDOMNode().classList.contains('active'));
+        });
+
+        it('when the user types in the type facet', function () {
+          let taskTypeControl = TestUtils.scryRenderedDOMComponentsWithClass(this.component, 'task')[0];
+          let searchBarNode = TestUtils.findRenderedDOMComponentWithClass(this.component, 'search-bar').getDOMNode();
+          searchBarNode.value = 'type:task';
+          TestUtils.Simulate.change(searchBarNode);
+
+          assert.isTrue(taskTypeControl.getDOMNode().classList.contains('active'));
+        })
       });
 
-      xit('when the user types in the type facet', function () {
+      describe('product', function () {
 
-      })
+      });
     });
   });
 
