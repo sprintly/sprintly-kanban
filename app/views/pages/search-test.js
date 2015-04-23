@@ -11,7 +11,7 @@ var user = {
   user: { get: function() {} }
 };
 
-describe('Search ViewController', function() {
+describe.only('Search ViewController', function() {
   beforeEach(function() {
     this.sinon = sinon.sandbox.create();
     this.ProductActions = Search.__get__('ProductActions');
@@ -139,34 +139,39 @@ describe('Search ViewController', function() {
       this.component = TestUtils.renderIntoDocument(<Component/>);
     });
 
-    describe('filter by type', function () {
-      it('lists all ticket type controls', function () {
+    describe('filter by issue type', function () {
+      it('lists all issue type controls', function () {
         let issueTypes = ['story', 'defect', 'task', 'test'];
 
-        let ticketTypeButtons = TestUtils.scryRenderedDOMComponentsWithClass(this.component, 'issue-control');
-        let ticketTypes = _.chain(ticketTypeButtons)
+        let issueTypeButtons = TestUtils.scryRenderedDOMComponentsWithClass(this.component, 'issue-control');
+        let values = _.chain(issueTypeButtons)
                             .map(function(node) {
                               return node.getDOMNode().text.toLowerCase()
                             })
                             .uniq()
                             .value();
 
-        assert.sameMembers(ticketTypes, issueTypes);
+        assert.sameMembers(values, issueTypes);
       });
 
-      it('updates the search bar query', function () {
-        let typeControl = TestUtils.scryRenderedDOMComponentsWithClass(this.component, 'story')[0];
-        TestUtils.Simulate.click(typeControl);
+      describe('selecting an issue type', function () {
+        beforeEach(function () {
+          this.typeControl = TestUtils.scryRenderedDOMComponentsWithClass(this.component, 'story')[0];
+          TestUtils.Simulate.click(this.typeControl);
+        });
 
-        let searchBar = TestUtils.findRenderedDOMComponentWithClass(this.component, 'search-bar');
-        let searchQuery = searchBar.getDOMNode().value;
+        it('updates the search bar query', function () {
+          let searchBar = TestUtils.findRenderedDOMComponentWithClass(this.component, 'search-bar');
+          let searchQuery = searchBar.getDOMNode().value;
 
-        assert.equal(searchQuery, 'type:story');
+          assert.equal(searchQuery, 'type:story');
+        });
+
+        it('makes the selection \'active\'', function () {
+          assert.isTrue(this.typeControl.getDOMNode().classList.contains('active'));
+        });
       });
 
-      it('makes the selection \'active\'', function () {
-
-      });
     });
 
     describe('filter by product', function () {
@@ -223,21 +228,25 @@ describe('Search ViewController', function() {
           assert.sameMembers(productNames, ['A','B']);
         });
 
-        it('updates the search bar query', function () {
-          let productControl = TestUtils.scryRenderedDOMComponentsWithClass(this.component, 'product-control')[0];
-          TestUtils.Simulate.click(productControl);
+        describe('selecting a product', function () {
+          beforeEach(function () {
+            this.productControl = TestUtils.scryRenderedDOMComponentsWithClass(this.component, 'product-control')[0];
+            TestUtils.Simulate.click(this.productControl);
+          });
 
-          let searchBar = TestUtils.findRenderedDOMComponentWithClass(this.component, 'search-bar');
-          let searchQuery = searchBar.getDOMNode().value;
+          it('updates the search bar query', function () {
+            let searchBar = TestUtils.findRenderedDOMComponentWithClass(this.component, 'search-bar');
+            let searchQuery = searchBar.getDOMNode().value;
 
-          assert.equal(searchQuery, 'product:1');
-        });
+            assert.equal(searchQuery, 'product:1');
+          });
 
-        it('makes the selection \'active\'', function () {
+          xit('makes the selected button \'active\'', function () {
+            assert.isTrue(this.productControl.getDOMNode().classList.contains('active'));
+          });
         });
       });
     });
-
   });
 
   context('search result', function () {
@@ -260,7 +269,7 @@ describe('Search ViewController', function() {
       })
     });
 
-    it('shows the total number of tickets', function () {
+    it('shows the total number of issues', function () {
       let totalNode = TestUtils.findRenderedDOMComponentWithClass(this.component, 'total-issues');
 
       let issueTotal = _.chain(totalNode.getDOMNode().children)
@@ -273,7 +282,7 @@ describe('Search ViewController', function() {
       assert.equal(issueTotal, "4 matching issues");
     });
 
-    it('shows ticket type breakdown', function () {
+    it('shows issue type breakdown', function () {
       let issueTypes = ['stories', 'defects', 'tasks', 'tests'];
 
       _.each(issueTypes, (type) => {
