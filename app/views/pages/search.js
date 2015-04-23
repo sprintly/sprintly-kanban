@@ -148,14 +148,13 @@ var Search = React.createClass({
     let issueTypes = ['story', 'defect', 'task', 'test'];
 
     return _.map(issueTypes, (type) => {
-      var classes = React.addons.classSet({
-        "btn btn-default issue-control": true,
-        "active": this.state.issueControls[type]
-      })
-
       let typeClass = {}
       typeClass[type] = true;
-      _.extend(classes, typeClass)
+
+      var classes = React.addons.classSet(_.extend({
+        "btn btn-default issue-control": true,
+        "active": this.state.issueControls[type]
+      }, typeClass));
 
       return <a href="#" onClick={_.partial(this.addItemType, type)} className={classes}>{type}</a>;
     })
@@ -217,7 +216,14 @@ var Search = React.createClass({
 
   addFacet(facet) {
     let query = this.getQuery();
-    query = query.q.indexOf(facet) > -1 ? query.q.replace(facet, ''): `${query.q} ${facet}`;
+
+    if (_.isEmpty(query)) {
+      query = `${facet}`;
+    } else if (query.q.indexOf(facet) > -1) {
+      query = query.q.replace(facet, '');
+    } else {
+      query = `${query.q} ${facet}`;
+    }
 
     return query.trim();
   },
