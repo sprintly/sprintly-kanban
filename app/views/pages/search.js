@@ -276,6 +276,13 @@ var Search = React.createClass({
 
   setControlsState(pattern, controls, query) {
     var facets = query.match(pattern);
+
+    // turn all controls off
+    _.each(controls, (v,k) => {
+      controls[k] = false
+    });
+
+    // turn only present facets on
     _.each(facets, facet => {
       var type = _.last(facet.split(":"));
       controls[type] = true;
