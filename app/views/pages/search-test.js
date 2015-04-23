@@ -11,6 +11,27 @@ var user = {
   user: { get: function() {} }
 };
 
+const NO_ITEMS = {
+  items: [],
+  stories: [],
+  defects: [],
+  tasks: [],
+  tests: []
+}
+
+const STUB_PRODUCTS = {
+  products: [
+    {
+      id: '1',
+      name: 'A'
+    },
+    {
+      id: '2',
+      name: 'B'
+    },
+  ]
+}
+
 describe('Search ViewController', function() {
   beforeEach(function() {
     this.sinon = sinon.sandbox.create();
@@ -180,13 +201,7 @@ describe('Search ViewController', function() {
         describe('no products', function () {
           it('prompts the user to make a query', function () {
             this.component.refs.stub.setState({
-              results: {
-                items: [],
-                stories: [],
-                defects: [],
-                tasks: [],
-                tests: []
-              }
+              results: NO_ITEMS
             });
 
             let noResults = TestUtils.scryRenderedDOMComponentsWithClass(this.component, 'no-products__message')
@@ -197,24 +212,9 @@ describe('Search ViewController', function() {
 
         describe('with products', function () {
           beforeEach(function () {
+            let results = _.extend(NO_ITEMS, STUB_PRODUCTS);
             this.component.refs.stub.setState({
-              results: {
-                items: [],
-                stories: [],
-                defects: [],
-                tasks: [],
-                tests: [],
-                products: [
-                  {
-                    id: '1',
-                    name: 'A'
-                  },
-                  {
-                    id: '2',
-                    name: 'B'
-                  },
-                ]
-              }
+              results: results
             })
           });
 
@@ -257,26 +257,10 @@ describe('Search ViewController', function() {
           getCurrentQuery: () => { return { q: 'type:story type:defect product:1' } }
         });
         this.component = TestUtils.renderIntoDocument(<Component/>);
-
+        let results = _.extend(NO_ITEMS, STUB_PRODUCTS);
         this.component.refs.stub.setState({
-          results: {
-            items: [],
-            stories: [],
-            defects: [],
-            tasks: [],
-            tests: [],
-            products: [
-              {
-                id: '1',
-                name: 'A'
-              },
-              {
-                id: '2',
-                name: 'B'
-              },
-            ]
-          }
-        });
+          results: results
+        })
       });
 
       describe('query includes issue type facets', function () {
@@ -308,6 +292,38 @@ describe('Search ViewController', function() {
           assert.isFalse(productControl.getDOMNode().classList.contains('active'));
         });
       })
+    });
+  });
+
+  context('perform search', function () {
+
+    beforeEach(function () {
+      let Component = stubRouterContext(Search, user, {});
+      this.component = TestUtils.renderIntoDocument(<Component/>);
+
+      this.searchBar = TestUtils.findRenderedDOMComponentWithClass(this.component, 'search-bar').getDOMNode();
+      this.searchBar.value = 'type:story type:defect product:1';
+      TestUtils.Simulate.change(this.searchBar);
+
+      let form = TestUtils.findRenderedDOMComponentWithTag(this.component, 'form').getDOMNode();
+      TestUtils.Simulate.submit(form);
+    });
+
+    it('sets the story type control to \'active\'', function () {
+      let storyTypeControl = TestUtils.scryRenderedDOMComponentsWithClass(this.component, 'story')[0];
+
+      assert.isTrue(storyTypeControl.getDOMNode().classList.contains('active'));
+    });
+
+    it('sets the product type control to \'active\'', function () {
+      let results = _.extend(NO_ITEMS, STUB_PRODUCTS);
+      this.component.refs.stub.setState({
+        results: results
+      });
+
+      let productControl = TestUtils.findRenderedDOMComponentWithClass(this.component, 'product-1');
+
+      assert.isTrue(productControl.getDOMNode().classList.contains('active'));
     });
   });
 

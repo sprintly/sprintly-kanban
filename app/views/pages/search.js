@@ -49,6 +49,7 @@ var Search = React.createClass({
       });
     }
     this.setState({ query: query.trim() });
+    this.updateControls(query);
     SearchActions.search(query);
     setTimeout(() => {
       this.transitionTo(`/search?q=${encodeURIComponent(query)}`);
@@ -82,7 +83,6 @@ var Search = React.createClass({
 
   updateQuery(ev) {
     let query = this.refs.input.getDOMNode().value;
-    this.updateControls(query);
     this.setState({ query });
   },
 
