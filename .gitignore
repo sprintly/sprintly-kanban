@@ -13,3 +13,5 @@ test/bundle.js
 .vagrant
 npm-debug.log*
 test/test-bundle.js
+public/js/manifold.js.map
+test/test-bundles.js.map
