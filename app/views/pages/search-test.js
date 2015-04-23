@@ -11,7 +11,7 @@ var user = {
   user: { get: function() {} }
 };
 
-describe.only('Search ViewController', function() {
+describe('Search ViewController', function() {
   beforeEach(function() {
     this.sinon = sinon.sandbox.create();
     this.ProductActions = Search.__get__('ProductActions');
@@ -218,7 +218,7 @@ describe.only('Search ViewController', function() {
             })
           });
 
-          it('lists all available projects', function () {
+          it('lists all available products', function () {
             let productTypeButtons = TestUtils.scryRenderedDOMComponentsWithClass(this.component, 'product-control');
             let productNames = _.chain(productTypeButtons)
                                 .map(function(node) {
@@ -231,7 +231,7 @@ describe.only('Search ViewController', function() {
 
           describe('selecting a product', function () {
             beforeEach(function () {
-              this.productControl = TestUtils.scryRenderedDOMComponentsWithClass(this.component, 'product-control')[0];
+              this.productControl = TestUtils.findRenderedDOMComponentWithClass(this.component, 'product-1');
               TestUtils.Simulate.click(this.productControl);
             });
 
@@ -242,7 +242,7 @@ describe.only('Search ViewController', function() {
               assert.equal(searchQuery, 'product:1');
             });
 
-            xit('makes the selected button \'active\'', function () {
+            it('makes the selected button \'active\'', function () {
               assert.isTrue(this.productControl.getDOMNode().classList.contains('active'));
             });
           });
@@ -257,32 +257,57 @@ describe.only('Search ViewController', function() {
           getCurrentQuery: () => { return { q: 'type:story type:defect product:1' } }
         });
         this.component = TestUtils.renderIntoDocument(<Component/>);
+
+        this.component.refs.stub.setState({
+          results: {
+            items: [],
+            stories: [],
+            defects: [],
+            tasks: [],
+            tests: [],
+            products: [
+              {
+                id: '1',
+                name: 'A'
+              },
+              {
+                id: '2',
+                name: 'B'
+              },
+            ]
+          }
+        });
       });
 
-      describe('issue type', function () {
-        it('when the query includes the type facet', function () {
+      describe('query includes issue type facets', function () {
+        it('included issues are active', function () {
           let storyTypeControl = TestUtils.scryRenderedDOMComponentsWithClass(this.component, 'story')[0];
           let defectTypeControl = TestUtils.scryRenderedDOMComponentsWithClass(this.component, 'defect')[0];
-          let taskTypeControl = TestUtils.scryRenderedDOMComponentsWithClass(this.component, 'task')[0];
 
           assert.isTrue(storyTypeControl.getDOMNode().classList.contains('active'));
           assert.isTrue(defectTypeControl.getDOMNode().classList.contains('active'));
-          assert.isFalse(taskTypeControl.getDOMNode().classList.contains('active'));
-        });
+        })
 
-        it('when the user types in the type facet', function () {
+        it('excluded issues are inactive', function () {
           let taskTypeControl = TestUtils.scryRenderedDOMComponentsWithClass(this.component, 'task')[0];
-          let searchBarNode = TestUtils.findRenderedDOMComponentWithClass(this.component, 'search-bar').getDOMNode();
-          searchBarNode.value = 'type:task';
-          TestUtils.Simulate.change(searchBarNode);
 
-          assert.isTrue(taskTypeControl.getDOMNode().classList.contains('active'));
+          assert.isFalse(taskTypeControl.getDOMNode().classList.contains('active'));
         })
       });
 
-      describe('product', function () {
+      describe('query includes product id facets', function () {
+        it('included products are active', function () {
+          let productControl = TestUtils.findRenderedDOMComponentWithClass(this.component, 'product-1');
 
-      });
+          assert.isTrue(productControl.getDOMNode().classList.contains('active'));
+        });
+
+        it('excluded products are inactive', function () {
+          let productControl = TestUtils.findRenderedDOMComponentWithClass(this.component, 'product-2');
+
+          assert.isFalse(productControl.getDOMNode().classList.contains('active'));
+        });
+      })
     });
   });
 
