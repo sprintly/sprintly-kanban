@@ -11,7 +11,7 @@ var user = {
   user: { get: function() {} }
 };
 
-describe.only('Search ViewController', function() {
+describe('Search ViewController', function() {
   beforeEach(function() {
     this.sinon = sinon.sandbox.create();
     this.ProductActions = Search.__get__('ProductActions');
@@ -132,120 +132,146 @@ describe.only('Search ViewController', function() {
   });
 
   context('search controls', function () {
-    beforeEach(function () {
-      let Component = stubRouterContext(Search, user, {
-        getCurrentQuery: () => { return { q: '' } }
-      });
-      this.component = TestUtils.renderIntoDocument(<Component/>);
-    });
+    describe('non-deterministic control state', function () {
 
-    describe('filter by issue type', function () {
-      it('lists all issue type controls', function () {
-        let issueTypes = ['story', 'defect', 'task', 'test'];
-
-        let issueTypeButtons = TestUtils.scryRenderedDOMComponentsWithClass(this.component, 'issue-control');
-        let values = _.chain(issueTypeButtons)
-                            .map(function(node) {
-                              return node.getDOMNode().text.toLowerCase()
-                            })
-                            .uniq()
-                            .value();
-
-        assert.sameMembers(values, issueTypes);
+      beforeEach(function () {
+        let Component = stubRouterContext(Search, user, {
+          getCurrentQuery: () => { return { q: '' } }
+        });
+        this.component = TestUtils.renderIntoDocument(<Component/>);
       });
 
-      describe('selecting an issue type', function () {
-        beforeEach(function () {
-          this.typeControl = TestUtils.scryRenderedDOMComponentsWithClass(this.component, 'story')[0];
-          TestUtils.Simulate.click(this.typeControl);
-        });
+      describe('filter by issue type', function () {
+        it('lists all issue type controls', function () {
+          let issueTypes = ['story', 'defect', 'task', 'test'];
 
-        it('updates the search bar query', function () {
-          let searchBar = TestUtils.findRenderedDOMComponentWithClass(this.component, 'search-bar');
-          let searchQuery = searchBar.getDOMNode().value;
-
-          assert.equal(searchQuery, 'type:story');
-        });
-
-        it('makes the selection \'active\'', function () {
-          assert.isTrue(this.typeControl.getDOMNode().classList.contains('active'));
-        });
-      });
-
-    });
-
-    describe('filter by product', function () {
-
-      describe('no products', function () {
-        it('prompts the user to make a query', function () {
-          this.component.refs.stub.setState({
-            results: {
-              items: [],
-              stories: [],
-              defects: [],
-              tasks: [],
-              tests: []
-            }
-          });
-
-          let noResults = TestUtils.scryRenderedDOMComponentsWithClass(this.component, 'no-products__message')
-
-          assert.lengthOf(noResults, 1);
-        });
-      });
-
-      describe('with products', function () {
-        beforeEach(function () {
-          this.component.refs.stub.setState({
-            results: {
-              items: [],
-              stories: [],
-              defects: [],
-              tasks: [],
-              tests: [],
-              products: [
-                {
-                  id: '1',
-                  name: 'A'
-                },
-                {
-                  id: '2',
-                  name: 'B'
-                },
-              ]
-            }
-          })
-        });
-
-        it('lists all available projects', function () {
-          let productTypeButtons = TestUtils.scryRenderedDOMComponentsWithClass(this.component, 'product-control');
-          let productNames = _.chain(productTypeButtons)
+          let issueTypeButtons = TestUtils.scryRenderedDOMComponentsWithClass(this.component, 'issue-control');
+          let values = _.chain(issueTypeButtons)
                               .map(function(node) {
-                                return node.getDOMNode().innerText
+                                return node.getDOMNode().text.toLowerCase()
                               })
-                              .value()
+                              .uniq()
+                              .value();
 
-          assert.sameMembers(productNames, ['A','B']);
+          assert.sameMembers(values, issueTypes);
         });
 
-        describe('selecting a product', function () {
+        describe('selecting an issue type', function () {
           beforeEach(function () {
-            this.productControl = TestUtils.scryRenderedDOMComponentsWithClass(this.component, 'product-control')[0];
-            TestUtils.Simulate.click(this.productControl);
+            this.typeControl = TestUtils.scryRenderedDOMComponentsWithClass(this.component, 'story')[0];
+            TestUtils.Simulate.click(this.typeControl);
           });
 
           it('updates the search bar query', function () {
             let searchBar = TestUtils.findRenderedDOMComponentWithClass(this.component, 'search-bar');
             let searchQuery = searchBar.getDOMNode().value;
 
-            assert.equal(searchQuery, 'product:1');
+            assert.equal(searchQuery, 'type:story');
           });
 
-          xit('makes the selected button \'active\'', function () {
-            assert.isTrue(this.productControl.getDOMNode().classList.contains('active'));
+          it('makes the selection \'active\'', function () {
+            assert.isTrue(this.typeControl.getDOMNode().classList.contains('active'));
           });
         });
       });
+
+      describe('filter by product', function () {
+
+        describe('no products', function () {
+          it('prompts the user to make a query', function () {
+            this.component.refs.stub.setState({
+              results: {
+                items: [],
+                stories: [],
+                defects: [],
+                tasks: [],
+                tests: []
+              }
+            });
+
+            let noResults = TestUtils.scryRenderedDOMComponentsWithClass(this.component, 'no-products__message')
+
+            assert.lengthOf(noResults, 1);
+          });
+        });
+
+        describe('with products', function () {
+          beforeEach(function () {
+            this.component.refs.stub.setState({
+              results: {
+                items: [],
+                stories: [],
+                defects: [],
+                tasks: [],
+                tests: [],
+                products: [
+                  {
+                    id: '1',
+                    name: 'A'
+                  },
+                  {
+                    id: '2',
+                    name: 'B'
+                  },
+                ]
+              }
+            })
+          });
+
+          it('lists all available projects', function () {
+            let productTypeButtons = TestUtils.scryRenderedDOMComponentsWithClass(this.component, 'product-control');
+            let productNames = _.chain(productTypeButtons)
+                                .map(function(node) {
+                                  return node.getDOMNode().innerText
+                                })
+                                .value()
+
+            assert.sameMembers(productNames, ['A','B']);
+          });
+
+          describe('selecting a product', function () {
+            beforeEach(function () {
+              this.productControl = TestUtils.scryRenderedDOMComponentsWithClass(this.component, 'product-control')[0];
+              TestUtils.Simulate.click(this.productControl);
+            });
+
+            it('updates the search bar query', function () {
+              let searchBar = TestUtils.findRenderedDOMComponentWithClass(this.component, 'search-bar');
+              let searchQuery = searchBar.getDOMNode().value;
+
+              assert.equal(searchQuery, 'product:1');
+            });
+
+            xit('makes the selected button \'active\'', function () {
+              assert.isTrue(this.productControl.getDOMNode().classList.contains('active'));
+            });
+          });
+        });
+      });
+    });
+
+    describe('deterministic control \'active\' state', function () {
+
+      beforeEach(function () {
+        let Component = stubRouterContext(Search, user, {
+          getCurrentQuery: () => { return { q: 'type:story type:defect product:1' } }
+        });
+        this.component = TestUtils.renderIntoDocument(<Component/>);
+      });
+
+      it('when the query includes the type facet', function () {
+        this.storyTypeControl = TestUtils.scryRenderedDOMComponentsWithClass(this.component, 'story')[0];
+        this.defectTypeControl = TestUtils.scryRenderedDOMComponentsWithClass(this.component, 'defect')[0];
+        this.taskTypeControl = TestUtils.scryRenderedDOMComponentsWithClass(this.component, 'task')[0];
+
+        assert.isTrue(this.storyTypeControl.getDOMNode().classList.contains('active'));
+        assert.isTrue(this.defectTypeControl.getDOMNode().classList.contains('active'));
+        assert.isFalse(this.taskTypeControl.getDOMNode().classList.contains('active'));
+      });
+
+      xit('when the user types in the type facet', function () {
+
+      })
     });
   });
 
