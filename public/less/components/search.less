@@ -55,13 +55,23 @@
   }
 
   .test {
-    background-color: @test-bg
+    background-color: @test-bg;
   }
 
+  .issue-control {
+    opacity: 0.5;
 
+    &:hover {
+      border: 1px black solid;
+    }
+
+    &.active {
+      opacity: 1.0;
+    }
+  }
 
   @media (max-width: @screen-xs-max) {
-    
+
     .search__filter-group:first-of-type {
       padding-bottom: 2rem;
     }

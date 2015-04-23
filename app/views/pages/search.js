@@ -29,7 +29,13 @@ var Search = React.createClass({
   getInitialState() {
     return _.assign(getSearchSelectorState(), {
       showProgress: true,
-      loading: true
+      loading: true,
+      issueControls: {
+        story: false,
+        defect: false,
+        test: false,
+        task: false
+      }
     });
   },
 
@@ -126,27 +132,33 @@ var Search = React.createClass({
     )
   },
 
-  ticketTypeControls() {
+  issueTypeControls() {
     return ([
       <i>Filter by Type</i>,
       <ButtonGroup vertical className="hidden-xs">
-        {this.ticketControlLinks()}
+        {this.issueControlLinks()}
       </ButtonGroup>,
       <ButtonGroup justified className="visible-xs-block">
-        {this.ticketControlLinks()}
+        {this.issueControlLinks()}
       </ButtonGroup>
     ])
   },
 
-  ticketControlLinks() {
-    var classes = "btn btn-default issue-control ";
+  issueControlLinks() {
+    let issueTypes = ['story', 'defect', 'task', 'test'];
 
-    return ([
-      <a href="#" onClick={_.partial(this.addItemType, 'story')} className={classes+"story"}>Story</a>,
-      <a href="#" onClick={_.partial(this.addItemType, 'defect')} className={classes+"defect"}>Defect</a>,
-      <a href="#" onClick={_.partial(this.addItemType, 'task')} className={classes+"task"}>Task</a>,
-      <a href="#" onClick={_.partial(this.addItemType, 'test')} className={classes+"test"}>Test</a>
-    ])
+    return _.map(issueTypes, (type) => {
+      var classes = React.addons.classSet({
+        "btn btn-default issue-control": true,
+        "active": this.state.issueControls[type]
+      })
+
+      let typeClass = {}
+      typeClass[type] = true;
+      _.extend(classes, typeClass)
+
+      return <a href="#" onClick={_.partial(this.addItemType, type)} className={classes}>{type}</a>;
+    })
   },
 
   resultsSummary() {
@@ -185,10 +197,19 @@ var Search = React.createClass({
     this.search(query, { progressBar: false });
   },
 
+  toggleIssueTypeControl(type) {
+    var issueControls = this.state.issueControls;
+    issueControls[type] = (issueControls[type]) ? false : true;
+    this.setState(issueControls);
+  },
+
   addItemType(type, ev) {
     if (ev) {
       ev.preventDefault();
     }
+
+    this.toggleIssueTypeControl(type)
+
     let itemFacet = `type:${type}`;
     let query = this.addFacet(itemFacet);
     this.search(query, { progressBar: false });
@@ -277,7 +298,7 @@ var Search = React.createClass({
           <div className="row">
             <div className="col-sm-2 search__filters">
               <div className="search__filter-group ">
-                {this.ticketTypeControls()}
+                {this.issueTypeControls()}
               </div>
               <hr className="hidden-xs"/>
               <div className="search__filter-group">
