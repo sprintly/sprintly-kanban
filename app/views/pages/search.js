@@ -234,7 +234,6 @@ var Search = React.createClass({
 
     if (products && products.length) {
       content = [
-        <i>Filter by Product</i>,
         <ButtonGroup vertical className="hidden-xs">
           {_.map(this.state.results.products, (product) => {
             return (
@@ -260,6 +259,21 @@ var Search = React.createClass({
     ])
   },
 
+  updateFilterControls(query) {
+    let issueTypes = ['story', 'defect', 'task', 'test'];
+    let facetPattern = 'type:';
+    let facetSplit = query.split(facetPattern).join(" ").split(" ");
+
+    var activeIssueTypes = _.intersection(issueTypes, facetSplit);
+    var issueControls = this.state.issueControls;
+
+    _.each(activeIssueTypes, type => {
+      issueControls[type] = true;
+    })
+
+    this.setState(issueControls);
+  },
+
   // React Functions
 
   componentDidMount() {
@@ -271,6 +285,7 @@ var Search = React.createClass({
     if (query && query.q) {
       this.setState({ query: query.q });
       this.updateProgressBar();
+      this.updateFilterControls(query.q);
       SearchActions.search(query.q, query.sort, query.order);
     }
   },
