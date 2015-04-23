@@ -261,14 +261,13 @@ var Search = React.createClass({
   },
 
   updateFilterControls(query) {
-    let issueTypes = ['story', 'defect', 'task', 'test'];
-    let facetPattern = 'type:';
-    let facetSplit = query.split(facetPattern).join(" ").split(" ");
+    var facetTypePattern = /(\btype:\b[^\s]+)/g;
+    var facets = query.match(facetTypePattern);
 
-    var activeIssueTypes = _.intersection(issueTypes, facetSplit);
     var issueControls = this.state.issueControls;
 
-    _.each(activeIssueTypes, type => {
+    _.each(facets, facet => {
+      var type = _.last(facet.split(":"));
       issueControls[type] = true;
     })
 
