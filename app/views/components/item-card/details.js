@@ -61,7 +61,8 @@ var ItemCardDetails = React.createClass({
   },
 
   render() {
-    let tags = this.props.item.tags ? this.props.item.tags.split(',') : [];
+    let tags = typeof this.props.item.tags === 'string' ?
+      this.props.item.tags.split(',') : this.props.item.tags || [];
     let statusOptions = _.omit(STATUSES, this.props.item.status);
     return (
       <div className="item-card__details">
