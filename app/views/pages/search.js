@@ -111,7 +111,7 @@ var Search = React.createClass({
     return (
       <div className="row">
         <form onSubmit={this.onSubmit}>
-          <div className="col-xs-10 col-sm-6 col-sm-offset-2">
+          <div className="col-xs-10 col-sm-6 search__query-bar">
             <input
               name="q"
               ref="input"
@@ -157,6 +157,20 @@ var Search = React.createClass({
     })
   },
 
+  productControlLinks() {
+    return _.map(this.state.products, (product) => {
+      let productClass = {}
+      productClass[`product-${product.id}`] = true;
+
+      var classes = React.addons.classSet(_.extend({
+        "btn btn-default product-control": true,
+        "active": this.state.productControls[product.id]
+      }, productClass));
+
+      return <a href="#" onClick={_.partial(this.addProduct, product.id)} className={classes}>{product.name}</a>;
+    })
+  },
+
   resultsSummary() {
     let issueTypes = ['stories', 'defects', 'tasks', 'tests'];
     let results = this.state.results;
@@ -189,6 +203,10 @@ var Search = React.createClass({
   },
 
   addProduct(value, ev) {
+    if (ev) {
+      ev.preventDefault();
+    }
+
     this.toggleControlState(this.state.productControls, value);
 
     let productFacet = `product:${value}`;
@@ -228,33 +246,17 @@ var Search = React.createClass({
   },
 
   productControls() {
-    let products = this.state.results.products;
+    let products = this.state.products;
     let content;
 
     if (products && products.length) {
       content = [
         <i>Filter by Product</i>,
         <ButtonGroup vertical className="hidden-xs">
-          {_.map(this.state.results.products, (product) => {
-            // Duplicated Refactor Point
-            let productClass = {}
-            productClass[`product-${product.id}`] = true;
-
-            var classes = React.addons.classSet(_.extend({
-              "btn btn-default product-control": true,
-              "active": this.state.productControls[product.id]
-            }, productClass));
-
-            return (
-              <button className={classes} onClick={_.partial(this.addProduct, product.id)}>
-                {product.name}
-              </button>
-            )
-
-          })}
+          {this.productControlLinks()}
         </ButtonGroup>,
         <DropdownButton block title="Products" className="visible-xs-inline-block" onSelect={(product) => { this.addProduct(product) }}>
-          {_.map(this.state.results.products, (product) => {
+          {_.map(this.state.products, (product) => {
             return <MenuItem eventKey={product.id}>{product.name}</MenuItem>
           })}
         </DropdownButton>
