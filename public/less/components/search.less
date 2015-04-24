@@ -2,6 +2,14 @@
   margin-top: 6em;
 }
 
+.search__query-bar {
+
+  @media (min-width: @screen-xs-max) {
+    margin-left: 18%;
+    margin-right: 0.5%;
+  }
+}
+
 .search__filters .btn-group-vertical {
   width: 100%;
   margin: .8em 0;
@@ -61,12 +69,23 @@
   .issue-control {
     opacity: 0.5;
 
-    &:hover {
-      border: 1px black solid;
-    }
-
     &.active {
       opacity: 1.0;
+    }
+  }
+
+  .product-control {
+    background-color: white;
+
+    &.active {
+      background-color: @task-bg;
+    }
+  }
+
+  .issue-control, .product-control {
+
+    &:hover {
+      border: 1px black solid;
     }
   }
 
