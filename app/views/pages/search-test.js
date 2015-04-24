@@ -222,7 +222,7 @@ describe('Search ViewController', function() {
             let productTypeButtons = TestUtils.scryRenderedDOMComponentsWithClass(this.component, 'product-control');
             let productNames = _.chain(productTypeButtons)
                                 .map(function(node) {
-                                  return node.getDOMNode().innerText
+                                  return node.getDOMNode().textContent
                                 })
                                 .value()
 
