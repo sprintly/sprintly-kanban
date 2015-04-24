@@ -161,8 +161,9 @@ var Search = React.createClass({
     let issueTypes = ['stories', 'defects', 'tasks', 'tests'];
     let results = this.state.results;
 
-    return (
-      <table className="table">
+    return ([
+      <h5>Search Results</h5>,
+      <table className="results-table">
         <thead></thead>
         <tbody>
           <tr className="total-issues">
@@ -184,7 +185,7 @@ var Search = React.createClass({
           }))}
         </tbody>
       </table>
-    )
+    ])
   },
 
   addProduct(value, ev) {
@@ -232,6 +233,7 @@ var Search = React.createClass({
 
     if (products && products.length) {
       content = [
+        <i>Filter by Product</i>,
         <ButtonGroup vertical className="hidden-xs">
           {_.map(this.state.results.products, (product) => {
             // Duplicated Refactor Point
@@ -261,10 +263,7 @@ var Search = React.createClass({
       content = <i className='no-products__message'>Make a query to filter by product</i>
     }
 
-    return ([
-      <i>Filter by Product</i>,
-      {content}
-    ])
+    return ({content})
   },
 
   updateControls(query) {
@@ -288,6 +287,39 @@ var Search = React.createClass({
       controls[type] = true;
     })
     this.setState(controls);
+  },
+
+  searchAPIInstructions() {
+    let instructions = {
+      blocking: "blocking:>0",
+      created: "created:>=2014-01-01",
+      author: "author:id",
+      is: "is:blocked",
+      product: "product:id",
+      size: "size:M",
+      status: "status:in-progress",
+      tag: "tag:release-1",
+      title: "title:dashboard",
+      type: "type:story"
+    }
+
+    return ([
+      <h5>Search Examples</h5>,
+      <table className="instructions-table">
+        <thead></thead>
+        <tbody>
+          {_.map(instructions, (example, name) => {
+            return (
+              <tr>
+                <td><b>{name}</b></td>
+                <td>{example}</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>,
+      <p className="learn-more">Learn more about our <a href="https://sprint.ly/blog/search-api/" target="_BLANK">Beta Item Search API with Facets</a>.</p>
+    ])
   },
 
   // React Functions
@@ -343,13 +375,13 @@ var Search = React.createClass({
               </div>
               <hr className="visible-xs-block"/>
             </div>
-            <div className="col-sm-8 search__results">
+            <div className="col-sm-7 search__results">
               {this.renderResults()}
             </div>
-            <div className="col-sm-2 search__counts">
+            <div className="col-sm-3 search__counts">
               {this.resultsSummary()}
               <hr/>
-              <p>Learn about our <a href="https://sprint.ly/blog/search-api/" target="_BLANK">Beta Item Search API with Facets</a>.</p>
+              {this.searchAPIInstructions()}
             </div>
           </div>
         </div>
