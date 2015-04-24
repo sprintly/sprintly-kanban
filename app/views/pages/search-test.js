@@ -19,18 +19,16 @@ const NO_ITEMS = {
   tests: []
 }
 
-const STUB_PRODUCTS = {
-  products: [
-    {
-      id: '1',
-      name: 'A'
-    },
-    {
-      id: '2',
-      name: 'B'
-    },
-  ]
-}
+const PRODUCTS = [
+  {
+    id: '1',
+    name: 'A'
+  },
+  {
+    id: '2',
+    name: 'B'
+  }
+]
 
 describe('Search ViewController', function() {
   beforeEach(function() {
@@ -212,9 +210,9 @@ describe('Search ViewController', function() {
 
         describe('with products', function () {
           beforeEach(function () {
-            let results = _.extend(NO_ITEMS, STUB_PRODUCTS);
             this.component.refs.stub.setState({
-              results: results
+              results: NO_ITEMS,
+              products: PRODUCTS
             })
           });
 
@@ -257,9 +255,9 @@ describe('Search ViewController', function() {
           getCurrentQuery: () => { return { q: 'type:story type:defect product:1' } }
         });
         this.component = TestUtils.renderIntoDocument(<Component/>);
-        let results = _.extend(NO_ITEMS, STUB_PRODUCTS);
         this.component.refs.stub.setState({
-          results: results
+          results: NO_ITEMS,
+          products: PRODUCTS
         })
       });
 
@@ -300,10 +298,10 @@ describe('Search ViewController', function() {
     beforeEach(function () {
       let Component = stubRouterContext(Search, user, {});
       this.component = TestUtils.renderIntoDocument(<Component/>);
-      let results = _.extend(NO_ITEMS, STUB_PRODUCTS);
       this.component.refs.stub.setState({
-        results: results
-      });
+        results: NO_ITEMS,
+        products: PRODUCTS
+      })
 
       this.searchBar = TestUtils.findRenderedDOMComponentWithClass(this.component, 'search-bar').getDOMNode();
       this.searchBar.value = 'type:story type:defect product:1';
