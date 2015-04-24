@@ -97,12 +97,26 @@
     border: none;
   }
 
-  .table > tbody > tr > td {
+  .results-table > tbody > tr > td,
+  .instructions-table > tbody > tr > td {
     border-top: none;
     padding: 0;
+  }
+
+  p.learn-more {
+    padding-top: 10px;
+  }
+
+  .instructions-table > tbody > tr > td  {
+    &:first-of-type {
+      padding-right: 10px;
+      padding-right: 5ch;
+    }
+  }
+
+  .results-table > tbody > tr > td {
     .small;
     font-style: italic;
-
     &:first-of-type {
       text-align: right;
       padding-right: 2px;
