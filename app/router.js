@@ -14,9 +14,18 @@ var routes = (
   </Route>
 );
 
+function analytics(state) {
+  if (typeof ga !== 'undefined') {
+    ga('send', 'pageview', {
+      'page': state.path
+    });
+  }
+}
+
 module.exports = function(sprintlyClient) {
   sprintlyClient.router = Router.run(routes, Router.HistoryLocation, function(Handler, state) {
     React.render(<Handler user={sprintlyClient.user} />, document.body);
+    analytics(state);
   });
 
   return sprintlyClient;
