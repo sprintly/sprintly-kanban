@@ -10,7 +10,7 @@ let AddItemStoryTitle = React.createClass({
 
   render() {
     return (
-      <div className="form-group">
+      <div className="form-group story-title">
         <div className="add-item__field who">
           <span>As an</span>
           <div className="input-group">

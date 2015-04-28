@@ -25,6 +25,12 @@ const NAV_ITEMS = [
 
 var AddItemModal = React.createClass({
 
+  propTypes: {
+    tags: React.PropTypes.array,
+    members: React.PropTypes.array,
+    product: React.PropTypes.object
+  },
+
   mixins: [
     DragDropMixin,
     // LocalStorageMixin,
@@ -58,12 +64,6 @@ var AddItemModal = React.createClass({
       sendToBacklog: true,
       attachments: AttachmentStore.getPendingAttachments()
     }
-  },
-
-  propTypes: {
-    tags: React.PropTypes.array,
-    members: React.PropTypes.array,
-    product: React.PropTypes.object
   },
 
   getDefaultProps() {
@@ -105,8 +105,12 @@ var AddItemModal = React.createClass({
     });
   },
 
-  setDescription(ev, value) {
+  setDescription(value) {
     this.setState({ description: value });
+  },
+
+  setAssignedTo(assigned) {
+    this.setState({ assigned_to: assigned })
   },
 
   updateTags(tags) {
@@ -127,10 +131,10 @@ var AddItemModal = React.createClass({
 
   createItem(ev) {
     ev.preventDefault();
-    let item = _.pick(this.state, ['type', 'description', 'tags', 'assigned_to'])
+    let item = _.pick(this.state, ['type', 'description', 'tags', 'assigned_to']);
 
     if (this.state.type === 'story') {
-      _.assign(item, _.pick(this.state, ['who', 'what', 'why']))
+      _.assign(item, _.pick(this.state, ['who', 'what', 'why']));
     } else {
       item.title = this.state.title;
     }
@@ -173,7 +177,7 @@ var AddItemModal = React.createClass({
     return (
       <Modal {...this.props} className="add-item">
         <Nav className="add-item__tabs" bsStyle='tabs' activeKey={this.state.type} onSelect={this.changeType}>
-          {_.map(NAV_ITEMS, function(item) {
+          {_.map(NAV_ITEMS, (item) => {
             return (
               <NavItem tabIndex="1" aria-role="tab" eventKey={item.type} className={`add-item__nav-${item.type}`}>
                 {item.label}
@@ -199,18 +203,16 @@ var AddItemModal = React.createClass({
               <div className="col-xs-7">
                 <MembersDropdown
                   members={this.props.members}
-                  assiged_to={this.state.assigned_to}
-                  onChange={(assigned_to) => {
-                    this.setState({ assigned_to });
-                  }}
+                  assigned_to={this.state.assigned_to}
+                  onChange={this.setAssignedTo}
                 />
               </div>
               <div className="col-xs-5 add-item__actions">
-                <input type="submit" className="btn btn-primary btn-lg" value="Create Item"/>
-                <button className="btn btn-default btn-lg" onClick={this.dismiss}>Cancel</button>
+                <input type="submit" className="btn btn-primary btn-lg create-item" value="Create Item"/>
+                <button className="btn btn-default btn-lg cancel-item" onClick={this.dismiss}>Cancel</button>
                 <div className="checkbox">
                   <label>
-                    <input type="checkbox" name="backlog" checkedLink={this.linkState('sendToBacklog')}/>
+                    <input className="backlog-checkbox" type="checkbox" name="backlog" checkedLink={this.linkState('sendToBacklog')}/>
                     Automatically send to backlog.
                   </label>
                 </div>
