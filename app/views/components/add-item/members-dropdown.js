@@ -29,12 +29,12 @@ let MembersDropdown = React.createClass({
     }
 
     return (
-      <div className="form-group selector">
+      <div className="form-group selector members-dropdown">
         <SelectorMenu
           optionslist={members}
           selection={selection}
           onSelectionChange={(title) => {
-            this.onChange(_.findwhere(members, { title }).id);
+            this.onChange(_.findWhere(members, { title }).id);
           }}
         />
       </div>
