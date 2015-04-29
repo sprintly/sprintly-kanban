@@ -1,0 +1,164 @@
+// 
+// Control
+// ------------------------------
+
+.Select {
+	position: relative;
+}
+
+// base
+
+.Select-control {
+	position: relative;
+	overflow: hidden;
+	background-color: white;
+	border: 1px solid @select-input-border-color;
+	border-color: lighten(@select-input-border-color, 5%) @select-input-border-color darken(@select-input-border-color, 10%);
+	border-radius: @select-input-border-radius;
+	box-sizing: border-box;
+	color: @select-text-color;
+	cursor: default;
+	outline: none;
+	// right padding allows for arrow, clear button and loading indicator
+	padding: @select-padding-vertical 52px @select-padding-vertical @select-padding-horizontal;
+	transition: all 200ms ease;
+
+	&:hover {
+		box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
+	}
+}
+
+.is-searchable {
+	&.is-open > .Select-control {
+		cursor: text;
+	}
+}
+
+.is-open > .Select-control {
+	.border-bottom-radius( 0 );
+	background: white;
+	border-color: darken(@select-input-border-color, 10%) @select-input-border-color lighten(@select-input-border-color, 5%);
+
+	// flip the arrow so its pointing up when the menu is open
+	> .Select-arrow {
+		border-color: transparent transparent @select-arrow-color;
+		border-width: 0 @select-arrow-width @select-arrow-width;
+	}
+}
+
+.is-searchable {
+	&.is-focused:not(.is-open) > .Select-control {
+		cursor: text;
+	}
+}
+
+.is-focused:not(.is-open) > .Select-control {
+	border-color: @select-input-border-focus lighten(@select-input-border-focus, 5%) lighten(@select-input-border-focus, 5%);
+	box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), 0 0 5px -1px fade(@select-input-border-focus,50%);
+}
+
+// placeholder
+
+.Select-placeholder {
+	color: @select-input-placeholder;
+	padding: @select-padding-vertical 52px @select-padding-vertical @select-padding-horizontal;
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: -(@select-arrow-width + @select-padding-horizontal);
+
+	// crop text
+	max-width: 100%;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.has-value > .Select-control > .Select-placeholder {
+	color: @select-text-color;
+}
+
+
+// the <input> element users type in
+
+.Select-input {
+	
+	> input {
+		cursor: default;
+		background: none transparent;
+		border: 0 none;
+		padding: 0;
+		font-family: inherit;
+		font-size: inherit;
+		margin: 0;
+		padding: 0;
+		outline: none;
+		display: inline-block;
+		-webkit-appearance: none;
+		
+		.is-focused & {
+			cursor: text;
+		}
+	}
+
+}
+
+// fake input
+.Select-control:not(.is-searchable) > .Select-input {
+	outline: none;
+}
+
+
+// loading indicator
+
+.Select-loading {
+	.Select-spinner(16px, @select-input-border-color, @select-text-color);
+	margin-top: -8px;
+	position: absolute;
+	right: (@select-padding-horizontal * 3);
+	top: 50%;
+}
+
+.has-value > .Select-control > .Select-loading {
+	right: (@select-padding-horizontal * 3) + 16px;
+}
+
+
+// the little cross that clears the field
+
+.Select-clear {
+	// todo: animate transition in
+	color: @select-clear-color;
+	cursor: pointer;
+	display: inline-block;
+	font-size: 16px;
+	padding: @select-padding-vertical - 2 @select-padding-horizontal;
+	position: absolute;
+	right: @select-padding-horizontal + @select-arrow-width + 2;
+	top: 0;
+
+	&:hover {
+		color: @select-clear-hover-color;
+	}
+	
+	> span {
+		font-size: 1.1em;
+	}
+}
+
+
+// arrow indicator
+
+.Select-arrow {
+	border-color: @select-arrow-color transparent transparent;
+	border-style: solid;
+	border-width: @select-arrow-width @select-arrow-width 0;
+	content: " ";
+	display: block;
+	height: 0;
+	margin-top: -ceil(@select-arrow-width / 2);
+	position: absolute;
+	right: @select-padding-horizontal;
+	top: @select-padding-vertical + @select-arrow-width + 1;
+	width: 0;
+}

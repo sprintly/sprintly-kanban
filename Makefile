@@ -19,6 +19,10 @@ bootstrap:
 	mkdir -p public/less/bootstrap
 	cp -r node_modules/bootstrap/less/* public/less/bootstrap
 
+react-select:
+	mkdir -p public/less/react-select
+	cp -r node_modules/react-select/less/* public/less/react-select
+
 test:
 	@npm test
 
