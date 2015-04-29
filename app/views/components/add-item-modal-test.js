@@ -138,7 +138,7 @@ describe('Add Item Modal', function() {
 
   it('describing a ticket updates state', function () {
     let description = 'new feature to build';
-    this.component.refs.stub.setDescription('new feature to build');
+    this.component.refs.stub.setDescription(null,'new feature to build');
 
     assert.equal(this.component.refs.stub.state.description, description);
   });
