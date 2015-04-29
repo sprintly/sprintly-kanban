@@ -99,12 +99,13 @@ var internals = ProductStore.internals = {
   },
 
   loadMoreItems(coll) {
-    var currentOffset = coll.config.get('offset');
-    var newOffset = coll.config.get('status') === 'accepted' ? currentOffset + 5 :
-      currentOffset + 25;
+    let limit = coll.config.get('limit');
+    let newLimit = coll.config.get('status') === 'accepted' ? limit + 5 :
+      limit + 25;
 
-    coll.config.set({ offset: newOffset });
-    coll.fetch({ silent:true, remove:false}).then((res) => {
+    coll.config.set({ limit: newLimit });
+
+    coll.fetch({ silent:true }).then((res) => {
       coll.trigger('change', { count: res.length });
     });
   },
