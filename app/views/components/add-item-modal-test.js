@@ -29,7 +29,7 @@ describe('Add Item Modal', function() {
     this.dismissSpy = sinon.spy();
     let props = {
       members: [],
-      tags: [],
+      tags: [{ tag: 'a' },{ tag: 'b' }],
       product: {
         id: '1'
       },
@@ -72,7 +72,7 @@ describe('Add Item Modal', function() {
     });
 
     it('renders a \'Tags\' input component', function () {
-      let TagsInput = TestUtils.findRenderedDOMComponentWithClass(this.component, 'tags-input');
+      let TagsInput = TestUtils.findRenderedDOMComponentWithClass(this.component, 'select-tags');
 
       assert.isDefined(TagsInput);
     });
@@ -143,16 +143,27 @@ describe('Add Item Modal', function() {
     assert.equal(this.component.refs.stub.state.description, description);
   });
 
-  it('adds tags to the issue', function () {
-    let Tags = TestUtils.findRenderedDOMComponentWithClass(this.component, 'tags-input');
-    let tagsInput = TestUtils.findRenderedDOMComponentWithClass(this.component, 'tags-input').getDOMNode().childNodes[0];
-    tagsInput.value = 'mvp';
+  describe('tags', function () {
+    it('#prepareTagsForSelect', function () {
+      let targetStructure = [{label: 'a', value: 'a'},{label: 'b', value: 'b'}];
+      let preparedTags = this.component.refs.stub.prepareTagsForSelect();
 
-    TestUtils.Simulate.keyDown(tagsInput, {keyCode: 188});
+      assert.deepEqual(preparedTags, targetStructure);
+    });
 
-    let tags = this.component.refs.stub.state.tags;
+    it('#updateTags', function () {
+      this.component.refs.stub.updateTags('a,b');
+      let tags = this.component.refs.stub.state.tags;
 
-    assert.sameMembers(tags, ['mvp']);
+      assert.sameMembers(tags, ['a','b']);
+    });
+
+    it('#updateTags doesnt include empty strings', function () {
+      this.component.refs.stub.updateTags('');
+      let tags = this.component.refs.stub.state.tags;
+
+      assert.sameMembers(tags, []);
+    });
   });
 
   it('sets assigned_to', function () {
