@@ -305,7 +305,7 @@ var Search = React.createClass({
       type: "type:story"
     }
 
-    return ([
+    return (
       <h5>Search Examples</h5>,
       <table className="instructions-table">
         <thead></thead>
@@ -319,9 +319,8 @@ var Search = React.createClass({
             );
           })}
         </tbody>
-      </table>,
-      <p className="learn-more">Learn more about our <a href="https://sprint.ly/blog/search-api/" target="_BLANK">Beta Item Search API with Facets</a>.</p>
-    ])
+      </table>
+    )
   },
 
   // React Functions
@@ -384,6 +383,8 @@ var Search = React.createClass({
               {this.resultsSummary()}
               <hr/>
               {this.searchAPIInstructions()}
+              <hr/>
+              <p className="learn-more">Learn more about our <a href="https://sprint.ly/blog/search-api/" target="_BLANK">Beta Item Search API with Facets</a>.</p>
             </div>
           </div>
         </div>
