@@ -26,13 +26,14 @@ describe('Add Item Modal', function() {
     this.sinon = sinon.sandbox.create();
     this.ItemActions = AddItemModal.__get__('ItemActions');
     this.addItemStub = this.sinon.stub(this.ItemActions, 'addItem').returns({then: function(){}});
-
+    this.dismissSpy = sinon.spy();
     let props = {
       members: [],
       tags: [],
       product: {
         id: '1'
-      }
+      },
+      onRequestHide: this.dismissSpy
     }
 
     let Component = stubRouterContext(AddItemModal, props);
@@ -219,6 +220,15 @@ describe('Add Item Modal', function() {
       TestUtils.Simulate.submit(CreateItemForm);
 
       assert.isTrue(this.addItemStub.calledWithExactly('1', nonStoryIssueProps));
+    });
+  });
+
+  describe('dismiss modal', function () {
+    it('flushes modal state', function () {
+      let CloseModal = TestUtils.findRenderedDOMComponentWithClass(this.component, 'cancel-item');
+      TestUtils.Simulate.click(CloseModal);
+
+      assert.isTrue(this.dismissSpy.called);
     });
   });
 });
