@@ -4,6 +4,7 @@ var ProductStore = require('../product-store');
 var Backbone = require('backdash');
 var assert = require('chai').assert;
 var sinon = require('sinon');
+var Promise = require('bluebird');
 
 describe('ProductStore', function() {
   beforeEach(function() {
@@ -129,30 +130,40 @@ describe('ProductStore', function() {
       this.collection = new Backbone.Collection();
       this.collection.config = new Backbone.Model({
         status: 'backlog',
-        offset: 0
+        limit: 25
       });
     });
 
-    it('should return a promise', function() {
+    it('should return a promise', function(done) {
       var spy = sinon.spy(this.collection, 'trigger');
 
-      this.collection.fetch = () => {
-        return $.Deferred().resolve({length: 0});
+      this.collection.fetch = function() {
+        return new Promise(function(resolve) {
+          resolve({ length: 16 });
+        });
       };
 
       ProductStore.internals.loadMoreItems(this.collection);
-      sinon.assert.calledOnce(spy);
+      setTimeout(function() {
+        sinon.assert.calledOnce(spy);
+        done();
+      }, 0)
     });
 
-    it('should emit a change event and pass an object containing the response item count', function() {
+    it('should emit a change event and pass an object containing the response item count', function(done) {
       var spy = sinon.spy(this.collection, 'trigger');
 
-      this.collection.fetch = () => {
-        return $.Deferred().resolve({length: 16});
+      this.collection.fetch = function() {
+        return new Promise(function(resolve) {
+          resolve({ length: 16 });
+        });
       };
 
       ProductStore.internals.loadMoreItems(this.collection);
-      sinon.assert.calledWith(spy, 'change', {count: 16});
+      setTimeout(function() {
+        sinon.assert.calledWith(spy, 'change', {count: 16});
+        done();
+      }, 0)
     });
   });
 
