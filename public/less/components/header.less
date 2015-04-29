@@ -1,16 +1,25 @@
 @header: #333333;
 @header-title: #EFEFEF;
-@running-man: #21718D;
+@labs-flask: #21718D;
 
-.running-man {
+.labs-flask {
   float: left;
   margin: 8px;
 }
 
-.running-man-svg {
+.labs-flask-svg__empty {
+  fill: @header;
+}
+
+.labs-flask-svg__top,
+.labs-flask-svg__content,
+.labs-flask-svg__border {
+  fill: @labs-flask;
+}
+
+.labs-flask-svg {
   fill-rule:  evenodd;
   clip-rule:  evenodd;
-  fill: @running-man;
 }
 
 .product__header {
