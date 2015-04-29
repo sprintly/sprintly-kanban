@@ -208,8 +208,8 @@ var AddItemModal = React.createClass({
                 />
               </div>
               <div className="col-xs-5 add-item__actions">
-                <input type="submit" className="btn btn-primary btn-lg create-item" value="Create Item"/>
                 <button className="btn btn-default btn-lg cancel-item" onClick={this.dismiss}>Cancel</button>
+                <input type="submit" className="btn btn-primary btn-lg create-item" value="Create Item"/>
                 <div className="checkbox">
                   <label>
                     <input className="backlog-checkbox" type="checkbox" name="backlog" checkedLink={this.linkState('sendToBacklog')}/>
