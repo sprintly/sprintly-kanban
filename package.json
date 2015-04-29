@@ -13,6 +13,7 @@
     "confidence": "^1.0.0",
     "envify": "^3.2.0",
     "es5-shim": "^4.0.6",
+    "exorcist": "^0.3.0",
     "flux": "^2.0.1",
     "gulp": "^3.8.10",
     "gulp-csso": "^0.2.9",
@@ -47,15 +48,15 @@
     "sprintly-ui": "^1.0.0",
     "tape": "^3.5.0",
     "uglify-js": "^2.4.14",
-    "watchify": "^2.2.1"
+    "watchify": "^3.1.2"
   },
   "scripts": {
     "test": "NODE_ENV=test ./node_modules/karma/bin/karma start --browsers Firefox --single-run",
     "watch-test": "NODE_ENV=test ./node_modules/karma/bin/karma start",
-    "watchify": "BASE_URL=https://local.sprint.ly:9000/api watchify app -o public/js/manifold.js -v -d",
-    "watchify-test": "NODE_ENV=test watchify test/index.js -o test/test-bundle.js -t rewireify -t babelify -t envify -dv",
-    "build": "BASE_URL=https://local.sprint.ly:9000/api browserify app -o public/js/manifold.js -d",
-    "build-test": "NODE_ENV=test browserify test/index.js -o test/test-bundle.js -t rewireify -t babelify -t envify -d",
+    "watchify": "BASE_URL=https://local.sprint.ly:9000/api watchify app -o './node_modules/.bin/exorcist public/js/manifold.js.map > public/js/manifold.js' -v -d",
+    "watchify-test": "NODE_ENV=test watchify test/index.js -o './node_modules/.bin/exorcist test/test-bundle.js.map > test/test-bundle.js' -t rewireify -t babelify -t envify -dv",
+    "build": "BASE_URL=https://local.sprint.ly:9000/api browserify app -d | ./node_modules/.bin/exorcist public/js/manifold.js.map > public/js/manifold.js",
+    "build-test": "NODE_ENV=test browserify test/index.js -t rewireify -t babelify -t envify -d | ./node_modules/.bin/exorcist test/test-bundle.js.map > test/test-bundle.js",
     "build-production": "npm run build-production-js && npm run build-production-css",
     "build-production-js": "NODE_ENV=production browserify app | uglifyjs -cm > public/js/manifold.min.js",
     "build-production-css": "gulp css",
