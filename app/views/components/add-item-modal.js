@@ -44,7 +44,8 @@ var AddItemModal = React.createClass({
       why: '',
       description: '',
       tags: [],
-      assigned_to: null,
+      assignedTo: null,
+      assigneeName: '',
       sendToBacklog: true
     }
   },
@@ -59,8 +60,13 @@ var AddItemModal = React.createClass({
     this.setState({ description: value });
   },
 
-  setAssignedTo(assigned) {
-    this.setState({ assigned_to: assigned })
+  setAssignedTo(value,member) {
+    let memberName = _.chain(member).pluck('label').first().value()
+
+    this.setState({
+      assignedTo: value,
+      assigneeName: memberName
+    })
   },
 
   updateTags(allTags) {
@@ -86,7 +92,7 @@ var AddItemModal = React.createClass({
 
   createItem(ev) {
     ev.preventDefault();
-    let item = _.pick(this.state, ['type', 'description', 'tags', 'assigned_to']);
+    let item = _.pick(this.state, ['type', 'description', 'tags', 'assignedTo']);
 
     if (this.state.type === 'story') {
       _.assign(item, _.pick(this.state, ['who', 'what', 'why']));
@@ -113,8 +119,26 @@ var AddItemModal = React.createClass({
             .value()
   },
 
+  prepareMembersForSelect() {
+    return _.map(this.props.members, (member) => {
+      return {label: `${member.first_name} ${member.last_name}`, value: member.id}
+    })
+  },
+
   addNewTag(ev) {
     console.log('adding new tag soon', ev.currentTarget.value);
+  },
+
+  notAssignable() {
+    return !this.props.members.length;
+  },
+
+  assignPlaceholder() {
+    return this.notAssignable() ? 'Nobody to assign to': 'Unassigned';
+  },
+
+  assigneeName() {
+    return this.state.assigneeName ? this.state.assigneeName : 'Unassigned';
   },
 
   render() {
@@ -126,6 +150,7 @@ var AddItemModal = React.createClass({
     });
 
     let tags = this.prepareTagsForSelect();
+    let members = this.prepareMembersForSelect();
 
     let title = this.state.type === 'story' ?
       (<StoryTitle
@@ -161,7 +186,6 @@ var AddItemModal = React.createClass({
               <Select placeholder= "Select your Tags"
                       name="form-field-name"
                       className="select-tags"
-                      delimeter=","
                       value={this.state.tags}
                       options={tags}
                       multi={true}
@@ -170,11 +194,14 @@ var AddItemModal = React.createClass({
             </div>
             <div className="row">
               <div className="col-xs-7">
-                <MembersDropdown
-                  members={this.props.members}
-                  assigned_to={this.state.assigned_to}
-                  onChange={this.setAssignedTo}
-                />
+                <Select placeholder={this.assignPlaceholder()}
+                        name="form-field-name"
+                        className="assign-dropdown"
+                        disabled={this.notAssignable()}
+                        value={this.assigneeName()}
+                        options={members}
+                        onChange={this.setAssignedTo}
+                        clearable={true} />
               </div>
               <div className="col-xs-5 add-item__actions">
                 <button className="btn btn-default btn-lg cancel-item" onClick={this.dismiss}>Cancel</button>

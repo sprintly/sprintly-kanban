@@ -21,14 +21,24 @@ var MembersDropdown = require('./add-item/members-dropdown');
 
 var ItemActions = require('../../actions/item-actions');
 
-describe('Add Item Modal', function() {
+describe.only('Add Item Modal', function() {
   beforeEach(function() {
     this.sinon = sinon.sandbox.create();
     this.ItemActions = AddItemModal.__get__('ItemActions');
     this.addItemStub = this.sinon.stub(this.ItemActions, 'addItem').returns({then: function(){}});
     this.dismissSpy = sinon.spy();
     let props = {
-      members: [],
+      members: [
+      {
+        first_name: 'Sarah',
+        last_name: 'Morrow',
+        id: 123
+      },
+      {
+        first_name: 'Paul',
+        last_name: 'Johnson',
+        id: 321
+      }],
       tags: [{ tag: 'a' },{ tag: 'b' }],
       product: {
         id: '1'
@@ -166,11 +176,84 @@ describe('Add Item Modal', function() {
     });
   });
 
-  it('sets assigned_to', function () {
-    let assigned = 1;
-    this.component.refs.stub.setAssignedTo(assigned);
+  describe('member assignment', function () {
+    it('#setAssignedTo', function () {
+      let memberId = 123;
+      let member = [{label: 'Sarah Morrow'}];
 
-    assert(this.component.refs.stub.state.assigned_to, 1);
+      this.component.refs.stub.setAssignedTo(memberId, member);
+
+      assert(this.component.refs.stub.state.assignedTo, 1);
+      assert(this.component.refs.stub.state.assigneeName, 'Sarah Morrow');
+    });
+
+    it('#preparesMembersForSelect', function () {
+      let targetStructure = [{label: 'Sarah Morrow', value: 123},{label: 'Paul Johnson', value: 321}];
+      let preparedTags = this.component.refs.stub.prepareMembersForSelect();
+
+      assert.deepEqual(preparedTags, targetStructure);
+    });
+
+
+    describe('#notAssignable', function () {
+      it('is true when there are no members', function () {
+        let props = {
+          members: [],
+          tags: [{ tag: 'a' },{ tag: 'b' }],
+          product: {
+            id: '1'
+          }
+        }
+
+        let Component = stubRouterContext(AddItemModal, props);
+
+        let component = TestUtils.renderIntoDocument(<Component />);
+
+        assert.ok(component.refs.stub.notAssignable());
+      });
+    })
+
+    describe('#assignPlaceholder', function () {
+      it('\'Unassigned\' when there are members', function () {
+        assert.equal(this.component.refs.stub.assignPlaceholder(), 'Unassigned');
+      });
+
+      it('\'Nobody to assign to\' when there are no members', function () {
+        let props = {
+          members: [],
+          tags: [{ tag: 'a' },{ tag: 'b' }],
+          product: {
+            id: '1'
+          }
+        }
+
+        let Component = stubRouterContext(AddItemModal, props);
+
+        let component = TestUtils.renderIntoDocument(<Component />);
+
+        assert.equal(component.refs.stub.assignPlaceholder(), 'Nobody to assign to');
+      });
+    })
+
+    describe('#assigneeName', function () {
+      it('\'Unassigned\' when there is no assignee name', function () {
+        this.component.refs.stub.setState({
+          assigneeName: ''
+        })
+
+        assert.equal(this.component.refs.stub.assigneeName(), 'Unassigned');
+      });
+
+      it('Returns assignee name when there is one', function () {
+        let assigneeName = 'Sarah Morrow';
+
+        this.component.refs.stub.setState({
+          assigneeName: assigneeName
+        })
+
+        assert.equal(this.component.refs.stub.assigneeName(), assigneeName);
+      });
+    })
   });
 
   context('creating an issue', function () {
@@ -179,7 +262,7 @@ describe('Add Item Modal', function() {
         title: 'title',
         description: 'build user login',
         tags: ['mvp'],
-        assigned_to: '1',
+        assignedTo: '1',
         who: 'user',
         what: 'a login form',
         why: 'so that I can login'
@@ -201,7 +284,7 @@ describe('Add Item Modal', function() {
         type: 'story',
         description: 'build user login',
         tags: ['mvp'],
-        assigned_to: '1',
+        assignedTo: '1',
         who: 'user',
         what: 'a login form',
         why: 'so that I can login'
@@ -222,7 +305,7 @@ describe('Add Item Modal', function() {
         type: 'task',
         description: 'build user login',
         tags: ['mvp'],
-        assigned_to: '1'
+        assignedTo: '1'
       }
 
       this.component.refs.stub.setState({type: 'task'});
