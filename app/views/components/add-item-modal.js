@@ -6,6 +6,8 @@ import Title from './add-item/title';
 import TagsInput from './tags-input';
 import StoryTitle from './add-item/story-title';
 import MembersDropdown from './add-item/members-dropdown';
+import IssueTemplates from './add-item/issue-templates';
+import Select from 'react-select';
 
 import ItemActions from '../../actions/item-actions';
 
@@ -61,11 +63,17 @@ var AddItemModal = React.createClass({
     this.setState({ assigned_to: assigned })
   },
 
-  updateTags(tags) {
-    this.setState({ tags });
+  updateTags(allTags) {
+    if (allTags) {
+      var tags = allTags.split(',');
+      this.setState({ tags: tags });
+    }
   },
 
   changeType(type) {
+    var descriptionTemplate = (type === 'defect') ? IssueTemplates.defect : '';
+    this.setDescription(null, descriptionTemplate);
+
     this.setState({ type: type });
   },
 
@@ -96,6 +104,19 @@ var AddItemModal = React.createClass({
     });
   },
 
+  prepareTagsForSelect() {
+    return _.chain(this.props.tags)
+            .pluck('tag')
+            .map(function(tag) {
+              return {label: tag, value: tag}
+            })
+            .value()
+  },
+
+  addNewTag(ev) {
+    console.log('adding new tag soon', ev.currentTarget.value);
+  },
+
   render() {
     let mentions = _.map(this.props.members, function(member) {
       return {
@@ -104,7 +125,7 @@ var AddItemModal = React.createClass({
       }
     });
 
-    let tags = _.pluck(this.props.tags, 'tag');
+    let tags = this.prepareTagsForSelect();
 
     let title = this.state.type === 'story' ?
       (<StoryTitle
@@ -137,7 +158,15 @@ var AddItemModal = React.createClass({
               </MentionsInput>
             </div>
             <div className="form-group">
-              <TagsInput tags={tags} onChange={this.updateTags} value={this.state.tags}/>
+              <Select placeholder= "Select your Tags"
+                      name="form-field-name"
+                      className="select-tags"
+                      delimeter=","
+                      value={this.state.tags}
+                      options={tags}
+                      multi={true}
+                      onChange={this.updateTags}
+                      inputProps={{onChange: this.addNewTag}} />
             </div>
             <div className="row">
               <div className="col-xs-7">
