@@ -8,8 +8,6 @@ import StoryTitle from './add-item/story-title';
 import MembersDropdown from './add-item/members-dropdown';
 
 import ItemActions from '../../actions/item-actions';
-import AttachmentActions from '../../actions/attachment-actions';
-import AttachmentStore from '../../stores/attachment-store';
 
 import LocalStorageMixin from 'react-localstorage';
 import {DragDropMixin, NativeDragItemTypes} from 'react-dnd';
@@ -32,24 +30,8 @@ var AddItemModal = React.createClass({
   },
 
   mixins: [
-    DragDropMixin,
-    // LocalStorageMixin,
     React.addons.LinkedStateMixin
   ],
-
-  statics: {
-    configureDragDrop(register) {
-      register(NativeDragItemTypes.FILE, {
-        dropTarget: {
-          acceptDrop(component, item) {
-            if (item.files && item.files[0]) {
-              AttachmentActions.createUpload(item.files[0]);
-            }
-          }
-        }
-      });
-    }
-  },
 
   getInitialState() {
     return {
@@ -61,8 +43,7 @@ var AddItemModal = React.createClass({
       description: '',
       tags: [],
       assigned_to: null,
-      sendToBacklog: true,
-      attachments: AttachmentStore.getPendingAttachments()
+      sendToBacklog: true
     }
   },
 
@@ -72,40 +53,7 @@ var AddItemModal = React.createClass({
     }
   },
 
-  componentDidMount() {
-    AttachmentStore.addChangeListener(this._onChange);
-  },
-
-  componentWillUnmount() {
-    AttachmentStore.removeChangeListener(this._onChange);
-  },
-
-  _onChange() {
-    let uploads = AttachmentStore.getActiveUploads();
-    let attachments = AttachmentStore.getPendingAttachments();
-    let description = this.state.description;
-
-    for(let i=0; i < uploads.length; i++) {
-      let embed = `![Uploading ${uploads[i].name}](...)`
-      if (description.indexOf(embed) < 0) {
-        description = _.compact([description, embed]).join('\n');
-      }
-    }
-
-    for(let i=0; i < attachments.length; i++) {
-      let image = attachments[i][':original'][0];
-      let embed = `![Uploading ${image.name}](...)`;
-      description = description
-        .replace(embed, `![${image.name}](${image.ssl_url})`, 'g');
-    }
-
-    this.setState({
-      description,
-      attachments
-    });
-  },
-
-  setDescription(value) {
+  setDescription(ev, value) {
     this.setState({ description: value });
   },
 
@@ -124,7 +72,6 @@ var AddItemModal = React.createClass({
   dismiss(ev) {
     ev.preventDefault();
     let state = this.getInitialState();
-    state.attachments = [];
     this.setState(state);
     this.props.onRequestHide();
   },
@@ -150,13 +97,6 @@ var AddItemModal = React.createClass({
   },
 
   render() {
-    let fileDropState = this.getDropState(NativeDragItemTypes.FILE);
-
-    let bodyClasses = React.addons.classSet({
-      'modal-body': true,
-      'dragging': fileDropState.isHovering
-    });
-
     let mentions = _.map(this.props.members, function(member) {
       return {
         id: member.id,
@@ -185,14 +125,14 @@ var AddItemModal = React.createClass({
             )
           })}
         </Nav>
-        <div className={bodyClasses} {...this.dropTargetFor(NativeDragItemTypes.FILE)}>
+        <div className='modal-body'>
           <form onSubmit={this.createItem}>
             {title}
             <div className="form-group">
               <MentionsInput
                 value={this.state.description}
                 onChange={this.setDescription}
-                placeholder="Add a description and drag files here to attach...">
+                placeholder="Add a description...">
                   <Mention data={mentions} />
               </MentionsInput>
             </div>
