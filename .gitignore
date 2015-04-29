@@ -14,4 +14,4 @@ test/bundle.js
 npm-debug.log*
 test/test-bundle.js
 public/js/manifold.js.map
-test/test-bundles.js.map
+test/test-bundle.js.map
