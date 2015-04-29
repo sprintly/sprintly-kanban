@@ -1,6 +1,9 @@
 box: dignifiedquire/node-firefox-headless@0.3.0
 build:
   steps:
+    - script:
+        name: Use latest npm
+        code: sudo npm update -g npm
     - npm-install
     - script:
         name: Setup firefox
@@ -16,6 +19,9 @@ build:
 
 deploy:
   steps:
+    - script:
+        name: Use latest npm
+        code: sudo npm update -g npm
     - npm-install
     - script:
         name: Build assets
