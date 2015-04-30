@@ -56,17 +56,86 @@ var TagsInput = React.createClass({
         if (node.value.length === 0) {
           this.removeTag(_.last(this.props.value));
         }
-        break;
+      break;
+
       case 9: // tab
+        ev.preventDefault();
+        this.addTag(node.value);
+      break
+
+      case 13: // enter
+        ev.preventDefault();
+        this.selectFocusedOption();
+      break;
+
       case 188: // comma
         if (node.value.length > 0 && ev.shiftKey !== true) {
           ev.preventDefault();
           this.addTag(node.value);
         }
-        break;
+      break;
+
+      case 38: // up
+        this.focusOption('previous');
+      break;
+
+      case 40: // down
+        this.focusOption('next');
+      break;
+
       default:
         break;
     }
+  },
+
+  selectFocusedOption(ev) {
+    this.addTag(this.state.focusedOption);
+  },
+
+  updateFocusedOption(ev, value) {
+    this.setState({
+      focusedOption: ev.currentTarget.innerText
+    })
+  },
+
+  getFocusedOptionIndex() {
+    let focusedIndex = -1;
+
+    for (var i = 0; i < ops.length; i++) {
+      if (this.state.focusedOption === ops[i]) {
+        focusedIndex = i;
+        break;
+      }
+    }
+
+    return focusedIndex;
+  },
+
+  focusOption(direction) {
+    var ops = this.state.filteredTags;
+
+    if (!ops.length) {
+      return;
+    }
+
+    var focusedIndex = this._getFocusedOptionIndex();
+    var focusedOption = ops[0];
+
+    const MAX_VISIBLE_TAGS = 3;
+
+    if (direction === 'next' && focusedIndex > -1 && focusedIndex < MAX_VISIBLE_TAGS - 1) {
+      focusedOption = ops[focusedIndex + 1];
+    } else if (direction === 'previous') {
+      if (focusedIndex > 0) {
+        focusedOption = ops[focusedIndex - 1];
+      } else {
+        focusedOption = ops[MAX_VISIBLE_TAGS - 1];
+      }
+    }
+
+    this.setState({
+      focusedOption: focusedOption
+    })
   },
 
   renderValues() {
@@ -101,8 +170,17 @@ var TagsInput = React.createClass({
     return (
       <ListGroup>
         {_.map(this.state.filteredTags.slice(0, 3), (value, index) => {
+
+          let focusedClass = React.addons.classSet({
+            'tag-item__focused': (value === this.state.focusedOption)
+          })
+
           return (
-            <ListGroupItem onClick={_.partial(this.addTag, value)} href="#" key={index}>
+            <ListGroupItem onClick={_.partial(this.addTag, value)}
+                              href="#"
+                               key={index}
+                         className={focusedClass}
+                       onMouseOver={this.updateFocusedOption} >
               {value}
             </ListGroupItem>
           );
