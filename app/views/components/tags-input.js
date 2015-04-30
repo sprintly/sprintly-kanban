@@ -3,6 +3,8 @@ import React from 'react/addons';
 import {ListGroup, ListGroupItem} from 'react-bootstrap';
 import fuzzy from 'fuzzy';
 
+const MAX_VISIBLE_TAGS = 3;
+
 var TagsInput = React.createClass({
 
   propTypes: {
@@ -99,6 +101,7 @@ var TagsInput = React.createClass({
   },
 
   getFocusedOptionIndex() {
+    let ops = this.state.filteredTags;
     let focusedIndex = -1;
 
     for (var i = 0; i < ops.length; i++) {
@@ -112,16 +115,15 @@ var TagsInput = React.createClass({
   },
 
   focusOption(direction) {
-    var ops = this.state.filteredTags;
+    let ops = this.state.filteredTags;
 
     if (!ops.length) {
       return;
     }
 
-    var focusedIndex = this._getFocusedOptionIndex();
-    var focusedOption = ops[0];
+    let focusedIndex = this.getFocusedOptionIndex();
+    let focusedOption = ops[0];
 
-    const MAX_VISIBLE_TAGS = 3;
 
     if (direction === 'next' && focusedIndex > -1 && focusedIndex < MAX_VISIBLE_TAGS - 1) {
       focusedOption = ops[focusedIndex + 1];
@@ -169,7 +171,7 @@ var TagsInput = React.createClass({
 
     return (
       <ListGroup>
-        {_.map(this.state.filteredTags.slice(0, 3), (value, index) => {
+        {_.map(this.state.filteredTags.slice(0, MAX_VISIBLE_TAGS), (value, index) => {
 
           let focusedClass = React.addons.classSet({
             'tag-item__focused': (value === this.state.focusedOption)

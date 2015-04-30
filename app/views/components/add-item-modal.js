@@ -14,7 +14,6 @@ import ItemActions from '../../actions/item-actions';
 import LocalStorageMixin from 'react-localstorage';
 import {DragDropMixin, NativeDragItemTypes} from 'react-dnd';
 
-
 const NAV_ITEMS = [
   { type: 'story', label: 'Story' },
   { type: 'task', label: 'Task' },
@@ -188,7 +187,7 @@ var AddItemModal = React.createClass({
               <TagsInput tags={tags} onChange={this.updateTags} value={this.state.tags}/>
             </div>
             <div className="row">
-              <div className="col-xs-7">
+              <div className="col-xs-7 add-item__member-dropdown">
                 <Select placeholder={this.assignPlaceholder()}
                         name="form-field-name"
                         className="assign-dropdown"
