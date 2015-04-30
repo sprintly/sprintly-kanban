@@ -69,11 +69,8 @@ var AddItemModal = React.createClass({
     })
   },
 
-  updateTags(allTags) {
-    if (allTags) {
-      var tags = allTags.split(',');
-      this.setState({ tags: tags });
-    }
+  updateTags(tags) {
+    this.setState({ tags });
   },
 
   changeType(type) {
@@ -126,7 +123,7 @@ var AddItemModal = React.createClass({
   },
 
   addNewTag(ev) {
-    console.log('adding new tag soon', ev.currentTarget.value);
+    console.log(ev.currentTarget.value)
   },
 
   notAssignable() {
@@ -138,7 +135,11 @@ var AddItemModal = React.createClass({
   },
 
   assigneeName() {
-    return this.state.assigneeName ? this.state.assigneeName : 'Unassigned';
+    return this.state.assigneeName ? this.state.assigneeName : null;
+  },
+
+  tagsPlaceholder() {
+    return this.state.tempTag ? null : 'Pick or create a tag';
   },
 
   render() {
@@ -149,7 +150,8 @@ var AddItemModal = React.createClass({
       }
     });
 
-    let tags = this.prepareTagsForSelect();
+    // let tags = this.prepareTagsForSelect();
+    let tags = _.pluck(this.props.tags, 'tag');
     let members = this.prepareMembersForSelect();
 
     let title = this.state.type === 'story' ?
@@ -183,14 +185,7 @@ var AddItemModal = React.createClass({
               </MentionsInput>
             </div>
             <div className="form-group">
-              <Select placeholder= "Select your Tags"
-                      name="form-field-name"
-                      className="select-tags"
-                      value={this.state.tags}
-                      options={tags}
-                      multi={true}
-                      onChange={this.updateTags}
-                      inputProps={{onChange: this.addNewTag}} />
+              <TagsInput tags={tags} onChange={this.updateTags} value={this.state.tags}/>
             </div>
             <div className="row">
               <div className="col-xs-7">
