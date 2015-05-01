@@ -21,7 +21,7 @@ var MembersDropdown = require('./add-item/members-dropdown');
 
 var ItemActions = require('../../actions/item-actions');
 
-describe.only('Add Item Modal', function() {
+describe('Add Item Modal', function() {
   beforeEach(function() {
     this.sinon = sinon.sandbox.create();
     this.ItemActions = AddItemModal.__get__('ItemActions');
@@ -82,7 +82,7 @@ describe.only('Add Item Modal', function() {
     });
 
     it('renders a \'Tags\' input component', function () {
-      let TagsInput = TestUtils.findRenderedDOMComponentWithClass(this.component, 'select-tags');
+      let TagsInput = TestUtils.findRenderedDOMComponentWithClass(this.component, 'tags-input');
 
       assert.isDefined(TagsInput);
     });
@@ -153,27 +153,11 @@ describe.only('Add Item Modal', function() {
     assert.equal(this.component.refs.stub.state.description, description);
   });
 
-  describe('tags', function () {
-    it('#prepareTagsForSelect', function () {
-      let targetStructure = [{label: 'a', value: 'a'},{label: 'b', value: 'b'}];
-      let preparedTags = this.component.refs.stub.prepareTagsForSelect();
+  it('#updateTags', function () {
+    this.component.refs.stub.updateTags(['a','b']);
+    let tags = this.component.refs.stub.state.tags;
 
-      assert.deepEqual(preparedTags, targetStructure);
-    });
-
-    it('#updateTags', function () {
-      this.component.refs.stub.updateTags('a,b');
-      let tags = this.component.refs.stub.state.tags;
-
-      assert.sameMembers(tags, ['a','b']);
-    });
-
-    it('#updateTags doesnt include empty strings', function () {
-      this.component.refs.stub.updateTags('');
-      let tags = this.component.refs.stub.state.tags;
-
-      assert.sameMembers(tags, []);
-    });
+    assert.sameMembers(tags, ['a','b']);
   });
 
   describe('member assignment', function () {
@@ -236,12 +220,12 @@ describe.only('Add Item Modal', function() {
     })
 
     describe('#assigneeName', function () {
-      it('\'Unassigned\' when there is no assignee name', function () {
+      it('null when there is no assignee name', function () {
         this.component.refs.stub.setState({
           assigneeName: ''
         })
 
-        assert.equal(this.component.refs.stub.assigneeName(), 'Unassigned');
+        assert.equal(this.component.refs.stub.assigneeName(), null);
       });
 
       it('Returns assignee name when there is one', function () {
