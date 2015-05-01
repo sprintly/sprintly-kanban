@@ -85,7 +85,7 @@ describe('TagsInput', function () {
         let listItems = TestUtils.scryRenderedComponentsWithType(this.component, ListGroupItem);
         let chosenListItem = listItems[0];
 
-        TestUtils.SimulateNative.mouseOver(chosenListItem.getDOMNode());
+        TestUtils.Simulate.mouseOver(chosenListItem.getDOMNode());
 
         assert.isTrue(chosenListItem.getDOMNode().classList.contains('tag-item__focused'));
       });

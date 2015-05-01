@@ -98,7 +98,7 @@ var TagsInput = React.createClass({
 
   updateFocusedOption(ev, value) {
     this.setState({
-      focusedOption: ev.currentTarget.innerText
+      focusedOption: ev.currentTarget.text
     })
   },
 
