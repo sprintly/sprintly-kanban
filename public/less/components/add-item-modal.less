@@ -37,11 +37,6 @@
   border: none;
 }
 
-@story-color: #84b431;
-@task-color: #454545;
-@defect-color: #D94949;
-@test-color: #5A96AB;
-
 .add-item .selector {
   margin-top: 1.4em;
   min-height: 36px;
@@ -52,7 +47,6 @@
     overflow: scroll;
   }
 }
-
 
 .add-item__tabs {
   position: relative;
@@ -163,6 +157,16 @@
   .checkbox {
     float: right;
   }
+
+  .create-item {
+    border: 1px solid @story-color;
+  }
+
+  @media (min-width: 768px) {
+    .create-item {
+      margin-right: 10px;
+    }
+  }
 }
 
 @media (min-width: 768px) {
@@ -269,7 +273,7 @@
   display: flex;
   flex-wrap: wrap;
   background: #fff;
-  min-height: 34px;
+  min-height: 40px;
   border: 1px solid #cccccc;
   border-radius: 4px;
   padding: 6px 12px;
@@ -278,6 +282,7 @@
     flex: none;
     margin: 3px 6px 3px 0;
     display: inline-block;
+    font-size: 90%;
   }
 
   .label button {
@@ -292,6 +297,10 @@
     }
   }
 
+  .label span {
+    line-height: 12px;
+  }
+
   input {
     flex: 1;
     border: none;
@@ -302,14 +311,31 @@
   .list-group {
     left: 0;
     position: absolute;
-    top: 34px;
-    width: 100%;
+    top: 33px;
+    width: 100.3%;
     font-size: 11px;
-    z-index: 100;
+    z-index: 1;
+    overflow-y: auto;
+    max-height: 109px;
+    margin-top: -1px;
+    margin-left: -1px;
+    margin-right: -1px;
+    border-bottom-right-radius: 4px;
+    border-bottom-left-radius: 4px;
+    background-color: white;
+    border: 1px solid #cccccc;
+    border-top-color: #e6e6e6;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
+    box-sizing: border-box;
   }
 
   .list-group-item:first-child {
     border-radius: none;
+  }
+
+  .list-group-item {
+    padding: 7px 15px;
+    font-size: 15px;
   }
 }
 
