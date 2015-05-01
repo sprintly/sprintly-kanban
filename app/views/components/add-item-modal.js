@@ -106,15 +106,6 @@ var AddItemModal = React.createClass({
     });
   },
 
-  prepareTagsForSelect() {
-    return _.chain(this.props.tags)
-            .pluck('tag')
-            .map(function(tag) {
-              return {label: tag, value: tag}
-            })
-            .value()
-  },
-
   prepareMembersForSelect() {
     return _.map(this.props.members, (member) => {
       return {label: `${member.first_name} ${member.last_name}`, value: member.id}
@@ -137,10 +128,6 @@ var AddItemModal = React.createClass({
     return this.state.assigneeName ? this.state.assigneeName : null;
   },
 
-  tagsPlaceholder() {
-    return this.state.tempTag ? null : 'Pick or create a tag';
-  },
-
   render() {
     let mentions = _.map(this.props.members, function(member) {
       return {
@@ -149,7 +136,6 @@ var AddItemModal = React.createClass({
       }
     });
 
-    // let tags = this.prepareTagsForSelect();
     let tags = _.pluck(this.props.tags, 'tag');
     let members = this.prepareMembersForSelect();
 
