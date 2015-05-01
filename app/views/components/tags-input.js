@@ -17,8 +17,7 @@ var TagsInput = React.createClass({
 
   getDefaultProps() {
     return {
-      onChange() {},
-      data: []
+      onChange() {}
     };
   },
 
@@ -67,7 +66,11 @@ var TagsInput = React.createClass({
 
       case 13: // enter
         ev.preventDefault();
-        this.selectFocusedOption();
+        if (this.state.focusedOption) {
+          this.addTag(this.state.focusedOption);
+        } else {
+          this.addTag(node.value);
+        }
       break;
 
       case 188: // comma
@@ -86,12 +89,11 @@ var TagsInput = React.createClass({
       break;
 
       default:
+        this.setState({
+          focusedOption: ''
+        })
         break;
     }
-  },
-
-  selectFocusedOption(ev) {
-    this.addTag(this.state.focusedOption);
   },
 
   updateFocusedOption(ev, value) {
