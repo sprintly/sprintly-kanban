@@ -21,6 +21,7 @@ const NAV_ITEMS = [
   { type: 'test', label: 'Test' },
 ];
 
+const STORY_ATTRS = ['who', 'what', 'why'];
 
 var AddItemModal = React.createClass({
 
@@ -45,7 +46,13 @@ var AddItemModal = React.createClass({
       tags: [],
       assignedTo: null,
       assigneeName: '',
-      sendToBacklog: true
+      sendToBacklog: true,
+      validation: {
+        title: true,
+        who: true,
+        what: true,
+        why: true
+      }
     }
   },
 
@@ -91,7 +98,7 @@ var AddItemModal = React.createClass({
     let item = _.pick(this.state, ['type', 'description', 'tags', 'assignedTo']);
 
     if (this.state.type === 'story') {
-      _.assign(item, _.pick(this.state, ['who', 'what', 'why']));
+      _.assign(item, _.pick(this.state, STORY_ATTRS));
     } else {
       item.title = this.state.title;
     }
@@ -100,20 +107,30 @@ var AddItemModal = React.createClass({
       item.status = 'backlog';
     }
 
-    ItemActions.addItem(this.props.product.id, item).then(() => {
-      this.setState(this.getInitialState());
-      this.props.onRequestHide();
+    ItemActions.addItem(this.props.product.id, item).then( (err) => {
+      if (!err) {
+        this.setState(this.getInitialState());
+        this.props.onRequestHide();
+      } else {
+        this.updateValidation(err)
+      }
     });
+  },
+
+  updateValidation(err) {
+    let validationState = this.state.validation;
+
+    _.each(err.validationError, (attr) => {
+      validationState[attr] = false;
+    })
+
+    this.setState({validation: validationState});
   },
 
   prepareMembersForSelect() {
     return _.map(this.props.members, (member) => {
       return {label: `${member.first_name} ${member.last_name}`, value: member.id}
     })
-  },
-
-  addNewTag(ev) {
-    console.log(ev.currentTarget.value)
   },
 
   notAssignable() {
@@ -139,13 +156,16 @@ var AddItemModal = React.createClass({
     let tags = _.pluck(this.props.tags, 'tag');
     let members = this.prepareMembersForSelect();
 
-    let title = this.state.type === 'story' ?
-      (<StoryTitle
-        who={this.linkState('who')}
-        what={this.linkState('what')}
-        why={this.linkState('why')}
-      />):
-      <Title title={this.linkState('title')} />;
+    let title;
+    if (this.state.type === 'story') {
+      title = <StoryTitle who={this.linkState('who')}
+                             what={this.linkState('what')}
+                              why={this.linkState('why')}
+                      validation={this.linkState('validation')} />
+    } else {
+      title = <Title title={this.linkState('title')}
+                   validation={this.linkState('validation')} />;
+    }
 
     return (
       <Modal {...this.props} className="add-item">
