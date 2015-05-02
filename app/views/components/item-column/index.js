@@ -9,18 +9,6 @@ import ProductActions from '../../../actions/product-actions';
 import FilterActions from '../../../actions/filter-actions';
 import Confidence from 'confidence';
 
-const POINT_SCALE = {
-  '~': 0,
-  'S': 1,
-  'M': 3,
-  'L': 5,
-  'XL': 8
-};
-
-const VELOCITY = 8;
-
-let sprints = 0;
-let points = 0;
 
 function getColumnState(items=[]) {
   return {
@@ -131,24 +119,6 @@ var ItemColumn = React.createClass({
     return loadMore;
   },
 
-  renderSprintMarker() {
-    let timestamp = 'sprint';
-
-    if (this.props.status === 'in-progress') {
-      timestamp = (
-        <small>
-        {moment().add(sprints, 'week').format('YYYY/MM/D')}
-        </small>
-      );
-    }
-    return (
-      <div className="sprint-marker">
-        {timestamp}
-        <hr/>
-      </div>
-    )
-  },
-
   renderItemCard(item, index) {
     let card = (
       <ItemCard
@@ -158,18 +128,6 @@ var ItemColumn = React.createClass({
         key={`item-${this.props.product.id}${item.number}-${index}`}
       />
     );
-
-    points += POINT_SCALE[item.score];
-
-    if ((this.props.status === 'in-progress' || this.props.status === 'backlog') && points > VELOCITY) {
-      sprints += 1;
-      points = 0;
-      return [
-        this.renderSprintMarker(),
-        card
-      ];
-    }
-
     return card;
   },
 
@@ -184,8 +142,6 @@ var ItemColumn = React.createClass({
       this.setSortCriteria(this.state.sortField, direction);
     };
     var productId = this.props.product.id;
-    points = 0;
-    sprints = 0;
 
     return (
       <div className={React.addons.classSet(classes)} {...this.props}>
