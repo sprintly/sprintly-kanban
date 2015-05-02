@@ -58,7 +58,8 @@ describe('TagsInput', function () {
   describe('filtered tags', function () {
     beforeEach(function () {
       this.component.refs.stub.setState({
-        filteredTags: ['a' , 'aa']
+        filteredTags: ['a' , 'aa'],
+        isOpen: true
       })
     });
 
@@ -73,12 +74,12 @@ describe('TagsInput', function () {
         assert.lengthOf(listItems, 2);
       });
 
-      it('renders a maximum of 3 results', function () {
+      it('renders a List item for each result', function () {
         this.component.refs.stub.setState({
           filteredTags: ['a' , 'aa', 'aaa', 'aaaa']
         })
         let listItems = TestUtils.scryRenderedComponentsWithType(this.component, ListGroupItem)
-        assert.lengthOf(listItems, 3);
+        assert.lengthOf(listItems, 4);
       });
 
       it('onMouseOver of an item sets its class to focused', function () {
