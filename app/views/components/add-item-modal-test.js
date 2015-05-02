@@ -178,7 +178,6 @@ describe('Add Item Modal', function() {
       assert.deepEqual(preparedTags, targetStructure);
     });
 
-
     describe('#notAssignable', function () {
       it('is true when there are no members', function () {
         let props = {
@@ -255,49 +254,55 @@ describe('Add Item Modal', function() {
       this.component.refs.stub.setState(this.allIssueProps);
     });
 
-    it('calls add item with form', function () {
-      let CreateItemForm = TestUtils.findRenderedDOMComponentWithTag(this.component, 'form');
-      TestUtils.Simulate.submit(CreateItemForm);
+    describe('valid params', function () {
+      it('calls add item with form', function () {
+        let CreateItemForm = TestUtils.findRenderedDOMComponentWithTag(this.component, 'form');
+        TestUtils.Simulate.submit(CreateItemForm);
 
-      sinon.assert.called(this.addItemStub);
+        sinon.assert.called(this.addItemStub);
+      });
+
+      it('creates story issue with state', function () {
+        let storyIssueProps = {
+          status: 'backlog',
+          type: 'story',
+          description: 'build user login',
+          tags: ['mvp'],
+          assignedTo: '1',
+          who: 'user',
+          what: 'a login form',
+          why: 'so that I can login'
+        }
+
+        this.component.refs.stub.setState({type: 'story'});
+
+        let CreateItemForm = TestUtils.findRenderedDOMComponentWithTag(this.component, 'form');
+        TestUtils.Simulate.submit(CreateItemForm);
+
+        assert.isTrue(this.addItemStub.calledWithExactly('1', storyIssueProps));
+      });
+
+      it('creates non-story issue with state', function () {
+        let nonStoryIssueProps = {
+          title: 'title',
+          status: 'backlog',
+          type: 'task',
+          description: 'build user login',
+          tags: ['mvp'],
+          assignedTo: '1'
+        }
+
+        this.component.refs.stub.setState({type: 'task'});
+
+        let CreateItemForm = TestUtils.findRenderedDOMComponentWithTag(this.component, 'form');
+        TestUtils.Simulate.submit(CreateItemForm);
+
+        assert.isTrue(this.addItemStub.calledWithExactly('1', nonStoryIssueProps));
+      });
     });
 
-    it('creates story issue with state', function () {
-      let storyIssueProps = {
-        status: 'backlog',
-        type: 'story',
-        description: 'build user login',
-        tags: ['mvp'],
-        assignedTo: '1',
-        who: 'user',
-        what: 'a login form',
-        why: 'so that I can login'
-      }
+    describe('invalid params', function () {
 
-      this.component.refs.stub.setState({type: 'story'});
-
-      let CreateItemForm = TestUtils.findRenderedDOMComponentWithTag(this.component, 'form');
-      TestUtils.Simulate.submit(CreateItemForm);
-
-      assert.isTrue(this.addItemStub.calledWithExactly('1', storyIssueProps));
-    });
-
-    it('creates non-story issue with state', function () {
-      let nonStoryIssueProps = {
-        title: 'title',
-        status: 'backlog',
-        type: 'task',
-        description: 'build user login',
-        tags: ['mvp'],
-        assignedTo: '1'
-      }
-
-      this.component.refs.stub.setState({type: 'task'});
-
-      let CreateItemForm = TestUtils.findRenderedDOMComponentWithTag(this.component, 'form');
-      TestUtils.Simulate.submit(CreateItemForm);
-
-      assert.isTrue(this.addItemStub.calledWithExactly('1', nonStoryIssueProps));
     });
   });
 
