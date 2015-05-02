@@ -25,6 +25,7 @@ module.exports = React.createClass({
       activeFilters: FiltersStore.getActiveOrDefault(),
       filtersObject: FiltersStore.getFlatObject(),
       members: product && product.members.toJSON(),
+      tags: product && product.tags.toJSON(),
       product,
       allProducts: ProductStore.getAll(),
       activeItem: false,
@@ -41,6 +42,7 @@ module.exports = React.createClass({
       activeFilters: FiltersStore.getActiveOrDefault(),
       filtersObject: FiltersStore.getFlatObject(),
       members: product && product.members.toJSON(),
+      tags: product && product.tags.toJSON(),
       product,
       allProducts: ProductStore.getAll(),
     });
@@ -127,6 +129,8 @@ module.exports = React.createClass({
           product={this.state.product.toJSON()}
           allProducts={this.state.allProducts}
           user={this.props.user}
+          members={this.state.members}
+          tags={this.state.tags}
         />
         <FiltersToolbar
           user={this.props.user}

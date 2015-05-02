@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import React from 'react/addons';
+import moment from 'moment';
 import ItemCard from '../item-card';
 import ColumnHeader from './header';
 import Loading from 'react-loading';
@@ -7,6 +8,19 @@ import ProductStore from '../../../stores/product-store';
 import ProductActions from '../../../actions/product-actions';
 import FilterActions from '../../../actions/filter-actions';
 import Confidence from 'confidence';
+
+const POINT_SCALE = {
+  '~': 0,
+  'S': 1,
+  'M': 3,
+  'L': 5,
+  'XL': 8
+};
+
+const VELOCITY = 8;
+
+let sprints = 0;
+let points = 0;
 
 function getColumnState(items=[]) {
   return {
@@ -27,11 +41,11 @@ var ItemColumn = React.createClass({
     product: React.PropTypes.object.isRequired
   },
 
-  getInitialState: function() {
+  getInitialState() {
     return getColumnState();
   },
 
-  _onChange: function(payload) {
+  _onChange(payload) {
     let [sortField, sortDirection] = ProductStore.getSortCriteria(this.items);
     let state = {
       items: this.items.sort().toJSON(),
@@ -49,7 +63,7 @@ var ItemColumn = React.createClass({
     this.setState(state);
   },
 
-  setSortCriteria: function(field=this.state.sortField, direction=this.state.sortDirection) {
+  setSortCriteria(field=this.state.sortField, direction=this.state.sortDirection) {
     if (!this.items) {
       return;
     }
@@ -58,7 +72,7 @@ var ItemColumn = React.createClass({
     ProductActions.changeSortCriteria(this.items, field, direction);
   },
 
-  getItems: function(product, options={ hideLoader: false }) {
+  getItems(product, options={ hideLoader: false }) {
     if (this.items) {
       if (!options.refresh) {
         return;
@@ -75,19 +89,19 @@ var ItemColumn = React.createClass({
     ProductActions.getItems(this.items, this.state.sortField, this.state.sortDirection);
   },
 
-  loadMoreItems: function() {
+  loadMoreItems() {
     ProductActions.loadMoreItems(this.items);
   },
 
-  componentDidMount: function() {
+  componentDidMount() {
     this.getItems(this.props.product);
   },
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     this.items.off(null, this._onChange);
   },
 
-  componentWillReceiveProps: function(nextProps) {
+  componentWillReceiveProps(nextProps) {
     var reload = false;
 
     if (nextProps.product.id !== this.props.product.id) {
@@ -107,7 +121,7 @@ var ItemColumn = React.createClass({
     }
   },
 
-  renderLoadMore: function() {
+  renderLoadMore() {
     var loadMore = <button className="load-more" onClick={this.loadMoreItems}>Load More</button>;
 
     if (this.state.isLoading || this.state.hideLoadMore || this.state.items.length < this.state.limit) {
@@ -117,7 +131,49 @@ var ItemColumn = React.createClass({
     return loadMore;
   },
 
-  render: function() {
+  renderSprintMarker() {
+    let timestamp = 'sprint';
+
+    if (this.props.status === 'in-progress') {
+      timestamp = (
+        <small>
+        {moment().add(sprints, 'week').format('YYYY/MM/D')}
+        </small>
+      );
+    }
+    return (
+      <div className="sprint-marker">
+        {timestamp}
+        <hr/>
+      </div>
+    )
+  },
+
+  renderItemCard(item, index) {
+    let card = (
+      <ItemCard
+        item={item}
+        sortField={this.state.sortField}
+        productId={this.props.product.id}
+        key={`item-${this.props.product.id}${item.number}-${index}`}
+      />
+    );
+
+    points += POINT_SCALE[item.score];
+
+    if ((this.props.status === 'in-progress' || this.props.status === 'backlog') && points > VELOCITY) {
+      sprints += 1;
+      points = 0;
+      return [
+        this.renderSprintMarker(),
+        card
+      ];
+    }
+
+    return card;
+  },
+
+  render() {
     var classes = {
       column: true,
       [this.props.status]: true
@@ -128,6 +184,8 @@ var ItemColumn = React.createClass({
       this.setSortCriteria(this.state.sortField, direction);
     };
     var productId = this.props.product.id;
+    points = 0;
+    sprints = 0;
 
     return (
       <div className={React.addons.classSet(classes)} {...this.props}>
@@ -139,16 +197,7 @@ var ItemColumn = React.createClass({
         />
         {this.state.isLoading ?
           <div className="loading"><Loading type="bubbles" color="#ccc"/></div> :
-          _.map(this.state.items, function(item, index) {
-            return (
-              <ItemCard
-                item={item}
-                sortField={this.state.sortField}
-                productId={productId}
-                key={`item-${productId}${item.number}-${index}`}
-              />
-            );
-          }, this)
+          _.map(this.state.items, this.renderItemCard)
         }
         {this.renderLoadMore()}
       </div>
