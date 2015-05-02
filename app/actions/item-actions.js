@@ -1,5 +1,6 @@
 import AppDispatcher from '../dispatchers/app-dispatcher';
 import {products} from '../lib/sprintly-client';
+import Promise from 'bluebird';
 
 let ItemActions = {
   addItem(productId, data) {
@@ -10,15 +11,24 @@ let ItemActions = {
     }
 
     data.product = product.toJSON();
-
     let item = product.createItem(data, { silent: true });
-    return item.save().then(function() {
-      let col = product.getItemsByStatus(item.status);
-      if (col) {
-        col.add(item);
-      }
-    });
+    let saved = item.save();
+
+    if (saved) {
+      return saved.then(function() {
+        let col = product.getItemsByStatus(item.status);
+        if (col) {
+          col.add(item);
+        }
+      });
+    } else {
+      return new Promise(function(resolve) {
+        resolve(item)
+      });
+    }
   }
 };
 
 export default ItemActions;
+
+
