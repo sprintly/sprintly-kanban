@@ -129,10 +129,14 @@
     font-size: 1.2em;
     padding: 12px;
     border-bottom: 1px dashed #444;
+
+    &.invalid {
+      border-bottom: 2px solid @defect-color;
+    }
   }
 
   &.who input.form-control {
-    width: 230px;
+    width: 220px;
   }
 
   &.what input.form-control {
