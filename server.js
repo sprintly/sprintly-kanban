@@ -64,6 +64,14 @@ server.route([
   },
   {
     method: 'GET',
+    path: '/add',
+    config: {
+      auth: 'session',
+      handler: serveApp
+    },
+  },
+  {
+    method: 'GET',
     path: '/product/{p*}',
     config: {
       auth: 'session',
@@ -73,9 +81,25 @@ server.route([
   {
     method: 'POST',
     path: '/pusher/auth',
+    config: {
+      auth: 'session'
+    },
     handler: {
       proxy: {
         uri: config.sprintly_api_root + '/ajax/wasatch/product_pusher_auth.json',
+        passThrough: true
+      }
+    }
+  },
+  {
+    method: 'POST',
+    path: '/transloadit',
+    config: {
+      auth: 'session'
+    },
+    handler: {
+      proxy: {
+        uri: config.sprintly_api_root + '/ajax/wasatch/get_transloadit_signature.json',
         passThrough: true
       }
     }
