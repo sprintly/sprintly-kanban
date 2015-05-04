@@ -5,13 +5,46 @@ import ProductConstants from '../constants/product-constants';
 import { products, user } from '../lib/sprintly-client';
 import FiltersAction from '../actions/filter-actions';
 import {PUSHER_KEY, CHANNEL_PREFIX} from '../config';
+import {EventEmitter} from 'events';
 
-var ProductStore = module.exports = {
-  getAll: function() {
+let columnCollections = {};
+
+var ProductStore = module.exports = _.assign({}, EventEmitter.prototype, {
+  emitChange() {
+    this.emit('change');
+  },
+
+  addChangeListener(callback) {
+    this.on('change', callback);
+  },
+
+  removeChangeListener(callback) {
+    this.removeListener('change', callback);
+  },
+
+  getAll() {
     let activeProducts = products.where({ archived: false });
     return _.sortBy(_.invoke(activeProducts, 'toJSON'), 'name');
   },
-  getSortCriteria: function(collection) {
+
+  getProduct(id) {
+    let product = products.get(id);
+    if (!product) {
+      return false;
+    }
+    return {
+      members: product.members.toJSON(),
+      product: product.toJSON(),
+      tags: product.tags.toJSON()
+    }
+  },
+
+  getItems(productId, status) {
+    let collection = columnCollections[`${productId}-${status}`];
+    return collection;
+  },
+
+  getSortCriteria(collection) {
     let orderBy = collection.config.get('order_by');
     let direction;
     let field = orderBy;
@@ -41,107 +74,31 @@ var ProductStore = module.exports = {
     }
 
     return [field, direction]
-  },
-  getItemsForProduct: function(product, status, filters) {
-    var items = product.getItemsByStatus(status);
-    // Set "Recent" as the default sort
-    if (items.config.get('order_by')) {
-      items.config.set('order_by', 'recent');
-    }
-    var updatedFilters = internals.mergeFilters(items.config, filters);
-
-    // Set additional defaults for fetching products
-    updatedFilters.limit = 25;
-    updatedFilters.children = true;
-    updatedFilters.offset = 0;
-
-    if(status === 'accepted') {
-      updatedFilters.limit = 5;
-    }
-
-    items.config.set(updatedFilters);
-    return items;
-  },
-  getMembers: function(product) {
-    return product.members.toJSON();
   }
-};
-
-var proxyMethods = ['trigger', 'get', 'on', 'off', 'once', 'listenTo', 'stopListening']
-
-proxyMethods.forEach(function(method) {
-  ProductStore[method] = products[method].bind(products);
 });
 
+
 var internals = ProductStore.internals = {
-  initProducts(productId) {
-    var dependencies;
-    if (products.length > 0 && user.id) {
-      dependencies = [true];
-    } else {
-      dependencies = [
-        user.fetch(),
-        products.fetch({ silent: true })
-      ]
-    }
+  initProduct(product) {
+    product.items.on('change:status', function(model) {
+      let status = model.get('status');
+      let collection = product.getItemsByStatus(status);
+      let config = collection.config.toJSON();
+      // Prevent "jumpy" items
+      model.set(internals.getUpdatedTimestamps(model, status), { silent: true });
 
-    return Promise.all(dependencies).then(() => {
-      if (!productId) {
-        products.trigger('change');
-        return;
+      let [activeFilterCount, matchingFilters] = internals.matchesFilter(model, config);
+      if (activeFilterCount === matchingFilters.length) {
+        // Swap items between status collections.
+        let previousStatus = model.previous('status');
+        let previousCollection = product._filters[previousStatus];
+        previousCollection.remove(model);
+        collection.add(model);
       }
-      var product = products.get(productId);
-      FiltersAction.init(product, user);
-      internals.createSubscription(product);
-      products.trigger('change');
-      return product;
-    });
-  },
-
-  loadMoreItems(coll) {
-    let limit = coll.config.get('limit');
-    let newLimit = coll.config.get('status') === 'accepted' ? limit + 5 :
-      limit + 25;
-
-    coll.config.set({ limit: newLimit });
-
-    coll.fetch({ silent:true }).then((res) => {
-      coll.trigger('change', { count: res.length });
-    });
-  },
-
-  changeSortCriteria: function(collection, field, direction) {
-    internals.setComparator(collection, field, direction);
-
-    if (field === 'last_modified') {
-      field = direction === 'asc' ? 'stale' : 'recent';
-    }
-
-    if (field === 'created_at') {
-      field = direction === 'asc' ? 'oldest' : 'newest';
-    }
-
-    collection.config.set({
-      order_by: field,
-      offset: 0
     });
 
-    collection.fetch({ reset: true, silent: true }).then(function() {
-      collection.trigger('change');
-    })
-  },
-
-  setComparator: function(collection, field, direction) {
-    var presenter = (o) => +new Date(o);
-
-    collection.comparator = (model) => {
-      let criteria = model.get(field);
-      if (field === 'priority') {
-        return model.get('sort');
-      }
-      let value = presenter(criteria)
-      return direction === 'desc' ? -value : value;
-    };
+    internals.createSubscription(product);
+    ProductStore.emitChange();
   },
 
   ingestItem(product, item_data) {
@@ -159,75 +116,6 @@ var internals = ProductStore.internals = {
     }
   },
 
-  updateItem(productId, itemId, payload) {
-    let product = products.get(productId);
-    let item = product.items.get(itemId);
-
-    if (payload.status) {
-      item.unset('close_reason', { silent: true });
-
-      if (_.contains(['backlog', 'someday'], item.get('status')) &&
-          _.contains(['in-progress', 'completed'], payload.status) ) {
-        payload.assigned_to = user.id;
-      }
-    }
-
-    item.save(payload);
-  },
-
-  updateItemPriority(productId, itemId, priority) {
-    let product = products.get(productId);
-    let item = product.items.get(itemId);
-    let status = item.get('status');
-    let sort = item.get('sort');
-    let payload = {};
-    let col = product._filters[status].sortBy('sort');
-    let index = _.findIndex(col, function(item) {
-      return item.get('number') === itemId;
-    })
-
-    let previousItems = {
-      after: col[index - 2],
-      before: col[index - 1]
-    };
-    let nextItems = {
-      after: col[index + 1],
-      before: col[index + 2],
-    }
-
-    switch(priority) {
-      case 'up':
-        if (previousItems.before) {
-          payload[!previousItems.after ? 'after' : 'before'] = previousItems.before.get('number');
-        }
-        if (previousItems.after) {
-          payload.after = previousItems.after.get('number');
-        }
-        break;
-      case 'down':
-        if (nextItems.before) {
-          payload.before = nextItems.before.get('number');
-        }
-        if (nextItems.after) {
-          payload[!nextItems.before ? 'before' : 'after'] = nextItems.after.get('number');
-        }
-        break;
-      case 'top':
-        let topItem = _.first(col);
-        payload.after = topItem.get('number');
-        break;
-      case 'bottom':
-        let bottomItem = _.last(col);
-        payload.before = bottomItem.get('number');
-        break;
-      default:
-        throw new Error('Invalid priority direction: '+ priority);
-        break;
-    }
-
-    item.resort(payload);
-  },
-
   createItem(product, item_data) {
     let item = product.createItem(item_data);
     let collection = product.getItemsByStatus(item.get('status'))
@@ -238,7 +126,7 @@ var internals = ProductStore.internals = {
 
   getUpdatedTimestamps(model, status) {
     // Set the timestamp affected by the status change. This is happening
-    // "now" so setting this optimistically to the current timestamp makes
+    // "noting this optimistically to the current timestamp makes
     // items stay in the correct relative positions. This will get reset by
     // any filter change that triggers a reset.
     let attrs = {
@@ -297,23 +185,6 @@ var internals = ProductStore.internals = {
   },
 
   createSubscription(product) {
-    product.items.on('change:status', function(model) {
-      let status = model.get('status');
-      let collection = product._filters[status];
-      let config = collection.config.toJSON();
-      // Prevent "jumpy" items
-      model.set(internals.getUpdatedTimestamps(model, status), { silent: true });
-
-      let [activeFilterCount, matchingFilters] = internals.matchesFilter(model, config);
-      if (activeFilterCount === matchingFilters.length) {
-        // Swap items between status collections.
-        let previousStatus = model.previous('status');
-        let previousCollection = product._filters[previousStatus];
-        previousCollection.remove(model);
-        collection.add(model);
-      }
-    });
-
     var channelName = `${CHANNEL_PREFIX}_${product.id}`;
     var options = {
       encrypted: false,
@@ -368,43 +239,45 @@ var internals = ProductStore.internals = {
       updatedFilters.assigned_to = '';
     }
     return updatedFilters;
+  },
+
+  addItem(productId, item) {
+    let product = products.get(productId);
+    let col = product.getItemsByStatus(item.status);
+    if (col) {
+      col.add(item);
+    }
   }
 };
 
 ProductStore.dispatchToken = AppDispatcher.register(function(action) {
-
   switch(action.actionType) {
-    case ProductConstants.INIT_PRODUCTS:
-      internals.initProducts(action.productId);
-      break;
-
-    case ProductConstants.CHANGE_SORT_CRITERIA:
-      internals.changeSortCriteria(action.itemCollection, action.sortField, action.sortDirection);
+    case 'INIT_PRODUCTS':
+      if (action.product) {
+        internals.initProduct(action.product);
+      } else {
+        ProductStore.emitChange();
+      }
       break;
 
     case ProductConstants.GET_ITEMS:
-      internals.setComparator(action.itemCollection, action.sortField, action.sortDirection);
-      action.itemCollection.fetch({ reset: true });
+      columnCollections[`${action.product.id}-${action.status}`] = action.itemsCollection;
+      ProductStore.emitChange();
       break;
 
-    case ProductConstants.LOAD_MORE:
-      internals.loadMoreItems(action.itemCollection);
-      break;
-
-    case ProductConstants.SUBSCRIBE:
-      internals.createSubscription(action.id);
-      break;
-
-    case ProductConstants.UPDATE_ITEM_PRIORITY:
-      internals.updateItemPriority(action.productId, action.itemId, action.priority);
+    case 'ADD_ITEM':
+      internals.addItem(action.product.id, action.item);
+      ProductStore.emitChange();
       break;
 
     case ProductConstants.UPDATE_ITEM:
-      internals.updateItem(action.productId, action.itemId, action.payload);
+    case ProductConstants.UPDATE_ITEM_PRIORITY:
+    case ProductConstants.CHANGE_SORT_CRITERIA:
+    case ProductConstants.LOAD_MORE:
+      ProductStore.emitChange();
       break;
 
     default:
       break;
   }
-
 });
