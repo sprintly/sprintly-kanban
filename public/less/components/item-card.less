@@ -61,6 +61,7 @@
 
 .item-card {
   position: relative;
+  z-index: 100;
   float: left;
   width: 100%;
   background-color: #FFF;
@@ -74,6 +75,10 @@
 
   .row {
     margin: 0;
+  }
+
+  &.parent {
+    box-shadow: 4px 5px 0px @card-border;
   }
 
   // Background variants
@@ -272,4 +277,6 @@
   }
 }
 
-
+.item-card__subitems {
+  padding-top: 1rem;
+}
