@@ -128,9 +128,14 @@ var AddItemModal = React.createClass({
   },
 
   prepareMembersForSelect() {
-    return _.map(this.props.members, (member) => {
-      return {label: `${member.first_name} ${member.last_name}`, value: member.id}
-    })
+    return _.chain(this.props.members)
+            .map(function(member){
+              if (!member.revoked) {
+                return {label: `${member.first_name} ${member.last_name}`, value: member.id}
+              }
+            })
+            .compact()
+            .value()
   },
 
   notAssignable() {
