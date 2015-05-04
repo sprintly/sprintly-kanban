@@ -25,12 +25,12 @@ export default React.createClass({
   },
 
   componentDidMount: function() {
-    ProductStore.on('change', this._onChange);
+    ProductStore.addChangeListener(this._onChange);
     ProductActions.init();
   },
 
   componentWillUnmount: function() {
-    ProductStore.off('change', this._onChange);
+    ProductStore.removeChangeListener(this._onChange);
   },
 
   render: function() {

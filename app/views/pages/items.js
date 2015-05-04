@@ -14,49 +14,51 @@ import FiltersStore from '../../stores/filters-store';
 import ProductStore from '../../stores/product-store';
 import ProductActions from '../../actions/product-actions';
 
+const ITEM_STATUSES = {
+  someday: 'Someday',
+  backlog: 'Backlog',
+  'in-progress': 'Current',
+  completed: 'Done',
+  accepted: 'Accepted'
+};
+
 module.exports = React.createClass({
 
   mixins: [State],
 
   getInitialState: function() {
-    var product = ProductStore.get(this.getParams().id);
-    return {
+    var product = ProductStore.getProduct(this.getParams().id) || {};
+    return _.assign({
       allFilters: FiltersStore.all(),
       activeFilters: FiltersStore.getActiveOrDefault(),
       filtersObject: FiltersStore.getFlatObject(),
-      members: product && product.members.toJSON(),
-      tags: product && product.tags.toJSON(),
-      product,
       allProducts: ProductStore.getAll(),
       activeItem: false,
       showAccepted: false,
       showSomeday: false,
       showMenu: false
-    }
+    }, product)
   },
 
   _onChange: function() {
-    var product = ProductStore.get(this.getParams().id);
-    this.setState({
+    var product = ProductStore.getProduct(this.getParams().id) || {};
+    this.setState(_.assign({
       allFilters: FiltersStore.all(),
       activeFilters: FiltersStore.getActiveOrDefault(),
       filtersObject: FiltersStore.getFlatObject(),
-      members: product && product.members.toJSON(),
-      tags: product && product.tags.toJSON(),
-      product,
       allProducts: ProductStore.getAll(),
-    });
+    }, product));
   },
 
   componentDidMount: function() {
-    FiltersStore.on('change', this._onChange);
-    ProductStore.on('change', this._onChange);
+    FiltersStore.addChangeListener(this._onChange);
+    ProductStore.addChangeListener(this._onChange);
     ProductActions.init(this.getParams().id);
   },
 
   componentWillUnmount: function() {
-    ProductStore.off('change', this._onChange);
-    FiltersStore.off('change', this._onChange);
+    FiltersStore.removeChangeListener(this._onChange);
+    ProductStore.removeChangeListener(this._onChange);
   },
 
   selectItem: function(activeItem, event) {
@@ -115,7 +117,7 @@ module.exports = React.createClass({
       );
     }
 
-    var cols = _.map(product.ItemModel.ITEM_STATUSES, this.renderColumn);
+    var cols = _.map(ITEM_STATUSES, this.renderColumn);
 
     var trayClasses = {
       tray: true,
@@ -126,7 +128,7 @@ module.exports = React.createClass({
     return (
       <div className="container-tray">
         <Header
-          product={this.state.product.toJSON()}
+          product={this.state.product}
           allProducts={this.state.allProducts}
           user={this.props.user}
           members={this.state.members}
@@ -140,7 +142,7 @@ module.exports = React.createClass({
         />
         <div className={React.addons.classSet(trayClasses)}>
           <div className="column__nav">
-            {_.map(product.ItemModel.ITEM_STATUSES, function(label, status) {
+            {_.map(ITEM_STATUSES, function(label, status) {
               return (
                 <nav key={`header-nav-${status}`}>
                   <h3>{label}</h3>
