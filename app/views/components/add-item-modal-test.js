@@ -167,7 +167,7 @@ describe('Add Item Modal', function() {
 
       this.component.refs.stub.setAssignedTo(memberId, member);
 
-      assert(this.component.refs.stub.state.assignedTo, 1);
+      assert(this.component.refs.stub.state.assigned_to, 1);
       assert(this.component.refs.stub.state.assigneeName, 'Sarah Morrow');
     });
 
@@ -245,7 +245,7 @@ describe('Add Item Modal', function() {
         title: 'title',
         description: 'build user login',
         tags: ['mvp'],
-        assignedTo: '1',
+        assigned_to: '1',
         who: 'user',
         what: 'a login form',
         why: 'so that I can login'
@@ -268,7 +268,7 @@ describe('Add Item Modal', function() {
           type: 'story',
           description: 'build user login',
           tags: ['mvp'],
-          assignedTo: '1',
+          assigned_to: '1',
           who: 'user',
           what: 'a login form',
           why: 'so that I can login'
@@ -289,7 +289,7 @@ describe('Add Item Modal', function() {
           type: 'task',
           description: 'build user login',
           tags: ['mvp'],
-          assignedTo: '1'
+          assigned_to: '1'
         }
 
         this.component.refs.stub.setState({type: 'task'});
@@ -299,10 +299,6 @@ describe('Add Item Modal', function() {
 
         assert.isTrue(this.addItemStub.calledWithExactly('1', nonStoryIssueProps));
       });
-    });
-
-    describe('invalid params', function () {
-
     });
   });
 
