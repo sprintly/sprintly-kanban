@@ -44,7 +44,7 @@ var AddItemModal = React.createClass({
       why: '',
       description: '',
       tags: [],
-      assignedTo: null,
+      assigned_to: null,
       assigneeName: '',
       sendToBacklog: true,
       validation: {
@@ -66,11 +66,11 @@ var AddItemModal = React.createClass({
     this.setState({ description: value });
   },
 
-  setAssignedTo(value,member) {
+  setAssignedTo(value, member) {
     let memberName = _.chain(member).pluck('label').first().value()
 
     this.setState({
-      assignedTo: value,
+      assigned_to: value,
       assigneeName: memberName
     })
   },
@@ -95,7 +95,7 @@ var AddItemModal = React.createClass({
 
   createItem(ev) {
     ev.preventDefault();
-    let item = _.pick(this.state, ['type', 'description', 'tags', 'assignedTo']);
+    let item = _.pick(this.state, ['type', 'description', 'tags', 'assigned_to']);
 
     if (this.state.type === 'story') {
       _.assign(item, _.pick(this.state, STORY_ATTRS));
@@ -128,9 +128,14 @@ var AddItemModal = React.createClass({
   },
 
   prepareMembersForSelect() {
-    return _.map(this.props.members, (member) => {
-      return {label: `${member.first_name} ${member.last_name}`, value: member.id}
-    })
+    return _.chain(this.props.members)
+            .map(function(member){
+              if (!member.revoked) {
+                return {label: `${member.first_name} ${member.last_name}`, value: member.id}
+              }
+            })
+            .compact()
+            .value()
   },
 
   notAssignable() {
