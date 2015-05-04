@@ -1,3 +1,4 @@
+require("../app/actions/item-actions-test.js");
 require("../app/actions/search-actions-test.js");
 require("../app/stores/__tests__/filters-store-test.js");
 require("../app/stores/__tests__/product-store-test.js");
