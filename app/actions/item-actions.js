@@ -1,5 +1,6 @@
+import _ from 'lodash';
 import AppDispatcher from '../dispatchers/app-dispatcher';
-import {products} from '../lib/sprintly-client';
+import {products, user} from '../lib/sprintly-client';
 import Promise from 'bluebird';
 
 let ItemActions = {
@@ -16,10 +17,11 @@ let ItemActions = {
 
     if (saved) {
       return saved.then(function() {
-        let col = product.getItemsByStatus(item.status);
-        if (col) {
-          col.add(item);
-        }
+        AppDispatcher.dispatch({
+          actionType: 'ADD_ITEM',
+          product,
+          item
+        });
       });
     } else {
       return new Promise(function(resolve) {
@@ -27,6 +29,7 @@ let ItemActions = {
       });
     }
   }
+
 };
 
 export default ItemActions;

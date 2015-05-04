@@ -4,6 +4,9 @@ import AppDispatcher from '../dispatchers/app-dispatcher';
 import FiltersConstants from '../constants/filters-constants';
 import Promise from 'bluebird';
 import filtersData from './filters-data';
+import ProductStore from '../stores/product-store';
+import {products, user} from '../lib/sprintly-client';
+import {EventEmitter} from 'events';
 
 // TODO this needs it's own file eventually
 var FiltersCollection = Collection.extend({
@@ -19,7 +22,19 @@ var FiltersCollection = Collection.extend({
 
 var filters = new FiltersCollection(filtersData);
 
-var FiltersStore = module.exports = {
+var FiltersStore = module.exports = _.assign({}, EventEmitter.prototype, {
+  emitChange() {
+    this.emit('change');
+  },
+
+  addChangeListener(callback) {
+    this.on('change', callback);
+  },
+
+  removeChangeListener(callback) {
+    this.removeListener('change', callback);
+  },
+
   getActiveOrDefault: function() {
     return _.invoke(filters.filter(function(model) {
       return model.get('active') || model.get('alwaysVisible');
@@ -33,16 +48,11 @@ var FiltersStore = module.exports = {
   all: function() {
     return filters.toJSON();
   },
-};
-
-var proxyMethods = ['on', 'off', 'once', 'listenTo', 'stopListening']
-
-proxyMethods.forEach(function(method) {
-  FiltersStore[method] = filters[method].bind(filters);
 });
 
 var internals = FiltersStore.internals = {
-  init: function(product, user) {
+  init: function(product) {
+    product = products.get(product);
     filters.reset(filtersData, { silent: true });
     let members = product.members;
     let tags = product.tags;
@@ -51,12 +61,13 @@ var internals = FiltersStore.internals = {
       tags.fetch()
     ])
     .then(function() {
-      internals.decorateMembers(members, user);
+      internals.decorateMembers(members);
       internals.decorateTags(tags);
+      FiltersStore.emitChange();
     });
   },
 
-  decorateMembers: function(members, user) {
+  decorateMembers: function(members) {
     let needsMembers = filters.where({ type: 'members' });
     if (needsMembers.length > 0) {
       let activeMembers = _.invoke(members.where({ revoked: false }), 'toJSON');
@@ -94,14 +105,20 @@ var internals = FiltersStore.internals = {
     let filter = filters.findWhere({ field: field });
     if (filter) {
       filter.set({ active: unset !== true, criteria });
+      FiltersStore.emitChange();
     }
   },
 };
 
 AppDispatcher.register(function(action) {
   switch(action.actionType) {
+    case 'INIT_PRODUCTS':
+      if (action.product) {
+        internals.init(action.product);
+      }
+      break;
     case FiltersConstants.INIT_FILTERS:
-      internals.init(action.product, action.user, action.query);
+      internals.init(action.product);
       break;
     case FiltersConstants.UPDATE_FILTER:
       internals.update(action.field, action.criteria, action.unset);
