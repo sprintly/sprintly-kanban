@@ -32,12 +32,20 @@ describe('Add Item Modal', function() {
       {
         first_name: 'Sarah',
         last_name: 'Morrow',
-        id: 123
+        id: 123,
+        revoked: false
       },
       {
         first_name: 'Paul',
         last_name: 'Johnson',
-        id: 321
+        id: 321,
+        revoked: true
+      },
+      {
+        first_name: 'Ron',
+        last_name: 'Wanson',
+        id: 231,
+        revoked: true
       }],
       tags: [{ tag: 'a' },{ tag: 'b' }],
       product: {
@@ -167,15 +175,20 @@ describe('Add Item Modal', function() {
 
       this.component.refs.stub.setAssignedTo(memberId, member);
 
-      assert(this.component.refs.stub.state.assignedTo, 1);
+      assert(this.component.refs.stub.state.assigned_to, 1);
       assert(this.component.refs.stub.state.assigneeName, 'Sarah Morrow');
     });
 
-    it('#preparesMembersForSelect', function () {
-      let targetStructure = [{label: 'Sarah Morrow', value: 123},{label: 'Paul Johnson', value: 321}];
-      let preparedTags = this.component.refs.stub.prepareMembersForSelect();
+    describe('#preparesMembersForSelect', function () {
+      it('includes only members whom are not revoked', function () {
+        let targetStructure = [
+          {label: 'Sarah Morrow', value: 123}
+        ];
 
-      assert.deepEqual(preparedTags, targetStructure);
+        let preparedTags = this.component.refs.stub.prepareMembersForSelect();
+
+        assert.deepEqual(preparedTags, targetStructure);
+      });
     });
 
     describe('#notAssignable', function () {
@@ -245,7 +258,7 @@ describe('Add Item Modal', function() {
         title: 'title',
         description: 'build user login',
         tags: ['mvp'],
-        assignedTo: '1',
+        assigned_to: '1',
         who: 'user',
         what: 'a login form',
         why: 'so that I can login'
@@ -268,7 +281,7 @@ describe('Add Item Modal', function() {
           type: 'story',
           description: 'build user login',
           tags: ['mvp'],
-          assignedTo: '1',
+          assigned_to: '1',
           who: 'user',
           what: 'a login form',
           why: 'so that I can login'
@@ -289,7 +302,7 @@ describe('Add Item Modal', function() {
           type: 'task',
           description: 'build user login',
           tags: ['mvp'],
-          assignedTo: '1'
+          assigned_to: '1'
         }
 
         this.component.refs.stub.setState({type: 'task'});
@@ -299,10 +312,6 @@ describe('Add Item Modal', function() {
 
         assert.isTrue(this.addItemStub.calledWithExactly('1', nonStoryIssueProps));
       });
-    });
-
-    describe('invalid params', function () {
-
     });
   });
 

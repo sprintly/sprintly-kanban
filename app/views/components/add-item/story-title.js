@@ -7,7 +7,7 @@ const TITLE_ATTRS = {
     placeholder: "e.g. an accountant"
   },
   what: {
-    title: "I Want",
+    title: "I want",
     placeholder: "e.g. Quickbooks integration"
   },
   why: {
