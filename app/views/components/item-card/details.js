@@ -4,7 +4,7 @@ import moment from 'moment';
 import FilterActions from '../../../actions/filter-actions';
 import ProductActions from '../../../actions/product-actions';
 import {TagEditor, Tags} from 'sprintly-ui';
-import {DropdownButton, MenuItem, OverlayTrigger, Tooltip, Button} from 'react-bootstrap';
+import {DropdownButton, MenuItem, OverlayTrigger, Tooltip, Button, Input} from 'react-bootstrap';
 
 const STATUSES = {
   'someday': 'Someday',
@@ -60,10 +60,25 @@ var ItemCardDetails = React.createClass({
     );
   },
 
+  renderSubItems() {
+    if (this.props.item.children && this.props.item.children.length > 0) {
+      return (
+        <div className="col-sm-12 item-card__subitems">
+        {_.map(this.props.item.children, function(subitem, i) {
+          return <Input type="checkbox" label={subitem.title} key={i} />
+        })}
+        </div>
+      );
+    } else {
+      return ''
+    }
+  },
+
   render() {
     let tags = typeof this.props.item.tags === 'string' ?
       this.props.item.tags.split(',') : this.props.item.tags || [];
     let statusOptions = _.omit(STATUSES, this.props.item.status);
+
     return (
       <div className="item-card__details">
         <div className="col-sm-6 item-card__summary">
@@ -77,6 +92,7 @@ var ItemCardDetails = React.createClass({
             })}
           </DropdownButton>
         </div>
+        {this.renderSubItems()}
         <div className="item-card__tags col-sm-12">
           <TagEditor
             modelId={[this.props.item.product.id, this.props.item.pk]}

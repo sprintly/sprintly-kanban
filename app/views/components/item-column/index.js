@@ -33,17 +33,27 @@ var ItemColumn = React.createClass({
     return getColumnState();
   },
 
-  _onChange(payload) {
-    let [sortField, sortDirection] = ProductStore.getSortCriteria(this.items);
   _onChange() {
     let items = ProductStore.getItems(this.props.product.id, this.props.status);
     if (!items) {
       return;
     }
+
+    items.sort()
+
+    let itemsJSON = _.compact(_.map(items.toJSON(), function(model) {
+      if (model.parent) {
+        return;
+      } else {
+        return model;
+      }
+    }));
+
+    let [sortField, sortDirection] = ProductStore.getSortCriteria(items);
     let state = {
-      items: this.items.sort().toJSON(),
-      limit: this.items.config.get('limit'),
-      offset: this.items.config.get('offset'),
+      items: itemsJSON,
+      limit: items.config.get('limit'),
+      offset: items.config.get('offset'),
       isLoading: false,
       sortDirection,
       sortField
