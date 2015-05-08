@@ -30,7 +30,7 @@ server started on port 3600
 Browserify/Less watch task:
 
 ```bash
-$ watch
+$ make watch
 ```
 
 Run tests and coverage report with Karma:
