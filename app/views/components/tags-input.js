@@ -59,6 +59,9 @@ var TagsInput = React.createClass({
       break;
 
       case 9: // tab
+        if (node.value === "") {
+          return;
+        }
         ev.preventDefault();
         this.addTag(node.value);
       break
@@ -95,7 +98,6 @@ var TagsInput = React.createClass({
         this.setState({
           focusedOption: ''
         })
-        break;
     }
   },
 
