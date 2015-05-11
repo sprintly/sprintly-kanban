@@ -56,7 +56,7 @@ function setComparator(collection, field, direction) {
 }
 
 var ProductActions = {
-  init: function(productId) {
+  init(productId) {
     var dependencies;
     if (products.length > 0 && user.id) {
       products.each(function(product) {
@@ -129,7 +129,7 @@ var ProductActions = {
       });
   },
 
-  loadMoreItems: function(itemCollection) {
+  loadMoreItems(itemCollection) {
     let limit = itemCollection.config.get('limit');
     let newLimit = itemCollection.config.get('status') === 'accepted' ? limit + 5 :
       limit + 25;
