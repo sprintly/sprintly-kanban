@@ -1,13 +1,21 @@
 var _ = require('lodash');
-var FiltersStore = require('../filters-store');
+var FiltersStore = require('./filters-store');
 var assert = require('chai').assert;
 var Backbone = require('backdash');
 var sinon = require('sinon');
-var filtersJSON = require('../filters-data');
+var filtersJSON = require('./filters-data');
 
 describe('FiltersStore', function() {
   before(function() {
     this.filters = FiltersStore.__get__('filters');
+  });
+
+  beforeEach(function() {
+    this.sinon = sinon.sandbox.create();
+  });
+
+  afterEach(function() {
+    this.sinon.restore();
   });
 
   describe('getActiveOrDefault', function() {
@@ -36,32 +44,41 @@ describe('FiltersStore', function() {
   describe('internals', function() {
 
     beforeEach(function() {
-      this.product = {
-        members: new Backbone.Collection([{ id: 2, revoked: false }]),
-        tags: new Backbone.Collection([{ tag: 'foo' }])
-      }
+      this.products = FiltersStore.__get__('products');
+      this.product = this.products.add({
+        id: 10001,
+      });
+
+      this.product.members = new Backbone.Collection([{ id: 2, revoked: false }]);
+      this.product.tags = new Backbone.Collection([{ tag: 'foo' }]);
 
       this.product.members.fetch = this.product.tags.fetch = function() {
         return true;
-      }
+      };
 
       this.user = new Backbone.Model({ id: 1 });
     });
 
+    afterEach(function() {
+      this.products.reset();
+    });
+
     describe('init', function() {
       it('returns a promise', function() {
-        return FiltersStore.internals.init(this.product, this.user);
+        this.sinon.stub(FiltersStore.internals, 'decorateMembers');
+        this.sinon.stub(FiltersStore.internals, 'decorateTags');
+        return FiltersStore.internals.init(this.product);
       });
 
       it('resets filters to their default state', function() {
         let spy = sinon.spy(this.filters, 'reset');
-        FiltersStore.internals.init(this.product, this.user);
+        FiltersStore.internals.init(this.product);
         sinon.assert.calledOnce(spy);
         spy.restore();
       });
 
       it('decorates members onto appropriate filters', function(done) {
-        FiltersStore.internals.init(this.product, this.user).then(() => {
+        FiltersStore.internals.init(this.product).then(() => {
           let filter = this.filters.findWhere({ type: 'members' });
           let criteria = filter.get('criteriaOptions');
           assert.lengthOf(criteria[0].members, this.product.members.length);
