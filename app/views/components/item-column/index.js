@@ -34,40 +34,17 @@ var ItemColumn = React.createClass({
   },
 
   _onChange() {
-    let items = ProductStore.getItems(this.props.product.id, this.props.status);
-    if (!items) {
+    let state = ProductStore.getItems(this.props.product.id, this.props.status);
+    if (!state) {
       return;
     }
 
-    items.sort()
-
-    let itemsJSON = _.compact(_.map(items.toJSON(), function(model) {
-      if (model.parent) {
-        return;
-      } else {
-        return model;
-      }
-    }));
-
-    let [sortField, sortDirection] = ProductStore.getSortCriteria(items);
-    let state = {
-      items: itemsJSON,
-      limit: items.config.get('limit'),
-      offset: items.config.get('offset'),
-      isLoading: false,
-      sortDirection,
-      sortField
-    };
-
-    // if (payload.count) {
-    //   state.hideLoadMore = this.props.status === 'accepted' ?
-    //     payload.count < 5 : payload.count < 25;
-    // }
+    state.isLoading = false;
     this.setState(state);
   },
 
   setSortCriteria(field=this.state.sortField, direction=this.state.sortDirection) {
-    let items = ProductStore.getItems(this.props.product.id, this.props.status);
+    let items = ProductStore.getItemsCollection(this.props.product.id, this.props.status);
     if (!items) {
       return;
     }
@@ -87,7 +64,7 @@ var ItemColumn = React.createClass({
   },
 
   loadMoreItems() {
-    let items = ProductStore.getItems(this.props.product.id, this.props.status);
+    let items = ProductStore.getItemsCollection(this.props.product.id, this.props.status);
     if (!items) {
       return;
     }

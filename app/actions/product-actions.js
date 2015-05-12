@@ -31,7 +31,7 @@ function getItemsCollection(product, status, filters) {
 
   // Set additional defaults for fetching products
   updatedFilters.limit = 30;
-  updatedFilters.children = true;
+  updatedFilters.children = false;
   updatedFilters.offset = 0;
 
   if(status === 'accepted') {
@@ -82,6 +82,7 @@ var ProductActions = {
         AppDispatcher.dispatch(action);
       })
       .catch(function(err) {
+        console.error(err);
         AppDispatcher.dispatch({
           actionType: 'INIT_PRODUCTS_ERROR',
           payload: err
@@ -146,6 +147,10 @@ var ProductActions = {
   updateItem(productId, itemId, payload) {
     let product = products.get(productId);
     let item = product.items.get(itemId);
+
+    if (!item && payload.parent) {
+      item = product.createItem(payload);
+    }
 
     if (payload.status) {
       item.unset('close_reason', { silent: true });

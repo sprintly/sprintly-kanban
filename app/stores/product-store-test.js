@@ -41,17 +41,16 @@ describe('ProductStore', function() {
       ProductStore.__set__('FiltersAction', this.FiltersAction);
     });
 
-    it('emits a change event', function(done) {
-      let stub = this.sinon.stub(ProductStore.internals, 'createSubscription');
-      ProductStore.once('change', function() {
-        assert.ok(stub.called);
-        done()
-      });
+    it('creates subscriptions on items collection', function() {
+      let createSubscriptionStub = this.sinon.stub(ProductStore.internals, 'createSubscription');
+      let itemsOnStub = sinon.stub();
       ProductStore.internals.initProduct({
         items: {
-          on: sinon.stub()
+          on: itemsOnStub
         }
       });
+      assert.ok(itemsOnStub.called);
+      assert.ok(createSubscriptionStub.called);
     });
   });
 
