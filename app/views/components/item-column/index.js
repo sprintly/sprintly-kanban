@@ -115,7 +115,7 @@ var ItemColumn = React.createClass({
         item={item}
         sortField={this.state.sortField}
         productId={this.props.product.id}
-        key={`item-${this.props.product.id}${item.number}-${index}`}
+        key={`item-${this.props.product.id}${item.number}`}
       />
     );
     return card;

@@ -61,7 +61,6 @@
 
 .item-card {
   position: relative;
-  z-index: 100;
   float: left;
   width: 100%;
   background-color: #FFF;
@@ -279,4 +278,38 @@
 
 .item-card__subitems {
   padding-top: 1rem;
+
+  ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  li {
+    &.story a {
+      background-color: @story-bg;
+      color: @story-color;
+    }
+    &.defect a {
+      background-color: @defect-bg;
+      color: @defect-color;
+    }
+    &.task a {
+      background-color: @task-bg;
+      color: @task-color;
+    }
+    &.test a {
+      background-color: @test-bg;
+      color: @test-color;
+    }
+
+    a {
+      padding: 2px 6px;
+      border-radius: 2px;
+    }
+
+    label {
+      word-wrap: break-word;
+    }
+  }
 }

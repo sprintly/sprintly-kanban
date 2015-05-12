@@ -1,8 +1,11 @@
 import _ from 'lodash';
 import React from 'react/addons';
 import moment from 'moment';
+
 import FilterActions from '../../../actions/filter-actions';
 import ProductActions from '../../../actions/product-actions';
+
+import SubItems from './subitems'
 import {TagEditor, Tags} from 'sprintly-ui';
 import {DropdownButton, MenuItem, OverlayTrigger, Tooltip, Button, Input} from 'react-bootstrap';
 
@@ -61,13 +64,9 @@ var ItemCardDetails = React.createClass({
   },
 
   renderSubItems() {
-    if (this.props.item.children && this.props.item.children.length > 0) {
+    if (this.props.item.sub_items && this.props.item.sub_items.length > 0) {
       return (
-        <div className="col-sm-12 item-card__subitems">
-        {_.map(this.props.item.children, function(subitem, i) {
-          return <Input type="checkbox" label={subitem.title} key={i} />
-        })}
-        </div>
+        <SubItems subitems={this.props.item.sub_items} />
       );
     } else {
       return ''
