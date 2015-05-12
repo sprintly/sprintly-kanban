@@ -40,6 +40,31 @@ var ProductStore = module.exports = _.assign({}, EventEmitter.prototype, {
   },
 
   getItems(productId, status) {
+    let items = ProductStore.getItemsCollection(productId, status);
+    if (!items) {
+      return;
+    }
+
+    let itemsJSON = _.compact(_.map(items.sort().toJSON(), function(model) {
+      if (model.parent) {
+        return;
+      } else {
+        return model;
+      }
+    }));
+
+    let [sortField, sortDirection] = ProductStore.getSortCriteria(items);
+
+    return {
+      items: itemsJSON,
+      limit: items.config.get('limit'),
+      offset: items.config.get('offset'),
+      sortDirection,
+      sortField
+    };
+  },
+
+  getItemsCollection(productId, status) {
     let collection = columnCollections[`${productId}-${status}`];
     return collection;
   },
@@ -98,7 +123,6 @@ var internals = ProductStore.internals = {
     });
 
     internals.createSubscription(product);
-    ProductStore.emitChange();
   },
 
   ingestItem(product, item_data) {
