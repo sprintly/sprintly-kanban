@@ -7,7 +7,6 @@ import Loading from 'react-loading';
 import ProductStore from '../../../stores/product-store';
 import ProductActions from '../../../actions/product-actions';
 import FilterActions from '../../../actions/filter-actions';
-import Confidence from 'confidence';
 
 
 function getColumnState(items=[]) {
