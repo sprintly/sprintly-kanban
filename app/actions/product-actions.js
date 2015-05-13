@@ -144,11 +144,11 @@ var ProductActions = {
     });
   },
 
-  updateItem(productId, itemId, payload) {
+  updateItem(productId, itemId, payload, options={ wait: true }) {
     let product = products.get(productId);
     let item = product.items.get(itemId);
 
-    if (!item && payload.parent) {
+    if (!item) {
       item = product.createItem(payload);
     }
 
@@ -161,11 +161,18 @@ var ProductActions = {
       }
     }
 
-    item.save(payload).then(function() {
+    if (options.wait === false) {
+      item.save(payload);
       AppDispatcher.dispatch({
         actionType: ProductConstants.UPDATE_ITEM
       });
-    });
+    } else {
+      item.save(payload).then(function() {
+        AppDispatcher.dispatch({
+          actionType: ProductConstants.UPDATE_ITEM
+        });
+      });
+    }
   },
 
   updateItemPriority(productId, itemId, priority) {
