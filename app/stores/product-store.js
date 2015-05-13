@@ -138,6 +138,8 @@ var internals = ProductStore.internals = {
     } else {
       internals.createItem(product, item_data);
     }
+
+    ProductStore.emitChange();
   },
 
   createItem(product, item_data) {
@@ -146,6 +148,7 @@ var internals = ProductStore.internals = {
     if (collection) {
       collection.add(item);
     }
+    return item;
   },
 
   getUpdatedTimestamps(model, status) {
@@ -206,6 +209,7 @@ var internals = ProductStore.internals = {
     if (col) {
       col.remove(item_data.number);
     }
+    ProductStore.emitChange();
   },
 
   createSubscription(product) {
