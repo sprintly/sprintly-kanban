@@ -48,7 +48,6 @@
     "sprintly-data": "^1.2.0",
     "sprintly-search": "^2.3.0",
     "sprintly-ui": "^1.0.0",
-    "tape": "^3.5.0",
     "uglify-js": "^2.4.14",
     "watchify": "^3.1.2"
   },
@@ -82,6 +81,7 @@
     "swig": "^1.4.2"
   },
   "engines": {
-    "node": "0.10.x"
+    "node": "0.10.x",
+    "npm": "2.7.x"
   }
 }
