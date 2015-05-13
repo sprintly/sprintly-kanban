@@ -31,7 +31,7 @@ function getItemsCollection(product, status, filters) {
 
   // Set additional defaults for fetching products
   updatedFilters.limit = 30;
-  updatedFilters.children = false;
+  updatedFilters.children = true;
   updatedFilters.offset = 0;
 
   if(status === 'accepted') {
