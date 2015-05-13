@@ -106,26 +106,65 @@ describe('Product Actions', function() {
   });
 
 
-
   describe('updateItem', function() {
     beforeEach(function() {
       this.user = ProductActions.__get__('user');
       this.products = ProductActions.__get__('products');
-      this.product = this.products.add({ id: 1 });
-      this.item = this.product.items.add(
-        { id: 1, status: 'in-progress' }
+      this.products.reset([{ id: 1 }]);
+      this.product = this.products.get(1);
+      this.item = this.product.createItem(
+        { number: 1, status: 'in-progress', type: 'task', title: 'foo' }
       );
-      this.item.save = sinon.stub().returns(Promise.resolve());
+      this.sinon.spy(this.item, 'save');
+      this.sinon.stub(this.product.ItemModel.prototype, 'sync').returns(Promise.resolve());
     });
 
     afterEach(function() {
-      this.product.items.reset();
+      this.products.reset();
     });
 
     it('unsets the close reason if status is changing', function() {
       this.item.set({ close_reason: 'fixed' });
       ProductActions.updateItem(1, 1, { status: 'in-progress' });
       assert.isUndefined(this.item.get('close_reason'));
+    });
+
+    it('updates any instances in attached parent items', function() {
+      this.parent = this.product.createItem({
+        number: 2,
+        status: 'in-progress',
+        sub_items: [
+          { number: 3, status: 'backlog', type: 'defect', title: 'a bug' }
+        ]
+      })
+      let payload = { number: 3, parent: 2, status: 'accepted', type: 'defect', title: 'a bug' };
+      ProductActions.updateItem(1, 3, payload);
+
+      assert.equal(payload.status, this.parent.sub_items().first().get('status'));
+    });
+
+    it('calls item.save', function() {
+      ProductActions.updateItem(1, 1, { status: 'completed' });
+      sinon.assert.calledWith(this.item.save, { status: 'completed' });
+    });
+
+    it('dispatches an action', function(done) {
+      let stub = this.sinon.stub(AppDispatcher, 'dispatch');
+      ProductActions.updateItem(1, 1, { status: 'completed' });
+      sinon.assert.notCalled(stub)
+      setTimeout(function() {
+        sinon.assert.called(stub)
+        done();
+      }, 0);
+    });
+
+    it('creates an item if it needs to', function(done) {
+      let stub = this.sinon.stub(AppDispatcher, 'dispatch');
+      ProductActions.updateItem(1, 999, { status: 'backlog', title: 'foo', type: 'task' });
+      setTimeout(function() {
+        sinon.assert.called(stub);
+        done();
+      }, 0);
     });
 
     describe('assigns the issue to the user when upgrading backlog or someday items to in-progress or completed', function() {
@@ -144,10 +183,12 @@ describe('Product Actions', function() {
       });
     });
 
-    it('calls item.save', function() {
-      ProductActions.updateItem(1, 1, { status: 'completed' });
-      sinon.assert.calledWith(this.item.save, { status: 'completed' });
+    describe('options.wait', function() {
+      it('dispatches the event immediately, without waiting on the promise', function() {
+        let stub = this.sinon.stub(AppDispatcher, 'dispatch');
+        ProductActions.updateItem(1, 1, { status: 'completed' }, { wait: false });
+        sinon.assert.called(stub)
+      });
     });
   });
-
 });
