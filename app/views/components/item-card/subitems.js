@@ -16,13 +16,12 @@ var SubItem = React.createClass({
     } else if (_.contains(['completed', 'accepted'], subitem.status)) {
       status = 'in-progress';
     }
-    subitem.stats = status;
-
 
     ProductActions.updateItem(
       subitem.product.id,
       subitem.number,
-      _.assign({}, subitem, { status })
+      _.assign({}, subitem, { status }),
+      { wait: false }
     );
   },
 
@@ -32,7 +31,7 @@ var SubItem = React.createClass({
       <li key={i} className={`item-card__subitem-detail ${subitem.type}`}>
         <div className="checkbox">
           <label>
-            <input type="checkbox" defaultChecked={checked} onChange={_.partial(this.updateSubItem, subitem)} />
+            <input type="checkbox" checked={checked} onChange={_.partial(this.updateSubItem, subitem)} />
             <span>
               <a href={subitem.short_url} target="_BLANK" className="small">#{subitem.number}</a> {subitem.title}
             </span>
