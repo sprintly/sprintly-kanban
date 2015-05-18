@@ -113,7 +113,7 @@ var internals = ProductStore.internals = {
       model.set(internals.getUpdatedTimestamps(model, status), { silent: true });
 
       let [activeFilterCount, matchingFilters] = internals.matchesFilter(model, config);
-      if (activeFilterCount === matchingFilters.length) {
+      if (activeFilterCount === 0 || activeFilterCount === matchingFilters.length) {
         // Swap items between status collections.
         let previousStatus = model.previous('status');
         let previousCollection = product._filters[previousStatus];
