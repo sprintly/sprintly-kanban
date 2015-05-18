@@ -13,6 +13,7 @@ import ob from 'oblique-strategies';
 import FiltersStore from '../../stores/filters-store';
 import ProductStore from '../../stores/product-store';
 import ProductActions from '../../actions/product-actions';
+import VelocityActions from '../../actions/velocity-actions';
 
 const ITEM_STATUSES = {
   someday: 'Someday',
@@ -54,6 +55,7 @@ module.exports = React.createClass({
     FiltersStore.addChangeListener(this._onChange);
     ProductStore.addChangeListener(this._onChange);
     ProductActions.init(this.getParams().id);
+    VelocityActions.getVelocity(this.getParams().id);
   },
 
   componentWillUnmount: function() {
@@ -95,6 +97,7 @@ module.exports = React.createClass({
   componentWillReceiveProps: function(nextProps) {
     if (this.getParams().id !== this.state.product.id) {
       ProductActions.init(this.getParams().id)
+      VelocityActions.getVelocity(this.getParams().id);
     }
   },
 
