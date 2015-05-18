@@ -26,7 +26,7 @@ describe('Product Actions', function() {
     });
 
     it('dispatches an event', function(done) {
-      var spy = sinon.spy(AppDispatcher, 'dispatch');
+      var spy = this.sinon.spy(AppDispatcher, 'dispatch');
 
       this.collection.fetch = function() {
         return new Promise(function(resolve) {
@@ -37,7 +37,6 @@ describe('Product Actions', function() {
       ProductActions.loadMoreItems(this.collection);
       setTimeout(function() {
         sinon.assert.calledOnce(spy);
-        spy.restore();
         done();
       }, 0)
     });
