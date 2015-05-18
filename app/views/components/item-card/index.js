@@ -62,7 +62,8 @@ var ItemCard = React.createClass({
     var classes = {
       'item-card': true,
       'active': this.props.active || this.state.showDetails,
-      [this.props.item.type]: true
+      [this.props.item.type]: true,
+      'parent': this.props.item.sub_items && this.props.item.sub_items.length > 0
     };
 
     var owner = this.props.item.assigned_to;

@@ -327,7 +327,7 @@ var Search = React.createClass({
 
   componentDidMount() {
     SearchStore.addChangeListener(this._onChange);
-    ProductStore.on('change', this._onChange);
+    ProductStore.addChangeListener(this._onChange);
     ProductActions.init();
     let query = this.getQuery();
 
@@ -341,7 +341,7 @@ var Search = React.createClass({
 
   componentWillUnmount() {
     SearchStore.removeChangeListener(this._onChange);
-    ProductStore.off('change', this._onChange);
+    ProductStore.removeChangeListener(this._onChange);
   },
 
   componentWillReceiveProps(nextProps) {

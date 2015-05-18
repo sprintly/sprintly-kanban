@@ -7,7 +7,6 @@ import Loading from 'react-loading';
 import ProductStore from '../../../stores/product-store';
 import ProductActions from '../../../actions/product-actions';
 import FilterActions from '../../../actions/filter-actions';
-import Confidence from 'confidence';
 
 
 function getColumnState(items=[]) {
@@ -33,60 +32,51 @@ var ItemColumn = React.createClass({
     return getColumnState();
   },
 
-  _onChange(payload) {
-    let [sortField, sortDirection] = ProductStore.getSortCriteria(this.items);
-    let state = {
-      items: this.items.sort().toJSON(),
-      limit: this.items.config.get('limit'),
-      offset: this.items.config.get('offset'),
-      isLoading: false,
-      sortDirection,
-      sortField
-    };
-
-    if (payload.count) {
-      state.hideLoadMore = this.props.status === 'accepted' ?
-        payload.count < 5 : payload.count < 25;
+  _onChange() {
+    let state = ProductStore.getItems(this.props.product.id, this.props.status);
+    if (!state) {
+      return;
     }
+
+    state.isLoading = false;
     this.setState(state);
   },
 
   setSortCriteria(field=this.state.sortField, direction=this.state.sortDirection) {
-    if (!this.items) {
+    let items = ProductStore.getItemsCollection(this.props.product.id, this.props.status);
+    if (!items) {
       return;
     }
 
     this.setState({ isLoading: true });
-    ProductActions.changeSortCriteria(this.items, field, direction);
+    ProductActions.changeSortCriteria(items, field, direction);
   },
 
   getItems(product, options={ hideLoader: false }) {
-    if (this.items) {
-      if (!options.refresh) {
-        return;
-      }
-      this.items.off(null, this._onChange);
-    }
-
-    // update collection filter
-    let filters = _.clone(options.filters || this.props.filters);
-    this.items = ProductStore.getItemsForProduct(product, this.props.status, filters);
-    this.items.on('change sync add remove', this._onChange, this)
     this.setState({ isLoading: !options.hideLoader });
-
-    ProductActions.getItems(this.items, this.state.sortField, this.state.sortDirection);
+    ProductActions.getItemsForProduct(product, {
+      filters: options.filters || this.props.filters,
+      status: this.props.status,
+      sortField: this.state.sortField,
+      sortDirection: this.state.sortDirection
+    })
   },
 
   loadMoreItems() {
-    ProductActions.loadMoreItems(this.items);
+    let items = ProductStore.getItemsCollection(this.props.product.id, this.props.status);
+    if (!items) {
+      return;
+    }
+    ProductActions.loadMoreItems(items);
   },
 
   componentDidMount() {
+    ProductStore.addChangeListener(this._onChange);
     this.getItems(this.props.product);
   },
 
   componentWillUnmount() {
-    this.items.off(null, this._onChange);
+    ProductStore.removeChangeListener(this._onChange);
   },
 
   componentWillReceiveProps(nextProps) {
@@ -103,7 +93,6 @@ var ItemColumn = React.createClass({
     if (reload) {
       this.setState({ isLoading: true });
       this.getItems(nextProps.product, {
-        refresh: true,
         filters: nextProps.filters
       });
     }
@@ -125,7 +114,7 @@ var ItemColumn = React.createClass({
         item={item}
         sortField={this.state.sortField}
         productId={this.props.product.id}
-        key={`item-${this.props.product.id}${item.number}-${index}`}
+        key={`item-${this.props.product.id}${item.number}`}
       />
     );
     return card;
