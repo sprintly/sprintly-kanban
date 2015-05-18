@@ -49,12 +49,12 @@
     "sprintly-search": "^2.3.0",
     "sprintly-ui": "^1.0.0",
     "uglify-js": "^2.4.14",
-    "watchify": "^3.1.2"
+    "watchify": "~3.1.2"
   },
   "scripts": {
     "test": "NODE_ENV=test ./node_modules/karma/bin/karma start --browsers Firefox --single-run",
     "watch-test": "NODE_ENV=test ./node_modules/karma/bin/karma start",
-    "watchify": "BASE_URL=https://local.sprint.ly:9000/api watchify app -o './node_modules/.bin/exorcist public/js/manifold.js.map > public/js/manifold.js' -v -d",
+    "watchify": "BASE_URL=https://local.sprint.ly:9000/api watchify app -d -v -o './node_modules/.bin/exorcist public/js/manifold.js.map > public/js/manifold.js'",
     "watchify-test": "NODE_ENV=test watchify test/index.js -o './node_modules/.bin/exorcist test/test-bundle.js.map > test/test-bundle.js' -t rewireify -t babelify -t envify -dv",
     "build": "BASE_URL=https://local.sprint.ly:9000/api browserify app -d | ./node_modules/.bin/exorcist public/js/manifold.js.map > public/js/manifold.js",
     "build-test": "NODE_ENV=test browserify test/index.js -t rewireify -t babelify -t envify -d | ./node_modules/.bin/exorcist test/test-bundle.js.map > test/test-bundle.js",
