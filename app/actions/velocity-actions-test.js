@@ -17,19 +17,39 @@ describe('VelocityActions', function() {
     beforeEach(function() {
       let internals = VelocityActions.__get__('internals');
       this.requestStub = this.sinon.stub(internals, 'request');
-    });
-
-    context('api success', function() {
-      it('dispatches the a PRODUCT_VELOCITY action')
-    });
-
-    context('api error', function() {
-      it('dispatches an error action', function(done) {
-        
+      this.success = new Promise(function(resolve) {
+        resolve({ body: 'results' });
+      });
+      this.failure = new Promise(function(resolve, reject) {
+        reject();
       });
     });
 
-  });
+    context('api success', function() {
+      it('dispatches the a PRODUCT_VELOCITY event', function(done) {
+        var dispatchStub = this.sinon.stub(this.appDispatcher, 'dispatch');
+        this.requestStub.callsArgWith(2, null, { body: 'results' });
+        VelocityActions.getVelocity('id');
+        sinon.assert.calledWith(dispatchStub, {
+          actionType: 'PRODUCT_VELOCITY',
+          payload: 'results',
+          productId: 'id'
+        });
+        done();
+      });
+    });
 
+    context('api error', function() {
+      it('dispatches a PRODUCT_VELOCITY_ERROR event', function(done) {
+        var dispatchStub = this.sinon.stub(this.appDispatcher, 'dispatch');
+        this.requestStub.callsArgWith(2, 'ERROR');
+        VelocityActions.getVelocity();
+        sinon.assert.calledWith(dispatchStub, {
+          actionType: 'PRODUCT_VELOCITY_ERROR'
+        });
+        done();
+      });
+    });
+  });
 });
 
