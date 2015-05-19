@@ -121,6 +121,39 @@ var ItemColumn = React.createClass({
     return card;
   },
 
+  renderItemCards() {
+    return _.map(this.state.items, this.renderItemCard);
+  },
+
+  renderItemGroups() {
+    let itemsLength = this.state.items.length;
+    let chunks = [];
+    let currentPointCount = 0;
+    let currentChunk = [];
+    _.each(this.state.items, function(item, i) {
+      currentPointCount += 3;
+      currentChunk.push(item);
+      if (currentPointCount >= 10) {
+        chunks.push(currentChunk);
+        currentPointCount = 0;
+        currentChunk = [];
+      }
+    });
+    let groups = _.map(chunks, (items, i) => {
+      let startDate = moment().startOf('isoweek').add(7 * i, 'days').format('DD MMM');
+      return (
+        <ItemGroup
+          key={`item-group-${i}`}
+          items={items}
+          productId={this.props.product.id}
+          startDate={startDate}
+          startOpen={i === 0}
+        />
+      );
+    });
+    return groups;
+  },
+
   render() {
     var classes = {
       column: true,
@@ -132,6 +165,8 @@ var ItemColumn = React.createClass({
       this.setSortCriteria(this.state.sortField, direction);
     };
     var productId = this.props.product.id;
+    var showGroups = this.props.status === 'backlog' && this.state.sortField === 'priority';
+    var renderCardsOrGroups = showGroups ? this.renderItemGroups : this.renderItemCards;
 
     return (
       <div className={React.addons.classSet(classes)} {...this.props}>
@@ -141,12 +176,9 @@ var ItemColumn = React.createClass({
           sortDirection={this.state.sortDirection}
           sortField={this.state.sortField}
         />
-        <ItemGroup>
-          foo bar
-        </ItemGroup>
         {this.state.isLoading ?
           <div className="loading"><Loading type="bubbles" color="#ccc"/></div> :
-          _.map(this.state.items, this.renderItemCard)
+          renderCardsOrGroups()
         }
         {this.renderLoadMore()}
       </div>
