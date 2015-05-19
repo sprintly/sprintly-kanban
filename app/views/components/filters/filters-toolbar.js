@@ -31,6 +31,10 @@ var FiltersToolbar = React.createClass({
     return (
       <div className="filters__toolbar container-fluid">
         <div className="col-sm-10">
+        <span className="velocity">
+          <i className="glyphicon glyphicon-dashboard"></i>
+          <p>{this.props.velocity}</p>
+        </span>
         {_.map(this.props.activeFilters, function(filter, i) {
           return (
             <Filter
@@ -42,10 +46,6 @@ var FiltersToolbar = React.createClass({
             />
           )
         }, this)}
-        <span className="velocity">
-          <i className="glyphicon glyphicon-dashboard"></i>
-          <p>{this.props.velocity}</p>
-        </span>
         </div>
         <FiltersMenu
           updateFilters={this.updateFilters}
