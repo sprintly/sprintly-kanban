@@ -11,8 +11,6 @@ import Select from 'react-select';
 
 import ItemActions from '../../actions/item-actions';
 
-import LocalStorageMixin from 'react-localstorage';
-import {DragDropMixin, NativeDragItemTypes} from 'react-dnd';
 
 const NAV_ITEMS = [
   { type: 'story', label: 'Story' },
