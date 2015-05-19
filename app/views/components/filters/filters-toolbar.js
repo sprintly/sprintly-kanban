@@ -42,6 +42,10 @@ var FiltersToolbar = React.createClass({
             />
           )
         }, this)}
+        <span className="velocity">
+          <i className="glyphicon glyphicon-dashboard"></i>
+          <p>{this.props.velocity}</p>
+        </span>
         </div>
         <FiltersMenu
           updateFilters={this.updateFilters}
