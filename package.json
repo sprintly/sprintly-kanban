@@ -76,7 +76,7 @@
     "good-console": "^4.1.0",
     "hapi": "8.1.0",
     "hapi-auth-cookie": "^2.0.0",
-    "sprintly-data": "git://github.com/sprintly/sprintly-data.git#sub_items",
+    "sprintly-data": "^2.0.0",
     "superagent": "^1.2.0",
     "swig": "^1.4.2"
   },
