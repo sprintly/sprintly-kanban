@@ -39,7 +39,7 @@ var ProductStore = module.exports = _.assign({}, EventEmitter.prototype, {
       product: product.toJSON(),
       tags: product.tags.toJSON(),
       velocity: productVelocity[id] || null
-    }
+    };
   },
 
   getItems(productId, status) {

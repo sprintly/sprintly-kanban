@@ -18,14 +18,14 @@ var VelocityActions = {
     internals.request(productId, 'velocity', function(err, res) {
       if (err) {
         AppDispatcher.dispatch({
-          actionName: 'PRODUCT_VELOCITY_ERROR'
+          actionType: 'PRODUCT_VELOCITY_ERROR'
         });
         return;
       }
 
       if (res.body) {
         AppDispatcher.dispatch({
-          actionName: 'PRODUCT_VELOCITY',
+          actionType: 'PRODUCT_VELOCITY',
           payload: res.body,
           productId
         });

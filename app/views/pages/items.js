@@ -38,7 +38,7 @@ module.exports = React.createClass({
       showAccepted: false,
       showSomeday: false,
       showMenu: false
-    }, product)
+    }, product);
   },
 
   _onChange: function() {
@@ -96,7 +96,7 @@ module.exports = React.createClass({
 
   componentWillReceiveProps: function(nextProps) {
     if (this.getParams().id !== this.state.product.id) {
-      ProductActions.init(this.getParams().id)
+      ProductActions.init(this.getParams().id);
       VelocityActions.getVelocity(this.getParams().id);
     }
   },
@@ -128,6 +128,8 @@ module.exports = React.createClass({
       'show-someday': this.state.showSomeday
     };
 
+    var velocity = this.state.velocity['average'] || '?';
+
     return (
       <div className="container-tray">
         <Header
@@ -142,6 +144,7 @@ module.exports = React.createClass({
           allFilters={this.state.allFilters}
           activeFilters={this.state.activeFilters}
           members={this.state.members}
+          velocity={velocity}
         />
         <div className={React.addons.classSet(trayClasses)}>
           <div className="column__nav">
