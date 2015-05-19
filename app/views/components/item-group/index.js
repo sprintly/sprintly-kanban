@@ -3,23 +3,25 @@ var React = require('react/addons');
 var Bootstrap = require('react-bootstrap');
 
 var ItemGroup = React.createClass({
-  render: function() {
+  getInitialState() {
+    return {
+      expanded: false
+    };
+  },
+
+  onHandleToggle(e) {
+    e.preventDefault();
+    this.setState({expanded:!this.state.expanded});
+  },
+
+  render() {
+    let text = this.state.expanded ? 'Hide' : 'Show';
     return (
       <div className="item__group">
-        <div className="column__sort-options">
-          <Bootstrap.SplitButton onSelect={this.onSelect} activeKey={this.props.sortField} bsSize="small" title={`Sort by: ${SORT_OPTIONS[this.props.sortField]}`} pullRight>
-            {_.map(_.omit(SORT_OPTIONS, this.props.sortField), function(label, field) {
-              return (
-                <Bootstrap.MenuItem eventKey={field} key={field}>{label}</Bootstrap.MenuItem>
-              );
-            }, this)}
-          </Bootstrap.SplitButton>
-          <button className="reverse-sort" disabled={this.props.sortField === 'priority'} type="button" onClick={this.onReverseClick} aria-label="Change sort direction">
-            <span aria-hidden="true" className={React.addons.classSet(directionClasses)}/>
-          </button>
-        </div>
-      </header>
-    )
+        <Bootstrap.Button onClick={this.onHandleToggle}>{text} Content</Bootstrap.Button>
+        { this.state.expanded ? <div>TEST</div> : '' }
+      </div>
+    );
   }
 })
 

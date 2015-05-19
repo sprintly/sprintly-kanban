@@ -2,6 +2,7 @@ import _ from 'lodash';
 import React from 'react/addons';
 import moment from 'moment';
 import ItemCard from '../item-card';
+import ItemGroup from '../item-group';
 import ColumnHeader from './header';
 import Loading from 'react-loading';
 import ProductStore from '../../../stores/product-store';
@@ -140,6 +141,9 @@ var ItemColumn = React.createClass({
           sortDirection={this.state.sortDirection}
           sortField={this.state.sortField}
         />
+        <ItemGroup>
+          foo bar
+        </ItemGroup>
         {this.state.isLoading ?
           <div className="loading"><Loading type="bubbles" color="#ccc"/></div> :
           _.map(this.state.items, this.renderItemCard)
