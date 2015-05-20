@@ -9,6 +9,8 @@ import {EventEmitter} from 'events';
 
 let columnCollections = {};
 
+let productVelocity = {};
+
 var ProductStore = module.exports = _.assign({}, EventEmitter.prototype, {
   emitChange() {
     this.emit('change');
@@ -35,8 +37,9 @@ var ProductStore = module.exports = _.assign({}, EventEmitter.prototype, {
     return {
       members: product.members.toJSON(),
       product: product.toJSON(),
-      tags: product.tags.toJSON()
-    }
+      tags: product.tags.toJSON(),
+      velocity: productVelocity[id] || null
+    };
   },
 
   getItems(productId, status) {
@@ -302,6 +305,11 @@ ProductStore.dispatchToken = AppDispatcher.register(function(action) {
     case ProductConstants.UPDATE_ITEM_PRIORITY:
     case ProductConstants.CHANGE_SORT_CRITERIA:
     case ProductConstants.LOAD_MORE:
+      ProductStore.emitChange();
+      break;
+
+    case 'PRODUCT_VELOCITY':
+      productVelocity[action.productId] = action.payload;
       ProductStore.emitChange();
       break;
 

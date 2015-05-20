@@ -13,6 +13,7 @@ import ob from 'oblique-strategies';
 import FiltersStore from '../../stores/filters-store';
 import ProductStore from '../../stores/product-store';
 import ProductActions from '../../actions/product-actions';
+import VelocityActions from '../../actions/velocity-actions';
 
 const ITEM_STATUSES = {
   someday: 'Someday',
@@ -37,7 +38,7 @@ module.exports = React.createClass({
       showAccepted: false,
       showSomeday: false,
       showMenu: false
-    }, product)
+    }, product);
   },
 
   _onChange: function() {
@@ -54,6 +55,7 @@ module.exports = React.createClass({
     FiltersStore.addChangeListener(this._onChange);
     ProductStore.addChangeListener(this._onChange);
     ProductActions.init(this.getParams().id);
+    VelocityActions.getVelocity(this.getParams().id);
   },
 
   componentWillUnmount: function() {
@@ -94,7 +96,8 @@ module.exports = React.createClass({
 
   componentWillReceiveProps: function(nextProps) {
     if (this.getParams().id !== this.state.product.id) {
-      ProductActions.init(this.getParams().id)
+      ProductActions.init(this.getParams().id);
+      VelocityActions.getVelocity(this.getParams().id);
     }
   },
 
@@ -125,6 +128,8 @@ module.exports = React.createClass({
       'show-someday': this.state.showSomeday
     };
 
+    var velocity = this.state.velocity['average'] || '?';
+
     return (
       <div className="container-tray">
         <Header
@@ -139,6 +144,7 @@ module.exports = React.createClass({
           allFilters={this.state.allFilters}
           activeFilters={this.state.activeFilters}
           members={this.state.members}
+          velocity={velocity}
         />
         <div className={React.addons.classSet(trayClasses)}>
           <div className="column__nav">
