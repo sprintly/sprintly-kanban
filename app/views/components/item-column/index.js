@@ -9,6 +9,13 @@ import ProductStore from '../../../stores/product-store';
 import ProductActions from '../../../actions/product-actions';
 import FilterActions from '../../../actions/filter-actions';
 
+const ITEM_SIZE_POINTS = {
+  '~': 0,
+  'S': 1,
+  'M': 3,
+  'L': 5,
+  'XL': 8
+};
 
 function getColumnState(items=[]) {
   return {
@@ -126,32 +133,49 @@ var ItemColumn = React.createClass({
   },
 
   renderItemGroups() {
-    let itemsLength = this.state.items.length;
-    let chunks = [];
-    let currentPointCount = 0;
-    let currentChunk = [];
-    _.each(this.state.items, function(item, i) {
-      currentPointCount += 3;
-      currentChunk.push(item);
-      if (currentPointCount >= 10) {
-        chunks.push(currentChunk);
-        currentPointCount = 0;
-        currentChunk = [];
-      }
-    });
-    let groups = _.map(chunks, (items, i) => {
-      let startDate = moment().startOf('isoweek').add(7 * i, 'days').format('DD MMM');
+    let chunks = this.chunkItems();
+    let groups = _.map(chunks, (chunk, i) => {
+      // Start the groups in the backlog with the next week
+      let startDate = moment().startOf('isoweek').add(7 * (i + 1), 'days').format('DD MMM');
       return (
         <ItemGroup
           key={`item-group-${i}`}
-          items={items}
+          items={chunk.items}
           productId={this.props.product.id}
           startDate={startDate}
           startOpen={i === 0}
+          points={chunk.points}
         />
       );
     });
     return groups;
+  },
+
+  chunkItems() {
+    let velocity = this.props.velocity.average < 1 ? 10 : this.props.velocity.average;
+    let chunks = [];
+    let currentPointCount = 0;
+    let currentChunk = {
+      points: 0,
+      items: []
+    };
+    _.each(this.state.items, (item, i) => {
+      let itemScore = ITEM_SIZE_POINTS[item.score];
+      currentPointCount += itemScore;
+      currentChunk.items.push(item);
+      let nextItem = this.state.items[i + 1] || {score: '~'};
+      let nextItemPoints = ITEM_SIZE_POINTS[nextItem.score];
+      if (currentPointCount + nextItemPoints >= velocity) {
+        currentChunk.points = currentPointCount;
+        chunks.push(currentChunk);
+        currentPointCount = 0;
+        currentChunk = {
+          points: 0,
+          items: []
+        };
+      }
+    });
+    return chunks;
   },
 
   render() {
