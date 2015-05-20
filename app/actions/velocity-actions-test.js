@@ -17,12 +17,6 @@ describe('VelocityActions', function() {
     beforeEach(function() {
       let internals = VelocityActions.__get__('internals');
       this.requestStub = this.sinon.stub(internals, 'request');
-      this.success = new Promise(function(resolve) {
-        resolve({ body: 'results' });
-      });
-      this.failure = new Promise(function(resolve, reject) {
-        reject();
-      });
     });
 
     context('api success', function() {
