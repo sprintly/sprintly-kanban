@@ -43,7 +43,6 @@
     "reactify": "^1.1.0",
     "rewireify": "0.0.13",
     "sinon": "^1.13.0",
-    "sprintly-data": "^1.2.0",
     "sprintly-search": "^2.3.0",
     "sprintly-ui": "^1.0.0",
     "uglify-js": "^2.4.14",
