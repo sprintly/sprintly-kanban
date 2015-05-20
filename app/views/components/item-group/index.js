@@ -33,7 +33,7 @@ var ItemGroup = React.createClass({
     return (
       <div className="item__group">
         <Bootstrap.Panel onClick={this.onHandleToggle}>
-          {this.props.startDate}
+          {this.props.startDate} ({this.props.points} points)
           <span className="glyphicon glyphicon-chevron-down"></span>
         </Bootstrap.Panel>
         { this.state.expanded ? <div>{itemCards}</div> : <div></div> }

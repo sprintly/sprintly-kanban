@@ -82,6 +82,7 @@ module.exports = React.createClass({
       product: this.state.product,
       filters: this.state.filtersObject,
       key: `col-${this.state.product.id}-${status}`,
+      velocity: this.state.velocity
     };
 
     if (_.contains(['someday', 'accepted'], status)) {
