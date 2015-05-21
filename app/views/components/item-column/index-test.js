@@ -124,7 +124,7 @@ describe('Item Column', function() {
     });
   });
 
-  describe.only('renderSprints', function() {
+  describe('renderSprints', function() {
     context('in-progress', function() {
       beforeEach(function() {
         this.props.status = 'in-progress';
