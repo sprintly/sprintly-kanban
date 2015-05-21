@@ -31,6 +31,23 @@ describe('VelocityActions', function() {
         });
         done();
       });
+
+      it('overrides the velocity if less than 1', function(done) {
+        var dispatchStub = this.sinon.stub(this.appDispatcher, 'dispatch');
+        this.requestStub.callsArgWith(2, null, {
+          body: {
+            average: 0.25
+          }
+        });
+
+        VelocityActions.getVelocity('id');
+        sinon.assert.calledWith(dispatchStub, {
+          actionType: 'PRODUCT_VELOCITY',
+          payload: { average: 10 },
+          productId: 'id'
+        });
+        done();
+      });
     });
 
     context('api error', function() {
