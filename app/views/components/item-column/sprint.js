@@ -15,7 +15,7 @@ var Sprint = React.createClass({
     let card = (
       <ItemCard
         item={item}
-        sortField={this.state.sortField}
+        sortField={this.props.sortField}
         productId={this.props.productId}
         key={`item-${this.props.productId}${item.number}`}
       />
