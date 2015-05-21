@@ -167,7 +167,6 @@ var ItemColumn = React.createClass({
    */
   chunkItems() {
     let chunks = [];
-    let currentPointCount = 0;
     let currentChunk = _.clone(EMPTY_CHUNK, true); // deep clone
     _.each(this.state.items, (item, i) => {
       let itemScore = ITEM_SIZE_POINTS[item.score];
@@ -187,7 +186,9 @@ var ItemColumn = React.createClass({
       let underageIsGreaterThanOverage = this.props.velocity.average - currentChunk.points >
         scoreWithNext - this.props.velocity.average;
 
-      if (nextScoreIsOverAverage && !underageIsGreaterThanOverage) {
+      let isLastItem = this.state.items.length === i + 1;
+
+      if ((nextScoreIsOverAverage && !underageIsGreaterThanOverage) || isLastItem) {
         // Add the current chunk to the collection and start a new one
         chunks.push(currentChunk);
         currentChunk = _.clone(EMPTY_CHUNK, true); // deep clone
