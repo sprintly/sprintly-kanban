@@ -3,7 +3,7 @@ import React from 'react/addons';
 import Bootstrap from 'react-bootstrap';
 import ItemCard from '../item-card';
 
-var ItemGroup = React.createClass({
+var Sprint = React.createClass({
   getInitialState() {
     return {
       expanded: this.props.startOpen
@@ -23,9 +23,8 @@ var ItemGroup = React.createClass({
     return card;
   },
 
-  onHandleToggle(e) {
-    e.preventDefault();
-    this.setState({expanded:!this.state.expanded});
+  onHandleToggle() {
+    this.setState({expanded: !this.state.expanded});
   },
 
   render() {
@@ -42,4 +41,4 @@ var ItemGroup = React.createClass({
   }
 })
 
-module.exports = ItemGroup;
+export default Sprint;
