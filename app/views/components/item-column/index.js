@@ -139,6 +139,7 @@ var ItemColumn = React.createClass({
         <Sprint
           key={`item-group-${i}`}
           items={sprint.items}
+          sortField={this.state.sortField}
           productId={this.props.product.id}
           startDate={startDate}
           startOpen={i === 0}
