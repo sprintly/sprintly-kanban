@@ -3,7 +3,7 @@ import React from 'react/addons';
 import Bootstrap from 'react-bootstrap';
 import ItemCard from '../item-card';
 
-var Sprint = React.createClass({
+let Sprint = React.createClass({
   getInitialState() {
     return {
       expanded: this.props.startOpen
@@ -30,7 +30,7 @@ var Sprint = React.createClass({
   render() {
     let itemCards = _.map(this.props.items, this.renderItemCard);
     return (
-      <div className="item__group">
+      <div className="sprint">
         <Bootstrap.Panel onClick={this.onHandleToggle}>
           {this.props.startDate} ({this.props.points} points)
           <span className="glyphicon glyphicon-chevron-down"></span>
