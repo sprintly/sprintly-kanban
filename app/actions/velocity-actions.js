@@ -4,12 +4,21 @@ import AppDispatcher from '../dispatchers/app-dispatcher';
 let BASE_URL = process.env.NODE_ENV === 'production' ? 'https://sprint.ly' : 'https://local.sprint.ly:9000';
 let token = window.__token;
 
+const DEFAULT_VELOCITY = 10;
+
 var internals = {
   request(id, metric, cb) {
     request
       .get(`${BASE_URL}/api/products/${id}/aggregate/${metric}.json`)
       .set('Authorization', `Bearer ${token}`)
       .end(cb);
+  },
+
+  calculateAverageVelocity(velocity={}) {
+    if (velocity.average < 1) {
+      velocity.average = DEFAULT_VELOCITY;
+    }
+    return velocity;
   }
 }
 
@@ -24,9 +33,10 @@ var VelocityActions = {
       }
 
       if (res.body) {
+        let velocity = internals.calculateAverageVelocity(res.body);
         AppDispatcher.dispatch({
           actionType: 'PRODUCT_VELOCITY',
-          payload: res.body,
+          payload: velocity,
           productId
         });
       }

@@ -2,7 +2,7 @@ import _ from 'lodash';
 import React from 'react/addons';
 import moment from 'moment';
 import ItemCard from '../item-card';
-import ItemGroup from '../item-group';
+import Sprint from './sprint';
 import ColumnHeader from './header';
 import Loading from 'react-loading';
 import ProductStore from '../../../stores/product-store';
@@ -15,6 +15,11 @@ const ITEM_SIZE_POINTS = {
   'M': 3,
   'L': 5,
   'XL': 8
+};
+
+const EMPTY_CHUNK = {
+  points: 0,
+  items: []
 };
 
 function getColumnState(items=[]) {
@@ -132,47 +137,60 @@ var ItemColumn = React.createClass({
     return _.map(this.state.items, this.renderItemCard);
   },
 
-  renderItemGroups() {
-    let chunks = this.chunkItems();
-    let groups = _.map(chunks, (chunk, i) => {
+  renderSprints() {
+    let rawSprints = this.chunkItems();
+    return _.map(rawSprints, (sprint, i) => {
       // Start the groups in the backlog with the next week
       let startDate = moment().startOf('isoweek').add(7 * (i + 1), 'days').format('DD MMM');
       return (
-        <ItemGroup
+        <Sprint
           key={`item-group-${i}`}
-          items={chunk.items}
+          items={sprint.items}
           productId={this.props.product.id}
           startDate={startDate}
           startOpen={i === 0}
-          points={chunk.points}
+          points={sprint.points}
         />
       );
     });
-    return groups;
   },
 
+  /**
+   * Chunks the items passed into the props into sprints based on the current predicted velocity.
+   * Each sprint chunk is an object with the following structure:
+   * {
+   *   points: {Number}, // the number of points in the sprint.
+   *   items: {Array} // an array of objects containing item data
+   * }
+   *
+   * @returns {Array} // an array of raw sprint chunks
+   */
   chunkItems() {
-    let velocity = this.props.velocity.average < 1 ? 10 : this.props.velocity.average;
     let chunks = [];
     let currentPointCount = 0;
-    let currentChunk = {
-      points: 0,
-      items: []
-    };
+    let currentChunk = _.clone(EMPTY_CHUNK, true); // deep clone
     _.each(this.state.items, (item, i) => {
       let itemScore = ITEM_SIZE_POINTS[item.score];
-      currentPointCount += itemScore;
+      currentChunk.points += itemScore;
       currentChunk.items.push(item);
+
+      // Check whether adding the next item's score will push the current sprint chunks's point
+      // count above the predicted velocity. If so, add it to the chunks collection and start a
+      // new sprint chunk. In the case that the current sprint chunk is under the predicted velocity
+      // by *more* than adding the next item would cause it to go over, allow the sprint's total to
+      // go over the predicted velocity instead. This prevents things like a 3 or 5 point sprint
+      // when followed by an 8 point sprint.
       let nextItem = this.state.items[i + 1] || {score: '~'};
-      let nextItemPoints = ITEM_SIZE_POINTS[nextItem.score];
-      if (currentPointCount + nextItemPoints >= velocity) {
-        currentChunk.points = currentPointCount;
+      let nextItemScore = ITEM_SIZE_POINTS[nextItem.score];
+      let scoreWithNext = currentChunk.points + nextItemScore;
+      let nextScoreIsOverAverage = currentChunk.points + nextItemScore >= this.props.velocity.average;
+      let underageIsGreaterThanOverage = this.props.velocity.average - currentChunk.points >
+        scoreWithNext - this.props.velocity.average;
+
+      if (nextScoreIsOverAverage && !underageIsGreaterThanOverage) {
+        // Add the current chunk to the collection and start a new one
         chunks.push(currentChunk);
-        currentPointCount = 0;
-        currentChunk = {
-          points: 0,
-          items: []
-        };
+        currentChunk = _.clone(EMPTY_CHUNK, true); // deep clone
       }
     });
     return chunks;
@@ -189,8 +207,8 @@ var ItemColumn = React.createClass({
       this.setSortCriteria(this.state.sortField, direction);
     };
     var productId = this.props.product.id;
-    var showGroups = this.props.status === 'backlog' && this.state.sortField === 'priority';
-    var renderCardsOrGroups = showGroups ? this.renderItemGroups : this.renderItemCards;
+    var showSprints = this.props.status === 'backlog' && this.state.sortField === 'priority';
+    var renderCardsOrSprints = showSprints ? this.renderSprints : this.renderItemCards;
 
     return (
       <div className={React.addons.classSet(classes)} {...this.props}>
@@ -202,7 +220,7 @@ var ItemColumn = React.createClass({
         />
         {this.state.isLoading ?
           <div className="loading"><Loading type="bubbles" color="#ccc"/></div> :
-          renderCardsOrGroups()
+          renderCardsOrSprints()
         }
         {this.renderLoadMore()}
       </div>
