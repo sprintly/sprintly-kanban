@@ -105,6 +105,59 @@ var ItemColumn = React.createClass({
     }
   },
 
+  /**
+   * Chunks the items passed into the props into sprints based on the current predicted velocity.
+   * Each sprint chunk is an object with the following structure:
+   * {
+   *   points: {Number}, // the number of points in the sprint.
+   *   items: {Array} // an array of objects containing item data
+   * }
+   *
+   * @returns {Array} // an array of raw sprint chunks
+   */
+  chunkItems() {
+    let chunks = [];
+    let currentChunk = _.clone(EMPTY_CHUNK, true); // deep clone
+    _.each(this.state.items, (item, i) => {
+      let itemScore = ScoreMap[item.score];
+      currentChunk.points += itemScore;
+      currentChunk.items.push(item);
+
+      // Check whether adding the next item's score will push the current sprint chunks's point
+      // count above the predicted velocity. If so, add it to the chunks collection and start a
+      // new sprint chunk. In the case that the current sprint chunk is under the predicted velocity
+      // by *more* than adding the next item would cause it to go over, allow the sprint's total to
+      // go over the predicted velocity instead. This prevents things like a 3 or 5 point sprint
+      // when followed by an 8 point sprint.
+      let nextItem = this.state.items[i + 1] || {score: '~'};
+      let nextItemScore = ScoreMap[nextItem.score];
+      let scoreWithNext = currentChunk.points + nextItemScore;
+      let nextScoreIsOverAverage = currentChunk.points + nextItemScore >= this.props.velocity.average;
+      let underageIsGreaterThanOverage = this.props.velocity.average - currentChunk.points >
+      scoreWithNext - this.props.velocity.average;
+
+      let isLastItem = this.state.items.length === i + 1;
+
+      if ((nextScoreIsOverAverage && !underageIsGreaterThanOverage) || isLastItem) {
+        // Add the current chunk to the collection and start a new one
+        chunks.push(currentChunk);
+        currentChunk = _.clone(EMPTY_CHUNK, true); // deep clone
+      }
+    });
+    return chunks;
+  },
+
+  calculateSummary() {
+    let points = _.reduce(this.state.items, function(total, item) {
+      total += ScoreMap[item.score];
+      return total;
+    }, 0);
+    return {
+      points,
+      startDate: moment().startOf('isoweek').format('DD MMM')
+    }
+  },
+
   renderLoadMore() {
     var loadMore = <button className="load-more" onClick={this.loadMoreItems}>Load More</button>;
 
@@ -128,10 +181,10 @@ var ItemColumn = React.createClass({
   },
 
   renderItemCards() {
-    let showCurrentSummary = this.props.status === 'in-progress' && this.state.sortField === 'priority';
+    let showSummary = this.props.status === 'in-progress' && this.state.sortField === 'priority';
     let itemCards = _.map(this.state.items, this.renderItemCard);
-    if (showCurrentSummary) {
-      let props = this.calculateCurrentSummary();
+    if (showSummary) {
+      let props = this.calculateSummary();
       return (
         <div>
           <ColumnSummary {...props} />
@@ -162,60 +215,8 @@ var ItemColumn = React.createClass({
     });
   },
 
-  /**
-   * Chunks the items passed into the props into sprints based on the current predicted velocity.
-   * Each sprint chunk is an object with the following structure:
-   * {
-   *   points: {Number}, // the number of points in the sprint.
-   *   items: {Array} // an array of objects containing item data
-   * }
-   *
-   * @returns {Array} // an array of raw sprint chunks
-   */
-  chunkItems() {
-    let chunks = [];
-    let currentChunk = _.clone(EMPTY_CHUNK, true); // deep clone
-    _.each(this.state.items, (item, i) => {
-      let itemScore = ScoreMap[item.score];
-      currentChunk.points += itemScore;
-      currentChunk.items.push(item);
-
-      // Check whether adding the next item's score will push the current sprint chunks's point
-      // count above the predicted velocity. If so, add it to the chunks collection and start a
-      // new sprint chunk. In the case that the current sprint chunk is under the predicted velocity
-      // by *more* than adding the next item would cause it to go over, allow the sprint's total to
-      // go over the predicted velocity instead. This prevents things like a 3 or 5 point sprint
-      // when followed by an 8 point sprint.
-      let nextItem = this.state.items[i + 1] || {score: '~'};
-      let nextItemScore = ScoreMap[nextItem.score];
-      let scoreWithNext = currentChunk.points + nextItemScore;
-      let nextScoreIsOverAverage = currentChunk.points + nextItemScore >= this.props.velocity.average;
-      let underageIsGreaterThanOverage = this.props.velocity.average - currentChunk.points >
-        scoreWithNext - this.props.velocity.average;
-
-      let isLastItem = this.state.items.length === i + 1;
-
-      if ((nextScoreIsOverAverage && !underageIsGreaterThanOverage) || isLastItem) {
-        // Add the current chunk to the collection and start a new one
-        chunks.push(currentChunk);
-        currentChunk = _.clone(EMPTY_CHUNK, true); // deep clone
-      }
-    });
-    return chunks;
-  },
-
-  calculateCurrentSummary() {
-    let points = _.reduce(this.state.items, function(total, item) {
-      total += ScoreMap[item.score];
-      return total;
-    }, 0);
-    return {
-      points,
-      startDate: moment().startOf('isoweek').format('DD MMM')
-    }
-  },
-
   render() {
+
     let classes = {
       column: true,
       [this.props.status]: true
