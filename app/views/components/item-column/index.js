@@ -3,6 +3,7 @@ import React from 'react/addons';
 import moment from 'moment';
 import ItemCard from '../item-card';
 import Sprint from './sprint';
+import ColumnSummary from './summary';
 import ColumnHeader from './header';
 import Loading from 'react-loading';
 import ProductStore from '../../../stores/product-store';
@@ -127,7 +128,19 @@ var ItemColumn = React.createClass({
   },
 
   renderItemCards() {
-    return _.map(this.state.items, this.renderItemCard);
+    let showCurrentSummary = this.props.status === 'in-progress' && this.state.sortField === 'priority';
+    let itemCards = _.map(this.state.items, this.renderItemCard);
+    if (showCurrentSummary) {
+      let props = this.calculateCurrentSummary();
+      return (
+        <div>
+          <ColumnSummary {...props} />
+          {itemCards}
+        </div>
+      );
+    } else {
+      return (<div>{itemCards}</div>);
+    }
   },
 
   renderSprints() {
@@ -191,19 +204,30 @@ var ItemColumn = React.createClass({
     return chunks;
   },
 
+  calculateCurrentSummary() {
+    let points = _.reduce(this.state.items, function(total, item) {
+      total += ScoreMap[item.score];
+      return total;
+    }, 0);
+    return {
+      points,
+      startDate: moment().startOf('isoweek').format('DD MMM')
+    }
+  },
+
   render() {
-    var classes = {
+    let classes = {
       column: true,
       [this.props.status]: true
     };
 
-    var reverseSort = (ev) => {
+    let reverseSort = (ev) => {
       let direction = this.state.sortDirection === 'desc' ? 'asc' : 'desc';
       this.setSortCriteria(this.state.sortField, direction);
     };
-    var productId = this.props.product.id;
-    var showSprints = this.props.status === 'backlog' && this.state.sortField === 'priority';
-    var renderCardsOrSprints = showSprints ? this.renderSprints : this.renderItemCards;
+
+    let showSprints = this.props.status === 'backlog' && this.state.sortField === 'priority';
+    let renderCardsOrSprints = showSprints ? this.renderSprints : this.renderItemCards;
 
     return (
       <div className={React.addons.classSet(classes)} {...this.props}>
