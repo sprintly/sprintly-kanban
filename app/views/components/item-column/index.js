@@ -8,14 +8,7 @@ import Loading from 'react-loading';
 import ProductStore from '../../../stores/product-store';
 import ProductActions from '../../../actions/product-actions';
 import FilterActions from '../../../actions/filter-actions';
-
-const ITEM_SIZE_POINTS = {
-  '~': 0,
-  'S': 1,
-  'M': 3,
-  'L': 5,
-  'XL': 8
-};
+import ScoreMap from '../../../lib/score-map';
 
 const EMPTY_CHUNK = {
   points: 0,
@@ -169,7 +162,7 @@ var ItemColumn = React.createClass({
     let chunks = [];
     let currentChunk = _.clone(EMPTY_CHUNK, true); // deep clone
     _.each(this.state.items, (item, i) => {
-      let itemScore = ITEM_SIZE_POINTS[item.score];
+      let itemScore = ScoreMap[item.score];
       currentChunk.points += itemScore;
       currentChunk.items.push(item);
 
@@ -180,7 +173,7 @@ var ItemColumn = React.createClass({
       // go over the predicted velocity instead. This prevents things like a 3 or 5 point sprint
       // when followed by an 8 point sprint.
       let nextItem = this.state.items[i + 1] || {score: '~'};
-      let nextItemScore = ITEM_SIZE_POINTS[nextItem.score];
+      let nextItemScore = ScoreMap[nextItem.score];
       let scoreWithNext = currentChunk.points + nextItemScore;
       let nextScoreIsOverAverage = currentChunk.points + nextItemScore >= this.props.velocity.average;
       let underageIsGreaterThanOverage = this.props.velocity.average - currentChunk.points >

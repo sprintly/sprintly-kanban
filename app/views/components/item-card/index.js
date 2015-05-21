@@ -8,16 +8,9 @@ var Bootstrap = require('react-bootstrap');
 var ProductActions = require('../../../actions/product-actions');
 var FilterActions = require('../../../actions/filter-actions');
 var ItemCardDetails = require('./details');
+var ScoreMap = require('../../../lib/score-map');
 
-const SCORE_MAP = {
-  '~': 0,
-  'S': 1,
-  'M': 3,
-  'L': 5,
-  'XL': 8
-}
-
-const REVERSE_SCORE_MAP = _.zipObject(_.values(SCORE_MAP), _.keys(SCORE_MAP))
+const REVERSE_SCORE_MAP = _.zipObject(_.values(ScoreMap), _.keys(ScoreMap))
 
 var ItemCard = React.createClass({
 
