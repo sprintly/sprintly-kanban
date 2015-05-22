@@ -88,8 +88,6 @@ var AddItemModal = React.createClass({
 
   dismiss(ev) {
     ev.preventDefault();
-    let state = this.getInitialState();
-    this.setState(state);
     this.props.onRequestHide();
   },
 
