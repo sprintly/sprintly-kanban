@@ -147,6 +147,7 @@ module.exports = React.createClass({
           activeFilters={this.state.activeFilters}
           members={this.state.members}
           velocity={velocity}
+          productId={this.state.product.id}
         />
         <div className={React.addons.classSet(trayClasses)}>
           <div className="column__nav">

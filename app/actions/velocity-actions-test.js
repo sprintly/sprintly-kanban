@@ -62,5 +62,18 @@ describe('VelocityActions', function() {
       });
     });
   });
+
+  describe('setVelocity', function() {
+    it('dispatches the a PRODUCT_VELOCITY event', function(done) {
+      var dispatchStub = this.sinon.stub(this.appDispatcher, 'dispatch');
+      VelocityActions.setVelocity('id', 100);
+      sinon.assert.calledWith(dispatchStub, {
+        actionType: 'PRODUCT_VELOCITY',
+        payload: { average: 100 },
+        productId: 'id'
+      });
+      done();
+    });
+  });
 });
 
