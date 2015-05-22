@@ -8,18 +8,11 @@ import {OverlayTrigger, Popover} from 'react-bootstrap';
 import ProductActions from '../../../actions/product-actions';
 import FilterActions from '../../../actions/filter-actions';
 import ItemCardDetails from './details';
+import ScoreMap from '../../../lib/score-map';
 import onClickOutside from 'react-onclickoutside';
 import Select from 'react-select';
 
-const SCORE_MAP = {
-  '~': 0,
-  'S': 1,
-  'M': 3,
-  'L': 5,
-  'XL': 8
-}
-
-const REVERSE_SCORE_MAP = _.zipObject(_.values(SCORE_MAP), _.keys(SCORE_MAP))
+const REVERSE_SCORE_MAP = _.zipObject(_.values(ScoreMap), _.keys(ScoreMap))
 
 var ItemCard = React.createClass({
 
