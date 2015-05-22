@@ -78,6 +78,7 @@ module.exports = React.createClass({
     var props = {
       status,
       product: this.state.product,
+      members: this.state.members,
       filters: this.state.filtersObject,
       key: `col-${this.state.product.id}-${status}`,
     };
