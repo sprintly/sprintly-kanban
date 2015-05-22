@@ -1,15 +1,15 @@
-var _ = require('lodash');
-var React = require('react/addons');
-var moment = require('moment');
-var OwnerAvatar = require('./owner');
-var Controls = require('./controls');
-var SprintlyUI = require('sprintly-ui');
-var Bootstrap = require('react-bootstrap');
-var ProductActions = require('../../../actions/product-actions');
-var FilterActions = require('../../../actions/filter-actions');
-var ItemCardDetails = require('./details');
-var onClickOutside = require('react-onclickoutside');
-var Select = require('react-select');
+import _ from 'lodash';
+import React from 'react/addons';
+import moment from 'moment';
+import OwnerAvatar from './owner';
+import Controls from './controls';
+import {Estimator} from 'sprintly-ui';
+import {OverlayTrigger, Popover} from 'react-bootstrap';
+import ProductActions from '../../../actions/product-actions';
+import FilterActions from '../../../actions/filter-actions';
+import ItemCardDetails from './details';
+import onClickOutside from 'react-onclickoutside';
+import Select from 'react-select';
 
 const SCORE_MAP = {
   '~': 0,
@@ -32,17 +32,17 @@ var ItemCard = React.createClass({
 
   mixins: [onClickOutside],
 
-  getInitialState: function() {
+  getInitialState() {
     return {
       showDetails: false
     }
   },
 
-  handleClickOutside: function() {
+  handleClickOutside() {
     this.closePopover();
   },
 
-  closePopover: function() {
+  closePopover() {
     if (!!this.refs.trigger) {
       this.refs.trigger.setState({
         isOverlayShown: false
@@ -50,16 +50,16 @@ var ItemCard = React.createClass({
     }
   },
 
-  toggleDetails: function(e) {
+  toggleDetails(e) {
     e.preventDefault();
     this.setState({ showDetails: !this.state.showDetails })
   },
 
-  changeScore: function([productId, itemId], score) {
+  changeScore([productId, itemId], score) {
     ProductActions.updateItem(productId, itemId, { score: REVERSE_SCORE_MAP[score] });
   },
 
-  isCurrentOwner: function(otherId) {
+  isCurrentOwner(otherId) {
     let currentOwner = this.props.item.assigned_to
     return !!currentOwner && currentOwner.id == otherId
   },
@@ -72,7 +72,7 @@ var ItemCard = React.createClass({
     this.closePopover();
   },
 
-  prepareMembersForSelect: function() {
+  prepareMembersForSelect() {
     return _.chain(this.props.members)
             .map(function(member){
               if (!member.revoked && !this.isCurrentOwner(member.id)) {
@@ -83,15 +83,15 @@ var ItemCard = React.createClass({
             .value()
   },
 
-  assigneeName: function() {
+  assigneeName() {
     let owner = this.props.item.assigned_to;
     return !!owner ? owner.first_name + ' ' + owner.last_name : 'Unassigned'
   },
 
-  popoverMenu: function() {
+  popoverMenu() {
     let members = this.prepareMembersForSelect();
     return (
-      <Bootstrap.Popover ref='popover' className='ignore-react-onclickoutside' enableOnClickOutside={true}>
+      <Popover ref='popover' className='ignore-react-onclickoutside' enableOnClickOutside={true}>
         <div className='item_card__member-dropdown'>
           <Select name="form-field-name"
                   value={this.assigneeName()}
@@ -99,15 +99,15 @@ var ItemCard = React.createClass({
                   onChange={this.setAssignedTo}
                   clearable={true} />
         </div>
-      </Bootstrap.Popover>
+      </Popover>
     )
   },
 
-  isAssignable: function() {
+  isAssignable() {
     return _.contains(['backlog', 'in-progress', 'someday'], this.props.item.status);
   },
 
-  renderStoryTitle: function() {
+  renderStoryTitle() {
     let article = this.props.item.title.split(this.props.item.who)[0];
     return [
       <span key="subject" className="item-card__title-subject">
@@ -123,7 +123,7 @@ var ItemCard = React.createClass({
     ]
   },
 
-  render: function() {
+  render() {
     var classes = {
       'item-card': true,
       'active': this.props.active || this.state.showDetails,
@@ -152,16 +152,16 @@ var ItemCard = React.createClass({
               <div className="item-card__number">
                 <a href={`https://sprint.ly/product/${this.props.productId}/item/${this.props.item.number}`} target="_blank">#{this.props.item.number}</a>
               </div>
-              <SprintlyUI.Estimator
+              <Estimator
                 modelId={[this.props.productId, this.props.item.number]}
                 itemType={this.props.item.type}
                 score={this.props.item.score}
                 estimateChanger={{changeScore: this.changeScore}}
               />
               {this.isAssignable() ?
-                <Bootstrap.OverlayTrigger ref='trigger' trigger='click' placement='bottom' overlay={this.popoverMenu()}>
+                <OverlayTrigger ref='trigger' trigger='click' placement='bottom' overlay={this.popoverMenu()}>
                   <span className="clickable-avatar"><OwnerAvatar person={owner} /></span>
-                </Bootstrap.OverlayTrigger> :
+                </OverlayTrigger> :
                 <span><OwnerAvatar person={owner} /></span>}
             </div>
           </div>
