@@ -35,4 +35,9 @@ test-server: test-file
 	@open http://localhost:8003/test/index.html
 	@python -m SimpleHTTPServer 8003
 
+shrinkwrap:
+	npm shrinkwrap --dev
+	git add npm-shrinkwrap.json package.json
+	git commit -m 'updating shrinkwrap' -e
+
 .PHONY: all install server test watch
