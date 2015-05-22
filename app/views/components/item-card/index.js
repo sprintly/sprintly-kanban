@@ -8,6 +8,8 @@ var Bootstrap = require('react-bootstrap');
 var ProductActions = require('../../../actions/product-actions');
 var FilterActions = require('../../../actions/filter-actions');
 var ItemCardDetails = require('./details');
+var onClickOutside = require('react-onclickoutside');
+var Select = require('react-select');
 
 const SCORE_MAP = {
   '~': 0,
@@ -25,12 +27,25 @@ var ItemCard = React.createClass({
     productId: React.PropTypes.number.isRequired,
     item: React.PropTypes.object.isRequired,
     sortField: React.PropTypes.string,
+    members: React.PropTypes.array
   },
+
+  mixins: [onClickOutside],
 
   getInitialState: function() {
     return {
       showDetails: false
     }
+  },
+
+  handleClickOutside: function() {
+    this.closePopover();
+  },
+
+  closePopover: function() {
+    this.refs.trigger.setState({
+      isOverlayShown: false
+    });
   },
 
   toggleDetails: function(e) {
@@ -40,6 +55,51 @@ var ItemCard = React.createClass({
 
   changeScore: function([productId, itemId], score) {
     ProductActions.updateItem(productId, itemId, { score: REVERSE_SCORE_MAP[score] });
+  },
+
+  isCurrentOwner: function(otherId) {
+    let currentOwner = this.props.item.assigned_to
+    return !!currentOwner && currentOwner.id == otherId
+  },
+
+  setAssignedTo(value) {
+    if (this.isCurrentOwner(value)) { return; }
+    let productId = this.props.productId;
+    let itemId = this.props.item.number;
+    ProductActions.updateItem(productId, itemId, { assigned_to: value });
+    this.closePopover();
+  },
+
+  prepareMembersForSelect: function() {
+    return _.chain(this.props.members)
+            .map(function(member){
+              if (!member.revoked && !this.isCurrentOwner(member.id)) {
+                return {label: `${member.first_name} ${member.last_name}`, value: member.id}
+              }
+            }, this)
+            .compact()
+            .value()
+  },
+
+  assigneeName: function() {
+    let owner = this.props.item.assigned_to;
+    return owner === null ?
+      'Unassigned' : owner.first_name + ' ' + owner.last_name
+  },
+
+  popoverMenu: function() {
+    let members = this.prepareMembersForSelect();
+    return (
+      <Bootstrap.Popover ref='popover' className='ignore-react-onclickoutside' enableOnClickOutside={true}>
+        <div className='item_card__member-dropdown'>
+          <Select name="form-field-name"
+                  value={this.assigneeName()}
+                  options={members}
+                  onChange={this.setAssignedTo}
+                  clearable={true} />
+        </div>
+      </Bootstrap.Popover>
+    )
   },
 
   renderStoryTitle: function() {
@@ -93,7 +153,9 @@ var ItemCard = React.createClass({
                 score={this.props.item.score}
                 estimateChanger={{changeScore: this.changeScore}}
               />
-              <OwnerAvatar person={owner} />
+              <Bootstrap.OverlayTrigger ref='trigger' trigger='click' placement='bottom' overlay={this.popoverMenu()}>
+                <span><OwnerAvatar person={owner} /></span>
+              </Bootstrap.OverlayTrigger>
             </div>
           </div>
           <div className="item-card__title col-sm-12">
