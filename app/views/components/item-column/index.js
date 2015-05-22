@@ -10,6 +10,7 @@ import ProductStore from '../../../stores/product-store';
 import ProductActions from '../../../actions/product-actions';
 import FilterActions from '../../../actions/filter-actions';
 import ScoreMap from '../../../lib/score-map';
+import LocalStorageMixin from 'react-localstorage';
 
 const EMPTY_CHUNK = {
   points: 0,
@@ -29,6 +30,11 @@ function getColumnState(items=[]) {
 }
 
 var ItemColumn = React.createClass({
+  mixins: [
+    LocalStorageMixin
+  ],
+
+  localStorageKey: 'itemColumn',
 
   propTypes: {
     status: React.PropTypes.string.isRequired,
