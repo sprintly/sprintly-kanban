@@ -45,6 +45,15 @@ Run tests to run in a browser:
 $ make test-server
 ```
 
+#### npm shrinkwrap
+
+This project uses `npm shrinkwrap` to keep dependecies from automatically
+upgrading without out explicit permission.
+
+**Any time you install or upgrade an npm package, please run `make shrinkwrap`**.
+
+For further reading, please refer to the shrinkwrap documentation: `npm help shrinkwrap`.
+
 ## Deploys
 
 Kanban is built to be deployed on Heroku with a minimum amount of fuss. Because
