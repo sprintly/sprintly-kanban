@@ -33,7 +33,7 @@ let Sprint = React.createClass({
       <div className="sprint">
         <Bootstrap.Panel onClick={this.onHandleToggle}>
           {this.props.startDate} ({this.props.points} points)
-          <span className="glyphicon glyphicon-chevron-down"></span>
+          <span className="glyphicon glyphicon-chevron-down sprint__chevron"></span>
         </Bootstrap.Panel>
         { this.state.expanded ? <div>{itemCards}</div> : <div></div> }
       </div>
