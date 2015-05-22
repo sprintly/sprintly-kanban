@@ -83,6 +83,7 @@ module.exports = React.createClass({
       members: this.state.members,
       filters: this.state.filtersObject,
       key: `col-${this.state.product.id}-${status}`,
+      velocity: this.state.velocity
     };
 
     if (_.contains(['someday', 'accepted'], status)) {
@@ -129,7 +130,8 @@ module.exports = React.createClass({
       'show-someday': this.state.showSomeday
     };
 
-    var velocity = this.state.velocity['average'] || '?';
+    var velocity =  this.state.velocity && this.state.velocity.average ?
+      this.state.velocity.average : '~';
 
     return (
       <div className="container-tray">
