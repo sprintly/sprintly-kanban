@@ -36,30 +36,47 @@ var FiltersToolbar = React.createClass({
     this.setState({ showVelocityInput: false });
   },
 
-  onClickVelocity() {
+  toggleVelocityInput() {
     this.setState({
-      showVelocityInput: !this.state.showVelocityDropdown
+      showVelocityInput: !this.state.showVelocityInput
     }, function() {
       this.refs.velocity_input.getDOMNode().focus();
     });
   },
 
+  escapeVelocityInput(e) {
+    if (e.keyCode === 27) { // ESC
+      this.setState({ showVelocityInput: false });
+    }
+  },
+
   render: function() {
+    let velocityElement;
+    if (this.state.showVelocityInput) {
+      velocityElement = <form
+        onSubmit={this.changeVelocity}
+        className="velocity__form"
+        ref="velocity_form">
+        <input
+          type="text"
+          ref="velocity_input"
+          defaultValue={Math.round(this.props.velocity)}
+          onKeyDown={this.escapeVelocityInput}
+        />
+      </form>
+    } else {
+      velocityElement = <span
+        onClick={this.toggleVelocityInput}>
+        {Math.round(this.props.velocity)}
+      </span>;
+    }
+
     return (
       <div className="filters__toolbar container-fluid">
         <div className="col-sm-10">
         <span className="velocity">
           <i className="glyphicon glyphicon-dashboard"></i>
-          { this.state.showVelocityInput ?
-            <form onSubmit={this.changeVelocity} className="velocity__form" ref="velocity_form">
-              <input
-                type="text"
-                ref="velocity_input"
-                defaultValue={this.props.velocity}
-              />
-            </form> :
-            <span onClick={this.onClickVelocity}>{Math.round(this.props.velocity)}</span>
-          }
+          {velocityElement}
         </span>
         {_.map(this.props.activeFilters, function(filter, i) {
           return (
