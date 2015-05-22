@@ -7,7 +7,7 @@ import React from 'react/addons';
 
 var FiltersToolbar = React.createClass({
 
-  getInitialState: function() {
+  getInitialState() {
     return {
       showFiltersMenu: false,
       showVelocityInput: false
@@ -21,11 +21,11 @@ var FiltersToolbar = React.createClass({
     activeFilters: React.PropTypes.array.isRequired
   },
 
-  updateFilters: function(field, criteria, options) {
+  updateFilters(field, criteria, options) {
     FilterAction.update(field, criteria, options);
   },
 
-  toggleFiltersMenu: function() {
+  toggleFiltersMenu() {
     this.setState({ showFiltersMenu: !!this.state.showFiltersMenu });
   },
 
@@ -50,7 +50,7 @@ var FiltersToolbar = React.createClass({
     }
   },
 
-  render: function() {
+  render() {
     let velocityElement;
     if (this.state.showVelocityInput) {
       velocityElement = <form
