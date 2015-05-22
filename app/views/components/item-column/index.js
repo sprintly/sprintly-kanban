@@ -154,7 +154,7 @@ var ItemColumn = React.createClass({
     }, 0);
     return {
       points,
-      startDate: moment().startOf('isoweek').format('DD MMM')
+      startDate: moment().startOf('isoweek').format('D MMM')
     }
   },
 
@@ -200,7 +200,7 @@ var ItemColumn = React.createClass({
     let rawSprints = this.chunkItems();
     return _.map(rawSprints, (sprint, i) => {
       // Start the groups in the backlog with the next week
-      let startDate = moment().startOf('isoweek').add(7 * (i + 1), 'days').format('DD MMM');
+      let startDate = moment().startOf('isoweek').add(7 * (i + 1), 'days').format('D MMM');
       return (
         <Sprint
           key={`item-group-${i}`}
