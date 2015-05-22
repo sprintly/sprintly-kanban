@@ -23,17 +23,19 @@ let Sprint = React.createClass({
     return card;
   },
 
-  onHandleToggle() {
+  toggleItemCards() {
     this.setState({expanded: !this.state.expanded});
   },
 
   render() {
     let itemCards = _.map(this.props.items, this.renderItemCard);
+    let chevronClass = 'sprint__chevron glyphicon glyphicon-chevron-';
+    chevronClass += this.state.expanded ? 'up' : 'down';
     return (
       <div className="sprint">
-        <Bootstrap.Panel onClick={this.onHandleToggle}>
+        <Bootstrap.Panel onClick={this.toggleItemCards}>
           {this.props.startDate} ({this.props.points} points)
-          <span className="glyphicon glyphicon-chevron-down sprint__chevron"></span>
+          <span className={chevronClass}></span>
         </Bootstrap.Panel>
         { this.state.expanded ? <div>{itemCards}</div> : <div></div> }
       </div>
