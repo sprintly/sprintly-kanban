@@ -56,7 +56,6 @@ var FiltersToolbar = React.createClass({
                 type="text"
                 ref="velocity_input"
                 defaultValue={this.props.velocity}
-                onSubmit={this.changeVelocity}
               />
             </form> :
             <span onClick={this.onClickVelocity}>{Math.round(this.props.velocity)}</span>

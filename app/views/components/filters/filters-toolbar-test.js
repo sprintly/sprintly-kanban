@@ -15,7 +15,9 @@ describe('Filters Toolbar', function() {
       members: [],
       user: {},
       allFilters: [],
-      activeFilters: []
+      activeFilters: [],
+      productId: 1,
+      velocity: 10
     };
     let Component = stubRouterContext(FiltersToolbar, props);
     this.component = TestUtils.renderIntoDocument(<Component {...props}/>);
@@ -25,20 +27,21 @@ describe('Filters Toolbar', function() {
     this.sinon.restore();
   });
 
-  describe.only('setVelocity', function() {
+  describe('setVelocity', function() {
     beforeEach(function() {
       this.VelocityActions = FiltersToolbar.__get__('VelocityActions');
       this.setVelocityStub = this.sinon.stub(this.VelocityActions, 'setVelocity');
     });
 
     it('triggers the setVelocity action', function() {
-      console.log(this.component.refs.stub.refs);
       this.component.refs.stub.setState({ showVelocityInput: true });
-      let form = this.component.refs.stub.refs.velocity_form.getDOMNode();
-      let input = this.component.refs.stub.refs.velocity_input.getDOMNode();
-      TestUtils.Simulate.change(input, { target: { value: '12' } });
+      let form = TestUtils.findRenderedDOMComponentWithTag(this.component.refs.stub, 'form');
+      let input = TestUtils.findRenderedDOMComponentWithTag(this.component.refs.stub, 'input');
+      let node = input.getDOMNode();
+      node.value = '12';
+      TestUtils.Simulate.change(node);
       TestUtils.Simulate.submit(form);
-      assert.calledWith(this.setVelocityStub, null, '12');
+      sinon.assert.calledWith(this.setVelocityStub, 1, '12');
     });
   });
 });
