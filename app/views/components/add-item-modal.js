@@ -8,6 +8,7 @@ import StoryTitle from './add-item/story-title';
 import MembersDropdown from './add-item/members-dropdown';
 import IssueTemplates from './add-item/issue-templates';
 import Select from 'react-select';
+import LocalStorageMixin from 'react-localstorage';
 
 import ItemActions from '../../actions/item-actions';
 
@@ -30,7 +31,8 @@ var AddItemModal = React.createClass({
   },
 
   mixins: [
-    React.addons.LinkedStateMixin
+    React.addons.LinkedStateMixin,
+    LocalStorageMixin
   ],
 
   getInitialState() {
@@ -86,8 +88,6 @@ var AddItemModal = React.createClass({
 
   dismiss(ev) {
     ev.preventDefault();
-    let state = this.getInitialState();
-    this.setState(state);
     this.props.onRequestHide();
   },
 
