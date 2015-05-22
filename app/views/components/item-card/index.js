@@ -43,9 +43,11 @@ var ItemCard = React.createClass({
   },
 
   closePopover: function() {
-    this.refs.trigger.setState({
-      isOverlayShown: false
-    });
+    if (!!this.refs.trigger) {
+      this.refs.trigger.setState({
+        isOverlayShown: false
+      });
+    }
   },
 
   toggleDetails: function(e) {
@@ -101,6 +103,10 @@ var ItemCard = React.createClass({
     )
   },
 
+  isAssignable: function() {
+    return _.contains(['backlog', 'in-progress', 'someday'], this.props.item.status);
+  },
+
   renderStoryTitle: function() {
     let article = this.props.item.title.split(this.props.item.who)[0];
     return [
@@ -152,9 +158,11 @@ var ItemCard = React.createClass({
                 score={this.props.item.score}
                 estimateChanger={{changeScore: this.changeScore}}
               />
-              <Bootstrap.OverlayTrigger ref='trigger' trigger='click' placement='bottom' overlay={this.popoverMenu()}>
-                <span><OwnerAvatar person={owner} /></span>
-              </Bootstrap.OverlayTrigger>
+              {this.isAssignable() ?
+                <Bootstrap.OverlayTrigger ref='trigger' trigger='click' placement='bottom' overlay={this.popoverMenu()}>
+                  <span className="clickable-avatar"><OwnerAvatar person={owner} /></span>
+                </Bootstrap.OverlayTrigger> :
+                <span><OwnerAvatar person={owner} /></span>}
             </div>
           </div>
           <div className="item-card__title col-sm-12">
