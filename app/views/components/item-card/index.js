@@ -83,8 +83,7 @@ var ItemCard = React.createClass({
 
   assigneeName: function() {
     let owner = this.props.item.assigned_to;
-    return owner === null ?
-      'Unassigned' : owner.first_name + ' ' + owner.last_name
+    return !!owner ? owner.first_name + ' ' + owner.last_name : 'Unassigned'
   },
 
   popoverMenu: function() {

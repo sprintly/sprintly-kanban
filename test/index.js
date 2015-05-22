@@ -1,6 +1,7 @@
 require("../app/actions/item-actions-test.js");
 require("../app/actions/product-actions-test.js");
 require("../app/actions/search-actions-test.js");
+require("../app/actions/velocity-actions-test.js");
 require("../app/stores/filters-store-test.js");
 require("../app/stores/product-store-test.js");
 require("../app/views/components/add-item-modal-test.js");
