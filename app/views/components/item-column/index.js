@@ -58,7 +58,7 @@ var ItemColumn = React.createClass({
   },
 
   setSortCriteria(field=this.state.sortField, direction=this.state.sortDirection, status=this.props.status) {
-    let items = ProductStore.getItemsCollection(this.props.product.id, status, field);
+    let items = ProductStore.getItemsCollection(this.props.product.id, status);
     if (!items) {
       return;
     }
