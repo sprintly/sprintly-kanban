@@ -27,15 +27,15 @@ function mergeFilters(configModel, filters) {
   return updatedFilters;
 }
 
-function getItemsCollection(product, status, filters, sortField) {
-  var items = product.getItemsByStatus(status);
+function getItemsCollection(product, options) {
+  var items = product.getItemsByStatus(options.status);
 
   if (items.config.get('order_by')) {
     // Set "Recent" as the default sort
-    let sort = STATUS_MAPPINGS[sortField] || 'recent';
+    let sort = STATUS_MAPPINGS[options.sortField] || 'recent';
     items.config.set('order_by', sort);
   }
-  var updatedFilters = mergeFilters(items.config, filters);
+  var updatedFilters = mergeFilters(items.config, options.filters);
 
   // Set additional defaults for fetching products
   updatedFilters.limit = 30;
@@ -43,7 +43,7 @@ function getItemsCollection(product, status, filters, sortField) {
   updatedFilters.expand_sub_items = true;
   updatedFilters.offset = 0;
 
-  if(status === 'accepted') {
+  if(options.status === 'accepted') {
     updatedFilters.limit = 5;
   }
 
@@ -99,7 +99,9 @@ var ProductActions = {
       });
   },
 
-  changeSortCriteria(itemCollection, field, direction) {
+  changeSortCriteria(itemCollection, options) {
+    let field = options.field;
+    let direction = options.direction;
     setComparator(itemCollection, field, direction);
 
     if (field === 'last_modified') {
@@ -114,6 +116,7 @@ var ProductActions = {
       order_by: field,
       offset: 0
     });
+    window.localStorage.setItem(`itemColumn-${options.status}-sortField`, field);
 
     itemCollection.fetch({ reset: true, silent: true }).then(function() {
       AppDispatcher.dispatch({
@@ -124,7 +127,7 @@ var ProductActions = {
 
   getItemsForProduct(product, options) {
     let productModel = products.get(product);
-    let itemsCollection = getItemsCollection(productModel, options.status, options.filters, options.sortField);
+    let itemsCollection = getItemsCollection(productModel, options);
 
     setComparator(itemsCollection, options.sortField, options.sortDirection);
 
