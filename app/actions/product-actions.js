@@ -3,6 +3,12 @@ import AppDispatcher from '../dispatchers/app-dispatcher';
 import ProductConstants from '../constants/product-constants';
 import { products, user } from '../lib/sprintly-client';
 
+const STATUS_MAPPINGS = {
+  last_modified: 'recent',
+  created_at: 'newest',
+  priority: 'priority'
+};
+
 function mergeFilters(configModel, filters) {
   var defaultFilters = configModel.toJSON();
   var updatedFilters = _.extend(defaultFilters, filters);
@@ -21,11 +27,13 @@ function mergeFilters(configModel, filters) {
   return updatedFilters;
 }
 
-function getItemsCollection(product, status, filters) {
+function getItemsCollection(product, status, filters, sortField) {
   var items = product.getItemsByStatus(status);
-  // Set "Recent" as the default sort
+
   if (items.config.get('order_by')) {
-    items.config.set('order_by', 'recent');
+    // Set "Recent" as the default sort
+    let sort = STATUS_MAPPINGS[sortField] || 'recent';
+    items.config.set('order_by', sort);
   }
   var updatedFilters = mergeFilters(items.config, filters);
 
@@ -116,7 +124,7 @@ var ProductActions = {
 
   getItemsForProduct(product, options) {
     let productModel = products.get(product);
-    let itemsCollection = getItemsCollection(productModel, options.status, options.filters);
+    let itemsCollection = getItemsCollection(productModel, options.status, options.filters, options.sortField);
 
     setComparator(itemsCollection, options.sortField, options.sortDirection);
 

@@ -10,15 +10,14 @@ import ProductStore from '../../../stores/product-store';
 import ProductActions from '../../../actions/product-actions';
 import FilterActions from '../../../actions/filter-actions';
 import ScoreMap from '../../../lib/score-map';
-import LocalStorageMixin from 'react-localstorage';
 
 const EMPTY_CHUNK = {
   points: 0,
   items: []
 };
 
-function getColumnState(items=[]) {
-  return {
+function getColumnState(items=[], previousState={}) {
+  return _.extend({
     items,
     isLoading: false,
     hideLoadMore: false,
@@ -26,23 +25,26 @@ function getColumnState(items=[]) {
     sortDirection: 'desc',
     offset: 0,
     limit: 0
-  }
+  }, previousState);
 }
 
 var ItemColumn = React.createClass({
-  mixins: [
-    LocalStorageMixin
-  ],
-
-  localStorageKey: 'itemColumn',
-
   propTypes: {
     status: React.PropTypes.string.isRequired,
     product: React.PropTypes.object.isRequired
   },
 
   getInitialState() {
-    return getColumnState();
+    return getColumnState([], this.loadPreviousState());
+  },
+
+  loadPreviousState() {
+    let previousState = {};
+    let previousSortField = window.localStorage.getItem(`itemColumn-${this.props.status}`);
+    if (previousSortField) {
+      previousState.sortField = previousSortField;
+    }
+    return previousState;
   },
 
   _onChange() {
@@ -56,12 +58,13 @@ var ItemColumn = React.createClass({
   },
 
   setSortCriteria(field=this.state.sortField, direction=this.state.sortDirection) {
-    let items = ProductStore.getItemsCollection(this.props.product.id, this.props.status);
+    let items = ProductStore.getItemsCollection(this.props.product.id, this.props.status, field);
     if (!items) {
       return;
     }
 
     this.setState({ isLoading: true });
+    window.localStorage.setItem(`itemColumn-${this.props.status}`, field);
     ProductActions.changeSortCriteria(items, field, direction);
   },
 
@@ -223,7 +226,6 @@ var ItemColumn = React.createClass({
   },
 
   render() {
-
     let classes = {
       column: true,
       [this.props.status]: true
