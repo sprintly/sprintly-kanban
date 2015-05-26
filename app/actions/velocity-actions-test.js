@@ -20,23 +20,22 @@ describe('VelocityActions', function() {
     });
 
     context('api success', function() {
-      it('dispatches the a PRODUCT_VELOCITY event', function(done) {
+      it('dispatches a PRODUCT_VELOCITY event', function() {
         var dispatchStub = this.sinon.stub(this.appDispatcher, 'dispatch');
-        this.requestStub.callsArgWith(2, null, { body: 'results' });
+        this.requestStub.callsArgWith(2, null, { body: { average: 1 } });
         VelocityActions.getVelocity('id');
         sinon.assert.calledWith(dispatchStub, {
           actionType: 'PRODUCT_VELOCITY',
-          payload: 'results',
+          payload: { average: 7 },
           productId: 'id'
         });
-        done();
       });
 
-      it('overrides the velocity if less than 1', function(done) {
+      it('overrides the velocity if less than 1', function() {
         var dispatchStub = this.sinon.stub(this.appDispatcher, 'dispatch');
         this.requestStub.callsArgWith(2, null, {
           body: {
-            average: 0.25
+            average: 0.025
           }
         });
 
@@ -46,19 +45,17 @@ describe('VelocityActions', function() {
           payload: { average: 10 },
           productId: 'id'
         });
-        done();
       });
     });
 
     context('api error', function() {
-      it('dispatches a PRODUCT_VELOCITY_ERROR event', function(done) {
+      it('dispatches a PRODUCT_VELOCITY_ERROR event', function() {
         var dispatchStub = this.sinon.stub(this.appDispatcher, 'dispatch');
         this.requestStub.callsArgWith(2, 'ERROR');
         VelocityActions.getVelocity();
         sinon.assert.calledWith(dispatchStub, {
           actionType: 'PRODUCT_VELOCITY_ERROR'
         });
-        done();
       });
     });
   });
