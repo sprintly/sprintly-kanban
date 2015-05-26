@@ -172,6 +172,7 @@ var ItemColumn = React.createClass({
     let card = (
       <ItemCard
         item={item}
+        members={this.props.members}
         sortField={this.state.sortField}
         productId={this.props.product.id}
         key={`item-${this.props.product.id}${item.number}`}
