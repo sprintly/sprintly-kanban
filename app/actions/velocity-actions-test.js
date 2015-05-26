@@ -20,7 +20,7 @@ describe('VelocityActions', function() {
     });
 
     context('api success', function() {
-      it('dispatches the a PRODUCT_VELOCITY event', function() {
+      it('dispatches a PRODUCT_VELOCITY event', function() {
         var dispatchStub = this.sinon.stub(this.appDispatcher, 'dispatch');
         this.requestStub.callsArgWith(2, null, { body: { average: 1 } });
         VelocityActions.getVelocity('id');
