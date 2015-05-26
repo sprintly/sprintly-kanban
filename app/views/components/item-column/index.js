@@ -35,16 +35,12 @@ var ItemColumn = React.createClass({
   },
 
   getInitialState() {
-    return getColumnState([], this.loadPreviousState());
-  },
-
-  loadPreviousState() {
     let previousState = {};
     let previousSortField = window.localStorage.getItem(`itemColumn-${this.props.status}-sortField`);
     if (previousSortField) {
       previousState.sortField = previousSortField;
     }
-    return previousState;
+    return getColumnState([], previousState);
   },
 
   _onChange() {
