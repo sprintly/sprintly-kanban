@@ -40,7 +40,7 @@ var ItemColumn = React.createClass({
 
   loadPreviousState() {
     let previousState = {};
-    let previousSortField = window.localStorage.getItem(`itemColumn-${this.props.status}`);
+    let previousSortField = window.localStorage.getItem(`itemColumn-${this.props.status}-sortField`);
     if (previousSortField) {
       previousState.sortField = previousSortField;
     }
@@ -57,15 +57,19 @@ var ItemColumn = React.createClass({
     this.setState(state);
   },
 
-  setSortCriteria(field=this.state.sortField, direction=this.state.sortDirection) {
-    let items = ProductStore.getItemsCollection(this.props.product.id, this.props.status, field);
+  setSortCriteria(field=this.state.sortField, direction=this.state.sortDirection, status=this.props.status) {
+    let items = ProductStore.getItemsCollection(this.props.product.id, status, field);
     if (!items) {
       return;
     }
 
     this.setState({ isLoading: true });
-    window.localStorage.setItem(`itemColumn-${this.props.status}`, field);
-    ProductActions.changeSortCriteria(items, field, direction);
+    let options = {
+      field,
+      direction,
+      status
+    };
+    ProductActions.changeSortCriteria(items, options);
   },
 
   getItems(product, options={ hideLoader: false }) {
