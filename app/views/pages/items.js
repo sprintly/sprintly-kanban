@@ -56,11 +56,19 @@ module.exports = React.createClass({
     ProductStore.addChangeListener(this._onChange);
     ProductActions.init(this.getParams().id);
     VelocityActions.getVelocity(this.getParams().id);
+    VelocityActions.getItemCounts(this.getParams().id);
   },
 
   componentWillUnmount: function() {
     FiltersStore.removeChangeListener(this._onChange);
     ProductStore.removeChangeListener(this._onChange);
+  },
+
+  getItemCount: function(status) {
+    let counts = this.state.itemCounts
+    return (
+      counts && counts[status] ? counts[status] : 0
+    );
   },
 
   selectItem: function(activeItem, event) {
@@ -100,6 +108,7 @@ module.exports = React.createClass({
     if (this.getParams().id !== this.state.product.id) {
       ProductActions.init(this.getParams().id);
       VelocityActions.getVelocity(this.getParams().id);
+      VelocityActions.getItemCounts(this.getParams().id);
     }
   },
 
@@ -156,9 +165,12 @@ module.exports = React.createClass({
               return (
                 <nav key={`header-nav-${status}`}>
                   <h3>{label}</h3>
+                  <span className="item-count">
+                    {this.getItemCount(status)} items
+                  </span>
                 </nav>
               );
-            })}
+            }, this)}
           </div>
           {cols}
         </div>

@@ -1,3 +1,4 @@
+import _ from "lodash";
 import request from 'superagent';
 import AppDispatcher from '../dispatchers/app-dispatcher';
 
@@ -6,6 +7,13 @@ let token = window.__token;
 
 const DEFAULT_VELOCITY = 10;
 const DEFAULT_ITERATION_LENGTH = 7;
+const STATUS_XREF = {
+  5: 'someday',
+  10: 'backlog',
+  20: 'in-progress',
+  30: 'completed',
+  40: 'accepted'
+};
 
 var internals = {
   request(id, metric, cb) {
@@ -23,6 +31,15 @@ var internals = {
     }
 
     return velocity;
+  },
+
+  countsByStatus(totals={}) {
+    let counts = _.transform(totals, function(result, v, k) {
+      let sum = _.reduce(_.values(v), function(sum, num) { return sum + num; })
+      result[STATUS_XREF[k]] = sum;
+      return result
+    })
+    return counts
   }
 }
 
@@ -54,6 +71,26 @@ var VelocityActions = {
         average: velocity
       },
       productId
+    });
+  },
+
+  getItemCounts(productId) {
+    internals.request(productId, 'focus', function(err, res) {
+      if (err) {
+        AppDispatcher.dispatch({
+          actionType: 'ITEM_COUNTS_ERROR'
+        });
+        return;
+      }
+
+      if (res.body) {
+        let counts = internals.countsByStatus(res.body);
+        AppDispatcher.dispatch({
+          actionType: 'ITEM_COUNTS',
+          payload: counts,
+          productId
+        });
+      }
     });
   }
 };

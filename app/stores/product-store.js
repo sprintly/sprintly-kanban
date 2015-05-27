@@ -8,7 +8,7 @@ import {PUSHER_KEY, CHANNEL_PREFIX} from '../config';
 import {EventEmitter} from 'events';
 
 let columnCollections = {};
-
+let itemCounts = {}
 let productVelocity = {};
 
 var ProductStore = module.exports = _.assign({}, EventEmitter.prototype, {
@@ -38,7 +38,8 @@ var ProductStore = module.exports = _.assign({}, EventEmitter.prototype, {
       members: product.members.toJSON(),
       product: product.toJSON(),
       tags: product.tags.toJSON(),
-      velocity: productVelocity[id] || null
+      velocity: productVelocity[id] || null,
+      itemCounts: itemCounts[id] || null
     };
   },
 
@@ -336,6 +337,11 @@ ProductStore.dispatchToken = AppDispatcher.register(function(action) {
 
     case 'PRODUCT_VELOCITY':
       productVelocity[action.productId] = action.payload;
+      ProductStore.emitChange();
+      break;
+
+    case 'ITEM_COUNTS':
+      itemCounts[action.productId] = action.payload;
       ProductStore.emitChange();
       break;
 
