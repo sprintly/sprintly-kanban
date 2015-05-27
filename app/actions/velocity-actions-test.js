@@ -72,5 +72,59 @@ describe('VelocityActions', function() {
       done();
     });
   });
+
+  describe('getItemCounts', function() {
+    beforeEach(function() {
+      let internals = VelocityActions.__get__('internals');
+      this.requestStub = this.sinon.stub(internals, 'request');
+    });
+
+    context('api success', function() {
+      it('dispatches an ITEM_COUNTS event', function(done) {
+        var dispatchStub = this.sinon.stub(this.appDispatcher, 'dispatch');
+        this.requestStub.callsArgWith(2, null, { body: { 10: { a: 1 } } });
+        VelocityActions.getItemCounts('id');
+        sinon.assert.calledWith(dispatchStub, {
+          actionType: 'ITEM_COUNTS',
+          payload: { backlog: 1 },
+          productId: 'id'
+        });
+        done();
+      });
+
+      it('totals the item counts for each status', function(done) {
+        var dispatchStub = this.sinon.stub(this.appDispatcher, 'dispatch');
+        this.requestStub.callsArgWith(2, null, {
+          body: {
+            5: { a: 10, b: 10 },
+            30: { y: 20, z: 10 }
+          }
+        });
+
+        VelocityActions.getItemCounts('id');
+        sinon.assert.calledWith(dispatchStub, {
+          actionType: 'ITEM_COUNTS',
+          payload: {
+            someday: 20,
+            completed: 30
+          },
+          productId: 'id'
+        });
+        done();
+      });
+    });
+
+    context('api error', function() {
+      it('dispatches an ITEM_COUNTS_ERROR event', function(done) {
+        var dispatchStub = this.sinon.stub(this.appDispatcher, 'dispatch');
+        this.requestStub.callsArgWith(2, 'ERROR');
+        VelocityActions.getItemCounts();
+        sinon.assert.calledWith(dispatchStub, {
+          actionType: 'ITEM_COUNTS_ERROR'
+        });
+        done();
+      });
+    });
+  });
 });
 
