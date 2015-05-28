@@ -5,6 +5,7 @@ let BASE_URL = process.env.NODE_ENV === 'production' ? 'https://sprint.ly' : 'ht
 let token = window.__token;
 
 const DEFAULT_VELOCITY = 10;
+const DEFAULT_ITERATION_LENGTH = 7;
 
 var internals = {
   request(id, metric, cb) {
@@ -15,9 +16,12 @@ var internals = {
   },
 
   calculateAverageVelocity(velocity={}) {
+    velocity.average = Math.round(velocity.average * DEFAULT_ITERATION_LENGTH);
+
     if (velocity.average < 1) {
       velocity.average = DEFAULT_VELOCITY;
     }
+
     return velocity;
   }
 }

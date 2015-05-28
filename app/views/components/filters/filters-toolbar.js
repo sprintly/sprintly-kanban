@@ -101,23 +101,24 @@ var FiltersToolbar = React.createClass({
         {velocityPopover}
         <div className="filters__toolbar container-fluid">
           <div className="col-sm-10">
-          <span className="velocity" onMouseEnter={this.showVelocityPopover} onMouseLeave={this.hideVelocityPopover}>
-            <i className="glyphicon glyphicon-dashboard"></i>
-            {velocityElement}
-          </span>
-          {_.map(this.props.activeFilters, function(filter, i) {
-            return (
-              <Filter
-                key={i}
-                user={this.props.user}
-                members={this.props.members}
-                updateFilters={this.updateFilters}
-                {...filter}
-              />
-            )
-          }, this)}
+            <span className="velocity" onMouseEnter={this.showVelocityPopover} onMouseLeave={this.hideVelocityPopover}>
+              <i className="glyphicon glyphicon-dashboard"></i>
+              {velocityElement}
+            </span>
+            {_.map(this.props.activeFilters, function(filter, i) {
+              return (
+                <Filter
+                  key={i}
+                  user={this.props.user}
+                  members={this.props.members}
+                  updateFilters={this.updateFilters}
+                  {...filter}
+                />
+                )
+            }, this)}
           </div>
           <FiltersMenu
+            user={this.props.user}
             updateFilters={this.updateFilters}
             allFilters={this.props.allFilters}
             members={this.props.members}

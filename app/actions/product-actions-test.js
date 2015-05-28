@@ -16,6 +16,46 @@ describe('Product Actions', function() {
     this.sinon.restore();
   });
 
+  describe('changeSortCriteria', function() {
+    beforeEach(function() {
+      this.itemsCollection = new Backbone.Collection();
+      this.itemsCollection.config = new Backbone.Model({
+        status: 'backlog',
+        limit: 25
+      });
+      window.localStorage.removeItem('itemColumn-backlog-sortField');
+    });
+
+    it('saves the sort field to localStorage', function() {
+      ProductActions.changeSortCriteria(this.itemsCollection, {
+        status: 'backlog',
+        field: 'priority'
+      });
+      assert.equal('priority', window.localStorage.getItem('itemColumn-backlog-sortField'));
+    });
+  });
+
+  describe('getItemsForProduct', function() {
+    beforeEach(function() {
+      this.products = ProductActions.__get__('products');
+      this.product = this.products.add({ id: 1 });
+      this.itemsCollection = new Backbone.Collection();
+      this.getItemsByStatusStub = this.sinon.stub(this.product, 'getItemsByStatus').returns(this.itemsCollection);
+      this.itemsCollection.config = new Backbone.Model({
+        status: 'backlog',
+        limit: 25,
+        order_by: 'recent'
+      });
+    });
+
+    it('sets the collection config order by', function() {
+      ProductActions.getItemsForProduct(1, {
+        sortField: 'priority'
+      });
+      assert.equal('priority', this.itemsCollection.config.get('order_by'));
+    });
+  });
+
   describe('loadMoreItems', function() {
     beforeEach(function() {
       this.collection = new Backbone.Collection();
@@ -26,7 +66,7 @@ describe('Product Actions', function() {
     });
 
     it('dispatches an event', function(done) {
-      var spy = this.sinon.spy(AppDispatcher, 'dispatch');
+      this.spy = this.sinon.spy(AppDispatcher, 'dispatch');
 
       this.collection.fetch = function() {
         return new Promise(function(resolve) {
@@ -35,8 +75,8 @@ describe('Product Actions', function() {
       };
 
       ProductActions.loadMoreItems(this.collection);
-      setTimeout(function() {
-        sinon.assert.calledOnce(spy);
+      setTimeout(()=> {
+        sinon.assert.calledOnce(this.spy);
         done();
       }, 0)
     });
