@@ -32,6 +32,23 @@ var ItemCardDetails = React.createClass({
     )
   },
 
+  handleMenuSelection(status) {
+    console.log(status);
+    if (status === "destroy") {
+      console.log("deleting");
+      return this.deleteItem();
+    } else {
+      return this.updateStatus(status);
+    }
+  },
+
+  deleteItem() {
+    ProductActions.deleteItem(
+      this.props.productId,
+      this.props.item.number
+    );
+  },
+
   updateStatus(status) {
     ProductActions.updateItem(
       this.props.productId,
@@ -100,6 +117,11 @@ var ItemCardDetails = React.createClass({
     let tags = hasTags ? item.tags.split(',') : item.tags || [];
     let statusOptions = _.omit(STATUSES, item.status);
 
+    let menuItems = _.map(statusOptions, function(label, status) {
+      return <MenuItem eventKey={status} key={status}>Move to {label}</MenuItem>
+    });
+    let deleteItem = <MenuItem eventKey="destroy" key="destroy">Delete</MenuItem>
+    menuItems.push(deleteItem);
     return (
       <div className="item-card__details">
         <div className="col-sm-6 item-card__summary">
@@ -107,10 +129,8 @@ var ItemCardDetails = React.createClass({
         </div>
         <div className="col-sm-6 item-card__extra-controls">
           {this.renderMoveControls()}
-          <DropdownButton onSelect={this.updateStatus} bsStyle="default" bsSize="small" title={<span className="glyphicon glyphicon-cog"/>} noCaret>
-            {_.map(statusOptions, function(label, status) {
-              return <MenuItem eventKey={status} key={status}>Move to {label}</MenuItem>
-            })}
+          <DropdownButton onSelect={this.handleMenuSelection} bsStyle="default" bsSize="small" title={<span className="glyphicon glyphicon-cog"/>} noCaret>
+            {menuItems}
           </DropdownButton>
         </div>
         {this.renderSubItems()}
