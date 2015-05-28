@@ -162,6 +162,11 @@ var ProductActions = {
       }
     }
 
+    // save request errors with invalid close_reason if item is in done column
+    if (_.has(payload, 'score') || _.has(payload, 'tags') && item.get('status') == 'completed') {
+      item.unset('close_reason', { silent: true });
+    }
+
     if (options.wait === false) {
       item.save(payload);
       AppDispatcher.dispatch({
