@@ -48,6 +48,20 @@ var ItemCardDetails = React.createClass({
     FilterActions.update('created_by', this.props.item.created_by.id);
   },
 
+  editTags(modelIds, tags, tag, action) {
+    let productId = modelIds[0];
+    let itemNumber = modelIds[1];
+    if (action == 'add') {
+      tags.push(tag);
+    }
+    if (action == 'remove') {
+      _.pull(tags, tag);
+    }
+    tags = _.compact(tags).join(',')
+    ProductActions.updateItem(productId, itemNumber, {tags: tags});
+    this.refs.tagEditor.setState({ showMenu: false })
+  },
+
   renderMoveControls() {
     return this.props.sortField !== 'priority' ? (
       <OverlayTrigger placement='top' overlay={<Tooltip>Sort by <strong>Priority</strong> to reorder.</Tooltip>}>
@@ -74,14 +88,15 @@ var ItemCardDetails = React.createClass({
   },
 
   render() {
-    let tags = typeof this.props.item.tags === 'string' ?
-      this.props.item.tags.split(',') : this.props.item.tags || [];
-    let statusOptions = _.omit(STATUSES, this.props.item.status);
+    let item = this.props.item
+    let tags = typeof item.tags === 'string' && item.tags.length ?
+      item.tags.split(',') : item.tags || [];
+    let statusOptions = _.omit(STATUSES, item.status);
 
     return (
       <div className="item-card__details">
         <div className="col-sm-6 item-card__summary">
-          Created by <a href="javascript: void 0" onClick={this.filterByMember}>{this.props.item.created_by.first_name} {this.props.item.created_by.last_name.slice(0,1)}</a> {moment(this.props.item.created_at).fromNow()} ago.
+          Created by <a href="javascript: void 0" onClick={this.filterByMember}>{item.created_by.first_name} {item.created_by.last_name.slice(0,1)}</a> {moment(item.created_at).fromNow()} ago.
         </div>
         <div className="col-sm-6 item-card__extra-controls">
           {this.renderMoveControls()}
@@ -94,9 +109,10 @@ var ItemCardDetails = React.createClass({
         {this.renderSubItems()}
         <div className="item-card__tags col-sm-12">
           <TagEditor
-            modelId={[this.props.item.product.id, this.props.item.pk]}
+            modelId={[item.product.id, item.number]}
             tags={tags}
             tagChanger={{addOrRemove: this.editTags}}
+            ref='tagEditor'
           />
           <Tags
             tags={tags}
