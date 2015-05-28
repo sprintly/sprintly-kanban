@@ -15,6 +15,7 @@ let SprintGroup = React.createClass({
       teamStrengths: {}
     }
   },
+
   /**
    * Chunks the items passed into the props into sprints based on the current predicted velocity.
    * Each sprint chunk is an object with the following structure:
@@ -25,7 +26,6 @@ let SprintGroup = React.createClass({
    *
    * @returns {Array} // an array of raw sprint chunks
    */
-
   chunkItems() {
     let chunks = [];
     let currentChunk = _.cloneDeep(EMPTY_CHUNK);
