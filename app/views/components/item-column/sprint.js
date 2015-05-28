@@ -14,15 +14,22 @@ let Sprint = React.createClass({
 
   toggleTeamStrengthPanel(e) {
     e.stopPropagation();
-    this.setState({ showingTeamStrengthPanel: !this.state.showingTeamStrengthPanel });
+    this.setState({
+      showingTeamStrengthPanel: !this.state.showingTeamStrengthPanel
+    },
+    function() {
+      this.refs.team_strength_input.getDOMNode().focus();
+    });
   },
 
   adjustTeamStrength(e) {
     e.preventDefault();
-    let newStrength = this.refs.team_strength.getDOMNode().value / 100;
+    let newStrength = this.refs.team_strength_input.getDOMNode().value / 100;
     this.setState({
       teamStrength: newStrength,
       showingTeamStrengthPanel: false
+    }, () => {
+      this.props.onChangeTeamStrength(this)
     });
   },
 
@@ -48,8 +55,8 @@ let Sprint = React.createClass({
       return '';
     } else {
       return (
-        <form onSubmit={this.adjustTeamStrength}>
-          <input type="text" ref="team_strength" />
+        <form onSubmit={this.adjustTeamStrength} className="team__strength">
+          <input type="text" ref="team_strength_input" />
         </form>
       );
     }
@@ -57,14 +64,17 @@ let Sprint = React.createClass({
 
   render() {
     let itemCards = _.map(this.props.items, this.renderItemCard);
-    let teamStrength = `${this.state.teamStrength * 100}%`;
+    let teamStrength = `${Math.round(this.state.teamStrength * 100, 2)}%`;
     let chevronClass = 'sprint__chevron glyphicon glyphicon-chevron-';
     chevronClass += this.state.expanded ? 'up' : 'down';
     return (
       <div className="sprint">
         <Bootstrap.Panel onClick={this.toggleItemCards}>
           {this.props.startDate} ({this.props.points} points)
-          <span className="team__strength" onClick={this.toggleTeamStrengthPanel}>{teamStrength}</span>
+          {this.state.showingTeamStrengthPanel ?
+            '' :
+            <span className="team__strength" onClick={this.toggleTeamStrengthPanel}>{teamStrength}</span>
+          }
           {this.renderTeamStrengthPanel()}
           <span className={chevronClass}></span>
         </Bootstrap.Panel>

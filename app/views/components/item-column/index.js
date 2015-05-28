@@ -160,7 +160,6 @@ var ItemColumn = React.createClass({
   },
 
   renderSprintGroup() {
-    console.log('renderSprintGroup');
     return <SprintGroup
       items={this.state.items}
       velocity={this.props.velocity}
