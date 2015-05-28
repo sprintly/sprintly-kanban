@@ -1,6 +1,5 @@
 import _ from 'lodash';
 import React from 'react/addons';
-import moment from 'moment';
 import ItemCard from '../item-card';
 import SprintGroup from './sprint-group';
 import ColumnSummary from './summary';
@@ -109,17 +108,6 @@ var ItemColumn = React.createClass({
     }
   },
 
-  calculateSummary() {
-    let points = _.reduce(this.state.items, function(total, item) {
-      total += ScoreMap[item.score];
-      return total;
-    }, 0);
-    return {
-      points,
-      startDate: moment().startOf('isoweek').format('D MMM')
-    }
-  },
-
   renderLoadMore() {
     var loadMore = <button className="load-more" onClick={this.loadMoreItems}>Load More</button>;
 
@@ -144,19 +132,8 @@ var ItemColumn = React.createClass({
   },
 
   renderItemCards() {
-    let showSummary = this.props.status === 'in-progress' && this.state.sortField === 'priority';
     let itemCards = _.map(this.state.items, this.renderItemCard);
-    if (showSummary) {
-      let props = this.calculateSummary();
-      return (
-        <div>
-          <ColumnSummary {...props} />
-          {itemCards}
-        </div>
-      );
-    } else {
-      return (<div>{itemCards}</div>);
-    }
+    return (<div>{itemCards}</div>);
   },
 
   renderSprintGroup() {
@@ -164,7 +141,8 @@ var ItemColumn = React.createClass({
       items={this.state.items}
       velocity={this.props.velocity}
       sortField={this.state.sortField}
-      productId={this.props.product.id} />;
+      productId={this.props.product.id}
+    />;
   },
 
   render() {
