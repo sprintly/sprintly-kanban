@@ -4,6 +4,7 @@ import moment from 'moment';
 
 import FilterActions from '../../../actions/filter-actions';
 import ProductActions from '../../../actions/product-actions';
+import ItemActions from '../../../actions/item-actions';
 
 import SubItems from './subitems'
 import {TagEditor, Tags} from 'sprintly-ui';
@@ -33,9 +34,7 @@ var ItemCardDetails = React.createClass({
   },
 
   handleMenuSelection(status) {
-    console.log(status);
     if (status === "destroy") {
-      console.log("deleting");
       return this.deleteItem();
     } else {
       return this.updateStatus(status);
@@ -43,7 +42,7 @@ var ItemCardDetails = React.createClass({
   },
 
   deleteItem() {
-    ProductActions.deleteItem(
+    ItemActions.deleteItem(
       this.props.productId,
       this.props.item.number
     );

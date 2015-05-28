@@ -156,24 +156,6 @@ var ProductActions = {
     });
   },
 
-  deleteItem(productId, itemId, options={ wait: true }) {
-    let product = products.get(productId);
-    let item = product.items.get(itemId);
-
-    if (options.wait === false) {
-      item.save({deleted: true});
-      AppDispatcher.dispatch({
-        actionType: ProductConstants.DELETE_ITEM
-      });
-    } else {
-      item.save({deleted: true}).then(function() {
-        AppDispatcher.dispatch({
-          actionType: ProductConstants.DELETE_ITEM
-        });
-      });
-    }
-  },
-
   updateItem(productId, itemId, payload, options={ wait: true }) {
     let product = products.get(productId);
     let item = product.items.get(itemId);

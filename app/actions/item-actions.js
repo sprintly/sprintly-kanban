@@ -28,10 +28,27 @@ let ItemActions = {
         resolve(item)
       });
     }
-  }
+  },
 
+  deleteItem(productId, itemId) {
+    let product = products.get(productId);
+    let item = product.items.get(itemId);
+    let item_data = item.attributes;
+    let destroyed = item.destroy();
+
+    if (destroyed) {
+      return destroyed.then(function() {
+        console.log("Great Success!")
+        AppDispatcher.dispatch({
+        actionType: 'DELETE_ITEM',
+        product,
+        item_data
+        });
+      });
+    } else {
+      throw new Error('Missing item: %s', itemId);
+    }
+  }
 };
 
 export default ItemActions;
-
-
