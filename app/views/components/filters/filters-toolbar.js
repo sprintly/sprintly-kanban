@@ -48,6 +48,7 @@ var FiltersToolbar = React.createClass({
         }, this)}
         </div>
         <FiltersMenu
+          user={this.props.user}
           updateFilters={this.updateFilters}
           allFilters={this.props.allFilters}
           members={this.props.members}
