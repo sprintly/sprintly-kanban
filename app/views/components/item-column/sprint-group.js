@@ -9,6 +9,8 @@ const EMPTY_CHUNK = {
   items: []
 };
 
+const DATE_FORMAT = 'MMMM D';
+
 let SprintGroup = React.createClass({
   getInitialState() {
     return {
@@ -94,7 +96,7 @@ let SprintGroup = React.createClass({
     var rawSprints = this.chunkItems();
     return _.map(rawSprints, (sprint, i) => {
       // Start the groups in the backlog with the next week
-      let startDate = moment().startOf('isoweek').add(7 * (i + 1), 'days').format('D MMM');
+      let startDate = moment().startOf('isoweek').add(7 * (i + 1), 'days').format(DATE_FORMAT);
       return (
         <Sprint
           key={`item-group-${i}`}

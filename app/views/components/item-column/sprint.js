@@ -69,7 +69,11 @@ let Sprint = React.createClass({
     } else {
       return (
         <form onSubmit={this.adjustTeamStrength} className="team__strength">
-          <input type="text" ref="team_strength_input" onKeyDown={this.escapeTeamStrengthInput} />
+          <input
+            ref="team_strength_input"
+            onKeyDown={this.escapeTeamStrengthInput}
+            defaultValue={Math.round(this.state.teamStrength * 100, 2)}
+          />
         </form>
       );
     }
@@ -78,19 +82,23 @@ let Sprint = React.createClass({
   render() {
     let itemCards = _.map(this.props.items, this.renderItemCard);
     let teamStrength = `${Math.round(this.state.teamStrength * 100, 2)}%`;
-    let chevronClass = 'sprint__chevron glyphicon glyphicon-chevron-';
-    chevronClass += this.state.expanded ? 'up' : 'down';
+    let chevronClass = `sprint__chevron glyphicon glyphicon-menu-${this.state.expanded ? 'up' : 'down'}`;
     let teamStrengthDisplay = this.state.showingTeamStrengthInput ? '' :
       <span className="team__strength" onClick={this.toggleTeamStrengthInput}>{teamStrength}</span>
     return (
-      <div className="sprint">
-        <Bootstrap.Panel>
-          {this.props.startDate} ({this.props.points} points)
-          TS: {teamStrengthDisplay}
-          {this.renderTeamStrengthInput()}
-          <span onClick={this.toggleItemCards} className={chevronClass}></span>
-        </Bootstrap.Panel>
-        { this.state.expanded ? <div>{itemCards}</div> : <div></div> }
+      <div className={`sprint sprint-${this.state.expanded ? 'open' : 'closed'}`}>
+        <div className="panel panel-default">
+          <div className="panel-heading" onClick={this.toggleItemCards}>
+            {this.props.startDate}
+            <Bootstrap.Label>{this.props.points} points</Bootstrap.Label>
+            <span className="team__strength__text">(TS: {teamStrengthDisplay})</span>
+            {this.renderTeamStrengthInput()}
+            <span className={chevronClass}></span>
+          </div>
+          <div className="panel-body">
+            {this.state.expanded ? <div>{itemCards}</div> : '' }
+          </div>
+        </div>
       </div>
     );
   }

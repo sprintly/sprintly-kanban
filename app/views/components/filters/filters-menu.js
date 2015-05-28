@@ -6,7 +6,7 @@ import TagsFilter from './forms/tags-filter';
 
 var FiltersMenu = React.createClass({
 
-  getInitialState: function() {
+  getInitialState() {
     return {
       showPopup: false,
       visibleFilters: []
@@ -18,11 +18,11 @@ var FiltersMenu = React.createClass({
     updateFilters: React.PropTypes.func.isRequired
   },
 
-  toggleFiltersMenu: function() {
+  toggleFiltersMenu() {
     this.setState({ showPopup: !this.state.showPopup });
   },
 
-  toggleVisible: function(filter) {
+  toggleVisible(filter) {
     let visibleFilters = _.clone(this.state.visibleFilters);
     if (_.contains(visibleFilters, filter)) {
       this.setState({ visibleFilters: _.without(visibleFilters, filter) })
@@ -32,7 +32,7 @@ var FiltersMenu = React.createClass({
     }
   },
 
-  renderForm: function(filter) {
+  renderForm(filter) {
     var form;
     var formProps = {
       name: filter.field,
@@ -58,7 +58,12 @@ var FiltersMenu = React.createClass({
     return form;
   },
 
-  render: function() {
+  mine(ev) {
+    ev.preventDefault();
+    this.props.updateFilters('assigned_to', this.props.user.id)
+  },
+
+  render() {
     var classes = React.addons.classSet({
       'col-sm-2': true,
       'filters-menu': true,
@@ -67,6 +72,7 @@ var FiltersMenu = React.createClass({
     return (
       <div className={classes}>
         <button className="btn btn-default filters-menu__button" onClick={this.toggleFiltersMenu}>Add Filter</button>
+        <a href="#" onClick={this.mine} className="filters-menu__mine">My Items</a>
         <div className="col-sm-12 filters-menu__popup">
           <div className="filters-menu__scroll-wrapper">
             <ul className="filters-menu__list">
