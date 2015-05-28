@@ -36,7 +36,7 @@ var Header = React.createClass({
     return (
       <header>
         <div className="column__sort-options">
-          <SplitButton onSelect={this.onSelect} activeKey={this.props.sortField} bsSize="small" title={`Sort by: ${SORT_OPTIONS[this.props.sortField]}`} pullRight>
+          <SplitButton onSelect={this.onSelect} activeKey={this.props.sortField} bsSize="small" title={`Sort by: ${SORT_OPTIONS[this.props.sortField]}`}>
             {_.map(_.omit(SORT_OPTIONS, this.props.sortField), function(label, field) {
               return (
                 <MenuItem eventKey={field} key={field}>{label}</MenuItem>
