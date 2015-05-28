@@ -120,7 +120,7 @@ var internals = ProductStore.internals = {
         // Swap items between status collections.
         let previousStatus = model.previous('status');
         let previousCollection = product._filters[previousStatus];
-        previousCollection.remove(model);
+        previousCollection && previousCollection.remove(model);
         collection.add(model);
       }
     });
