@@ -33,7 +33,7 @@ var FiltersToolbar = React.createClass({
         <div className="col-sm-10">
         <span className="velocity">
           <i className="glyphicon glyphicon-dashboard"></i>
-          <p>{Math.round(this.props.velocity)}</p>
+          <p>{this.props.velocity}</p>
         </span>
         {_.map(this.props.activeFilters, function(filter, i) {
           return (
@@ -48,6 +48,7 @@ var FiltersToolbar = React.createClass({
         }, this)}
         </div>
         <FiltersMenu
+          user={this.props.user}
           updateFilters={this.updateFilters}
           allFilters={this.props.allFilters}
           members={this.props.members}

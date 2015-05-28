@@ -16,8 +16,10 @@ const EMPTY_CHUNK = {
   items: []
 };
 
-function getColumnState(items=[]) {
-  return {
+const DATE_FORMAT = 'MMMM D';
+
+function getColumnState(items=[], previousState={}) {
+  return _.extend({
     items,
     isLoading: false,
     hideLoadMore: false,
@@ -25,18 +27,22 @@ function getColumnState(items=[]) {
     sortDirection: 'desc',
     offset: 0,
     limit: 0
-  }
+  }, previousState);
 }
 
 var ItemColumn = React.createClass({
-
   propTypes: {
     status: React.PropTypes.string.isRequired,
     product: React.PropTypes.object.isRequired
   },
 
   getInitialState() {
-    return getColumnState();
+    let previousState = {};
+    let previousSortField = window.localStorage.getItem(`itemColumn-${this.props.status}-sortField`);
+    if (previousSortField) {
+      previousState.sortField = previousSortField;
+    }
+    return getColumnState([], previousState);
   },
 
   _onChange() {
@@ -49,14 +55,19 @@ var ItemColumn = React.createClass({
     this.setState(state);
   },
 
-  setSortCriteria(field=this.state.sortField, direction=this.state.sortDirection) {
-    let items = ProductStore.getItemsCollection(this.props.product.id, this.props.status);
+  setSortCriteria(field=this.state.sortField, direction=this.state.sortDirection, status=this.props.status) {
+    let items = ProductStore.getItemsCollection(this.props.product.id, status);
     if (!items) {
       return;
     }
 
     this.setState({ isLoading: true });
-    ProductActions.changeSortCriteria(items, field, direction);
+    let options = {
+      field,
+      direction,
+      status
+    };
+    ProductActions.changeSortCriteria(items, options);
   },
 
   getItems(product, options={ hideLoader: false }) {
@@ -147,17 +158,6 @@ var ItemColumn = React.createClass({
     return chunks;
   },
 
-  calculateSummary() {
-    let points = _.reduce(this.state.items, function(total, item) {
-      total += ScoreMap[item.score];
-      return total;
-    }, 0);
-    return {
-      points,
-      startDate: moment().startOf('isoweek').format('D MMM')
-    }
-  },
-
   renderLoadMore() {
     var loadMore = <button className="load-more" onClick={this.loadMoreItems}>Load More</button>;
 
@@ -182,26 +182,15 @@ var ItemColumn = React.createClass({
   },
 
   renderItemCards() {
-    let showSummary = this.props.status === 'in-progress' && this.state.sortField === 'priority';
     let itemCards = _.map(this.state.items, this.renderItemCard);
-    if (showSummary) {
-      let props = this.calculateSummary();
-      return (
-        <div>
-          <ColumnSummary {...props} />
-          {itemCards}
-        </div>
-      );
-    } else {
-      return (<div>{itemCards}</div>);
-    }
+    return (<div>{itemCards}</div>);
   },
 
   renderSprints() {
     let rawSprints = this.chunkItems();
     return _.map(rawSprints, (sprint, i) => {
       // Start the groups in the backlog with the next week
-      let startDate = moment().startOf('isoweek').add(7 * (i + 1), 'days').format('D MMM');
+      let startDate = moment().startOf('isoweek').add(7 * (i + 1), 'days').format(DATE_FORMAT);
       return (
         <Sprint
           key={`item-group-${i}`}
@@ -217,7 +206,6 @@ var ItemColumn = React.createClass({
   },
 
   render() {
-
     let classes = {
       column: true,
       [this.props.status]: true

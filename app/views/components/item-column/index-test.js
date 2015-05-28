@@ -125,24 +125,6 @@ describe('Item Column', function() {
   });
 
   describe('renderSprints', function() {
-    context('in-progress', function() {
-      beforeEach(function() {
-        this.props.status = 'in-progress';
-        this.component = renderComponent(this.props, this);
-      });
-
-      it('shows the item summary', function() {
-        this.component.refs.stub.setState({
-          sortField: 'priority',
-          isLoading: false
-        });
-        let itemSummary = TestUtils.findRenderedDOMComponentWithClass(
-          this.component.refs.stub,
-          'item__summary'
-        );
-        assert.isDefined(itemSummary);
-      });
-    });
 
     context('not in-progress', function() {
       beforeEach(function() {
