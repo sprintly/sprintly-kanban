@@ -79,18 +79,19 @@
     }
   }
 }
-
-.column__sort-options {
+.column > header {
   float: left;
   width: 100%;
-  padding-bottom: 0.5em;
-  text-align: right;
   .opacity(0.5);
 
   &:hover {
     .opacity(1);
   }
+}
 
+.column__sort-options {
+  float: left;
+  padding-bottom: 0.5em;
   .reverse-sort {
     padding: 0;
     background: transparent;
@@ -107,7 +108,11 @@
     top: 4px;
     font-size: 12px;
   }
+}
 
+.column__summary {
+  float: right;
+  display: none; // backing data not yet implemented
 }
 
 .load-more {

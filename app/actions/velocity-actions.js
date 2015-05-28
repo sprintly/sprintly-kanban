@@ -16,7 +16,7 @@ var internals = {
   },
 
   calculateAverageVelocity(velocity={}) {
-    velocity.average = velocity.average * DEFAULT_ITERATION_LENGTH;
+    velocity.average = Math.round(velocity.average * DEFAULT_ITERATION_LENGTH);
 
     if (velocity.average < 1) {
       velocity.average = DEFAULT_VELOCITY;
