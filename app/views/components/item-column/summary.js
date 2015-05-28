@@ -4,10 +4,9 @@ import Bootstrap from 'react-bootstrap';
 let Summary = React.createClass({
   render() {
     return (
-      <div className="item__summary">
-        <Bootstrap.Panel>
-          {this.props.startDate} ({this.props.points} points)
-        </Bootstrap.Panel>
+      <div className="panel-heading">
+        {this.props.startDate}
+        <Bootstrap.Label>{this.props.points} points</Bootstrap.Label>
       </div>
     );
   }

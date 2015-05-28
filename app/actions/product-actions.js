@@ -3,6 +3,12 @@ import AppDispatcher from '../dispatchers/app-dispatcher';
 import ProductConstants from '../constants/product-constants';
 import { products, user } from '../lib/sprintly-client';
 
+const STATUS_MAPPINGS = {
+  last_modified: 'recent',
+  created_at: 'newest',
+  priority: 'priority'
+};
+
 function mergeFilters(configModel, filters) {
   var defaultFilters = configModel.toJSON();
   var updatedFilters = _.extend(defaultFilters, filters);
@@ -21,13 +27,15 @@ function mergeFilters(configModel, filters) {
   return updatedFilters;
 }
 
-function getItemsCollection(product, status, filters) {
-  var items = product.getItemsByStatus(status);
-  // Set "Recent" as the default sort
+function getItemsCollection(product, options) {
+  var items = product.getItemsByStatus(options.status);
+
   if (items.config.get('order_by')) {
-    items.config.set('order_by', 'recent');
+    // Set "Recent" as the default sort
+    let sort = STATUS_MAPPINGS[options.sortField] || 'recent';
+    items.config.set('order_by', sort);
   }
-  var updatedFilters = mergeFilters(items.config, filters);
+  var updatedFilters = mergeFilters(items.config, options.filters);
 
   // Set additional defaults for fetching products
   updatedFilters.limit = 30;
@@ -35,7 +43,7 @@ function getItemsCollection(product, status, filters) {
   updatedFilters.expand_sub_items = true;
   updatedFilters.offset = 0;
 
-  if(status === 'accepted') {
+  if(options.status === 'accepted') {
     updatedFilters.limit = 5;
   }
 
@@ -91,7 +99,9 @@ var ProductActions = {
       });
   },
 
-  changeSortCriteria(itemCollection, field, direction) {
+  changeSortCriteria(itemCollection, options) {
+    let field = options.field;
+    let direction = options.direction;
     setComparator(itemCollection, field, direction);
 
     if (field === 'last_modified') {
@@ -106,6 +116,7 @@ var ProductActions = {
       order_by: field,
       offset: 0
     });
+    window.localStorage.setItem(`itemColumn-${options.status}-sortField`, field);
 
     itemCollection.fetch({ reset: true, silent: true }).then(function() {
       AppDispatcher.dispatch({
@@ -116,7 +127,7 @@ var ProductActions = {
 
   getItemsForProduct(product, options) {
     let productModel = products.get(product);
-    let itemsCollection = getItemsCollection(productModel, options.status, options.filters);
+    let itemsCollection = getItemsCollection(productModel, options);
 
     setComparator(itemsCollection, options.sortField, options.sortDirection);
 

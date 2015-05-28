@@ -29,15 +29,19 @@ let Sprint = React.createClass({
 
   render() {
     let itemCards = _.map(this.props.items, this.renderItemCard);
-    let chevronClass = 'sprint__chevron glyphicon glyphicon-chevron-';
-    chevronClass += this.state.expanded ? 'up' : 'down';
+    let chevronClass = `sprint__chevron glyphicon glyphicon-menu-${this.state.expanded ? 'up' : 'down'}`;
     return (
-      <div className="sprint">
-        <Bootstrap.Panel onClick={this.toggleItemCards}>
-          {this.props.startDate} ({this.props.points} points)
-          <span className={chevronClass}></span>
-        </Bootstrap.Panel>
-        { this.state.expanded ? <div>{itemCards}</div> : <div></div> }
+      <div className={`sprint sprint-${this.state.expanded ? 'open' : 'closed'}`}>
+        <div className="panel panel-default">
+          <div className="panel-heading" onClick={this.toggleItemCards}>
+            {this.props.startDate}
+            <Bootstrap.Label>{this.props.points} points</Bootstrap.Label>
+            <span className={chevronClass}></span>
+          </div>
+          <div className="panel-body">
+            {this.state.expanded ? <div>{itemCards}</div> : '' }
+          </div>
+        </div>
       </div>
     );
   }

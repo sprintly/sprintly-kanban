@@ -107,6 +107,10 @@
   }
 }
 
+.sprint .item-card.parent {
+  box-shadow: 4px 5px 0px #A3A3A3;
+}
+
 .item-card__header {
   padding: 0 4px;
 }
@@ -150,6 +154,10 @@
   color: @medium-grey;
   font-size: 12px;
   line-height: 28px;
+}
+
+.clickable-avatar {
+  cursor: pointer;
 }
 
 .item-card__owner-avatar {
@@ -311,5 +319,36 @@
     label {
       word-wrap: break-word;
     }
+  }
+}
+
+.popover.bottom {
+  margin-top: 17px;
+  padding: 0;
+  border: 1px solid #d3d3d3;
+  width: 165px;
+}
+
+.popover-content {
+  padding: 0;
+}
+
+.item_card__member-dropdown {
+  .Select-menu {
+    max-height: 110px;
+  }
+
+  .Select-menu-outer {
+    border: none;
+    -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  }
+
+  .Select-control {
+    border: none;
+  }
+
+  .Select-clear {
+    padding: 5px 10px;
   }
 }

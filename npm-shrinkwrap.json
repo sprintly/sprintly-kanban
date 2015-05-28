@@ -7136,10 +7136,20 @@
       "from": "react-loading@0.0.1",
       "resolved": "http://registry.npmjs.org/react-loading/-/react-loading-0.0.1.tgz"
     },
+    "react-localstorage": {
+      "version": "0.2.2",
+      "from": "react-localstorage@0.2.2",
+      "resolved": "http://registry.npmjs.org/react-localstorage/-/react-localstorage-0.2.2.tgz"
+    },
     "react-mentions": {
       "version": "0.1.4",
       "from": "react-mentions@>=0.1.2 <0.2.0",
       "resolved": "http://registry.npmjs.org/react-mentions/-/react-mentions-0.1.4.tgz"
+    },
+    "react-onclickoutside": {
+      "version": "0.2.4",
+      "from": "react-onclickoutside@>=0.2.4 <0.3.0",
+      "resolved": "http://registry.npmjs.org/react-onclickoutside/-/react-onclickoutside-0.2.4.tgz"
     },
     "react-router": {
       "version": "0.11.6",
