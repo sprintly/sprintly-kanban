@@ -16,6 +16,8 @@ const EMPTY_CHUNK = {
   items: []
 };
 
+const DATE_FORMAT = 'MMMM D';
+
 function getColumnState(items=[], previousState={}) {
   return _.extend({
     items,
@@ -156,17 +158,6 @@ var ItemColumn = React.createClass({
     return chunks;
   },
 
-  calculateSummary() {
-    let points = _.reduce(this.state.items, function(total, item) {
-      total += ScoreMap[item.score];
-      return total;
-    }, 0);
-    return {
-      points,
-      startDate: moment().startOf('isoweek').format('D MMM')
-    }
-  },
-
   renderLoadMore() {
     var loadMore = <button className="load-more" onClick={this.loadMoreItems}>Load More</button>;
 
@@ -191,26 +182,15 @@ var ItemColumn = React.createClass({
   },
 
   renderItemCards() {
-    let showSummary = this.props.status === 'in-progress' && this.state.sortField === 'priority';
     let itemCards = _.map(this.state.items, this.renderItemCard);
-    if (showSummary) {
-      let props = this.calculateSummary();
-      return (
-        <div>
-          <ColumnSummary {...props} />
-          {itemCards}
-        </div>
-      );
-    } else {
-      return (<div>{itemCards}</div>);
-    }
+    return (<div>{itemCards}</div>);
   },
 
   renderSprints() {
     let rawSprints = this.chunkItems();
     return _.map(rawSprints, (sprint, i) => {
       // Start the groups in the backlog with the next week
-      let startDate = moment().startOf('isoweek').add(7 * (i + 1), 'days').format('D MMM');
+      let startDate = moment().startOf('isoweek').add(7 * (i + 1), 'days').format(DATE_FORMAT);
       return (
         <Sprint
           key={`item-group-${i}`}
