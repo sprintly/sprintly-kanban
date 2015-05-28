@@ -2,20 +2,23 @@ import _ from 'lodash';
 import React from 'react/addons';
 import Bootstrap from 'react-bootstrap';
 import ItemCard from '../item-card';
+import onClickOutside from 'react-onclickoutside';
 
 let Sprint = React.createClass({
+  mixins: [ onClickOutside ],
+
   getInitialState() {
     return {
       expanded: this.props.startOpen,
-      showingTeamStrengthPanel: false,
+      showingTeamStrengthInput: false,
       teamStrength: 1
     };
   },
 
-  toggleTeamStrengthPanel(e) {
+  toggleTeamStrengthInput(e) {
     e.stopPropagation();
     this.setState({
-      showingTeamStrengthPanel: !this.state.showingTeamStrengthPanel
+      showingTeamStrengthInput: !this.state.showingTeamStrengthInput
     },
     function() {
       this.refs.team_strength_input.getDOMNode().focus();
@@ -27,7 +30,7 @@ let Sprint = React.createClass({
     let newStrength = this.refs.team_strength_input.getDOMNode().value / 100;
     this.setState({
       teamStrength: newStrength,
-      showingTeamStrengthPanel: false
+      showingTeamStrengthInput: false
     }, () => {
       this.props.onChangeTeamStrength(this)
     });
@@ -35,6 +38,16 @@ let Sprint = React.createClass({
 
   toggleItemCards() {
     this.setState({ expanded: !this.state.expanded });
+  },
+
+  handleClickOutside() {
+    this.setState({ showingTeamStrengthInput: false });
+  },
+
+  escapeTeamStrengthInput(e) {
+    if (e.keyCode === 27) { // ESC
+      this.setState({ showingTeamStrengthInput: false });
+    }
   },
 
   renderItemCard(item, index) {
@@ -50,13 +63,13 @@ let Sprint = React.createClass({
     return card;
   },
 
-  renderTeamStrengthPanel() {
-    if (!this.state.showingTeamStrengthPanel) {
+  renderTeamStrengthInput() {
+    if (!this.state.showingTeamStrengthInput) {
       return '';
     } else {
       return (
         <form onSubmit={this.adjustTeamStrength} className="team__strength">
-          <input type="text" ref="team_strength_input" />
+          <input type="text" ref="team_strength_input" onKeyDown={this.escapeTeamStrengthInput} />
         </form>
       );
     }
@@ -67,16 +80,15 @@ let Sprint = React.createClass({
     let teamStrength = `${Math.round(this.state.teamStrength * 100, 2)}%`;
     let chevronClass = 'sprint__chevron glyphicon glyphicon-chevron-';
     chevronClass += this.state.expanded ? 'up' : 'down';
+    let teamStrengthDisplay = this.state.showingTeamStrengthInput ? '' :
+      <span className="team__strength" onClick={this.toggleTeamStrengthInput}>{teamStrength}</span>
     return (
       <div className="sprint">
-        <Bootstrap.Panel onClick={this.toggleItemCards}>
+        <Bootstrap.Panel>
           {this.props.startDate} ({this.props.points} points)
-          {this.state.showingTeamStrengthPanel ?
-            '' :
-            <span className="team__strength" onClick={this.toggleTeamStrengthPanel}>{teamStrength}</span>
-          }
-          {this.renderTeamStrengthPanel()}
-          <span className={chevronClass}></span>
+          TS: {teamStrengthDisplay}
+          {this.renderTeamStrengthInput()}
+          <span onClick={this.toggleItemCards} className={chevronClass}></span>
         </Bootstrap.Panel>
         { this.state.expanded ? <div>{itemCards}</div> : <div></div> }
       </div>

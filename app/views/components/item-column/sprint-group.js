@@ -29,25 +29,27 @@ let SprintGroup = React.createClass({
   chunkItems() {
     let chunks = [];
     let currentChunk = _.cloneDeep(EMPTY_CHUNK);
-    _.each(this.props.items, (item, i) => {
+    let i = 0;
+    let max = this.props.items.length;
+    while (i < max) {
       let capacity = this._getCapacityForSprint(chunks.length);
-
-      if (capacity !== 0) {
+      if (capacity === 0) {
         chunks.push(currentChunk);
         currentChunk = _.cloneDeep(EMPTY_CHUNK);
-        capacity = this.props.velocity.average;
-      }
+      } else {
+        let item = this.props.items[i];
+        let itemScore = ScoreMap[item.score];
+        currentChunk.points += itemScore;
+        currentChunk.items.push(item);
 
-      let itemScore = ScoreMap[item.score];
-      currentChunk.points += itemScore;
-      currentChunk.items.push(item);
-
-      if (this._shouldPushChunk(currentChunk, capacity, i)) {
-        // Add the current chunk to the collection and start a new one
-        chunks.push(currentChunk);
-        currentChunk = _.cloneDeep(EMPTY_CHUNK);
+        if (this._shouldPushChunk(currentChunk, capacity, i)) {
+          // Add the current chunk to the collection and start a new one
+          chunks.push(currentChunk);
+          currentChunk = _.cloneDeep(EMPTY_CHUNK);
+        }
+        i += 1;
       }
-    });
+    }
     return chunks;
   },
 
@@ -59,13 +61,13 @@ let SprintGroup = React.createClass({
   // go over the predicted velocity instead. This prevents things like a 3 or 5 point sprint
   // when followed by an 8 point sprint.
   _shouldPushChunk(currentChunk, capacity, i) {
+    let isLastItem = this.props.items.length === i + 1;
+
     let nextItem = this._getNextChunk(i);
     let nextItemScore = ScoreMap[nextItem.score];
     let scoreWithNext = currentChunk.points + nextItemScore;
     let nextScoreIsOverAverage = scoreWithNext >= capacity;
     let underageIsGreaterThanOverage = capacity - currentChunk.points > scoreWithNext - capacity;
-    let isLastItem = this.props.items.length === i + 1;
-    let nextSprintShouldBeEmpty = nextCapacity === 0;
     return (isLastItem || (nextScoreIsOverAverage && !underageIsGreaterThanOverage));
   },
 
