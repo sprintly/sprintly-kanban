@@ -140,6 +140,7 @@ var internals = ProductStore.internals = {
         if (collection) {
           collection.add(model);
         }
+        internals.updateCounts(product.id, status, previousStatus);
         ProductStore.emitChange();
       // }
     });
@@ -195,6 +196,12 @@ var internals = ProductStore.internals = {
     }
 
     return attrs
+  },
+
+  updateCounts(productId, newStatus, previousStatus) {
+    itemCounts[productId][newStatus] += 1;
+    itemCounts[productId][previousStatus] -= 1;
+    ProductStore.emitChange();
   },
 
   matchesFilter(item, filter) {
