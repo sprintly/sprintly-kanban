@@ -16,8 +16,8 @@ const EMPTY_CHUNK = {
   items: []
 };
 
-function getColumnState(items=[]) {
-  return {
+function getColumnState(items=[], previousState={}) {
+  return _.extend({
     items,
     isLoading: false,
     hideLoadMore: false,
@@ -25,18 +25,22 @@ function getColumnState(items=[]) {
     sortDirection: 'desc',
     offset: 0,
     limit: 0
-  }
+  }, previousState);
 }
 
 var ItemColumn = React.createClass({
-
   propTypes: {
     status: React.PropTypes.string.isRequired,
     product: React.PropTypes.object.isRequired
   },
 
   getInitialState() {
-    return getColumnState();
+    let previousState = {};
+    let previousSortField = window.localStorage.getItem(`itemColumn-${this.props.status}-sortField`);
+    if (previousSortField) {
+      previousState.sortField = previousSortField;
+    }
+    return getColumnState([], previousState);
   },
 
   _onChange() {
@@ -49,14 +53,19 @@ var ItemColumn = React.createClass({
     this.setState(state);
   },
 
-  setSortCriteria(field=this.state.sortField, direction=this.state.sortDirection) {
-    let items = ProductStore.getItemsCollection(this.props.product.id, this.props.status);
+  setSortCriteria(field=this.state.sortField, direction=this.state.sortDirection, status=this.props.status) {
+    let items = ProductStore.getItemsCollection(this.props.product.id, status);
     if (!items) {
       return;
     }
 
     this.setState({ isLoading: true });
-    ProductActions.changeSortCriteria(items, field, direction);
+    let options = {
+      field,
+      direction,
+      status
+    };
+    ProductActions.changeSortCriteria(items, options);
   },
 
   getItems(product, options={ hideLoader: false }) {
@@ -217,7 +226,6 @@ var ItemColumn = React.createClass({
   },
 
   render() {
-
     let classes = {
       column: true,
       [this.props.status]: true
