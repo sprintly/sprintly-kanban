@@ -76,6 +76,7 @@ let Sprint = React.createClass({
         placement='top'
         positionLeft={-22}
         positionTop={-7}
+        onClick={(e) => e.stopPropagation()}
         className="team__strength__popover">
         <form onSubmit={this.adjustTeamStrength} className="team__strength__form form-inline">
           <div className="form-group">
