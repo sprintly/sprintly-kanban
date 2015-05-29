@@ -1,8 +1,8 @@
 import _ from 'lodash';
 import React from 'react/addons';
-import Bootstrap from 'react-bootstrap';
 import ItemCard from '../item-card';
 import onClickOutside from 'react-onclickoutside';
+import {Label, Popover} from 'react-bootstrap'
 
 let Sprint = React.createClass({
   mixins: [ onClickOutside ],
@@ -10,15 +10,14 @@ let Sprint = React.createClass({
   getInitialState() {
     return {
       expanded: this.props.startOpen,
-      showingTeamStrengthInput: false,
       teamStrength: 1
     };
   },
 
-  toggleTeamStrengthInput(e) {
+  toggleTeamStrengthPopover(e) {
     e.stopPropagation();
     this.setState({
-      showingTeamStrengthInput: !this.state.showingTeamStrengthInput
+      showingTeamStrengthPopover: !this.state.showingTeamStrengthPopover
     },
     function() {
       this.refs.team_strength_input.getDOMNode().focus();
@@ -27,10 +26,12 @@ let Sprint = React.createClass({
 
   adjustTeamStrength(e) {
     e.preventDefault();
+    e.stopPropagation();
+
     let newStrength = this.refs.team_strength_input.getDOMNode().value / 100;
     this.setState({
       teamStrength: newStrength,
-      showingTeamStrengthInput: false
+      showingTeamStrengthPopover: false
     }, () => {
       this.props.onChangeTeamStrength(this)
     });
@@ -41,13 +42,19 @@ let Sprint = React.createClass({
   },
 
   handleClickOutside() {
-    this.setState({ showingTeamStrengthInput: false });
+    this.setState({ showingTeamStrengthPopover: false });
   },
 
-  escapeTeamStrengthInput(e) {
+  escapeTeamStrengthPopover(e) {
     if (e.keyCode === 27) { // ESC
-      this.setState({ showingTeamStrengthInput: false });
+      this.setState({ showingTeamStrengthPopover: false });
     }
+  },
+
+  placeCursor() {
+    // http://stackoverflow.com/questions/511088/use-javascript-to-place-cursor-at-end-of-text-in-text-input-element
+    // Moves cursor to the end of the input
+    this.refs.team_strength_input.getDOMNode().value = this.refs.team_strength_input.getDOMNode().value;
   },
 
   renderItemCard(item, index) {
@@ -63,36 +70,45 @@ let Sprint = React.createClass({
     return card;
   },
 
-  renderTeamStrengthInput() {
-    if (!this.state.showingTeamStrengthInput) {
-      return '';
-    } else {
-      return (
-        <form onSubmit={this.adjustTeamStrength} className="team__strength">
-          <input
-            ref="team_strength_input"
-            onKeyDown={this.escapeTeamStrengthInput}
-            defaultValue={Math.round(this.state.teamStrength * 100, 2)}
-          />
+  renderTeamStrengthPopover() {
+    return (
+      <Popover
+        placement='top'
+        positionLeft={-22}
+        positionTop={-7}
+        className="team__strength__popover">
+        <form onSubmit={this.adjustTeamStrength} className="team__strength__form form-inline">
+          <div className="form-group">
+            <label for="team-strength-input">Team strength:</label>
+            <input
+              ref="team_strength_input"
+              onKeyDown={this.escapeTeamStrengthPopover}
+              onFocus={this.placeCursor}
+              defaultValue={Math.round(this.state.teamStrength * 100, 2)}
+              id="team-strength-input"
+              className="form-control" />
+            <button
+              className="btn btn-default btn-sm form-control"
+              onClick={this.adjustTeamStrength}>
+              Adjust
+            </button>
+          </div>
         </form>
-      );
-    }
+      </Popover>
+    );
   },
 
   render() {
     let itemCards = _.map(this.props.items, this.renderItemCard);
     let teamStrength = `${Math.round(this.state.teamStrength * 100, 2)}%`;
     let chevronClass = `sprint__chevron glyphicon glyphicon-menu-${this.state.expanded ? 'up' : 'down'}`;
-    let teamStrengthDisplay = this.state.showingTeamStrengthInput ? '' :
-      <span className="team__strength" onClick={this.toggleTeamStrengthInput}>{teamStrength}</span>
     return (
       <div className={`sprint sprint-${this.state.expanded ? 'open' : 'closed'}`}>
         <div className="panel panel-default">
           <div className="panel-heading" onClick={this.toggleItemCards}>
             {this.props.startDate}
-            <Bootstrap.Label>{this.props.points} points</Bootstrap.Label>
-            <span className="team__strength__text">(TS: {teamStrengthDisplay})</span>
-            {this.renderTeamStrengthInput()}
+            <Label onClick={this.toggleTeamStrengthPopover}>{this.props.points} points</Label>
+            {this.state.showingTeamStrengthPopover ? this.renderTeamStrengthPopover() : ''}
             <span className={chevronClass}></span>
           </div>
           <div className="panel-body">
