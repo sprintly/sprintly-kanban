@@ -105,10 +105,11 @@ var ProductStore = module.exports = _.assign({}, EventEmitter.prototype, {
   },
 
   refreshColumns() {
-    _.forEach(columnCollections, function(column) {
+    Promise.all(_.map(columnCollections, function(column) {
       column.fetch();
+    })).then(function() {
+      ProductStore.emitChange();
     });
-    ProductStore.emitChange();
   }
 });
 
@@ -260,10 +261,11 @@ var internals = ProductStore.internals = {
       }
     });
 
+    var refresh = _.debounce(ProductStore.refreshColumns, 500);
     var pusherStates = ['connecting', 'connected', 'unavailable', 'failed', 'disconnected']
     _.forEach(pusherStates, function(state) {
       socket.connection.bind(state, function() {
-        _.debounce(ProductStore.refreshColumns, 500);
+        refresh();
       });
     });
   },
