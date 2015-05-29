@@ -38,11 +38,10 @@ let ItemActions = {
 
     if (destroyed) {
       return destroyed.then(function() {
-        console.log("Great Success!")
         AppDispatcher.dispatch({
         actionType: 'DELETE_ITEM',
         product,
-        item_data
+        itemData
         });
       });
     } else {
@@ -50,7 +49,7 @@ let ItemActions = {
         AppDispatcher.dispatch({
           actionType: 'DELETE_ITEM_ERROR',
           product,
-          item_data
+          itemData
         });
       });
     }

@@ -328,7 +328,7 @@ ProductStore.dispatchToken = AppDispatcher.register(function(action) {
       break;
 
     case 'DELETE_ITEM':
-      internals.deleteItem(action.product, action.item_data);
+      internals.deleteItem(action.product, action.itemData);
       ProductStore.emitChange();
       break;
 
