@@ -28,6 +28,10 @@
     margin-left: 1em;
     color: #000;
     background: #f4f4f4;
+
+    &:hover {
+      cursor: pointer;
+    }
   }
 
   .panel-body {
@@ -43,5 +47,36 @@
     float: right;
     top: 5px;
     font-size: 1rem;
+  }
+}
+
+.team__strength__form {
+  margin-left: 5px;
+  display: inline;
+  max-width: 30px;
+
+  label {
+    margin-right: 10px;
+  }
+
+  input {
+    background-color: inherit;
+    max-width: 60px;
+    margin-left: 10px;
+    margin-right: 5px;
+  }
+}
+
+.team__strength__popover {
+  padding: 15px;
+
+  max-width: 325px;
+
+  .popover-content {
+    max-width: 325px;
+  }
+
+  label {
+    color: black;
   }
 }
