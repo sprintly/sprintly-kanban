@@ -173,7 +173,8 @@ var ProductActions = {
       }
     }
 
-    // save request errors with invalid close_reason if item is in done column
+    // Save request errors with invalid close_reason if item is in done column.
+    // Remove if api is changed to convert close_reason string to int.
     if (_.has(payload, 'score') || _.has(payload, 'tags') && item.get('status') == 'completed') {
       item.unset('close_reason', { silent: true });
     }
