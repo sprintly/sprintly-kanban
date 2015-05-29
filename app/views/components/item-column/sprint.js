@@ -79,14 +79,16 @@ let Sprint = React.createClass({
         className="team__strength__popover">
         <form onSubmit={this.adjustTeamStrength} className="team__strength__form form-inline">
           <div className="form-group">
-            <label for="team-strength-input">Team strength:</label>
-            <input
-              ref="team_strength_input"
-              onKeyDown={this.escapeTeamStrengthPopover}
-              onFocus={this.placeCursor}
-              defaultValue={Math.round(this.state.teamStrength * 100, 2)}
-              id="team-strength-input"
-              className="form-control" />
+            <label for="team-strength-input">Team strength:
+              <input
+                ref="team_strength_input"
+                onKeyDown={this.escapeTeamStrengthPopover}
+                onFocus={this.placeCursor}
+                defaultValue={Math.round(this.state.teamStrength * 100, 2)}
+                id="team-strength-input"
+                className="form-control" />
+              %
+            </label>
             <button
               className="btn btn-default btn-sm form-control"
               onClick={this.adjustTeamStrength}>
