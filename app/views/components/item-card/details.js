@@ -49,8 +49,7 @@ var ItemCardDetails = React.createClass({
   },
 
   editTags(modelIds, tags, tag, action) {
-    let productId = modelIds[0];
-    let itemNumber = modelIds[1];
+    let [productId, itemNumber] = modelIds;
     if (action == 'add') {
       tags.push(tag);
     }
@@ -58,8 +57,16 @@ var ItemCardDetails = React.createClass({
       _.pull(tags, tag);
     }
     tags = _.compact(tags).join(',')
-    ProductActions.updateItem(productId, itemNumber, {tags: tags});
+    ProductActions.updateItem(productId, itemNumber, {tags});
     this.refs.tagEditor.setState({ showMenu: false })
+  },
+
+  renderCreatedBy(item) {
+    return(
+      <a href="javascript: void 0" onClick={this.filterByMember}>
+        {item.created_by.first_name} {item.created_by.last_name.slice(0,1)}
+      </a>
+    )
   },
 
   renderMoveControls() {
@@ -88,15 +95,15 @@ var ItemCardDetails = React.createClass({
   },
 
   render() {
-    let item = this.props.item
-    let tags = typeof item.tags === 'string' && item.tags.length ?
-      item.tags.split(',') : item.tags || [];
+    let item = this.props.item;
+    let hasTags = _.isString(item.tags) && !_.isEmpty(item.tags);
+    let tags = hasTags ? item.tags.split(',') : item.tags || [];
     let statusOptions = _.omit(STATUSES, item.status);
 
     return (
       <div className="item-card__details">
         <div className="col-sm-6 item-card__summary">
-          Created by <a href="javascript: void 0" onClick={this.filterByMember}>{item.created_by.first_name} {item.created_by.last_name.slice(0,1)}</a> {moment(item.created_at).fromNow()} ago.
+          Created by {this.renderCreatedBy(item)} {moment(item.created_at).fromNow()}.
         </div>
         <div className="col-sm-6 item-card__extra-controls">
           {this.renderMoveControls()}
