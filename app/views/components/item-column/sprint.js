@@ -1,13 +1,60 @@
 import _ from 'lodash';
 import React from 'react/addons';
-import Bootstrap from 'react-bootstrap';
 import ItemCard from '../item-card';
+import onClickOutside from 'react-onclickoutside';
+import {Label, Popover} from 'react-bootstrap'
 
 let Sprint = React.createClass({
+  mixins: [ onClickOutside ],
+
   getInitialState() {
     return {
-      expanded: this.props.startOpen
+      expanded: this.props.startOpen,
+      teamStrength: 1
     };
+  },
+
+  toggleTeamStrengthPopover(e) {
+    e.stopPropagation();
+    this.setState({
+      showingTeamStrengthPopover: !this.state.showingTeamStrengthPopover
+    },
+    function() {
+      this.refs.team_strength_input.getDOMNode().focus();
+    });
+  },
+
+  adjustTeamStrength(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    let newStrength = this.refs.team_strength_input.getDOMNode().value / 100;
+    this.setState({
+      teamStrength: newStrength,
+      showingTeamStrengthPopover: false
+    }, () => {
+      this.props.onChangeTeamStrength(this)
+    });
+  },
+
+  toggleItemCards() {
+    this.setState({ expanded: !this.state.expanded });
+  },
+
+  handleClickOutside() {
+    this.setState({ showingTeamStrengthPopover: false });
+  },
+
+  escapeTeamStrengthPopover(e) {
+    if (e.keyCode === 27) { // ESC
+      this.setState({ showingTeamStrengthPopover: false });
+    }
+  },
+
+  placeCursor() {
+    // http://stackoverflow.com/questions/511088/use-javascript-to-place-cursor-at-end-of-text-in-text-input-element
+    // Moves cursor to the end of the input
+    this.refs.team_strength_input.getDOMNode().value = this.refs.team_strength_input.getDOMNode().value;
   },
 
   renderItemCard(item, index) {
@@ -23,21 +70,54 @@ let Sprint = React.createClass({
     return card;
   },
 
-  toggleItemCards() {
-    this.setState({expanded: !this.state.expanded});
+  renderTeamStrengthPopover() {
+    return (
+      <Popover
+        placement='top'
+        positionLeft={-22}
+        positionTop={-7}
+        onClick={(e) => e.stopPropagation()}
+        className="team__strength__popover">
+        <form onSubmit={this.adjustTeamStrength} className="team__strength__form form-inline">
+          <div className="form-group">
+            <label for="team-strength-input">Team strength:
+              <input
+                ref="team_strength_input"
+                onKeyDown={this.escapeTeamStrengthPopover}
+                onFocus={this.placeCursor}
+                defaultValue={Math.round(this.state.teamStrength * 100, 2)}
+                id="team-strength-input"
+                className="form-control" />
+              %
+            </label>
+            <button
+              className="btn btn-default btn-sm form-control"
+              onClick={this.adjustTeamStrength}>
+              Adjust
+            </button>
+          </div>
+        </form>
+      </Popover>
+    );
   },
 
   render() {
     let itemCards = _.map(this.props.items, this.renderItemCard);
-    let chevronClass = 'sprint__chevron glyphicon glyphicon-chevron-';
-    chevronClass += this.state.expanded ? 'up' : 'down';
+    let teamStrength = `${Math.round(this.state.teamStrength * 100, 2)}%`;
+    let chevronClass = `sprint__chevron glyphicon glyphicon-menu-${this.state.expanded ? 'up' : 'down'}`;
     return (
-      <div className="sprint">
-        <Bootstrap.Panel onClick={this.toggleItemCards}>
-          {this.props.startDate} ({this.props.points} points)
-          <span className={chevronClass}></span>
-        </Bootstrap.Panel>
-        { this.state.expanded ? <div>{itemCards}</div> : <div></div> }
+      <div className={`sprint sprint-${this.state.expanded ? 'open' : 'closed'}`}>
+        <div className="panel panel-default">
+          <div className="panel-heading" onClick={this.toggleItemCards}>
+            {this.props.startDate}
+            <Label onClick={this.toggleTeamStrengthPopover}>{this.props.points} points</Label>
+            {this.state.showingTeamStrengthPopover ? this.renderTeamStrengthPopover() : ''}
+            <span className={chevronClass}></span>
+          </div>
+          <div className="panel-body">
+            {this.state.expanded ? <div>{itemCards}</div> : '' }
+          </div>
+        </div>
       </div>
     );
   }

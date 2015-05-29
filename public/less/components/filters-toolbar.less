@@ -5,7 +5,7 @@
   background: rgba(51, 51, 51, 0.8);
   border-top: 1px solid black;
   width: 100%;
-  z-index: 200;
+  z-index: 301;
   padding: 6px 0;
 }
 
@@ -13,18 +13,33 @@
   color: #ccc;
   position: relative;
   float: left;
-  margin-right: 20px;
+  margin-right: 16px;
+  line-height: 28px;
+
+  &:hover {
+    cursor: pointer;
+  }
 
   i {
     margin-right: 4px;
-    font-size: 18px;
   }
 
-  p {
-    display: inline;
-    position: relative;
-    top: -1px;
-    font-size: 20px;
+  span {
+    font-size: 18px;
+    padding: 0 2px;
+  }
+}
+
+.velocity__popover {
+  padding: 15px;
+  max-width: 180px;
+}
+
+.velocity__form {
+  margin-top: 10px;
+  input {
+    max-width: 60px;
+    margin-right: 10px;
   }
 }
 
@@ -198,5 +213,18 @@
 
   li.show-form form {
     display: block;
+  }
+}
+
+.filters-menu__mine {
+  float: right;
+  margin-right: 1em;
+  margin-top: 6px;
+  color: #fff;
+  font-size: 13px;
+
+  &:hover, &:focus {
+    text-decoration: underline;
+    color: #fafafa;
   }
 }

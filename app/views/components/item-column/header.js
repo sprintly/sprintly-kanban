@@ -1,7 +1,6 @@
-var _ = require('lodash');
-var React = require('react/addons');
-var Bootstrap = require('react-bootstrap');
-
+import _ from 'lodash';
+import React from 'react/addons';
+import {SplitButton, ButtonGroup, MenuItem} from 'react-bootstrap';
 
 const SORT_OPTIONS = {
   created_at: 'Created At',
@@ -37,16 +36,23 @@ var Header = React.createClass({
     return (
       <header>
         <div className="column__sort-options">
-          <Bootstrap.SplitButton onSelect={this.onSelect} activeKey={this.props.sortField} bsSize="small" title={`Sort by: ${SORT_OPTIONS[this.props.sortField]}`} pullRight>
+          <SplitButton onSelect={this.onSelect} activeKey={this.props.sortField} bsSize="small" title={`Sort by: ${SORT_OPTIONS[this.props.sortField]}`}>
             {_.map(_.omit(SORT_OPTIONS, this.props.sortField), function(label, field) {
               return (
-                <Bootstrap.MenuItem eventKey={field} key={field}>{label}</Bootstrap.MenuItem>
+                <MenuItem eventKey={field} key={field}>{label}</MenuItem>
               );
             }, this)}
-          </Bootstrap.SplitButton>
+          </SplitButton>
           <button className="reverse-sort" disabled={this.props.sortField === 'priority'} type="button" onClick={this.onReverseClick} aria-label="Change sort direction">
             <span aria-hidden="true" className={React.addons.classSet(directionClasses)}/>
           </button>
+        </div>
+
+        <div className="column__summary">
+          <ButtonGroup>
+            <button className="btn btn-sm btn-default">42 points</button>
+            <button className="btn btn-sm btn-default">36 items</button>
+          </ButtonGroup>
         </div>
       </header>
     )
