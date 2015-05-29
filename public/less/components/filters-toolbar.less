@@ -5,7 +5,7 @@
   background: rgba(51, 51, 51, 0.8);
   border-top: 1px solid black;
   width: 100%;
-  z-index: 200;
+  z-index: 301;
   padding: 6px 0;
 }
 
@@ -16,16 +16,30 @@
   margin-right: 16px;
   line-height: 28px;
 
+  &:hover {
+    cursor: pointer;
+  }
+
   i {
     margin-right: 4px;
   }
 
-  p {
-    display: inline;
-    position: relative;
-    top: -1px;
-    font-size: 14px;
-    font-weight: bold;
+  span {
+    font-size: 18px;
+    padding: 0 2px;
+  }
+}
+
+.velocity__popover {
+  padding: 15px;
+  max-width: 180px;
+}
+
+.velocity__form {
+  margin-top: 10px;
+  input {
+    max-width: 60px;
+    margin-right: 10px;
   }
 }
 

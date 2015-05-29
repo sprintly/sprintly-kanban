@@ -2,11 +2,11 @@ import _ from 'lodash';
 import Filter from './filters-toolbar-filter';
 import FiltersMenu from './filters-menu';
 import FilterAction from '../../../actions/filter-actions';
+import VelocityComponent from './velocity-component';
 import React from 'react/addons';
 
 var FiltersToolbar = React.createClass({
-
-  getInitialState: function() {
+  getInitialState() {
     return {
       showFiltersMenu: false
     };
@@ -19,40 +19,39 @@ var FiltersToolbar = React.createClass({
     activeFilters: React.PropTypes.array.isRequired
   },
 
-  updateFilters: function(field, criteria, options) {
+  updateFilters(field, criteria, options) {
     FilterAction.update(field, criteria, options);
   },
 
-  toggleFiltersMenu: function() {
+  toggleFiltersMenu() {
     this.setState({ showFiltersMenu: !!this.state.showFiltersMenu });
   },
 
-  render: function() {
+  render() {
     return (
-      <div className="filters__toolbar container-fluid">
-        <div className="col-sm-10">
-        <span className="velocity">
-          <i className="glyphicon glyphicon-dashboard"></i>
-          <p>{this.props.velocity}</p>
-        </span>
-        {_.map(this.props.activeFilters, function(filter, i) {
-          return (
-            <Filter
-              key={i}
-              user={this.props.user}
-              members={this.props.members}
-              updateFilters={this.updateFilters}
-              {...filter}
-            />
-          )
-        }, this)}
+      <div>
+        <div className="filters__toolbar container-fluid">
+          <div className="col-sm-10">
+            <VelocityComponent productId={this.props.productId} velocity={this.props.velocity} />
+            {_.map(this.props.activeFilters, function(filter, i) {
+              return (
+                <Filter
+                  key={i}
+                  user={this.props.user}
+                  members={this.props.members}
+                  updateFilters={this.updateFilters}
+                  {...filter}
+                />
+                )
+            }, this)}
+          </div>
+          <FiltersMenu
+            user={this.props.user}
+            updateFilters={this.updateFilters}
+            allFilters={this.props.allFilters}
+            members={this.props.members}
+          />
         </div>
-        <FiltersMenu
-          user={this.props.user}
-          updateFilters={this.updateFilters}
-          allFilters={this.props.allFilters}
-          members={this.props.members}
-        />
       </div>
     )
   }
