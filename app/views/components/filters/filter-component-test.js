@@ -2,12 +2,12 @@ var _ = require('lodash');
 var React = require('react/addons');
 var assert = require('chai').assert;
 var TestUtils = React.addons.TestUtils;
-var Filter = require('../filters-toolbar-filter');
+var Filter = require('./filters-toolbar-filter');
 var sinon = require('sinon');
 
-var CheckboxFilter = require('../forms/checkbox-filter');
-var MembersFilter = require('../forms/members-filter');
-var TagsFilter = require('../forms/tags-filter');
+var CheckboxFilter = require('./forms/checkbox-filter');
+var MembersFilter = require('./forms/members-filter');
+var TagsFilter = require('./forms/tags-filter');
 
 describe('FilterComponent', function() {
   var mockFilter;
