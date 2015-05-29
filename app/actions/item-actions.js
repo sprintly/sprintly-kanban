@@ -33,7 +33,7 @@ let ItemActions = {
   deleteItem(productId, itemId) {
     let product = products.get(productId);
     let item = product.items.get(itemId);
-    let item_data = item.attributes;
+    let itemData = item.attributes;
     let destroyed = item.destroy();
 
     if (destroyed) {
