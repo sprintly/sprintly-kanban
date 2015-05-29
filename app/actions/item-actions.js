@@ -46,7 +46,13 @@ let ItemActions = {
         });
       });
     } else {
-      throw new Error('Missing item: %s', itemId);
+      return new Promise(function(resolve) {
+        AppDispatcher.dispatch({
+          actionType: 'DELETE_ITEM_ERROR',
+          product,
+          item_data
+        });
+      });
     }
   }
 };
