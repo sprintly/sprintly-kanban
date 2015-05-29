@@ -4,22 +4,18 @@ import React from 'react/addons';
 import sinon from 'sinon';
 import stubRouterContext from '../../../lib/stub-router-context';
 
-import FiltersToolbar from './filters-toolbar';
+import VelocityComponent from './velocity-component';
 
 let TestUtils = React.addons.TestUtils;
 
-describe('Filters Toolbar', function() {
+describe('VelocityComponent', function() {
   beforeEach(function() {
     this.sinon = sinon.sandbox.create();
     let props = {
-      members: [],
-      user: {},
-      allFilters: [],
-      activeFilters: [],
       productId: 1,
       velocity: 10
     };
-    let Component = stubRouterContext(FiltersToolbar, props);
+    let Component = stubRouterContext(VelocityComponent, props);
     this.component = TestUtils.renderIntoDocument(<Component {...props}/>);
   });
 
@@ -29,12 +25,12 @@ describe('Filters Toolbar', function() {
 
   describe('setVelocity', function() {
     beforeEach(function() {
-      this.VelocityActions = FiltersToolbar.__get__('VelocityActions');
+      this.VelocityActions = VelocityComponent.__get__('VelocityActions');
       this.setVelocityStub = this.sinon.stub(this.VelocityActions, 'setVelocity');
     });
 
     it('triggers the setVelocity action', function() {
-      this.component.refs.stub.setState({ showVelocityInput: true });
+      this.component.refs.stub.setState({ showVelocityPopover: true });
       let form = TestUtils.findRenderedDOMComponentWithTag(this.component.refs.stub, 'form');
       let input = TestUtils.findRenderedDOMComponentWithTag(this.component.refs.stub, 'input');
       let node = input.getDOMNode();
