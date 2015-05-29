@@ -53,9 +53,9 @@ var VelocityComponent = React.createClass({
   renderVelocityPopover() {
     return (
       <Popover
-        placement='right'
-        positionLeft={62}
-        positionTop={-53}
+        placement='bottom'
+        positionLeft={8}
+        positionTop={18}
         className="velocity__popover" >
         Adjust the predicted weekly velocity of the project
         <form
