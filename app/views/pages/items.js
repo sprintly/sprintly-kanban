@@ -64,13 +64,6 @@ module.exports = React.createClass({
     ProductStore.removeChangeListener(this._onChange);
   },
 
-  getItemCount: function(status) {
-    let counts = this.state.itemCounts
-    return (
-      counts && counts[status] ? counts[status] : 0
-    );
-  },
-
   selectItem: function(activeItem, event) {
     this.setState({ activeItem });
   },
@@ -91,7 +84,8 @@ module.exports = React.createClass({
       members: this.state.members,
       filters: this.state.filtersObject,
       key: `col-${this.state.product.id}-${status}`,
-      velocity: this.state.velocity
+      velocity: this.state.velocity,
+      itemCounts: this.state.itemCounts
     };
 
     if (_.contains(['someday', 'accepted'], status)) {
@@ -165,9 +159,6 @@ module.exports = React.createClass({
               return (
                 <nav key={`header-nav-${status}`}>
                   <h3>{label}</h3>
-                  <span className="item-count">
-                    {this.getItemCount(status)} items
-                  </span>
                 </nav>
               );
             }, this)}

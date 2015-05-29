@@ -26,6 +26,13 @@ var Header = React.createClass({
     }
   },
 
+  getItemCount: function(status) {
+    let counts = this.props.itemCounts;
+    return (
+      counts && counts[status] ? counts[status] : 0
+    );
+  },
+
   render: function() {
     let directionClasses = {
       'glyphicon': true,
@@ -51,7 +58,9 @@ var Header = React.createClass({
         <div className="column__summary">
           <ButtonGroup>
             <button className="btn btn-sm btn-default">42 points</button>
-            <button className="btn btn-sm btn-default">36 items</button>
+            <button className="btn btn-sm btn-default">
+              {this.getItemCount(this.props.status)} items
+            </button>
           </ButtonGroup>
         </div>
       </header>
