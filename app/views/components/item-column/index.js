@@ -1,8 +1,7 @@
 import _ from 'lodash';
 import React from 'react/addons';
-import moment from 'moment';
 import ItemCard from '../item-card';
-import Sprint from './sprint';
+import SprintGroup from './sprint-group';
 import ColumnSummary from './summary';
 import ColumnHeader from './header';
 import Loading from 'react-loading';
@@ -11,13 +10,8 @@ import ProductActions from '../../../actions/product-actions';
 import FilterActions from '../../../actions/filter-actions';
 import ScoreMap from '../../../lib/score-map';
 
-const EMPTY_CHUNK = {
-  points: 0,
-  items: []
-};
-
-function getColumnState(items=[]) {
-  return {
+function getColumnState(items=[], previousState={}) {
+  return _.extend({
     items,
     isLoading: false,
     hideLoadMore: false,
@@ -25,18 +19,22 @@ function getColumnState(items=[]) {
     sortDirection: 'desc',
     offset: 0,
     limit: 0
-  }
+  }, previousState);
 }
 
 var ItemColumn = React.createClass({
-
   propTypes: {
     status: React.PropTypes.string.isRequired,
     product: React.PropTypes.object.isRequired
   },
 
   getInitialState() {
-    return getColumnState();
+    let previousState = {};
+    let previousSortField = window.localStorage.getItem(`itemColumn-${this.props.status}-sortField`);
+    if (previousSortField) {
+      previousState.sortField = previousSortField;
+    }
+    return getColumnState([], previousState);
   },
 
   _onChange() {
@@ -49,14 +47,19 @@ var ItemColumn = React.createClass({
     this.setState(state);
   },
 
-  setSortCriteria(field=this.state.sortField, direction=this.state.sortDirection) {
-    let items = ProductStore.getItemsCollection(this.props.product.id, this.props.status);
+  setSortCriteria(field=this.state.sortField, direction=this.state.sortDirection, status=this.props.status) {
+    let items = ProductStore.getItemsCollection(this.props.product.id, status);
     if (!items) {
       return;
     }
 
     this.setState({ isLoading: true });
-    ProductActions.changeSortCriteria(items, field, direction);
+    let options = {
+      field,
+      direction,
+      status
+    };
+    ProductActions.changeSortCriteria(items, options);
   },
 
   getItems(product, options={ hideLoader: false }) {
@@ -105,59 +108,6 @@ var ItemColumn = React.createClass({
     }
   },
 
-  /**
-   * Chunks the items passed into the props into sprints based on the current predicted velocity.
-   * Each sprint chunk is an object with the following structure:
-   * {
-   *   points: {Number}, // the number of points in the sprint.
-   *   items: {Array} // an array of objects containing item data
-   * }
-   *
-   * @returns {Array} // an array of raw sprint chunks
-   */
-  chunkItems() {
-    let chunks = [];
-    let currentChunk = _.cloneDeep(EMPTY_CHUNK);
-    _.each(this.state.items, (item, i) => {
-      let itemScore = ScoreMap[item.score];
-      currentChunk.points += itemScore;
-      currentChunk.items.push(item);
-
-      // Check whether adding the next item's score will push the current sprint chunks's point
-      // count above the predicted velocity. If so, add it to the chunks collection and start a
-      // new sprint chunk. In the case that the current sprint chunk is under the predicted velocity
-      // by *more* than adding the next item would cause it to go over, allow the sprint's total to
-      // go over the predicted velocity instead. This prevents things like a 3 or 5 point sprint
-      // when followed by an 8 point sprint.
-      let nextItem = this.state.items[i + 1] || {score: '~'};
-      let nextItemScore = ScoreMap[nextItem.score];
-      let scoreWithNext = currentChunk.points + nextItemScore;
-      let nextScoreIsOverAverage = currentChunk.points + nextItemScore >= this.props.velocity.average;
-      let underageIsGreaterThanOverage = this.props.velocity.average - currentChunk.points >
-      scoreWithNext - this.props.velocity.average;
-
-      let isLastItem = this.state.items.length === i + 1;
-
-      if ((nextScoreIsOverAverage && !underageIsGreaterThanOverage) || isLastItem) {
-        // Add the current chunk to the collection and start a new one
-        chunks.push(currentChunk);
-        currentChunk = _.cloneDeep(EMPTY_CHUNK);
-      }
-    });
-    return chunks;
-  },
-
-  calculateSummary() {
-    let points = _.reduce(this.state.items, function(total, item) {
-      total += ScoreMap[item.score];
-      return total;
-    }, 0);
-    return {
-      points,
-      startDate: moment().startOf('isoweek').format('D MMM')
-    }
-  },
-
   renderLoadMore() {
     var loadMore = <button className="load-more" onClick={this.loadMoreItems}>Load More</button>;
 
@@ -182,42 +132,20 @@ var ItemColumn = React.createClass({
   },
 
   renderItemCards() {
-    let showSummary = this.props.status === 'in-progress' && this.state.sortField === 'priority';
     let itemCards = _.map(this.state.items, this.renderItemCard);
-    if (showSummary) {
-      let props = this.calculateSummary();
-      return (
-        <div>
-          <ColumnSummary {...props} />
-          {itemCards}
-        </div>
-      );
-    } else {
-      return (<div>{itemCards}</div>);
-    }
+    return (<div>{itemCards}</div>);
   },
 
-  renderSprints() {
-    let rawSprints = this.chunkItems();
-    return _.map(rawSprints, (sprint, i) => {
-      // Start the groups in the backlog with the next week
-      let startDate = moment().startOf('isoweek').add(7 * (i + 1), 'days').format('D MMM');
-      return (
-        <Sprint
-          key={`item-group-${i}`}
-          items={sprint.items}
-          sortField={this.state.sortField}
-          productId={this.props.product.id}
-          startDate={startDate}
-          startOpen={i === 0}
-          points={sprint.points}
-        />
-      );
-    });
+  renderSprintGroup() {
+    return <SprintGroup
+      items={this.state.items}
+      velocity={this.props.velocity}
+      sortField={this.state.sortField}
+      productId={this.props.product.id}
+    />;
   },
 
   render() {
-
     let classes = {
       column: true,
       [this.props.status]: true
@@ -229,7 +157,7 @@ var ItemColumn = React.createClass({
     };
 
     let showSprints = this.props.status === 'backlog' && this.state.sortField === 'priority';
-    let renderCardsOrSprints = showSprints ? this.renderSprints : this.renderItemCards;
+    let renderCardsOrSprints = showSprints ? this.renderSprintGroup : this.renderItemCards;
 
     return (
       <div className={React.addons.classSet(classes)} {...this.props}>
