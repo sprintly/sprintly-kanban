@@ -123,14 +123,18 @@ var internals = ProductStore.internals = {
       // Prevent "jumpy" items
       model.set(internals.getUpdatedTimestamps(model, status), { silent: true });
 
-      let [activeFilterCount, matchingFilters] = internals.matchesFilter(model, config);
-      if (activeFilterCount === 0 || activeFilterCount === matchingFilters.length) {
+      // let [activeFilterCount, matchingFilters] = internals.matchesFilter(model, config);
+      // if (activeFilterCount === 0 || activeFilterCount === matchingFilters.length) {
         // Swap items between status collections.
         let previousStatus = model.previous('status');
-        let previousCollection = product._filters[previousStatus];
-        previousCollection && previousCollection.remove(model);
-        collection.add(model);
-      }
+        let previousCollection = product.getItemsByStatus(previousStatus);
+        if (previousCollection) {
+          previousCollection.remove(model);
+        }
+        if (collection) {
+          collection.add(model);
+        }
+      // }
     });
 
     internals.createSubscription(product);
