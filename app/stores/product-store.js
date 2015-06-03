@@ -129,11 +129,12 @@ var internals = ProductStore.internals = {
         let previousStatus = model.previous('status');
         let previousCollection = product.getItemsByStatus(previousStatus);
         if (previousCollection) {
-          previousCollection.remove(model);
+          previousCollection.remove(model.id);
         }
         if (collection) {
           collection.add(model);
         }
+        ProductStore.emitChange();
       // }
     });
 
