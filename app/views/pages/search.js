@@ -11,6 +11,8 @@ import ProductStore from '../../stores/product-store';
 import SearchActions from '../../actions/search-actions';
 import SearchStore from '../../stores/search-store';
 
+import SCORE_MAP from '../../lib/score-map';
+
 function getSearchSelectorState() {
   let results = SearchStore.getResults();
 
@@ -171,10 +173,25 @@ var Search = React.createClass({
     })
   },
 
+  pointSummary() {
+    if (this.state.results.items.length > 0) {
+      let points = _.reduce(this.state.results.items, function(total, item) {
+        return total + SCORE_MAP[item.score];
+      }, 0)
+      return (
+        <tr className="search__point-summary">
+          <td>{points}</td>
+          <td>points</td>
+        </tr>
+      );
+    } else {
+      return <tr />
+    }
+  },
+
   resultsSummary() {
     let issueTypes = ['stories', 'defects', 'tasks', 'tests'];
     let results = this.state.results;
-
     return ([
       <h5>Search Results</h5>,
       <table className="results-table">
@@ -197,6 +214,7 @@ var Search = React.createClass({
               );
             }
           }))}
+          {this.pointSummary()}
         </tbody>
       </table>
     ])
