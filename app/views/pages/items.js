@@ -1,6 +1,6 @@
 import _ from "lodash";
 import React from "react/addons";
-import {State,Link} from 'react-router';
+import {RouteHandler, State,Link} from 'react-router';
 
 // Components
 import Loading from "react-loading"
@@ -97,7 +97,7 @@ module.exports = React.createClass({
   },
 
   componentWillReceiveProps: function(nextProps) {
-    if (this.getParams().id !== this.state.product.id) {
+    if (this.getParams().id != this.state.product.id) {
       ProductActions.init(this.getParams().id);
       VelocityActions.getVelocity(this.getParams().id);
     }
@@ -162,6 +162,11 @@ module.exports = React.createClass({
           </div>
           {cols}
         </div>
+        <RouteHandler
+          members={this.state.members}
+          product={this.state.product}
+          number={this.getParams().number}
+        />
       </div>
     );
   }

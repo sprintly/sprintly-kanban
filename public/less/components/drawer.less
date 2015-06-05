@@ -1,0 +1,55 @@
+.drawer {
+  position: fixed;
+  height: 100%;
+  width: 50%;
+  background: #fff;
+  top: 54px;
+  right: 0;
+  z-index: 299;
+  overflow: scroll;
+
+  .close {
+    position: absolute;
+    top: 1em;
+    right: 1em;
+  }
+
+  -webkit-animation: myanim 300ms ease-out;
+          animation: myanim 300ms ease-out;
+}
+
+@-webkit-keyframes myanim {
+  from {
+    .translate(100%, 0);
+  }
+  to {
+    .translate(0, 0);
+  }
+}
+
+@keyframes myanim {
+  from {
+    .translate(100%, 0);
+  }
+  to {
+    .translate(0, 0);
+  }
+}
+
+.drawer .item-card {
+  margin-bottom: 2em;
+}
+
+.drawer > .well {
+  float: left;
+  width: 100%;
+}
+
+.item-detail {
+  background: #222;
+}
+
+.item-detail__close {
+  display: inline-block;
+  margin: 8px 0;
+}

@@ -11,6 +11,7 @@ import ItemCardDetails from './details';
 import ScoreMap from '../../../lib/score-map';
 import onClickOutside from 'react-onclickoutside';
 import Select from 'react-select';
+import {Link} from 'react-router';
 
 const REVERSE_SCORE_MAP = _.zipObject(_.values(ScoreMap), _.keys(ScoreMap))
 
@@ -117,15 +118,15 @@ var ItemCard = React.createClass({
   },
 
   render() {
-    var classes = {
+    let showDetails = this.props.showDetails || this.state.showDetails;
+    let owner = this.props.item.assigned_to;
+    let title = this.props.item.title
+    let classes = {
       'item-card': true,
-      'active': this.props.active || this.state.showDetails,
+      'active': showDetails,
       [this.props.item.type]: true,
       'parent': this.props.item.sub_items && this.props.item.sub_items.length > 0
     };
-
-    var owner = this.props.item.assigned_to;
-    var title = this.props.item.title
 
     if (this.props.item.type === 'story') {
       title = this.renderStoryTitle();
@@ -160,7 +161,7 @@ var ItemCard = React.createClass({
           </div>
           <div className="item-card__title col-sm-12">
             <h2 className="item-card__title-left">
-              <a href={`https://sprint.ly/product/${this.props.productId}/item/${this.props.item.number}`} target="_blank">{title}</a>
+              <Link to={`/product/${this.props.productId}/item/${this.props.item.number}`}>{title}</Link>
             </h2>
             <button className="item-card__show-details" onClick={this.toggleDetails}>
               <span className="glyphicon glyphicon-option-horizontal" />
@@ -168,7 +169,7 @@ var ItemCard = React.createClass({
           </div>
         </div>
         <div className="row">
-          {this.state.showDetails ? <ItemCardDetails {...this.props} /> : ''}
+          {showDetails ? <ItemCardDetails {...this.props} /> : ''}
         </div>
       </div>
     )
