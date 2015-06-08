@@ -102,6 +102,14 @@ var ProductStore = module.exports = _.assign({}, EventEmitter.prototype, {
     }
 
     return [field, direction]
+  },
+
+  refreshColumns() {
+    Promise.all(_.map(columnCollections, function(column) {
+      column.fetch();
+    })).then(function() {
+      ProductStore.emitChange();
+    });
   }
 });
 
@@ -115,14 +123,24 @@ var internals = ProductStore.internals = {
       // Prevent "jumpy" items
       model.set(internals.getUpdatedTimestamps(model, status), { silent: true });
 
-      let [activeFilterCount, matchingFilters] = internals.matchesFilter(model, config);
-      if (activeFilterCount === 0 || activeFilterCount === matchingFilters.length) {
+      // let [activeFilterCount, matchingFilters] = internals.matchesFilter(model, config);
+      // if (activeFilterCount === 0 || activeFilterCount === matchingFilters.length) {
         // Swap items between status collections.
         let previousStatus = model.previous('status');
-        let previousCollection = product._filters[previousStatus];
-        previousCollection && previousCollection.remove(model);
-        collection.add(model);
-      }
+        let previousCollection = product.getItemsByStatus(previousStatus);
+        if (previousCollection) {
+          let oldItem = previousCollection.remove(model.id);
+          if (oldItem === undefined) {
+            previousCollection.models = previousCollection.filter(function(m) {
+              return m.id !== model.id;
+            });
+          }
+        }
+        if (collection) {
+          collection.add(model);
+        }
+        ProductStore.emitChange();
+      // }
     });
 
     internals.createSubscription(product);
@@ -251,6 +269,14 @@ var internals = ProductStore.internals = {
         default:
           break;
       }
+    });
+
+    var refresh = _.debounce(ProductStore.refreshColumns, 500);
+    var pusherStates = ['connecting', 'connected', 'unavailable', 'failed', 'disconnected']
+    _.forEach(pusherStates, function(state) {
+      socket.connection.bind(state, function() {
+        refresh();
+      });
     });
   },
 
