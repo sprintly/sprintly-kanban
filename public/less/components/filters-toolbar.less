@@ -16,16 +16,34 @@
   margin-right: 16px;
   line-height: 28px;
 
+  &:hover {
+    cursor: pointer;
+  }
+
   i {
     margin-right: 4px;
   }
 
-  p {
-    display: inline;
-    position: relative;
-    top: -1px;
-    font-size: 14px;
-    font-weight: bold;
+  span {
+    font-size: 18px;
+    padding: 0 2px;
+  }
+}
+
+.popover.velocity__popover {
+  padding: 15px;
+  max-width: 180px;
+
+  > .arrow {
+    left: 22%;
+  }
+}
+
+.velocity__form {
+  margin-top: 10px;
+  input {
+    max-width: 60px;
+    margin-right: 10px;
   }
 }
 

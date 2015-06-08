@@ -45,6 +45,16 @@ var VelocityActions = {
         });
       }
     });
+  },
+
+  setVelocity: function(productId, velocity) {
+    AppDispatcher.dispatch({
+      actionType: 'PRODUCT_VELOCITY',
+      payload: {
+        average: velocity
+      },
+      productId
+    });
   }
 };
 
