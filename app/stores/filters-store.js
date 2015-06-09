@@ -63,6 +63,7 @@ var internals = FiltersStore.internals = {
     .then(function() {
       internals.decorateMembers(members);
       internals.decorateTags(tags);
+      ProductStore.getAll();
       FiltersStore.emitChange();
     });
   },
