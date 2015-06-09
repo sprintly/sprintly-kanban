@@ -8,44 +8,59 @@
 // Item Column Tray
 .container-tray {
   position: absolute;
-  overflow-x: hidden;
+
   box-sizing: border-box;
   height: 100%;
   width: 100%;
-  min-width: 1200px;
   background: @background;
+
+  @media (min-width: @screen-md-min) {
+    min-width: @screen-lg-min;
+    overflow-x: hidden;
+  }
+
+  // Mobile width stylings
+  @media (max-width: @screen-sm-min) {
+    overflow: scroll;
+  }
+
 }
 
 .tray {
   height: 100%;
   float: left;
+  width: 1875px;
   .transition(all 400ms);
-  width: 120%;
-  .translate(-8%, 0);
 
-  &.show-accepted {
-    .translate(-16.8%, 0);
-  }
+  @media (min-width: @screen-md-min) {
+    width: 120%;
+    .translate(-8%, 0);
 
-  &.show-someday {
-    .translate(0, 0)
-  }
+    &.show-accepted {
+      .translate(-16.8%, 0);
+    }
 
-  .column {
-    box-sizing: border-box;
-    float: left;
-    min-height: 100%;
-    width: 100%;
-    padding: 1em;
-    position: relative;
-    width: 20%;
-    max-width: 500px;
+    &.show-someday {
+      .translate(0, 0)
+    }
   }
+  overflow: scroll;
+}
+
+.tray .column {
+  box-sizing: border-box;
+  float: left;
+  min-height: 100%;
+  padding: 1em;
+  position: relative;
+  width: 20%;
+  max-width: 500px;
 }
 
 .column__nav {
   margin-top: 93px;
   width: 100%;
+
   background: #ECECEC;
   color: @header;
   white-space: nowrap;
@@ -67,7 +82,6 @@
     line-height: 2.4em;
     color: #333;
   }
-
 }
 
 .column__sort-options {
@@ -116,7 +130,7 @@
   }
 }
 
-@media (min-width: 1300px) {
+@media (min-width: 1200px) {
   .tray {
     width: 100%;
     .translate(0, 0);

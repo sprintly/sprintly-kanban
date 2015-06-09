@@ -26,10 +26,9 @@ function analytics(state) {
 
 module.exports = function(sprintlyClient) {
   sprintlyClient.router = Router.run(routes, Router.HistoryLocation, function(Handler, state) {
-    React.render(<Handler user={sprintlyClient.user} />, document.body);
+    React.render(<Handler user={sprintlyClient.user} />, document.getElementById('manifold'));
     analytics(state);
   });
 
   return sprintlyClient;
 };
-

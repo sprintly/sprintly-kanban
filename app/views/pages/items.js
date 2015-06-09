@@ -75,7 +75,7 @@ module.exports = React.createClass({
       key: `col-${this.state.product.id}-${status}`,
       velocity: this.state.velocity
     };
-
+    
     return <ItemColumn {...props} />;
   },
 

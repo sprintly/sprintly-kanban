@@ -23,7 +23,9 @@ var Header = React.createClass({
 
   getInitialState() {
     return {
-      scoped: true
+      scoped: true,
+      showMenu: true,
+      drawerOpen: false
     }
   },
 
@@ -33,6 +35,19 @@ var Header = React.createClass({
       product: {
         name: 'Choose a Product'
       }
+    }
+  },
+
+  toggleMenu() {
+    var canvasWrap = document.getElementsByClassName('row-offcanvas')[0];
+
+    if (_.contains(canvasWrap.className.split(' '), 'active')) {
+      canvasWrap.className = 'row-offcanvas row-offcanvas-left';
+
+      this.setState({drawerOpen: false})
+    } else {
+      canvasWrap.className += ' active';
+      this.setState({drawerOpen: true})
     }
   },
 
@@ -87,47 +102,133 @@ var Header = React.createClass({
     );
   },
 
-  render() {
+  smallScreenHeader() {
+    var navClasses = this.getClasses('small');
+    var menuClasses = React.addons.classSet({
+      '_burger': true,
+      'open': this.state.drawerOpen
+    })
+
+    // {this.sprintlyFlask()}
     return (
-      <header className="product__header container-fluid">
-        <svg className="labs-flask" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="37px" height="37px" viewBox="0 0 108 144" enable-background="new 0 0 108 144">
-          <g>
-            <g>
-              <path className="labs-flask-svg__empty" d="M54,115.3c-19.3,0-25.3-4.3-27.1-6.9c-1.5-2.1-0.9-3.9-0.9-3.9l20.6-56.7V30.3h14.8v17.5L82,104.5c0.1,0.3,0.5,2.1-1,4C79.1,111.1,73,115.3,54,115.3z"/>
-              <path className="labs-flask-svg__border" d="M58.9,32.8v14.6v0.9l0.3,0.8l20.4,56.2c0,0.1,0,0.8-0.6,1.7c-3.9,5.4-20.1,5.8-25,5.8c-18.4,0-23.5-3.9-24.9-5.6c-0.8-0.9-0.7-1.7-0.7-2l20.4-56.1l0.3-0.8v-0.9V32.8H58.9 M63.9,27.8H44.1v19.6l-20.5,56.3c0,0-4.9,14.1,30.4,14.1c35.1,0,30.4-14.1,30.4-14.1L63.9,47.4V27.8L63.9,27.8z"/>
-            </g>
-            <path className="labs-flask-svg__top" d="M63.3,32.2H44.7c-1.6,0-3-1.3-3-3v0c0-1.6,1.3-3,3-3h18.7c1.6,0,3,1.3,3,3v0C66.3,30.8,65,32.2,63.3,32.2z"/>
-            <path className="labs-flask-svg__content" d="M76.7,82.6l7.7,21.1c0,0,4.8,14.1-30.4,14.1c-35.3,0-30.4-14.1-30.4-14.1l7.7-21.1L76.7,82.6z"/>
-          </g>
-        </svg>
-        <nav className="product__dropdown">
-          <h1>{this.props.product.name}<span className="glyphicon glyphicon-menu-down"/></h1>
-          <ul>
-          {_.map(this.props.allProducts, function(product) {
-            return (
-              <li key={`product-menu-${product.name}`}><Link to="product" params={{ id: product.id }}>{product.name}</Link></li>
-            )
-          })}
-          </ul>
-        </nav>
-        {this.renderAddItem()}
-        <nav className="product__dropdown product__account">
-          <button className="btn btn-default dropdown-toggle">
-            <Gravatar email={this.props.user.get('email')} className="img-rounded" size={26} />
-            <span className="product__account-name">{this.props.user.get('first_name')}</span>
-            <span className="glyphicon glyphicon-menu-down"/>
-          </button>
-          <ul>
-            {_.map(ACCOUNT_SETTINGS, function(setting, index) {
-              return <li key={index}><a href={`https://sprint.ly/account/settings/${setting.toLowerCase()}`}>{setting}</a></li>
-            })}
-            <li className="logout">
-              <a href="https://sprint.ly/logout" className="btn btn-danger btn-sm btn-block">Logout</a>
-            </li>
-          </ul>
-        </nav>
-        {this.props.searchBar ? this.renderSearch() : ''}
+      <header className={navClasses}>
+        <div className="logos-wrapper">
+        </div>
+        <ul className="small-menu">
+          <li className="menu-list-item">
+            <a href="#" className="small-screen-menu burger-button">
+              <div className={menuClasses} onClick={this.toggleMenu}>
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+            </a>
+          </li>
+        </ul>
       </header>
+    );
+  },
+
+  getClasses: function(size) {
+    var visibilityClasses = {
+      'small': { 'visible-xs': true },
+      'large': { 'hidden-xs': true }
+    };
+
+    var defaults = {
+      'product__header': true,
+      'container-fluid': true
+    };
+
+    return React.addons.classSet(
+      _.extend(defaults, visibilityClasses[size])
+    );
+  },
+
+  sprintlyFlask() {
+    return (
+      <svg className="labs-flask" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="37px" height="37px" viewBox="0 0 108 144" enable-background="new 0 0 108 144">
+        <g>
+          <g>
+            <path className="labs-flask-svg__empty" d="M54,115.3c-19.3,0-25.3-4.3-27.1-6.9c-1.5-2.1-0.9-3.9-0.9-3.9l20.6-56.7V30.3h14.8v17.5L82,104.5c0.1,0.3,0.5,2.1-1,4C79.1,111.1,73,115.3,54,115.3z"/>
+            <path className="labs-flask-svg__border" d="M58.9,32.8v14.6v0.9l0.3,0.8l20.4,56.2c0,0.1,0,0.8-0.6,1.7c-3.9,5.4-20.1,5.8-25,5.8c-18.4,0-23.5-3.9-24.9-5.6c-0.8-0.9-0.7-1.7-0.7-2l20.4-56.1l0.3-0.8v-0.9V32.8H58.9 M63.9,27.8H44.1v19.6l-20.5,56.3c0,0-4.9,14.1,30.4,14.1c35.1,0,30.4-14.1,30.4-14.1L63.9,47.4V27.8L63.9,27.8z"/>
+          </g>
+          <path className="labs-flask-svg__top" d="M63.3,32.2H44.7c-1.6,0-3-1.3-3-3v0c0-1.6,1.3-3,3-3h18.7c1.6,0,3,1.3,3,3v0C66.3,30.8,65,32.2,63.3,32.2z"/>
+          <path className="labs-flask-svg__content" d="M76.7,82.6l7.7,21.1c0,0,4.8,14.1-30.4,14.1c-35.3,0-30.4-14.1-30.4-14.1l7.7-21.1L76.7,82.6z"/>
+        </g>
+      </svg>
+    )
+  },
+
+  largeScreenHeader() {
+    var headerClasses = this.getClasses('large');
+
+    return (
+      <header className={headerClasses}>
+        {this.sprintlyFlask()}
+        <div className="product__header-menu">
+          <nav className="product__dropdown">
+            <h1>{this.props.product.name}<span className="glyphicon glyphicon-menu-down"/></h1>
+            <ul>
+            {_.map(this.props.allProducts, function(product) {
+              return (
+                <li key={`product-menu-${product.name}`}><Link to="product" params={{ id: product.id }}>{product.name}</Link></li>
+              )
+            })}
+            </ul>
+          </nav>
+          {this.renderAddItem()}
+          <nav className="product__dropdown product__account">
+            <button className="btn btn-default dropdown-toggle">
+              <Gravatar email={this.props.user.get('email')} className="img-rounded" size={26} />
+              <span className="product__account-name">{this.props.user.get('first_name')}</span>
+              <span className="glyphicon glyphicon-menu-down"/>
+            </button>
+            <ul>
+              {_.map(ACCOUNT_SETTINGS, function(setting, index) {
+                return <li key={index}><a href={`https://sprint.ly/account/settings/${setting.toLowerCase()}`}>{setting}</a></li>
+              })}
+              <li className="logout">
+                <a href="https://sprint.ly/logout" className="btn btn-danger btn-sm btn-block">Logout</a>
+              </li>
+            </ul>
+          </nav>
+          {this.props.searchBar ? this.renderSearch() : ''}
+        </div>
+      </header>
+    )
+  },
+
+  buildOffCanvasMenu() {
+    return (
+      <div className="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar">
+        <div className="list-group">
+          <a href="#" className="list-group-item active">Link</a>
+          <a href="#" className="list-group-item">Link</a>
+          <a href="#" className="list-group-item">Link</a>
+          <a href="#" className="list-group-item">Link</a>
+          <a href="#" className="list-group-item">Link</a>
+          <a href="#" className="list-group-item">Link</a>
+          <a href="#" className="list-group-item">Link</a>
+          <a href="#" className="list-group-item">Link</a>
+          <a href="#" className="list-group-item">Link</a>
+          <a href="#" className="list-group-item">Link</a>
+        </div>
+      </div>
+    )
+  },
+
+  render() {
+    var smallScreenHeader = this.smallScreenHeader();
+    var offCanvasMenu = this.buildOffCanvasMenu();
+    var largeScreenHeader = this.largeScreenHeader();
+
+    return (
+      <div className="header-group">
+        {smallScreenHeader}
+        {offCanvasMenu}
+        {largeScreenHeader}
+      </div>
     );
   }
 });
