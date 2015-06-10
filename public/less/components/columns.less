@@ -70,25 +70,6 @@
 
 }
 
-.column {
-  &.accepted, &.someday {
-    .opacity(0.4);
-    .transition(opacity 300ms ease-in-out);
-    &:hover {
-      .opacity(1);
-    }
-  }
-}
-.column > header {
-  float: left;
-  width: 100%;
-  .opacity(0.5);
-
-  &:hover {
-    .opacity(1);
-  }
-}
-
 .column__sort-options {
   float: left;
   padding-bottom: 0.5em;
@@ -144,12 +125,6 @@
     &.show-someday {
       .translate(0, 0);
     }
-
-    .column {
-      &.accepted, &.someday {
-        .opacity(1);
-      }
-    }
   }
 }
 
@@ -163,5 +138,3 @@
   }
 }
 // End Item Column Tray
-
-

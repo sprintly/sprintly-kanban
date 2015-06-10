@@ -1,14 +1,17 @@
 import _ from 'lodash';
 import React from 'react/addons';
+import Loading from 'react-loading';
+import ScoreMap from '../../../lib/score-map';
+// Components
 import ItemCard from '../item-card';
+import PlaceholderCards from './placeholder-cards'
 import SprintGroup from './sprint-group';
 import ColumnSummary from './summary';
 import ColumnHeader from './header';
-import Loading from 'react-loading';
+// Flux
 import ProductStore from '../../../stores/product-store';
 import ProductActions from '../../../actions/product-actions';
 import FilterActions from '../../../actions/filter-actions';
-import ScoreMap from '../../../lib/score-map';
 
 function getColumnState(items=[], previousState={}) {
   return _.extend({
@@ -80,6 +83,59 @@ var ItemColumn = React.createClass({
     ProductActions.loadMoreItems(items);
   },
 
+  renderLoadMore() {
+    var loadMore = <button className="load-more" onClick={this.loadMoreItems}>Load More</button>;
+
+    if (this.state.isLoading || this.state.hideLoadMore || _.isEmpty(this.state.items) || this.state.items.length < this.state.limit) {
+      return '';
+    }
+
+    return loadMore;
+  },
+
+  renderItemCard(item, index) {
+    return (
+      <ItemCard
+        item={item}
+        members={this.props.members}
+        sortField={this.state.sortField}
+        productId={this.props.product.id}
+        key={`item-${this.props.product.id}${item.number}`}
+      />
+    )
+  },
+
+  renderItemCards() {
+    // Mock this.state.items to empty
+    if (_.isEmpty(this.state.items)) {
+      return <PlaceholderCards status={this.props.status} />
+    } else {
+      let itemCards = _.map(this.state.items, this.renderItemCard)
+
+      return <div>{itemCards}</div>
+    }
+  },
+
+  renderSprintGroup() {
+    return <SprintGroup
+      items={this.state.items}
+      velocity={this.props.velocity}
+      sortField={this.state.sortField}
+      productId={this.props.product.id}
+    />;
+  },
+
+  columnContent() {
+    if (this.state.isLoading) {
+      return <div className="loading"><Loading type="bubbles" color="#ccc"/></div>
+    } else {
+      let showSprints = this.props.status === 'backlog' && this.state.sortField === 'priority';
+      return showSprints ? this.renderSprintGroup() : this.renderItemCards();
+    }
+  },
+
+  // React functions
+
   componentDidMount() {
     ProductStore.addChangeListener(this._onChange);
     this.getItems(this.props.product);
@@ -108,43 +164,6 @@ var ItemColumn = React.createClass({
     }
   },
 
-  renderLoadMore() {
-    var loadMore = <button className="load-more" onClick={this.loadMoreItems}>Load More</button>;
-
-    if (this.state.isLoading || this.state.hideLoadMore || this.state.items.length < this.state.limit) {
-      return '';
-    }
-
-    return loadMore;
-  },
-
-  renderItemCard(item, index) {
-    let card = (
-      <ItemCard
-        item={item}
-        members={this.props.members}
-        sortField={this.state.sortField}
-        productId={this.props.product.id}
-        key={`item-${this.props.product.id}${item.number}`}
-      />
-    );
-    return card;
-  },
-
-  renderItemCards() {
-    let itemCards = _.map(this.state.items, this.renderItemCard);
-    return (<div>{itemCards}</div>);
-  },
-
-  renderSprintGroup() {
-    return <SprintGroup
-      items={this.state.items}
-      velocity={this.props.velocity}
-      sortField={this.state.sortField}
-      productId={this.props.product.id}
-    />;
-  },
-
   render() {
     let classes = {
       column: true,
@@ -156,9 +175,6 @@ var ItemColumn = React.createClass({
       this.setSortCriteria(this.state.sortField, direction);
     };
 
-    let showSprints = this.props.status === 'backlog' && this.state.sortField === 'priority';
-    let renderCardsOrSprints = showSprints ? this.renderSprintGroup : this.renderItemCards;
-
     return (
       <div className={React.addons.classSet(classes)} {...this.props}>
         <ColumnHeader {...this.props}
@@ -167,10 +183,7 @@ var ItemColumn = React.createClass({
           sortDirection={this.state.sortDirection}
           sortField={this.state.sortField}
         />
-        {this.state.isLoading ?
-          <div className="loading"><Loading type="bubbles" color="#ccc"/></div> :
-          renderCardsOrSprints()
-        }
+        {this.columnContent()}
         {this.renderLoadMore()}
       </div>
     );
@@ -178,4 +191,3 @@ var ItemColumn = React.createClass({
 });
 
 module.exports = ItemColumn
-

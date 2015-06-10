@@ -35,8 +35,6 @@ module.exports = React.createClass({
       filtersObject: FiltersStore.getFlatObject(),
       allProducts: ProductStore.getAll(),
       activeItem: false,
-      showAccepted: false,
-      showSomeday: false,
       showMenu: false
     }, product);
   },
@@ -67,15 +65,6 @@ module.exports = React.createClass({
     this.setState({ activeItem });
   },
 
-  showHiddenColumn: function(status) {
-    let someday = status === 'someday';
-    let accepted = status === 'accepted';
-    this.setState({
-      showSomeday: someday,
-      showAccepted: accepted
-    });
-  },
-
   renderColumn: function(label, status) {
     var props = {
       status,
@@ -85,14 +74,6 @@ module.exports = React.createClass({
       key: `col-${this.state.product.id}-${status}`,
       velocity: this.state.velocity
     };
-
-    if (_.contains(['someday', 'accepted'], status)) {
-      props.onMouseEnter = _.partial(this.showHiddenColumn, status);
-      props.onMouseLeave = () => this.setState({
-        showAccepted: false,
-        showSomeday: false
-      })
-    }
 
     return <ItemColumn {...props} />;
   },
@@ -128,9 +109,7 @@ module.exports = React.createClass({
     var cols = _.map(ITEM_STATUSES, this.renderColumn);
 
     var trayClasses = React.addons.classSet({
-      tray: true,
-      'show-accepted': this.state.showAccepted,
-      'show-someday': this.state.showSomeday
+      tray: true
     });
 
     var velocity =  this.state.velocity && this.state.velocity.average ?
@@ -138,9 +117,9 @@ module.exports = React.createClass({
 
     var navHeaders = _.map(ITEM_STATUSES, function(label, status) {
       return (
-        <nav key={`header-nav-${status}`}>
-          <h3>{label}</h3>
-        </nav>
+          <nav key={`header-nav-${status}`}>
+            <h3>{label}</h3>
+          </nav>
       );
     })
 
