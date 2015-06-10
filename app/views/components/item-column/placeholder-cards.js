@@ -3,7 +3,8 @@ import React from 'react';
 import OwnerAvatar from '../item-card/owner';
 
 // Flux
-// import HeaderActions from '../../../actions/header-actions'
+import HeaderActions from '../../../actions/header-actions'
+import HeaderStore from '../../../stores/header-store'
 
 const CURRENT_COL_STATUS = 'in-progress';
 
@@ -23,43 +24,40 @@ var PlaceholderCards = React.createClass({
     })
   },
 
-  greyscaleContent() {
-    return (
-      <div className="row">
-        <div className="item-card__header col-sm-12">
-          <div className="item-card__header-right">
-            <span><OwnerAvatar /></span>
-          </div>
-        </div>
-        <div className="item-card__title col-sm-12">
-          {this.ipsumBlocks()}
-        </div>
-      </div>
-    )
-  },
-
   actionContent() {
-
-    return <a onClick={this.triggerModal}>Add an Item</a>
+    return ([
+        <h4>Add an Item to get started!</h4>,
+        <button style={ {width: "100%"} } className="btn btn-primary" onClick={this.triggerModal}>Add an Item</button>
+      ]
+    )
   },
 
   triggerModal() {
     // Future: navigation.transitionTo('add-item');
-    // HeaderActions.openAddModal();
+    HeaderActions.openAddModal();
   },
 
   placeholderCards() {
     return _.times(8, (n) => {
       var content;
-      if (n === 3 && this.props.status === CURRENT_COL_STATUS) {
+      if (n === 2 && this.props.status === CURRENT_COL_STATUS) {
         content = this.actionContent();
       } else {
-        content = this.greyscaleContent();
+        content = this.ipsumBlocks();
       }
 
       return (
-        <div className="placeholder item-card">
-          {content}
+        <div className="item-card placeholder">
+          <div className="row">
+            <div className="item-card__header col-sm-12">
+              <div className="item-card__header-right">
+                <span><OwnerAvatar /></span>
+              </div>
+            </div>
+            <div className="item-card__title col-sm-12">
+              {content}
+            </div>
+          </div>
         </div>
       )
     })
