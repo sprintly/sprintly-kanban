@@ -82,11 +82,15 @@ describe('VelocityActions', function() {
     context('api success', function() {
       it('dispatches an ITEM_COUNTS event', function(done) {
         var dispatchStub = this.sinon.stub(this.appDispatcher, 'dispatch');
-        this.requestStub.callsArgWith(2, null, { body: { 10: { a: 1 } } });
+        this.requestStub.callsArgWith(
+          2,
+          null,
+          { body: { 10: { a: { items: 2, points: 5 } } } }
+        );
         VelocityActions.getItemCounts('id');
         sinon.assert.calledWith(dispatchStub, {
           actionType: 'ITEM_COUNTS',
-          payload: { backlog: 1 },
+          payload: { backlog: { items: 2, points: 5 } },
           productId: 'id'
         });
         done();
@@ -96,8 +100,8 @@ describe('VelocityActions', function() {
         var dispatchStub = this.sinon.stub(this.appDispatcher, 'dispatch');
         this.requestStub.callsArgWith(2, null, {
           body: {
-            5: { a: 10, b: 10 },
-            30: { y: 20, z: 10 }
+            5: { a: { items: 5, points: 10 }, b: { items: 10, points: 20 } },
+            30: { a: { items: 2, points: 5 }, b: { items: 8, points: 15 } }
           }
         });
 
@@ -105,8 +109,8 @@ describe('VelocityActions', function() {
         sinon.assert.calledWith(dispatchStub, {
           actionType: 'ITEM_COUNTS',
           payload: {
-            someday: 20,
-            completed: 30
+            someday: { items: 15, points: 30 },
+            completed: { items: 10, points: 20 }
           },
           productId: 'id'
         });
