@@ -11,5 +11,8 @@
     "after": true,
     "afterEach": true,
     "context": true
+  },
+  "browser": {
+    "document": true
   }
 }
