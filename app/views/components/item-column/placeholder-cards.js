@@ -26,7 +26,7 @@ var PlaceholderCards = React.createClass({
 
   actionContent() {
     return ([
-        <h4>Add an Item to get started!</h4>,
+        <div className="prompt__create-item">Add an Item to get started!</div>,
         <button style={ {width: "100%"} } className="btn btn-primary" onClick={this.triggerModal}>Add an Item</button>
       ]
     )
@@ -51,7 +51,7 @@ var PlaceholderCards = React.createClass({
           <div className="row">
             <div className="item-card__header col-sm-12">
               <div className="item-card__header-right">
-                <span><OwnerAvatar /></span>
+                <span><OwnerAvatar person="placeholder" /></span>
               </div>
             </div>
             <div className="item-card__title col-sm-12">
