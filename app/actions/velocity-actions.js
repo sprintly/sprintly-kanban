@@ -35,8 +35,16 @@ var internals = {
 
   countsByStatus(totals={}) {
     let counts = _.transform(totals, function(result, v, k) {
-      let sum = _.reduce(_.values(v), function(sum, num) { return sum + num; })
-      result[STATUS_XREF[k]] = sum;
+      let totalsByType = _.values(v)
+      let itemCount = _.reduce(
+        _.map(totalsByType, function(v) { return v.items }),
+        function(sum, num) { return sum + num }
+      )
+      let pointCount = _.reduce(
+        _.map(totalsByType, function(v) { return v.points }),
+        function(sum, num) { return sum + num }
+      )
+      result[STATUS_XREF[k]] = {items: itemCount, points: pointCount};
       return result
     })
     return counts

@@ -29,7 +29,7 @@ var Header = React.createClass({
   getItemCount: function(status) {
     let counts = this.props.itemCounts;
     return (
-      counts && counts[status] ? counts[status] : 0
+      counts && counts[status] ? counts[status] : { items: 0, points: 0 }
     );
   },
 
@@ -39,6 +39,7 @@ var Header = React.createClass({
       'glyphicon-sort-by-attributes': this.props.sortDirection === 'desc',
       'glyphicon-sort-by-attributes-alt': this.props.sortDirection === 'asc',
     };
+    let itemCounts = this.getItemCount(this.props.status);
 
     return (
       <header>
@@ -57,9 +58,11 @@ var Header = React.createClass({
 
         <div className="column__summary">
           <ButtonGroup>
-            <button className="btn btn-sm btn-default">42 points</button>
             <button className="btn btn-sm btn-default">
-              {this.getItemCount(this.props.status)} items
+              {itemCounts.points} points
+            </button>
+            <button className="btn btn-sm btn-default">
+              {itemCounts.items} items
             </button>
           </ButtonGroup>
         </div>
