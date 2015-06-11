@@ -33,7 +33,6 @@ var PlaceholderCards = React.createClass({
   },
 
   triggerModal() {
-    // Future: navigation.transitionTo('add-item');
     HeaderActions.openAddModal();
   },
 
