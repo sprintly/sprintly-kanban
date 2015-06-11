@@ -2,6 +2,8 @@ import _ from 'lodash';
 import React from 'react/addons';
 import Gravatar from './gravatar';
 import AddItemModal from './add-item-modal';
+import FiltersMenu from './filters/filters-menu';
+import SidebarFilters from './filters/sidebar-filters';
 import {ModalTrigger} from 'react-bootstrap';
 import {Link, Navigation} from 'react-router';
 
@@ -273,15 +275,73 @@ var Header = React.createClass({
     React.render(sidebar, document.getElementById('sidebar-left'));
   },
 
+  velocityControl() {
+    return ([
+      <li className="drawer-header">
+        <a className='drawer-header' href="#">Velocity</a>
+      </li>
+    ])
+  },
+
+  myItems() {
+    console.log('MY ITEMS CONTROL');
+  },
+
+  myItemsControl() {
+    return <a className="btn btn-primary" href="#" onClick={this.myItems}></a>
+  },
+
+  issueTypesControl() {
+    return ([
+      <li className="drawer-header">
+        <a className='drawer-header' href="#">Issue Types</a>
+      </li>
+    ])
+  },
+
+  // <FiltersToolbar
+  //   user={this.props.user}
+  //   allFilters={this.state.allFilters}
+  //   activeFilters={this.state.activeFilters}
+  //   members={this.state.members}
+  //   velocity={velocity}
+  //   productId={this.state.product.id}
+  // />
+
+  filtersControl() {
+    return (
+      <div>
+        <li className="drawer-header">
+          <a className='drawer-header'>Filters</a>
+        </li>
+
+      </div>
+    )
+  },
+
   buildRightSidebar() {
+    let velocity = this.velocityControl();
+    let myItems = this.myItemsControl();
+    let issueTypes = this.issueTypesControl();
+    // let filters = this.filtersControl();
+
     let sidebarClasses = React.addons.classSet({
       'right-off-canvas-menu': true,
       'hidden': this.state.drawerOpen !== 'right'
     });
 
+    // Shim the height of the container
+    var heightStyle = { height: `${window.innerHeight}px` };
+
     let sidebar = (
-      <div className={sidebarClasses}>
-        <div style={{color:"white"}}>RIGHT MENU</div>
+      <div style={heightStyle} className={sidebarClasses}>
+        <ul className="off-canvas-list">
+          {velocity}
+          {myItems}
+          {issueTypes}
+          <SidebarFilters user={this.props.user}
+                        members={this.props.members} />
+        </ul>
       </div>
     )
 
