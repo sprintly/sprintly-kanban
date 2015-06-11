@@ -38,16 +38,16 @@ var Header = React.createClass({
     }
   },
 
-  toggleMenu() {
+  toggleMenu(direction) {
     var canvasWrap = document.getElementsByClassName('row-offcanvas')[0];
 
     if (_.contains(canvasWrap.className.split(' '), 'active')) {
-      canvasWrap.className = 'row-offcanvas row-offcanvas-left';
+      canvasWrap.className = 'row-offcanvas';
 
       this.setState({drawerOpen: false})
     } else {
-      canvasWrap.className += ' active';
-      this.setState({drawerOpen: true})
+      canvasWrap.className = `row-offcanvas row-offcanvas-${direction} active`;
+      this.setState({drawerOpen: direction})
     }
   },
 
@@ -102,21 +102,18 @@ var Header = React.createClass({
     );
   },
 
-  toggleFilters() {
-    console.log('toggleFilters');
-  },
-
   smallScreenHeader() {
-    var navClasses = this.getClasses('small');
-    var menuClasses = React.addons.classSet({
+    let navClasses = this.getClasses('small');
+    let menuClasses = React.addons.classSet({
       '_burger': true,
-      'open': this.state.drawerOpen
-    })
+      'open': this.state.drawerOpen === 'left'
+    });
+    let openRightSide = _.partial(this.toggleMenu, 'right');
+    let openLeftSide = _.partial(this.toggleMenu, 'left');
 
-    // {this.sprintlyFlask()}
     return (
       <header className={navClasses}>
-        <div className="filter-icon" onClick={this.toggleFilters}></div>
+        <div className="filter-icon" onClick={openRightSide}></div>
         <div className="mobile-search">
           <form className="navbar-right header-search" onSubmit={this.search} role="search">
             <div className="form-group">
@@ -128,7 +125,7 @@ var Header = React.createClass({
         <ul className="small-menu">
           <li className="menu-list-item">
             <a href="#" className="small-screen-menu burger-button">
-              <div className={menuClasses} onClick={this.toggleMenu}>
+              <div className={menuClasses} onClick={openLeftSide}>
                 <span></span>
                 <span></span>
                 <span></span>
@@ -254,12 +251,17 @@ var Header = React.createClass({
     ].concat(productLinks))
   },
 
-  buildOffCanvasMenu() {
+  buildLeftSidebar() {
+    let sidebarClasses = React.addons.classSet({
+      'left-off-canvas-menu': true,
+      'hidden': this.state.drawerOpen !== 'left'
+    });
+
     let productLinks = this.productLinks();
     let settingsLinks = this.settingsLinks();
 
     let sidebar = (
-      <div className="left-off-canvas-menu">
+      <div className={sidebarClasses}>
         <div className="logos__sprintly"></div>
         <ul className="off-canvas-list">
           {productLinks}
@@ -268,12 +270,32 @@ var Header = React.createClass({
       </div>
     )
 
-    React.render(sidebar, document.getElementById('sidebar'));
+    React.render(sidebar, document.getElementById('sidebar-left'));
+  },
+
+  buildRightSidebar() {
+    let sidebarClasses = React.addons.classSet({
+      'right-off-canvas-menu': true,
+      'hidden': this.state.drawerOpen !== 'right'
+    });
+
+    let sidebar = (
+      <div className={sidebarClasses}>
+        <div style={{color:"white"}}>RIGHT MENU</div>
+      </div>
+    )
+
+    React.render(sidebar, document.getElementById('sidebar-right'));
+  },
+
+  buildOffCanvasMenus() {
+    this.buildLeftSidebar();
+    this.buildRightSidebar();
   },
 
   render() {
     var smallScreenHeader = this.smallScreenHeader();
-    this.buildOffCanvasMenu();
+    this.buildOffCanvasMenus();
     var largeScreenHeader = this.largeScreenHeader();
 
     return (
