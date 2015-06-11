@@ -199,34 +199,75 @@ var Header = React.createClass({
     )
   },
 
+  settingsLinks() {
+    let settingsLinks = _.map(ACCOUNT_SETTINGS, function(setting, i) {
+      let subheaderKey = `drawer-subheader-${i} ${setting}`;
+      let settingsURI = `https://sprint.ly/account/settings/${setting.toLowerCase()}`
+
+      return (
+        <li key={subheaderKey}>
+          <a className='drawer-subheader' href={settingsURI}>{setting}</a>
+        </li>
+      )
+    })
+
+    return ([
+        <li>
+          <a className='drawer-header' href="#">Products</a>
+        </li>
+      ].concat(settingsLinks).concat([
+        <li className="logout">
+          <a href="/logout" className="btn btn-danger btn-sm btn-block">Logout</a>
+        </li>
+      ])
+    )
+
+  },
+
+  productLinks() {
+    let productLinks = _.map(this.props.allProducts, (product, i) => {
+      let subheaderKey = `drawer-subheader-${i} product-${product.id}`;
+      let productURI = `/${product.id}`;
+
+      return (
+        <li key={subheaderKey}>
+          <Link classes='drawer-subheader' to="product" params={{ id: product.id }}>{product.name}</Link>
+        </li>
+      )
+    })
+
+    return ([
+      <li>
+        <a className={'drawer-header'} href="#">Products</a>
+      </li>
+    ].concat(productLinks))
+  },
+
   buildOffCanvasMenu() {
-    return (
-      <div className="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar">
-        <div className="list-group">
-          <a href="#" className="list-group-item active">Link</a>
-          <a href="#" className="list-group-item">Link</a>
-          <a href="#" className="list-group-item">Link</a>
-          <a href="#" className="list-group-item">Link</a>
-          <a href="#" className="list-group-item">Link</a>
-          <a href="#" className="list-group-item">Link</a>
-          <a href="#" className="list-group-item">Link</a>
-          <a href="#" className="list-group-item">Link</a>
-          <a href="#" className="list-group-item">Link</a>
-          <a href="#" className="list-group-item">Link</a>
-        </div>
+    let productLinks = this.productLinks();
+    let settingsLinks = this.settingsLinks();
+
+    let sidebar = (
+      <div className="left-off-canvas-menu">
+        <div className="logos__sprintly">SPRINTLY</div>
+        <ul className="off-canvas-list">
+          {productLinks}
+          {settingsLinks}
+        </ul>
       </div>
     )
+
+    React.render(sidebar, document.getElementById('sidebar'));
   },
 
   render() {
     var smallScreenHeader = this.smallScreenHeader();
-    var offCanvasMenu = this.buildOffCanvasMenu();
+    this.buildOffCanvasMenu();
     var largeScreenHeader = this.largeScreenHeader();
 
     return (
       <div className="header-group">
         {smallScreenHeader}
-        {offCanvasMenu}
         {largeScreenHeader}
       </div>
     );

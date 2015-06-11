@@ -191,7 +191,7 @@ footer {
     color: white;
     position: absolute;
     right: 20px;
-    top: 20px;
+    top: 17px;
     cursor: pointer;
   }
   ._burger span {
@@ -240,5 +240,56 @@ footer {
     -moz-transform: rotate(45deg);
     -o-transform: rotate(45deg);
     transform: rotate(45deg);
+  }
+}
+
+
+/* Off-canvas Menu
+ **********************/
+
+.left-off-canvas-menu {
+  background: #D2CBC2;
+}
+
+ul.off-canvas-list {
+  padding-top: 80px;
+}
+
+ul.off-canvas-list li {
+  margin-bottom: 15px;
+}
+
+ul.off-canvas-list li a {
+  .no-wrap-truncate();
+  text-transform: uppercase;
+  border-bottom: 0;
+  background: transparent;
+  color: #4C443A;
+  font-size: 17px;
+  font-weight: bold;
+  text-indent: 25px;
+
+  &:hover {
+    background: transparent;
+  }
+}
+
+ul.off-canvas-list li.drawer-header,
+ul.off-canvas-list li a.drawer-header {
+  .no-wrap-truncate();
+
+  font-size: 17px;
+  font-weight: bold;
+  text-indent: 25px;
+  text-transform: uppercase;
+}
+
+ul.off-canvas-list li a.drawer-subheader {
+  font-size: 14px;
+  text-indent: 50px;
+  font-weight: 100;
+
+  &:hover {
+    color: #978A76;
   }
 }

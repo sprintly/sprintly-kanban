@@ -1,10 +1,32 @@
+// Vendor
 @import "bootstrap/bootstrap.less";
 @import "react-select/select.less";
 @import "../../node_modules/sprintly-ui/src/less/sprintly-ui";
 
+// Utils
+@import "utils/colors";
+@import "utils/font-weights";
+@import "utils/mixins";
+@import "utils/typography";
+@import "utils/z-index";
+
+// Components
+@import "components/header";
+@import "components/columns";
+@import "components/item-card";
+@import "components/item-summary";
+@import "components/sprint";
+@import "components/product-selector";
+@import "components/filters-toolbar";
+@import "components/product-dropdown";
+@import "components/search";
+@import "components/add-item-modal";
+@import "components/tags-input";
+@import "overrides";
+
 html, body {
   height: 100%;
-  color: #323232;
+  color: @sprintly-black;
   font-family: "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
   -webkit-font-smoothing: antialiased;
 }
@@ -20,19 +42,3 @@ html, body {
     display: block;
   }
 }
-
-@import "colors";
-@import "components/header";
-@import "components/columns";
-@import "components/item-card";
-@import "components/item-summary";
-@import "components/sprint";
-@import "components/product-selector";
-@import "components/filters-toolbar";
-@import "components/product-dropdown";
-@import "components/search";
-@import "components/add-item-modal";
-@import "components/tags-input";
-@import "components/placeholder-cards";
-@import "components/no-search-results";
-@import "overrides";
