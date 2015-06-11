@@ -4,23 +4,28 @@
 
 [![wercker status](https://app.wercker.com/status/01a6dce093261e014308a7e7af9fd5c7/m/master "wercker status")](https://app.wercker.com/project/bykey/01a6dce093261e014308a7e7af9fd5c7)
 
-[Production - https://kanban.sprint.ly](https://kanban.sprint.ly)
-[Staging - https://sprintly-manifold.herokuapp.com](https://sprintly-manifold.herokuapp.com)
+* [Production - https://kanban.sprint.ly](https://kanban.sprint.ly)
+* [Staging - https://sprintly-manifold.herokuapp.com](https://sprintly-manifold.herokuapp.com)
 
 ## Setup
 
 **Prerequisites**
 
-* **Create an Oauth Client** through the Sprintly admin with the credentials
+* **Create an OAuth Client** through the Sprintly admin with the credentials
 in `config/default.js`
 * node >= 0.10 and npm
 * Sprint.ly API running on https://local.sprint.ly:9000/
 
 ```bash
-$ make install
+$ make
 ```
 
 ## Local Development
+
+To use and develop Sprintly Kanban locally, you'll need an Oauth `CLIENT_ID`
+and `CLIENT_SECRET`. Currently our public registration for new OAuth apps is
+closed, but we are accepting requests for new OAuth Client application by
+emailing [support@sprint.ly](mailto:support@sprint.ly).
 
 ```bash
 $ node server
@@ -82,11 +87,3 @@ deploy step since Heroku transfers the environment directly.
 ```bash
 heroku pipeline:promote
 ```
-
-## Architectural Decisions
-
-Backbone collections and models will live as implementation details of the store, not in views. [Document here](https://docs.google.com/a/quickleft.com/document/d/128zIqfwTGUDdFF38nH-CD4IHVNFkbiZqoDGN8p-rmbw/edit#heading=h.1491m6n30hmq)
-
-Dependencies between Stores should be resolved with the Flux Dispatcher `waitFor` mechanism. [Document here](https://docs.google.com/a/quickleft.com/document/d/1zUSyoRTvRBleuU2FTvnnRqhaS-tcM1ACcabqahiOkMk/edit)
-
-Pusher connections should be managed by a class with access to the app Dispatcher. [Document here](https://docs.google.com/a/quickleft.com/document/d/17bfOLwwM1avXcr7u3qMZPfJt1pMOv1r3VaLUiejbME4/edit)
