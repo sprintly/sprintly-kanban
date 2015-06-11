@@ -164,9 +164,13 @@ footer {
   }
 
   .sidebar-offcanvas {
+    .drop-shadow (@x: 5px, @y: 0, @blur: 5px, @spread: 0, @alpha: 0.25);
+
+    padding: 0;
     position: absolute;
     top: 0;
     width: 65%; /* 6 columns */
+    background-color: @sprintly-black;
   }
 }
 
@@ -247,12 +251,16 @@ footer {
 /* Off-canvas Menu
  **********************/
 
-.left-off-canvas-menu {
-  background: #D2CBC2;
+.left-off-canvas-menu .logos__sprintly {
+  .backgroundImage('../../img/sprintly-labs-logo-full_360.png');
+  margin: 20px auto 0;
+  height: 60px;
+  width: 70%;
+  text-align: center;
 }
 
 ul.off-canvas-list {
-  padding-top: 80px;
+  padding: 0px 20px;
 }
 
 ul.off-canvas-list li {
@@ -263,11 +271,9 @@ ul.off-canvas-list li a {
   .no-wrap-truncate();
   text-transform: uppercase;
   border-bottom: 0;
-  background: transparent;
-  color: #4C443A;
-  font-size: 17px;
+  color: @light-grey;
+  font-size: 15px;
   font-weight: bold;
-  text-indent: 25px;
 
   &:hover {
     background: transparent;
@@ -280,16 +286,24 @@ ul.off-canvas-list li a.drawer-header {
 
   font-size: 17px;
   font-weight: bold;
-  text-indent: 25px;
   text-transform: uppercase;
+  color: white;
+}
+
+ul.off-canvas-list li.drawer-header {
+  border-bottom: 1px solid white;
 }
 
 ul.off-canvas-list li a.drawer-subheader {
   font-size: 14px;
-  text-indent: 50px;
+  padding-left: 10px;
   font-weight: 100;
 
   &:hover {
     color: #978A76;
   }
+}
+
+ul.off-canvas-list li.logout {
+  margin: 30px auto;
 }

@@ -212,8 +212,8 @@ var Header = React.createClass({
     })
 
     return ([
-        <li>
-          <a className='drawer-header' href="#">Products</a>
+        <li className="drawer-header">
+          <a className='drawer-header' href="#">Settings</a>
         </li>
       ].concat(settingsLinks).concat([
         <li className="logout">
@@ -231,13 +231,13 @@ var Header = React.createClass({
 
       return (
         <li key={subheaderKey}>
-          <Link classes='drawer-subheader' to="product" params={{ id: product.id }}>{product.name}</Link>
+          <Link className='drawer-subheader' to="product" params={{ id: product.id }}>{product.name}</Link>
         </li>
       )
     })
 
     return ([
-      <li>
+      <li className="drawer-header">
         <a className={'drawer-header'} href="#">Products</a>
       </li>
     ].concat(productLinks))
@@ -249,7 +249,7 @@ var Header = React.createClass({
 
     let sidebar = (
       <div className="left-off-canvas-menu">
-        <div className="logos__sprintly">SPRINTLY</div>
+        <div className="logos__sprintly"></div>
         <ul className="off-canvas-list">
           {productLinks}
           {settingsLinks}
