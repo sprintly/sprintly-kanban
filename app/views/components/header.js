@@ -102,6 +102,10 @@ var Header = React.createClass({
     );
   },
 
+  toggleFilters() {
+    console.log('toggleFilters');
+  },
+
   smallScreenHeader() {
     var navClasses = this.getClasses('small');
     var menuClasses = React.addons.classSet({
@@ -112,7 +116,14 @@ var Header = React.createClass({
     // {this.sprintlyFlask()}
     return (
       <header className={navClasses}>
-        <div className="logos-wrapper">
+        <div className="filter-icon" onClick={this.toggleFilters}></div>
+        <div className="mobile-search">
+          <form className="navbar-right header-search" onSubmit={this.search} role="search">
+            <div className="form-group">
+                <input className="form-control" type="search" name="q" placeholder="Search" ref="search" onKeyDown={this.onKeyDown} />
+            </div>
+            <input type="submit" className="hidden" />
+          </form>
         </div>
         <ul className="small-menu">
           <li className="menu-list-item">
