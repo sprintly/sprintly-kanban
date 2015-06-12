@@ -12,7 +12,7 @@ const ACCOUNT_SETTINGS = [
 let MenuSidebar = React.createClass({
 
   propTypes: {
-    open: React.PropTypes.bool.isRequired
+    side: React.PropTypes.string.isRequired
   },
 
   mixins: [State],
@@ -39,16 +39,20 @@ let MenuSidebar = React.createClass({
   },
 
   buildMenuSide() {
-    let sidebarClasses = React.addons.classSet({
-      'left-off-canvas-menu': true,
-      'hidden': this.props.open
+    let classes = React.addons.classSet({
+      'sidebar__menu': true,
+      'col-xs-6': true,
+      'col-sm-3': true,
+      'sidebar-offcanvas': true,
+      'visible-xs': true
     });
 
     let productLinks = this.productLinks();
     let settingsLinks = this.settingsLinks();
+    var minHeight = { 'min-height': `${window.innerHeight}px` };
 
     return (
-      <div className={sidebarClasses}>
+      <div style={minHeight} className={classes}>
         <div className="logos__sprintly"></div>
         <ul className="off-canvas-list">
           {productLinks}
@@ -104,13 +108,9 @@ let MenuSidebar = React.createClass({
 
   render() {
     let classes = React.addons.classSet({
-      'sidebar__menu': true,
-      'col-xs-6': true,
-      'col-sm-3': true,
-      'sidebar-offcanvas': true,
-      'visible-xs': true
-    })
-
+      'left-off-canvas-menu': true,
+      'hidden': this.props.side !== 'left'
+    });
     var sidebar = this.buildMenuSide();
 
     return (

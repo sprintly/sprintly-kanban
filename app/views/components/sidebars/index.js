@@ -11,8 +11,13 @@ import SearchSidebar from './search';
 import SidebarConstants from '../../../constants/sidebar-constants'
 import ProductStore from '../../../stores/product-store';
 import FiltersStore from '../../../stores/filters-store';
+import SidebarStore from '../../../stores/sidebar-store';
 
 let Sidebars = React.createClass({
+
+  getInitialState() {
+    return SidebarStore.openState()
+  },
 
   getLocation() {
     // Is there an interface to the React router which can be used?
@@ -25,10 +30,10 @@ let Sidebars = React.createClass({
 
     switch (this.getLocation()) {
       case SidebarConstants.FILTERS:
-        content = <FiltersSidebar />
+        content = <FiltersSidebar {...this.state} />
         break;
       case SidebarConstants.SEARCH:
-        content = <SearchSidebar />
+        content = <SearchSidebar {...this.state}/>
         break;
       default:
         console.log('SIDEBARD CONTENT TYPE NOT HANDLED: ', this.props.type)
@@ -37,12 +42,24 @@ let Sidebars = React.createClass({
     return content;
   },
 
+  onChange() {
+    this.setState(SidebarStore.openState())
+  },
+
+  componentDidMount(){
+    SidebarStore.addChangeListener(this.onChange)
+  },
+
+  componentWillUnmount() {
+    SidebarStore.removeChangeListener(this.onChange);
+  },
+
   render() {
     var sidebar = this.secondarySidebar();
 
     return (
       <div className='sprintly__sidebars'>
-        <MenuSidebar />
+        <MenuSidebar {...this.state} />
         {sidebar}
       </div>
     )

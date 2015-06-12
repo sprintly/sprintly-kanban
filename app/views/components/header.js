@@ -4,6 +4,7 @@ import Gravatar from './gravatar';
 import AddItemModal from './add-item-modal';
 import FiltersMenu from './filters/filters-menu';
 import SidebarFilters from './filters/sidebar-filters';
+import SidebarActions from  '../../actions/sidebar-actions';
 
 import {ModalTrigger} from 'react-bootstrap';
 import {Link, Navigation} from 'react-router';
@@ -39,19 +40,6 @@ var Header = React.createClass({
       product: {
         name: 'Choose a Product'
       }
-    }
-  },
-
-  toggleMenu(direction) {
-    var canvasWrap = document.getElementsByClassName('row-offcanvas')[0];
-
-    if (_.contains(canvasWrap.className.split(' '), 'active')) {
-      canvasWrap.className = 'row-offcanvas';
-
-      this.setState({drawerOpen: false})
-    } else {
-      canvasWrap.className = `row-offcanvas row-offcanvas-${direction} active`;
-      this.setState({drawerOpen: direction})
     }
   },
 
@@ -112,8 +100,8 @@ var Header = React.createClass({
       '_burger': true,
       'open': this.state.drawerOpen === 'left'
     });
-    let openRightSide = _.partial(this.toggleMenu, 'right');
-    let openLeftSide = _.partial(this.toggleMenu, 'left');
+    let openRightSide = _.partial(SidebarActions.show, 'right');
+    let openLeftSide = _.partial(SidebarActions.show, 'left');
 
     return (
       <header className={navClasses}>
@@ -209,86 +197,6 @@ var Header = React.createClass({
         </div>
       </header>
     )
-  },
-
-  velocityControl() {
-    return ([
-      <li className="drawer-header">
-        <a className='drawer-header' href="#">Velocity</a>
-      </li>
-    ])
-  },
-
-  myItems() {
-    console.log('MY ITEMS CONTROL');
-  },
-
-  myItemsControl() {
-    return <a className="btn btn-primary" href="#" onClick={this.myItems}></a>
-  },
-
-  issueTypesControl() {
-    return ([
-      <li className="drawer-header">
-        <a className='drawer-header' href="#">Issue Types</a>
-      </li>
-    ])
-  },
-
-  // <FiltersToolbar
-  //   user={this.props.user}
-  //   allFilters={this.state.allFilters}
-  //   activeFilters={this.state.activeFilters}
-  //   members={this.state.members}
-  //   velocity={velocity}
-  //   productId={this.state.product.id}
-  // />
-
-  filtersControl() {
-    return (
-      <div>
-        <li className="drawer-header">
-          <a className='drawer-header'>Filters</a>
-          <SidebarFilters />
-        </li>
-      </div>
-    )
-  },
-
-  buildRightSidebar() {
-    // let velocity = this.velocityControl();
-    // let myItems = this.myItemsControl();
-    // let issueTypes = this.issueTypesControl();
-    // let filters = this.filtersControl();
-
-    let sidebarClasses = React.addons.classSet({
-      'right-off-canvas-menu': true,
-      'hidden': this.state.drawerOpen !== 'right'
-    });
-
-    // Shim the height of the container
-    var heightStyle = { height: `${window.innerHeight}px` };
-    // <SidebarFilters user={this.props.user}
-    //               members={this.props.members} />
-
-    // {velocity}
-    // {myItems}
-    // {issueTypes}
-
-    var test = this.filtersControl();
-
-    let sidebar = (
-      <div style={heightStyle} className={sidebarClasses}>
-        <ul className="off-canvas-list">
-          {test}
-        </ul>
-      </div>
-    )
-
-    // React.render(sidebar, document.getElementById('sidebar-right'));
-    // return {__html: }
-    React.render(<div dangerouslySetInnerHTML={ React.renderToString(<SidebarFilters />) } />, document.getElementById('sidebar-right'));
-    // React.render(<SidebarFilters />, document.getElementById('sidebar-right'));
   },
 
   render() {
