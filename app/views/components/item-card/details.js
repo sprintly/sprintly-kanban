@@ -4,6 +4,7 @@ import moment from 'moment';
 
 import FilterActions from '../../../actions/filter-actions';
 import ProductActions from '../../../actions/product-actions';
+import ItemActions from '../../../actions/item-actions';
 
 import SubItems from './subitems'
 import {TagEditor, Tags} from 'sprintly-ui';
@@ -30,6 +31,21 @@ var ItemCardDetails = React.createClass({
       this.props.item.number,
       direction
     )
+  },
+
+  handleMenuSelection(status) {
+    if (status === "destroy") {
+      return this.deleteItem();
+    } else {
+      return this.updateStatus(status);
+    }
+  },
+
+  deleteItem() {
+    ItemActions.deleteItem(
+      this.props.productId,
+      this.props.item.number
+    );
   },
 
   updateStatus(status) {
@@ -94,6 +110,16 @@ var ItemCardDetails = React.createClass({
     }
   },
 
+  renderMenuItems() {
+    let statusOptions = _.omit(STATUSES, this.props.item.status);
+    let menuItems = _.map(statusOptions, function(label, status) {
+      return <MenuItem eventKey={status} key={status}>Move to {label}</MenuItem>
+    });
+    let deleteItem = <MenuItem eventKey="destroy" key="destroy">Delete</MenuItem>
+    menuItems.push(deleteItem);
+    return menuItems;
+  },
+
   render() {
     let item = this.props.item;
     let hasTags = _.isString(item.tags) && !_.isEmpty(item.tags);
@@ -107,10 +133,8 @@ var ItemCardDetails = React.createClass({
         </div>
         <div className="col-sm-6 item-card__extra-controls">
           {this.renderMoveControls()}
-          <DropdownButton onSelect={this.updateStatus} bsStyle="default" bsSize="small" title={<span className="glyphicon glyphicon-cog"/>} noCaret>
-            {_.map(statusOptions, function(label, status) {
-              return <MenuItem eventKey={status} key={status}>Move to {label}</MenuItem>
-            })}
+          <DropdownButton onSelect={this.handleMenuSelection} bsStyle="default" bsSize="small" title={<span className="glyphicon glyphicon-cog"/>} noCaret>
+            {this.renderMenuItems()}
           </DropdownButton>
         </div>
         {this.renderSubItems()}

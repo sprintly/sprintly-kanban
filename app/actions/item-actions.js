@@ -28,10 +28,32 @@ let ItemActions = {
         resolve(item)
       });
     }
-  }
+  },
 
+  deleteItem(productId, itemId) {
+    let product = products.get(productId);
+    let item = product.items.get(itemId);
+    let itemData = item.attributes;
+    let destroyed = item.destroy();
+
+    if (destroyed) {
+      return destroyed.then(function() {
+        AppDispatcher.dispatch({
+        actionType: 'DELETE_ITEM',
+        product,
+        itemData
+        });
+      });
+    } else {
+      return new Promise(function(resolve) {
+        AppDispatcher.dispatch({
+          actionType: 'DELETE_ITEM_ERROR',
+          product,
+          itemData
+        });
+      });
+    }
+  }
 };
 
 export default ItemActions;
-
-
