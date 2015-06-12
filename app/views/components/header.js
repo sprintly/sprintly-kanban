@@ -4,9 +4,11 @@ import Gravatar from './gravatar';
 import AddItemModal from './add-item-modal';
 import FiltersMenu from './filters/filters-menu';
 import SidebarFilters from './filters/sidebar-filters';
+
 import {ModalTrigger} from 'react-bootstrap';
 import {Link, Navigation} from 'react-router';
 
+// compose to confidence
 const ACCOUNT_SETTINGS = [
   'Profile', 'Plan', 'Billing', 'Invoices', 'Products', 'Members', 'Notifications', 'Services'
 ];
@@ -209,72 +211,6 @@ var Header = React.createClass({
     )
   },
 
-  settingsLinks() {
-    let settingsLinks = _.map(ACCOUNT_SETTINGS, function(setting, i) {
-      let subheaderKey = `drawer-subheader-${i} ${setting}`;
-      let settingsURI = `https://sprint.ly/account/settings/${setting.toLowerCase()}`
-
-      return (
-        <li key={subheaderKey}>
-          <a className='drawer-subheader' href={settingsURI}>{setting}</a>
-        </li>
-      )
-    })
-
-    return ([
-        <li className="drawer-header">
-          <a className='drawer-header' href="#">Settings</a>
-        </li>
-      ].concat(settingsLinks).concat([
-        <li className="logout">
-          <a href="/logout" className="btn btn-danger btn-sm btn-block">Logout</a>
-        </li>
-      ])
-    )
-
-  },
-
-  productLinks() {
-    let productLinks = _.map(this.props.allProducts, (product, i) => {
-      let subheaderKey = `drawer-subheader-${i} product-${product.id}`;
-      let productURI = `/${product.id}`;
-
-      return (
-        <li key={subheaderKey}>
-          <Link className='drawer-subheader' to="product" params={{ id: product.id }}>{product.name}</Link>
-        </li>
-      )
-    })
-
-    return ([
-      <li className="drawer-header">
-        <a className={'drawer-header'} href="#">Products</a>
-      </li>
-    ].concat(productLinks))
-  },
-
-  buildLeftSidebar() {
-    let sidebarClasses = React.addons.classSet({
-      'left-off-canvas-menu': true,
-      'hidden': this.state.drawerOpen !== 'left'
-    });
-
-    let productLinks = this.productLinks();
-    let settingsLinks = this.settingsLinks();
-
-    let sidebar = (
-      <div className={sidebarClasses}>
-        <div className="logos__sprintly"></div>
-        <ul className="off-canvas-list">
-          {productLinks}
-          {settingsLinks}
-        </ul>
-      </div>
-    )
-
-    React.render(sidebar, document.getElementById('sidebar-left'));
-  },
-
   velocityControl() {
     return ([
       <li className="drawer-header">
@@ -313,16 +249,16 @@ var Header = React.createClass({
       <div>
         <li className="drawer-header">
           <a className='drawer-header'>Filters</a>
+          <SidebarFilters />
         </li>
-
       </div>
     )
   },
 
   buildRightSidebar() {
-    let velocity = this.velocityControl();
-    let myItems = this.myItemsControl();
-    let issueTypes = this.issueTypesControl();
+    // let velocity = this.velocityControl();
+    // let myItems = this.myItemsControl();
+    // let issueTypes = this.issueTypesControl();
     // let filters = this.filtersControl();
 
     let sidebarClasses = React.addons.classSet({
@@ -332,30 +268,31 @@ var Header = React.createClass({
 
     // Shim the height of the container
     var heightStyle = { height: `${window.innerHeight}px` };
+    // <SidebarFilters user={this.props.user}
+    //               members={this.props.members} />
+
+    // {velocity}
+    // {myItems}
+    // {issueTypes}
+
+    var test = this.filtersControl();
 
     let sidebar = (
       <div style={heightStyle} className={sidebarClasses}>
         <ul className="off-canvas-list">
-          {velocity}
-          {myItems}
-          {issueTypes}
-          <SidebarFilters user={this.props.user}
-                        members={this.props.members} />
+          {test}
         </ul>
       </div>
     )
 
-    React.render(sidebar, document.getElementById('sidebar-right'));
-  },
-
-  buildOffCanvasMenus() {
-    this.buildLeftSidebar();
-    this.buildRightSidebar();
+    // React.render(sidebar, document.getElementById('sidebar-right'));
+    // return {__html: }
+    React.render(<div dangerouslySetInnerHTML={ React.renderToString(<SidebarFilters />) } />, document.getElementById('sidebar-right'));
+    // React.render(<SidebarFilters />, document.getElementById('sidebar-right'));
   },
 
   render() {
     var smallScreenHeader = this.smallScreenHeader();
-    this.buildOffCanvasMenus();
     var largeScreenHeader = this.largeScreenHeader();
 
     return (
@@ -364,7 +301,7 @@ var Header = React.createClass({
         {largeScreenHeader}
       </div>
     );
-  }
+  },
 });
 
 export default Header;
