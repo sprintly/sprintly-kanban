@@ -3,7 +3,6 @@ import React from 'react/addons';
 import Gravatar from './gravatar';
 import AddItemModal from './add-item-modal';
 import FiltersMenu from './filters/filters-menu';
-import SidebarFilters from './filters/sidebar-filters';
 import SidebarActions from  '../../actions/sidebar-actions';
 
 import {ModalTrigger} from 'react-bootstrap';
@@ -87,7 +86,7 @@ var Header = React.createClass({
       <form className="navbar-form navbar-right header-search" onSubmit={this.search} role="search">
         <div className="form-group">
           {scope}
-            <input className="form-control" type="search" name="q" placeholder="Search" ref="search" onKeyDown={this.onKeyDown} />
+          <input className="form-control" type="search" name="q" placeholder="Search" ref="search" onKeyDown={this.onKeyDown} />
         </div>
         <input type="submit" className="hidden" />
       </form>
@@ -160,40 +159,70 @@ var Header = React.createClass({
     )
   },
 
+  logoutLink() {
+    return (
+      <li className="logout">
+        <a href="https://sprint.ly/logout" className="btn btn-danger btn-sm btn-block">Logout</a>
+      </li>
+    )
+  },
+
+  settingsDropdown() {
+    let options = _.map(ACCOUNT_SETTINGS, function(setting, index) {
+      return (
+        <li key={index}>
+          <a href={`https://sprint.ly/account/settings/${setting.toLowerCase()}`}>{setting}</a>
+        </li>
+      )
+    }).concat([this.logoutLink()])
+
+    return (
+      <nav className="product__dropdown product__account">
+        <button className="btn btn-default dropdown-toggle">
+          <Gravatar email={this.props.user.get('email')} className="img-rounded" size={26} />
+          <span className="product__account-name">{this.props.user.get('first_name')}</span>
+          <span className="glyphicon glyphicon-menu-down"/>
+        </button>
+        <ul>
+          {options}
+        </ul>
+      </nav>
+    )
+  },
+
+  productsDropdown() {
+    let productsList = _.map(this.props.allProducts, (product) => {
+      return (
+        <li key={`product-menu-${product.name}`}>
+          <Link to="product" params={{ id: product.id }}>{product.name}</Link>
+        </li>
+      )
+    });
+
+    return (
+      <nav className="product__dropdown">
+        <h1>{this.props.product.name}<span className="glyphicon glyphicon-menu-down"/></h1>
+        <ul>
+          {productsList}
+        </ul>
+      </nav>
+    )
+  },
+
   largeScreenHeader() {
-    var headerClasses = this.getClasses('large');
+    let headerClasses = this.getClasses('large');
+    let products = this.productsDropdown()
+    let accountSettings = this.settingsDropdown();
+    let searchBar = this.props.searchBar ? this.renderSearch() : '';
 
     return (
       <header className={headerClasses}>
         {this.sprintlyFlask()}
         <div className="product__header-menu">
-          <nav className="product__dropdown">
-            <h1>{this.props.product.name}<span className="glyphicon glyphicon-menu-down"/></h1>
-            <ul>
-            {_.map(this.props.allProducts, function(product) {
-              return (
-                <li key={`product-menu-${product.name}`}><Link to="product" params={{ id: product.id }}>{product.name}</Link></li>
-              )
-            })}
-            </ul>
-          </nav>
+          {products}
           {this.renderAddItem()}
-          <nav className="product__dropdown product__account">
-            <button className="btn btn-default dropdown-toggle">
-              <Gravatar email={this.props.user.get('email')} className="img-rounded" size={26} />
-              <span className="product__account-name">{this.props.user.get('first_name')}</span>
-              <span className="glyphicon glyphicon-menu-down"/>
-            </button>
-            <ul>
-              {_.map(ACCOUNT_SETTINGS, function(setting, index) {
-                return <li key={index}><a href={`https://sprint.ly/account/settings/${setting.toLowerCase()}`}>{setting}</a></li>
-              })}
-              <li className="logout">
-                <a href="https://sprint.ly/logout" className="btn btn-danger btn-sm btn-block">Logout</a>
-              </li>
-            </ul>
-          </nav>
-          {this.props.searchBar ? this.renderSearch() : ''}
+          {accountSettings}
+          {searchBar}
         </div>
       </header>
     )
