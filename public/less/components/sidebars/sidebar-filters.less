@@ -69,3 +69,54 @@
     font-size: 15px;
   }
 }
+ul.off-canvas-list li .issue-control {
+  height: 40px;
+  width: 25%;
+  color: @medium-grey;
+  float: left;
+  text-align: center;
+}
+
+ul.off-canvas-list li a {
+  padding: 0;
+  font-weight: @fontWeight-3;
+  color: @medium-grey;
+  font-size: 12px;
+
+  &:hover {
+    text-decoration: none;
+  }
+}
+
+ul.off-canvas-list li a.active {
+  font-weight: @fontWeight-9;
+  color: white;
+  text-decoration: none;
+}
+
+.right-off-canvas-menu .type-color-indicator {
+  height: 5px;
+  margin-top: 5px;
+  background-color: @medium-grey;
+}
+.right-off-canvas-menu .type-color-indicator.story.active {
+  background-color: @story-color;
+}
+.right-off-canvas-menu .type-color-indicator.defect.active {
+  background-color: @defect-color;
+}
+.right-off-canvas-menu .type-color-indicator.task.active {
+  background-color: @task-color;
+}
+.right-off-canvas-menu .type-color-indicator.test.active {
+  background-color: @test-color;
+}
+
+ul.off-canvas-list li a.all {
+  width: 100%;
+  margin-top: 10px;
+}
+
+ul.off-canvas-list .issue-types-control {
+  margin-top: 20px;
+}

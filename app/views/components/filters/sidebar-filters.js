@@ -29,7 +29,6 @@ var SidebarFilters = React.createClass({
     return _.assign({
       allFilters: FiltersStore.all(),
       activeFilters: FiltersStore.getActiveOrDefault(),
-      issueControls: {},
       activeTags: []
     }, product);
   },
@@ -53,53 +52,12 @@ var SidebarFilters = React.createClass({
     FiltersActions.update(field, criteria, options);
   },
 
-  toggleControlState(controls, value) {
-    controls[value] = (controls[value]) ? false : true;
-    this.setState(controls);
-  },
-
-  /*
-    FIELD: 'type'
-    CRITERIA:  ["defect", "test", "task", "story"]
-  */
-  addItemType(type) {
-    this.toggleControlState(this.state.issueControls, type);
-
-    FiltersActions.update('type', this.activeTypes());
-  },
-
   addTags(tags) {
     this.setState({
       activeTags: tags
     });
 
     FiltersActions.update('tags', tags);
-  },
-
-  activeTypes() {
-    return _.chain(this.state.issueControls).map((val, key) => {
-      if(val) {
-        return key
-        }
-      })
-      .compact()
-      .value();
-  },
-
-  issueTypeButtons() {
-    let issueTypes = ['story', 'defect', 'task', 'test', 'all'];
-
-    return _.map(issueTypes, (type) => {
-      let typeClass = {}
-      typeClass[type] = true;
-
-      var classes = React.addons.classSet(_.extend({
-        "btn btn-default issue-control": true,
-        "active": this.state.issueControls[type]
-      }, typeClass));
-
-      return <a href="#" onClick={_.partial(this.addItemType, type)} className={classes}>{type}</a>;
-    })
   },
 
   tagsInput() {
@@ -152,19 +110,6 @@ var SidebarFilters = React.createClass({
     )
   },
 
-  mine(ev) {
-    ev.preventDefault();
-    this.updateFilters('assigned_to', this.props.user.id)
-  },
-
-  mineButton() {
-    return (
-      <li>
-        <a href="#" onClick={this.mine} className="btn tbn-primary">My Items</a>
-      </li>
-    )
-  },
-
   onChange() {
     var product = ProductStore.getProduct(this.getParams().id) || {};
     this.setState(_.assign({
@@ -182,8 +127,6 @@ var SidebarFilters = React.createClass({
   },
 
   render() {
-    var mineButton = this.mineButton();
-    var issueTypeButtons = this.issueTypeButtons();
     // var activeFilters = this.buildActiveFilters();
     var filterControls = this.buildFilterControls();
 
@@ -195,8 +138,6 @@ var SidebarFilters = React.createClass({
         </li>
         <div className="filters-menu__scroll-wrapper">
           <ul className="filters-menu__list">
-            {mineButton}
-            {issueTypeButtons}
             {filterControls}
           </ul>
         </div>
