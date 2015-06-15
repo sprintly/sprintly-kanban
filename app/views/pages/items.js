@@ -35,8 +35,6 @@ module.exports = React.createClass({
       filtersObject: FiltersStore.getFlatObject(),
       allProducts: ProductStore.getAll(),
       activeItem: false,
-      showAccepted: false,
-      showSomeday: false,
       showMenu: false
     }, product);
   },
@@ -67,15 +65,6 @@ module.exports = React.createClass({
     this.setState({ activeItem });
   },
 
-  showHiddenColumn: function(status) {
-    let someday = status === 'someday';
-    let accepted = status === 'accepted';
-    this.setState({
-      showSomeday: someday,
-      showAccepted: accepted
-    });
-  },
-
   renderColumn: function(label, status) {
     var props = {
       status,
@@ -86,14 +75,23 @@ module.exports = React.createClass({
       velocity: this.state.velocity
     };
 
-    if (_.contains(['someday', 'accepted'], status)) {
-      props.onMouseEnter = _.partial(this.showHiddenColumn, status);
-      props.onMouseLeave = () => this.setState({
-        showAccepted: false,
-        showSomeday: false
-      })
-    }
-    return <ItemColumn {...props}/>;
+    return <ItemColumn {...props} />;
+  },
+
+  loadingColumn: function() {
+    return (
+      <div className="container-tray">
+        <Header
+          allProducts={this.state.allProducts}
+          user={this.props.user}
+        />
+        <div className="loading">
+          <Loading type="spin" color="#ccc" />
+          <br/>
+          <small><i>{ob.draw()}</i></small>
+        </div>
+      </div>
+    );
   },
 
   componentWillReceiveProps: function(nextProps) {
@@ -104,34 +102,26 @@ module.exports = React.createClass({
   },
 
   render: function() {
-    var product = this.state.product;
-
-    if (product === undefined) {
-      return (
-        <div className="container-tray">
-          <Header
-            allProducts={this.state.allProducts}
-            user={this.props.user}
-          />
-          <div className="loading">
-            <Loading type="spin" color="#ccc" />
-            <br/>
-            <small><i>{ob.draw()}</i></small>
-          </div>
-        </div>
-      );
+    if (_.isUndefined(this.state.product)) {
+      return this.loadingColumn();
     }
 
     var cols = _.map(ITEM_STATUSES, this.renderColumn);
 
-    var trayClasses = {
-      tray: true,
-      'show-accepted': this.state.showAccepted,
-      'show-someday': this.state.showSomeday
-    };
+    var trayClasses = React.addons.classSet({
+      tray: true
+    });
 
     var velocity =  this.state.velocity && this.state.velocity.average ?
       this.state.velocity.average : '~';
+
+    var navHeaders = _.map(ITEM_STATUSES, function(label, status) {
+      return (
+          <nav key={`header-nav-${status}`}>
+            <h3>{label}</h3>
+          </nav>
+      );
+    })
 
     return (
       <div className="container-tray">
@@ -150,15 +140,9 @@ module.exports = React.createClass({
           velocity={velocity}
           productId={this.state.product.id}
         />
-        <div className={React.addons.classSet(trayClasses)}>
+        <div className={trayClasses}>
           <div className="column__nav">
-            {_.map(ITEM_STATUSES, function(label, status) {
-              return (
-                <nav key={`header-nav-${status}`}>
-                  <h3>{label}</h3>
-                </nav>
-              );
-            })}
+            {navHeaders}
           </div>
           {cols}
         </div>

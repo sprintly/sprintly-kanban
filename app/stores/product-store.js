@@ -1,11 +1,13 @@
 import _ from 'lodash';
 import Promise from 'bluebird';
-import AppDispatcher from '../dispatchers/app-dispatcher';
-import ProductConstants from '../constants/product-constants';
 import { products, user } from '../lib/sprintly-client';
-import FiltersAction from '../actions/filter-actions';
 import {PUSHER_KEY, CHANNEL_PREFIX} from '../config';
 import {EventEmitter} from 'events';
+
+// Flux
+import AppDispatcher from '../dispatchers/app-dispatcher';
+import ProductConstants from '../constants/product-constants';
+import FiltersAction from '../actions/filter-actions';
 
 let columnCollections = {};
 

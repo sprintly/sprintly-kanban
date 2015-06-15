@@ -169,11 +169,20 @@
     text-align: center;
   }
 
-  .item-card__owner-unassigned, img {
+  .item-card__owner-unassigned,
+  .item-card__owner-placeholder,
+  img {
     border: 1px solid @medium-grey;
     width: 28px;
     height: 28px;
     border-radius: 14px;
+  }
+
+  .item-card__owner-placeholder {
+    border: 1px solid @light-grey;
+    background-image: url('../../img/item-card__owner-placeholder.png');
+    background-repeat: no-repeat;
+    background-size: contain;
   }
 }
 
