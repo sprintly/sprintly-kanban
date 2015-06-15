@@ -37,9 +37,7 @@ var ItemCard = React.createClass({
 
   closePopover() {
     if (!!this.refs.trigger) {
-      this.refs.trigger.setState({
-        isOverlayShown: false
-      });
+      this.refs.trigger.hide()
     }
   },
 
@@ -62,7 +60,9 @@ var ItemCard = React.createClass({
     let productId = this.props.productId;
     let itemId = this.props.item.number;
     ProductActions.updateItem(productId, itemId, { assigned_to: value });
-    this.closePopover();
+    setTimeout(() => {
+      this.closePopover();
+    }, 0)
   },
 
   prepareMembersForSelect() {
