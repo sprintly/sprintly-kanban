@@ -6,30 +6,33 @@ import MembersFilter from './forms/members-filter';
 import CheckboxFilter from './forms/checkbox-filter';
 import TagsFilter from './forms/tags-filter';
 import Filter from './filters-toolbar-filter';
+import TagsInput from '../tags-input.js';
 
 // Flux
 import FiltersStore from '../../../stores/filters-store';
+import ProductStore from '../../../stores/product-store';
 import FiltersActions from '../../../actions/filter-actions';
-
-let getStateFromStore = function() {
-  return {
-    allFilters: FiltersStore.all(),
-    activeFilters: FiltersStore.getActiveOrDefault(),
-    issueControls: {}
-  }
-}
+import {State} from 'react-router';
 
 var SidebarFilters = React.createClass({
+
+  mixins: [State],
 
   propTypes: {
     user: React.PropTypes.object,
     members: React.PropTypes.array
   },
 
-  getInitialState() {
-    return getStateFromStore();
-  },
+  getInitialState: function() {
+    var product = ProductStore.getProduct(this.getParams().id) || {};
 
+    return _.assign({
+      allFilters: FiltersStore.all(),
+      activeFilters: FiltersStore.getActiveOrDefault(),
+      issueControls: {},
+      activeTags: []
+    }, product);
+  },
 
   buildActiveFilters() {
     return (
@@ -48,7 +51,6 @@ var SidebarFilters = React.createClass({
 
   updateFilters(field, criteria, options) {
     FiltersActions.update(field, criteria, options);
-
   },
 
   toggleControlState(controls, value) {
@@ -56,10 +58,28 @@ var SidebarFilters = React.createClass({
     this.setState(controls);
   },
 
+  /*
+    FIELD: 'type'
+    CRITERIA:  ["defect", "test", "task", "story"]
+  */
   addItemType(type) {
-    // FiltersActions.update(field, criteria, options);
-
     this.toggleControlState(this.state.issueControls, type);
+
+    FiltersActions.update('type', this.activeTypes());
+  },
+
+  addTags(tags) {
+    FiltersActions.update('tags', tags);
+  },
+
+  activeTypes() {
+    return _.chain(this.state.issueControls).map((val, key) => {
+      if(val) {
+        return key
+        }
+      })
+      .compact()
+      .value();
   },
 
   issueTypeButtons() {
@@ -96,7 +116,8 @@ var SidebarFilters = React.createClass({
         form = <CheckboxFilter {...formProps} />
         break;
       case 'tags':
-        form = <TagsFilter {...formProps} />
+        let tags = _.pluck(this.props.tags, 'tag');
+        form = <TagsInput tags={tags} onChange={this.addTags} value={this.state.tags}/>
         break;
       default:
         form = '';
@@ -118,8 +139,25 @@ var SidebarFilters = React.createClass({
     )
   },
 
+  mine(ev) {
+    ev.preventDefault();
+    this.updateFilters('assigned_to', this.props.user.id)
+  },
+
+  mineButton() {
+    return (
+      <li>
+        <a href="#" onClick={this.mine} className="btn tbn-primary">My Items</a>
+      </li>
+    )
+  },
+
   onChange() {
-    return getStateFromStore();
+    var product = ProductStore.getProduct(this.getParams().id) || {};
+    this.setState(_.assign({
+      allFilters: FiltersStore.all(),
+      activeFilters: FiltersStore.getActiveOrDefault()
+    }, product));
   },
 
   componentDidMount() {
@@ -131,9 +169,10 @@ var SidebarFilters = React.createClass({
   },
 
   render() {
+    var mineButton = this.mineButton();
     var issueTypeButtons = this.issueTypeButtons();
     // var activeFilters = this.buildActiveFilters();
-    // var filterControls = this.buildFilterControls();
+    var filterControls = this.buildFilterControls();
 
     // {filterControls}
     return (
@@ -143,7 +182,9 @@ var SidebarFilters = React.createClass({
         </li>
         <div className="filters-menu__scroll-wrapper">
           <ul className="filters-menu__list">
+            {mineButton}
             {issueTypeButtons}
+            {filterControls}
           </ul>
         </div>
       </div>

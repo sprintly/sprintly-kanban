@@ -8,7 +8,7 @@ export default React.createClass({
     return (
       <div className="app-view">
         <RouteHandler {...this.props} />
-        <Sidebars />
+        <Sidebars {...this.props} />
       </div>
     )
   }
