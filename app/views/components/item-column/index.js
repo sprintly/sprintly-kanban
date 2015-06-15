@@ -28,7 +28,8 @@ function getColumnState(items=[], previousState={}) {
 var ItemColumn = React.createClass({
   propTypes: {
     status: React.PropTypes.string.isRequired,
-    product: React.PropTypes.object.isRequired
+    product: React.PropTypes.object.isRequired,
+    productHasItems: React.PropTypes.bool.isRequired
   },
 
   getInitialState() {
@@ -106,13 +107,12 @@ var ItemColumn = React.createClass({
   },
 
   renderItemCards() {
-    // Mock this.state.items to empty
-    if (_.isEmpty(this.state.items)) {
-      return <PlaceholderCards status={this.props.status} />
-    } else {
+    if (this.props.productHasItems) {
       let itemCards = _.map(this.state.items, this.renderItemCard)
 
       return <div>{itemCards}</div>
+    } else {
+      return <PlaceholderCards status={this.props.status} />
     }
   },
 
