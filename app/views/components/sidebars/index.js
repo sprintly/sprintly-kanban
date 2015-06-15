@@ -15,6 +15,10 @@ import SidebarStore from '../../../stores/sidebar-store';
 
 let Sidebars = React.createClass({
 
+  propTypes: {
+    user: React.PropTypes.object.isRequired
+  },
+
   getInitialState() {
     return SidebarStore.openState()
   },
@@ -26,14 +30,15 @@ let Sidebars = React.createClass({
   },
 
   secondarySidebar() {
-    var content;
+    let content;
+    let user = this.props.user;
 
     switch (this.getLocation()) {
       case SidebarConstants.FILTERS:
-        content = <FiltersSidebar {...this.state} />
+        content = <FiltersSidebar {...this.state} user={user} />
         break;
       case SidebarConstants.SEARCH:
-        content = <SearchSidebar {...this.state}/>
+        content = <SearchSidebar {...this.state} user={user} />
         break;
       default:
         console.log('SIDEBARD CONTENT TYPE NOT HANDLED: ', this.props.type)
@@ -59,7 +64,7 @@ let Sidebars = React.createClass({
 
     return (
       <div className='sprintly__sidebars'>
-        <MenuSidebar {...this.state} />
+        <MenuSidebar {...this.state} user={this.props.user} />
         {sidebar}
       </div>
     )

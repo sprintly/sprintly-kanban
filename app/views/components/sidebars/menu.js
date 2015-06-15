@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import React from 'react/addons'
 import {State,Link} from 'react-router';
+import Gravatar from '../gravatar';
 
 // Flux
 import ProductStore from '../../../stores/product-store';
@@ -12,6 +13,7 @@ const ACCOUNT_SETTINGS = [
 let MenuSidebar = React.createClass({
 
   propTypes: {
+    user: React.PropTypes.object.isRequired,
     side: React.PropTypes.string.isRequired
   },
 
@@ -78,13 +80,28 @@ let MenuSidebar = React.createClass({
         <li className="drawer-header">
           <a className='drawer-header' href="#">Settings</a>
         </li>
-      ].concat(settingsLinks).concat([
-        <li className="logout">
-          <a href="/logout" className="btn btn-danger btn-sm btn-block">Logout</a>
-        </li>
-      ])
+      ].concat(settingsLinks).concat([this.logoutSection()])
     )
+  },
 
+  logoutSection() {
+    let user = this.props.user;
+    let email = user.get('email');
+    let name = `${user.get('first_name')} ${user.get('last_name')}`;
+
+    return (
+      <li className="logout">
+        <div className="profile">
+          <div className='gravatar'>
+            <Gravatar email={email} className="img-rounded" size={40} />
+          </div>
+          <div className='username'>
+            {name}
+          </div>
+        </div>
+        <a href="/logout" className='btn btn-danger btn-sm btn-block'>Logout</a>
+      </li>
+    )
   },
 
   productLinks() {
