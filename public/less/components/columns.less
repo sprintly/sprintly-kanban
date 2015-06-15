@@ -23,7 +23,6 @@
   @media (max-width: @screen-sm-min) {
     overflow: scroll;
   }
-
 }
 
 .tray {
@@ -59,8 +58,12 @@
 
 .column__nav {
   margin-top: 93px;
-  width: 100%;
 
+  @media (max-width: @screen-sm-min) {
+    margin-top: 54px;
+  }
+
+  width: 100%;
   background: #ECECEC;
   color: @header;
   white-space: nowrap;

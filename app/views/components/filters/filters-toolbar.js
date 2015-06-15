@@ -47,7 +47,7 @@ var FiltersToolbar = React.createClass({
     var filters = this.buildFilters();
 
     return (
-      <div>
+      <div className="hidden-xs">
         <div className="filters__toolbar container-fluid">
           <div className="col-sm-10">
             <VelocityComponent productId={this.props.productId}
