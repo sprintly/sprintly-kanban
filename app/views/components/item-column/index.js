@@ -72,7 +72,7 @@ var ItemColumn = React.createClass({
       status: this.props.status,
       sortField: this.state.sortField,
       sortDirection: this.state.sortDirection
-    })
+    });
   },
 
   loadMoreItems() {
@@ -119,6 +119,7 @@ var ItemColumn = React.createClass({
   renderSprintGroup() {
     return <SprintGroup
       items={this.state.items}
+      members={this.props.members}
       velocity={this.props.velocity}
       sortField={this.state.sortField}
       productId={this.props.product.id}

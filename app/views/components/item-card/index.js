@@ -19,8 +19,8 @@ var ItemCard = React.createClass({
   propTypes: {
     productId: React.PropTypes.number.isRequired,
     item: React.PropTypes.object.isRequired,
-    sortField: React.PropTypes.string,
-    members: React.PropTypes.array
+    sortField: React.PropTypes.string.isRequired,
+    members: React.PropTypes.array.isRequired
   },
 
   mixins: [onClickOutside],
