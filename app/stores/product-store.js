@@ -9,6 +9,14 @@ import AppDispatcher from '../dispatchers/app-dispatcher';
 import ProductConstants from '../constants/product-constants';
 import FiltersAction from '../actions/filter-actions';
 
+const ITEM_STATUSES = [
+  'someday',
+  'backlog',
+  'in-progress',
+  'completed',
+  'accepted'
+];
+
 let columnCollections = {};
 
 let productVelocity = {};
@@ -67,6 +75,24 @@ var ProductStore = module.exports = _.assign({}, EventEmitter.prototype, {
       sortDirection,
       sortField
     };
+  },
+
+  hasItems(productId) {
+    let collections = internals.collectionsForProduct(productId)
+    if(collections.length > 0) {
+      let hasItems = false;
+
+      _.each(collections, (col) => {
+        if (col.models.length > 0) {
+          hasItems = true;
+        }
+      });
+
+      return hasItems;
+    } else {
+      // Return true optimistically to prevent flicker of content
+      return true;
+    }
   },
 
   getItemsCollection(productId, status) {
@@ -306,6 +332,15 @@ var internals = ProductStore.internals = {
     if (col) {
       col.add(item);
     }
+  },
+
+  collectionsForProduct(productId) {
+    return _.chain(ITEM_STATUSES)
+            .map((status) => {
+              return ProductStore.getItemsCollection(productId, status);
+            })
+            .compact()
+            .value()
   }
 };
 
