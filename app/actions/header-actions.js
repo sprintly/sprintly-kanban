@@ -4,7 +4,6 @@ import HeaderConstants from '../constants/header-constants';
 
 let HeaderActions = {
   openAddModal() {
-    console.log('HeaderActions: ', HeaderConstants.OPEN_MODAL);
     AppDispatcher.dispatch({
       actionType: HeaderConstants.OPEN_MODAL
     })

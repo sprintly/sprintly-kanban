@@ -14,8 +14,6 @@ var HeaderStore = module.exports = _.assign({}, EventEmitter.prototype, {
 })
 
 AppDispatcher.register(function(action) {
-  console.log('HEADER_STORE: ', action.actionType);
-
   switch(action.actionType) {
     case ActionTypes.OPEN_MODAL:
       HeaderStore.openAddItemModal();
