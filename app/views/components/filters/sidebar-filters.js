@@ -69,6 +69,10 @@ var SidebarFilters = React.createClass({
   },
 
   addTags(tags) {
+    this.setState({
+      activeTags: tags
+    });
+
     FiltersActions.update('tags', tags);
   },
 
@@ -98,6 +102,16 @@ var SidebarFilters = React.createClass({
     })
   },
 
+  tagsInput() {
+    let tags = _.map(this.state.tags, function(tag){return tag.tag});
+
+    return (
+      <div className="form-group">
+        <TagsInput tags={tags} onChange={this.addTags} value={this.state.activeTags}/>
+      </div>
+    )
+  },
+
   renderForm(filter) {
     var form;
     var formProps = {
@@ -116,8 +130,7 @@ var SidebarFilters = React.createClass({
         form = <CheckboxFilter {...formProps} />
         break;
       case 'tags':
-        let tags = _.pluck(this.props.tags, 'tag');
-        form = <TagsInput tags={tags} onChange={this.addTags} value={this.state.tags}/>
+        form = this.tagsInput();
         break;
       default:
         form = '';
