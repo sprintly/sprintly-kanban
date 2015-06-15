@@ -64,6 +64,7 @@ let Sprint = React.createClass({
         item={item}
         sortField={this.props.sortField}
         productId={this.props.productId}
+        members={this.props.members}
         key={`item-${this.props.productId}${item.number}`}
       />
     );

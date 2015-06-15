@@ -19,7 +19,7 @@ describe('ProductStore', function() {
     beforeEach(function() {
       this.products = ProductStore.__get__('products');
       this.user = ProductStore.__get__('user');
-      this.FiltersAction = ProductStore.__get__('FiltersAction');
+      this.FilterActions = ProductStore.__get__('FilterActions');
       this.productsTriggerStub = sinon.stub();
       ProductStore.__set__('products', {
         fetch: () => true,
@@ -30,7 +30,7 @@ describe('ProductStore', function() {
         fetch: () => true
       });
       this.filtersInitStub = sinon.stub();
-      ProductStore.__set__('FiltersAction', {
+      ProductStore.__set__('FilterActions', {
         init: this.filtersInitStub
       });
     });
@@ -38,7 +38,7 @@ describe('ProductStore', function() {
     afterEach(function() {
       ProductStore.__set__('products', this.products);
       ProductStore.__set__('user', this.user);
-      ProductStore.__set__('FiltersAction', this.FiltersAction);
+      ProductStore.__set__('FilterActions', this.FilterActions);
     });
 
     it('creates subscriptions on items collection', function() {

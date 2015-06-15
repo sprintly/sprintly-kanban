@@ -7,7 +7,7 @@ import {EventEmitter} from 'events';
 // Flux
 import AppDispatcher from '../dispatchers/app-dispatcher';
 import ProductConstants from '../constants/product-constants';
-import FiltersAction from '../actions/filter-actions';
+import FilterActions from '../actions/filter-actions';
 
 const ITEM_STATUSES = [
   'someday',
@@ -144,6 +144,7 @@ var ProductStore = module.exports = _.assign({}, EventEmitter.prototype, {
 
 var internals = ProductStore.internals = {
   initProduct(product) {
+    FilterActions.init(product);
     product.items.on('change:status', function(model) {
       let status = model.get('status');
       let collection = product.getItemsByStatus(status);

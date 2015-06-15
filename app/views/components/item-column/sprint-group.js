@@ -108,6 +108,7 @@ let SprintGroup = React.createClass({
           points={sprint.points}
           onChangeTeamStrength={this.updateTeamStrengths}
           index={i}
+          members={this.props.members}
         />
       );
     });

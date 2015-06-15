@@ -64,51 +64,40 @@ describe('FiltersStore', function() {
     });
 
     describe('init', function() {
-      it('returns a promise', function() {
-        this.sinon.stub(FiltersStore.internals, 'decorateMembers');
-        this.sinon.stub(FiltersStore.internals, 'decorateTags');
-        return FiltersStore.internals.init(this.product);
-      });
 
       it('resets filters to their default state', function() {
         let spy = sinon.spy(this.filters, 'reset');
-        FiltersStore.internals.init(this.product);
+        FiltersStore.internals.init(this.product.members, this.product.tags);
         sinon.assert.calledOnce(spy);
         spy.restore();
       });
 
-      it('decorates members onto appropriate filters', function(done) {
-        FiltersStore.internals.init(this.product).then(() => {
-          let filter = this.filters.findWhere({ type: 'members' });
-          let criteria = filter.get('criteriaOptions');
-          assert.lengthOf(criteria[0].members, this.product.members.length);
-          this.filters.reset(filtersJSON, { silent: true });
-          done();
-        })
+      it('decorates members onto appropriate filters', function() {
+        FiltersStore.internals.init(this.product.members, this.product.tags);
+        let filter = this.filters.findWhere({ type: 'members' });
+        let criteria = filter.get('criteriaOptions');
+        assert.lengthOf(criteria[0].members, this.product.members.length);
+        this.filters.reset(filtersJSON, { silent: true });
       });
 
-      it('updates the members key if it already exists', function(done) {
-        FiltersStore.internals.init(this.product, this.user).then(() => {
-          let filter = this.filters.findWhere({ type: 'members' });
-          let criteria = filter.get('criteriaOptions');
-          let criteriaSize = _.size(criteria);
-          this.product.members.add({ id: 2, revoked: false });
-          FiltersStore.internals.init(this.product, this.user);
-          assert.lengthOf(criteria[0].members, this.product.members.length);
-          assert.equal(criteriaSize, _.size(criteria));
-          this.filters.reset(filtersJSON, { silent: true });
-          done();
-        });
+      it('updates the members key if it already exists', function() {
+        FiltersStore.internals.init(this.product.members, this.product.tags);
+        let filter = this.filters.findWhere({ type: 'members' });
+        let criteria = filter.get('criteriaOptions');
+        let criteriaSize = _.size(criteria);
+        this.product.members.add({ id: 2, revoked: false });
+        FiltersStore.internals.init(this.product.members, this.product.tags);
+        assert.lengthOf(criteria[0].members, this.product.members.length);
+        assert.equal(criteriaSize, _.size(criteria));
+        this.filters.reset(filtersJSON, { silent: true });
       });
 
-      it('decorates tags onto appropriate filters', function(done) {
-        FiltersStore.internals.init(this.product, this.user).then(() => {
-          let filter = this.filters.findWhere({ type: 'tags' });
-          let criteria = filter.get('criteriaOptions');
-          assert.deepEqual(criteria, this.product.tags.toJSON())
-          this.filters.reset(filtersJSON, { silent: true });
-          done();
-        });
+      it('decorates tags onto appropriate filters', function() {
+        FiltersStore.internals.init(this.product.members, this.product.tags);
+        let filter = this.filters.findWhere({ type: 'tags' });
+        let criteria = filter.get('criteriaOptions');
+        assert.deepEqual(criteria, this.product.tags.toJSON())
+        this.filters.reset(filtersJSON, { silent: true });
       });
     });
 
