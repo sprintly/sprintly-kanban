@@ -1,14 +1,23 @@
 import AppDispatcher from '../dispatchers/app-dispatcher';
 import FiltersConstants from '../constants/filters-constants';
+import {products, user} from '../lib/sprintly-client';
 
 var FiltersActions = {
   init: function(product, user, query) {
-    AppDispatcher.dispatch({
-      actionType: FiltersConstants.INIT_FILTERS,
-      product,
-      user,
-      query
-    })
+    let members = product.members;
+    let tags = product.tags;
+    return Promise.all([
+      members.fetch(),
+      tags.fetch()
+    ])
+    .then(function() {
+      AppDispatcher.dispatch({
+        actionType: FiltersConstants.INIT_FILTERS,
+        product,
+        members,
+        tags
+      })
+    });
   },
 
   update: function(field, criteria, options={}) {
