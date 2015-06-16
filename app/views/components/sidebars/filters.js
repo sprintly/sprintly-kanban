@@ -177,12 +177,11 @@ let FiltersSidebar = React.createClass({
 
     return (
       <div style={minHeight} className={classes}>
-        <div>Filters</div>
         <ul className="off-canvas-list">
           {this.mineButton()}
           {this.velocityControl()}
           {this.issueTypesControl()}
-          <SidebarFilters />
+          <SidebarFilters {...this.props} />
         </ul>
       </div>
     )

@@ -19,33 +19,13 @@ var SidebarFilters = React.createClass({
   mixins: [State],
 
   propTypes: {
-    user: React.PropTypes.object,
-    members: React.PropTypes.array
-  },
-
-  getInitialState: function() {
-    var product = ProductStore.getProduct(this.getParams().id) || {};
-
-    return _.assign({
-      allFilters: FiltersStore.all(),
-      activeFilters: FiltersStore.getActiveOrDefault(),
-      activeTags: []
-    }, product);
-  },
-
-  buildActiveFilters() {
-    return (
-      _.map(this.state.activeFilters, function(filter, i) {
-        return (
-          <Filter
-            key={i}
-            user={this.props.user}
-            members={this.props.members}
-            updateFilters={this.updateFilters}
-            {...filter} />
-          )
-      }, this)
-    )
+    activeFilters: React.PropTypes.array,
+    allFilters: React.PropTypes.array,
+    filtersObject: React.PropTypes.object,
+    members: React.PropTypes.array,
+    product: React.PropTypes.object,
+    // tags: React.PropTypes.Array,
+    user: React.PropTypes.object
   },
 
   updateFilters(field, criteria, options) {
@@ -53,19 +33,24 @@ var SidebarFilters = React.createClass({
   },
 
   addTags(tags) {
-    this.setState({
-      activeTags: tags
-    });
-
     FiltersActions.update('tags', tags);
   },
 
   tagsInput() {
-    let tags = _.map(this.state.tags, function(tag){return tag.tag});
+    let tags = _.map(this.props.tags, (tag) => {
+      return tag.tag;
+    });
+
+    let activeTags = _.find(this.props.activeFilters, {field: 'tags'})
+    if (!activeTags) {
+      activeTags = [];
+    } else {
+      activeTags = activeTags.criteria
+    }
 
     return (
       <div className="form-group">
-        <TagsInput tags={tags} onChange={this.addTags} value={this.state.activeTags}/>
+        <TagsInput tags={tags} onChange={this.addTags} value={activeTags}/>
       </div>
     )
   },
@@ -99,7 +84,7 @@ var SidebarFilters = React.createClass({
 
   buildFilterControls() {
     return (
-      _.map(this.state.allFilters, function(filter, i) {
+      _.map(this.props.allFilters, function(filter, i) {
         return (
           <li key={i} className="drawer-subheader">
             <a href="#" className="drawer-subheader">{filter.label}</a>
@@ -118,16 +103,7 @@ var SidebarFilters = React.createClass({
     }, product));
   },
 
-  componentDidMount() {
-    FiltersStore.addChangeListener(this.onChange);
-  },
-
-  componentWillUnmount() {
-    FiltersStore.removeChangeListener(this.onChange);
-  },
-
   render() {
-    // var activeFilters = this.buildActiveFilters();
     var filterControls = this.buildFilterControls();
 
     return (
