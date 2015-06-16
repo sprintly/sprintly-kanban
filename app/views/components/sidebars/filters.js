@@ -12,7 +12,8 @@ let FiltersSidebar = React.createClass({
 
   getInitialState() {
     return {
-      issueControls: {}
+      issueControls: {},
+      mine: {active: false}
     }
   },
 
@@ -91,14 +92,25 @@ let FiltersSidebar = React.createClass({
 
   mine(ev) {
     ev.preventDefault();
+    this.toggleControlState(this.state.mine, 'active');
 
-    FiltersActions.update('assigned_to', this.props.user.id);
+    let options = {}
+    if (this.state.mine.active) {
+      options = {unset: true};
+    }
+
+    FiltersActions.update('assigned_to', this.props.user.id, options);
   },
 
   mineButton() {
+    let classes = React.addons.classSet({
+      "btn btn-primary mine-button": true,
+      "active": this.state.mine.active
+    })
+
     return (
       <li>
-        <a href="#" onClick={this.mine} className="btn tbn-primary">My Items</a>
+        <a href="#" onClick={this.mine} className={classes}>My Items</a>
       </li>
     )
   },
