@@ -48,11 +48,59 @@ describe('Product Actions', function() {
       });
     });
 
+    it('sets a default limit for the collection', function() {
+      ProductActions.getItemsForProduct(1, {});
+      assert.equal(40, this.itemsCollection.config.get('limit'));
+    });
+
+    it('fetches subitems with the expand_sub_items flag', function() {
+      ProductActions.getItemsForProduct(1, {});
+      assert.isTrue(this.itemsCollection.config.get('expand_sub_items'));
+      assert.isFalse(this.itemsCollection.config.get('children'));
+    });
+
     it('sets the collection config order by', function() {
       ProductActions.getItemsForProduct(1, {
         sortField: 'priority'
       });
       assert.equal('priority', this.itemsCollection.config.get('order_by'));
+    });
+
+    it('sets higher limits for priority sort backlog requests', function() {
+      ProductActions.getItemsForProduct(1, {
+        status: 'backlog',
+        sortField: 'priority'
+      });
+      assert.equal(100, this.itemsCollection.config.get('limit'));
+    });
+
+    it('sets lower limits for the accepted column', function() {
+      ProductActions.getItemsForProduct(1, {
+        status: 'accepted'
+      });
+      assert.equal(5, this.itemsCollection.config.get('limit'));
+    });
+
+    describe('internals.mergeFilters', function() {
+      it('sets an empty value for "unassigned" filters', function() {
+        let mergedFilters = ProductActions.internals.mergeFilters(this.itemsCollection.config, {
+          filters: {
+            assigned_to: 'unassigned'
+          }
+        });
+        assert.equal('', mergedFilters.assigned_to);
+      });
+
+      it('unsets globabl filters if they were set previously, but missing from the ', function() {
+        let defaultFilters = this.itemsCollection.config;
+        defaultFilters.set('tags', 'bar');
+
+        let mergedFilters = ProductActions.internals.mergeFilters(defaultFilters, {
+          filters: {}
+        });
+
+        assert.isUndefined(mergedFilters.tags);
+      });
     });
   });
 
