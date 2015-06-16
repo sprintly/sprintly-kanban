@@ -69,8 +69,8 @@
     font-size: 15px;
   }
 }
+
 ul.off-canvas-list li .issue-control {
-  height: 40px;
   width: 25%;
   color: @medium-grey;
   float: left;
@@ -95,7 +95,7 @@ ul.off-canvas-list li a.active {
 }
 
 .right-off-canvas-menu .type-color-indicator {
-  height: 5px;
+  height: 10px;
   margin-top: 5px;
   background-color: @medium-grey;
 }
@@ -112,13 +112,25 @@ ul.off-canvas-list li a.active {
   background-color: @test-color;
 }
 
-ul.off-canvas-list li a.all {
-  width: 100%;
+ul.off-canvas-list .issue-types-control {
+  height: 40px;
+  margin-top: 20px;
+}
+
+ul.off-canvas-list .all-types-control {
+  text-align: center;
   margin-top: 10px;
 }
 
-ul.off-canvas-list .issue-types-control {
-  margin-top: 20px;
+ul.off-canvas-list .all-types-control a {
+  font-size: 16px;
+}
+
+// Create an active mixin
+ul.off-canvas-list .all-types-control a.active {
+  font-weight: @fontWeight-9;
+  color: white;
+  text-decoration: none;
 }
 
 ul.off-canvas-list .mine-button {

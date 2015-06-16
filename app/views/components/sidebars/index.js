@@ -14,6 +14,16 @@ import FiltersStore from '../../../stores/filters-store';
 import SidebarStore from '../../../stores/sidebar-store';
 import VelocityActions from '../../../actions/velocity-actions';
 
+let getStateFromStores = function(id) {
+  var product = ProductStore.getProduct(id) || {};
+
+  return _.assign({
+    allFilters: FiltersStore.all(),
+    activeFilters: FiltersStore.getActiveOrDefault(),
+    filtersObject: FiltersStore.getFlatObject()
+  }, product, SidebarStore.openState());
+}
+
 let Sidebars = React.createClass({
 
   mixins: [State],
@@ -22,8 +32,8 @@ let Sidebars = React.createClass({
     user: React.PropTypes.object.isRequired
   },
 
-  getInitialState() {
-    return SidebarStore.openState()
+  getInitialState: function() {
+    return getStateFromStores(this.getParams().id);
   },
 
   getLocation() {
@@ -39,8 +49,7 @@ let Sidebars = React.createClass({
 
     switch (this.getLocation()) {
       case SidebarConstants.FILTERS:
-        var product = ProductStore.getProduct(this.getParams().id);
-        content = <FiltersSidebar {...this.state} user={user} product={product}/>
+        content = <FiltersSidebar {...this.state} user={user} />
         break;
       case SidebarConstants.SEARCH:
         content = <SearchSidebar {...this.state} user={user} />
@@ -53,17 +62,19 @@ let Sidebars = React.createClass({
   },
 
   onChange() {
-    this.setState(SidebarStore.openState())
+    this.setState(getStateFromStores(this.getParams().id));
   },
 
   componentDidMount(){
     ProductStore.addChangeListener(this.onChange);
+    FiltersStore.addChangeListener(this.onChange);
     SidebarStore.addChangeListener(this.onChange);
     VelocityActions.getVelocity(this.getParams().id);
   },
 
   componentWillUnmount() {
     ProductStore.removeChangeListener(this.onChange);
+    FiltersStore.removeChangeListener(this.onChange);
     SidebarStore.removeChangeListener(this.onChange);
   },
 

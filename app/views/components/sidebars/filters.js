@@ -4,6 +4,7 @@ import {State} from 'react-router';
 import SidebarFilters from '../filters/sidebar-filters'
 import FiltersActions from '../../../actions/filter-actions';
 import ProductStore from '../../../stores/product-store';
+import FiltersStore from '../../../stores/filters-store';
 import VelocityActions from '../../../actions/velocity-actions';
 
 let FiltersSidebar = React.createClass({
@@ -13,14 +14,14 @@ let FiltersSidebar = React.createClass({
   propTypes: {
     user: React.PropTypes.object.isRequired,
     side: React.PropTypes.string.isRequired,
-    product: React.PropTypes.object.isRequired
+    allFilters: React.PropTypes.array.isRequired,
+    activeFilters: React.PropTypes.array.isRequired
   },
 
-  getInitialState() {
+  getInitialState: function() {
     return {
-      issueControls: {},
-      mine: {active: false}
-    }
+      mine: { active: false }
+    };
   },
 
   toggleControlState(controls, value) {
@@ -28,55 +29,54 @@ let FiltersSidebar = React.createClass({
     this.setState(controls);
   },
 
-  activeTypes() {
-    return _.chain(this.state.issueControls).map((val, key) => {
-      if(val) {
-        return key
-        }
-      })
-      .compact()
-      .value();
-  },
+  updateItemTypes(type) {
+    let types = _.find(this.props.activeFilters, {field: 'type'}).criteria;
+    let activeTypes;
 
-  /*
-    FIELD: 'type'
-    CRITERIA:  ["defect", "test", "task", "story"]
-  */
-  addItemType(type) {
     if (type === 'all') {
-      _.each(["defect", "test", "task", "story"], (type) =>{
-        this.toggleControlState(this.state.issueControls, type);
-      }, this);
+      let types = _.find(this.props.allFilters, {field: 'type'}).criteriaOptions;
+      let allTypes = _.pluck(types, 'field');
+      activeTypes = allTypes;
+    } else if (_.contains(types, type)) {
+      activeTypes = _.pull(types,type);
     } else {
-      this.toggleControlState(this.state.issueControls, type);
+      activeTypes = _.union(types, [type]);
     }
 
-    FiltersActions.update('type', this.activeTypes());
+    FiltersActions.update('type', activeTypes);
   },
 
   issueTypesControl() {
+    // Confidence js this stuff
     let issueTypes = ['story', 'task', 'test', 'defect'];
+    let activeTypes = _.find(this.props.activeFilters, {field: 'type'}).criteria;
 
     let issueTypeButtons = _.map(issueTypes, (type) => {
       let typeClass = {}
       typeClass[type] = true;
 
+      let active = _.contains(activeTypes, type)
       let linkClasses = React.addons.classSet(_.extend({
-        "active": this.state.issueControls[type]
+        "active": active
       }, typeClass));
 
       let colorIndicator = React.addons.classSet({
         'type-color-indicator': true,
-        "active": this.state.issueControls[type]
+        "active": active
       })
 
       return (
-        <div className='issue-control'>
-          <a href="#" onClick={_.partial(this.addItemType, type)} className={linkClasses}>{type}</a>
+        <div className='issue-control' onClick={_.partial(this.updateItemTypes, type)}>
+          <a href="#" className={linkClasses}>{type}</a>
           <div className={`${colorIndicator} ${type}`}></div>
         </div>
       )
     })
+
+    let sameMembers = _.isEmpty(_.xor(activeTypes, issueTypes));
+    let allClasses = React.addons.classSet({
+      'active': sameMembers
+    });
 
     return ([
       <li className="drawer-header">
@@ -86,7 +86,9 @@ let FiltersSidebar = React.createClass({
         <div className="issue-types-control">
           {issueTypeButtons}
         </div>
-        <a href="#" onClick={_.partial(this.addItemType, 'all')} className='all'>All</a>
+        <div className="all-types-control">
+          <a href="#" onClick={_.partial(this.updateItemTypes, 'all')} className={allClasses}>All</a>
+        </div>
       </li>
     ])
   },
@@ -106,7 +108,7 @@ let FiltersSidebar = React.createClass({
   },
 
   velocityValue() {
-    let velocity = this.props.product.velocity;
+    let velocity = this.props.product && this.props.product.velocity;
 
     if (velocity && velocity.average) {
       if (velocity.average === '~') {
