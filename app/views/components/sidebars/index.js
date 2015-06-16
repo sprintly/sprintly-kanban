@@ -12,8 +12,11 @@ import SidebarConstants from '../../../constants/sidebar-constants'
 import ProductStore from '../../../stores/product-store';
 import FiltersStore from '../../../stores/filters-store';
 import SidebarStore from '../../../stores/sidebar-store';
+import VelocityActions from '../../../actions/velocity-actions';
 
 let Sidebars = React.createClass({
+
+  mixins: [State],
 
   propTypes: {
     user: React.PropTypes.object.isRequired
@@ -33,9 +36,11 @@ let Sidebars = React.createClass({
     let content;
     let user = this.props.user;
 
+
     switch (this.getLocation()) {
       case SidebarConstants.FILTERS:
-        content = <FiltersSidebar {...this.state} user={user} />
+        var product = ProductStore.getProduct(this.getParams().id);
+        content = <FiltersSidebar {...this.state} user={user} product={product}/>
         break;
       case SidebarConstants.SEARCH:
         content = <SearchSidebar {...this.state} user={user} />
@@ -52,10 +57,13 @@ let Sidebars = React.createClass({
   },
 
   componentDidMount(){
-    SidebarStore.addChangeListener(this.onChange)
+    ProductStore.addChangeListener(this.onChange);
+    SidebarStore.addChangeListener(this.onChange);
+    VelocityActions.getVelocity(this.getParams().id);
   },
 
   componentWillUnmount() {
+    ProductStore.removeChangeListener(this.onChange);
     SidebarStore.removeChangeListener(this.onChange);
   },
 

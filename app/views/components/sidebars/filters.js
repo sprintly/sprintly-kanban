@@ -1,13 +1,19 @@
 import _ from 'lodash';
 import React from 'react/addons';
+import {State} from 'react-router';
 import SidebarFilters from '../filters/sidebar-filters'
 import FiltersActions from '../../../actions/filter-actions';
+import ProductStore from '../../../stores/product-store';
+import VelocityActions from '../../../actions/velocity-actions';
 
 let FiltersSidebar = React.createClass({
 
+  mixins: [State],
+
   propTypes: {
     user: React.PropTypes.object.isRequired,
-    side: React.PropTypes.string.isRequired
+    side: React.PropTypes.string.isRequired,
+    product: React.PropTypes.object.isRequired
   },
 
   getInitialState() {
@@ -38,9 +44,12 @@ let FiltersSidebar = React.createClass({
   */
   addItemType(type) {
     if (type === 'all') {
-      type = ["defect", "test", "task", "story"];
+      _.each(["defect", "test", "task", "story"], (type) =>{
+        this.toggleControlState(this.state.issueControls, type);
+      }, this);
+    } else {
+      this.toggleControlState(this.state.issueControls, type);
     }
-    this.toggleControlState(this.state.issueControls, type);
 
     FiltersActions.update('type', this.activeTypes());
   },
@@ -82,11 +91,48 @@ let FiltersSidebar = React.createClass({
     ])
   },
 
+  changeVelocity(e) {
+    e.preventDefault();
+    let val = this.refs.velocity_input.getDOMNode().value;
+    if (val === '') {
+      val = '~';
+    }
+
+    VelocityActions.setVelocity(this.props.product.product.id, val);
+  },
+
+  placeCursor() {
+    this.refs.velocity_input.getDOMNode().value = this.refs.velocity_input.getDOMNode().value;
+  },
+
+  velocityValue() {
+    let velocity = this.props.product.velocity;
+
+    if (velocity && velocity.average) {
+      if (velocity.average === '~') {
+        return '';
+      } else {
+        return velocity.average;
+      }
+    } else {
+      return '';
+    }
+  },
+
   velocityControl() {
     return ([
       <li className="drawer-header">
         <a className='drawer-header' href="#">Velocity</a>
-      </li>
+      </li>,
+      <div className="form-group">
+        <input
+          className="form-control"
+          ref="velocity_input"
+          value={this.velocityValue()}
+          onChange={this.changeVelocity}
+          onFocus={this.placeCursor}
+        />
+      </div>
     ])
   },
 
