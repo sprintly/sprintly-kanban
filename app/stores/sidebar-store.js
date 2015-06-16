@@ -48,7 +48,6 @@ SidebarStore.dispatchToken = AppDispatcher.register(function(action) {
       SidebarStore.show(action.side)
       break;
     default:
-      console.log('Unhandled Sidebar Action');
       break;
   }
 });

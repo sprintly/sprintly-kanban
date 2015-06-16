@@ -130,7 +130,6 @@ var SidebarFilters = React.createClass({
     // var activeFilters = this.buildActiveFilters();
     var filterControls = this.buildFilterControls();
 
-    // {filterControls}
     return (
       <div>
         <li className="drawer-header">
