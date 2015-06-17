@@ -122,7 +122,7 @@ var Header = React.createClass({
               return <li key={index}><a href={`https://sprint.ly/account/settings/${setting.toLowerCase()}`}>{setting}</a></li>
             })}
             <li className="logout">
-              <a href="https://sprint.ly/logout" className="btn btn-danger btn-sm btn-block">Logout</a>
+              <a href="https://sprint.ly/logout" className="btn btn-danger btn-sm btn-block">Log out</a>
             </li>
           </ul>
         </nav>
