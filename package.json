@@ -71,7 +71,7 @@
   },
   "dependencies": {
     "bell": "^4.0.0",
-    "config": "^1.10.0",
+    "config": "^1.14.0",
     "good": "^6.1.4",
     "good-console": "^5.0.2",
     "hapi": "^8.6.1",
