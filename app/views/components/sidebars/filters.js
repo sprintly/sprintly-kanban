@@ -34,10 +34,10 @@ let FiltersSidebar = React.createClass({
     let activeTypes;
 
     if (type === 'all') {
-      let types = _.find(this.props.allFilters, {field: 'type'}).criteriaOptions;
-      let allTypes = _.pluck(types, 'field');
+      let allowedTypes = _.find(this.props.allFilters, {field: 'type'}).criteriaOptions;
+      let allTypes = _.pluck(allowedTypes, 'field');
       activeTypes = allTypes;
-    } else if (_.contains(types, type)) {
+    } else if (types.length > 1 && _.contains(types, type)) {
       activeTypes = _.pull(types,type);
     } else {
       activeTypes = _.union(types, [type]);
