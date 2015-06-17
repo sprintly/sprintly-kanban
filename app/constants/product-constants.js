@@ -7,5 +7,6 @@ export default keymirror({
   DELETE_ITEM: null,
   UPDATE_ITEM: null,
   CHANGE_SORT_CRITERIA: null,
-  UPDATE_ITEM_PRIORITY: null
+  UPDATE_ITEM_PRIORITY: null,
+  PRODUCT_UPDATE: null
 });

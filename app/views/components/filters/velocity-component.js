@@ -3,9 +3,20 @@ import React from 'react/addons';
 import {Popover} from 'react-bootstrap';
 import onClickOutside from 'react-onclickoutside';
 import VelocityActions from '../../../actions/velocity-actions';
+import ProductActions from '../../../actions/product-actions';
 
 var VelocityComponent = React.createClass({
   mixins: [ onClickOutside ],
+
+  propTypes: {
+    product: React.PropTypes.object
+  },
+
+  getDefaultProps() {
+    return {
+      product: {}
+    }
+  },
 
   getInitialState() {
     return {
@@ -50,6 +61,11 @@ var VelocityComponent = React.createClass({
     this.refs.velocity_input.getDOMNode().value = this.refs.velocity_input.getDOMNode().value;
   },
 
+  updateSprintDuration(ev) {
+    let sprintDuration = ev.target.value;
+    ProductActions.updateProduct(this.props.product.id, { sprint_duration: sprintDuration });
+  },
+
   renderVelocityPopover() {
     return (
       <Popover
@@ -75,6 +91,10 @@ var VelocityComponent = React.createClass({
               onClick={this.changeVelocity}>
               Adjust
             </button>
+          </div>
+          <div className="form-group">
+            <label>{this.props.product.sprint_duration} Week Sprints</label>
+            <input type="range" step="1" min="1" max="4" defaultValue={this.props.product.sprint_duration} onChange={this.updateSprintDuration}/>
           </div>
         </form>
       </Popover>

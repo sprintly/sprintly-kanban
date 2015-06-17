@@ -12,6 +12,16 @@ const EMPTY_CHUNK = {
 const DATE_FORMAT = 'MMMM D';
 
 let SprintGroup = React.createClass({
+
+  propTypes: {
+    items: React.PropTypes.array.isRequired,
+    members: React.PropTypes.array.isRequired,
+    velocity: React.PropTypes.object.isRequired,
+    sortField: React.PropTypes.string.isRequired,
+    productId: React.PropTypes.number.isRequired,
+    product: React.PropTypes.object.isRequired
+  },
+
   getInitialState() {
     return {
       teamStrengths: {}
@@ -74,7 +84,7 @@ let SprintGroup = React.createClass({
   },
 
   _getCapacityForSprint(currentChunkIdx) {
-    let capacity = this.props.velocity.average;
+    let capacity = this.props.velocity.average * this.props.product.sprint_duration;
 
     // If there is a team strength adjustment for this sprint, adjust the capacity
     if (_.isNumber(this.state.teamStrengths[currentChunkIdx])) {
@@ -93,10 +103,11 @@ let SprintGroup = React.createClass({
   },
 
   renderSprints() {
-    var rawSprints = this.chunkItems();
+    let rawSprints = this.chunkItems();
+    const SPRINT_LENGTH = 7 * this.props.product.sprint_duration;
     return _.map(rawSprints, (sprint, i) => {
       // Start the groups in the backlog with the next week
-      let startDate = moment().startOf('isoweek').add(7 * (i + 1), 'days').format(DATE_FORMAT);
+      let startDate = moment().startOf('isoweek').add(SPRINT_LENGTH * (i + 1), 'days').format(DATE_FORMAT);
       return (
         <Sprint
           key={`item-group-${i}`}

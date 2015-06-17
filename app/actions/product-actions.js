@@ -250,7 +250,19 @@ var ProductActions = {
         priority
       });
     });
-  }
+  },
+
+  updateProduct(productId, payload) {
+    let product = products.get(productId);
+    if (product) {
+      product.save(payload).then(() => {
+        AppDispatcher.dispatch({
+          actionType: ProductConstants.PRODUCT_UPDATE
+        })
+      });
+    }
+  },
+
 };
 
 export default ProductActions;

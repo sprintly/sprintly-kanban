@@ -118,6 +118,7 @@ var ItemColumn = React.createClass({
 
   renderSprintGroup() {
     return <SprintGroup
+      product={this.props.product}
       items={this.state.items}
       members={this.props.members}
       velocity={this.props.velocity}

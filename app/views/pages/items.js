@@ -114,7 +114,7 @@ module.exports = React.createClass({
     });
 
     var velocity =  this.state.velocity && this.state.velocity.average ?
-      this.state.velocity.average : '~';
+      this.state.velocity.average * this.state.product.sprint_duration : '~';
 
     var navHeaders = _.map(ITEM_STATUSES, function(label, status) {
       return (
@@ -134,6 +134,7 @@ module.exports = React.createClass({
           tags={this.state.tags}
         />
         <FiltersToolbar
+          product={this.state.product}
           user={this.props.user}
           allFilters={this.state.allFilters}
           activeFilters={this.state.activeFilters}

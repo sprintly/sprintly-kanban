@@ -13,6 +13,7 @@ var FiltersToolbar = React.createClass({
   },
 
   propTypes: {
+    product: React.PropTypes.object,
     members: React.PropTypes.array.isRequired,
     user: React.PropTypes.object.isRequired,
     allFilters: React.PropTypes.array.isRequired,
@@ -32,7 +33,11 @@ var FiltersToolbar = React.createClass({
       <div>
         <div className="filters__toolbar container-fluid">
           <div className="col-sm-10">
-            <VelocityComponent productId={this.props.productId} velocity={this.props.velocity} />
+            <VelocityComponent
+              product={this.props.product}
+              productId={this.props.productId}
+              velocity={this.props.velocity}
+            />
             {_.map(this.props.activeFilters, function(filter, i) {
               return (
                 <Filter

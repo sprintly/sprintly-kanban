@@ -374,6 +374,7 @@ ProductStore.dispatchToken = AppDispatcher.register(function(action) {
     case ProductConstants.UPDATE_ITEM_PRIORITY:
     case ProductConstants.CHANGE_SORT_CRITERIA:
     case ProductConstants.LOAD_MORE:
+    case ProductConstants.PRODUCT_UPDATE:
       ProductStore.emitChange();
       break;
 
