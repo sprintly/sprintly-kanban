@@ -84,7 +84,7 @@
     "node": "0.10.x",
     "npm": "2.7.x"
   },
-  "description": "Oauth2 Client App w/ Hapi, React, Flux, and Sprinlty-Data",
+  "description": "Oauth2 Client App w/ Hapi, React, Flux, and Sprintly-Data",
   "main": "server.js",
   "directories": {
     "test": "test"
