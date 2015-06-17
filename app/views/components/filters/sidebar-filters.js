@@ -7,6 +7,7 @@ import CheckboxFilter from './forms/checkbox-filter';
 import TagsFilter from './forms/tags-filter';
 import Filter from './filters-toolbar-filter';
 import TagsInput from '../tags-input.js';
+import Select from 'react-select';
 
 // Flux
 import FiltersStore from '../../../stores/filters-store';
@@ -48,74 +49,84 @@ var SidebarFilters = React.createClass({
       activeTags = activeTags.criteria
     }
 
-    return (
-      <div className="form-group">
-        <TagsInput tags={tags} onChange={this.addTags} value={activeTags}/>
-      </div>
-    )
+    return ([
+      <li className="drawer-header">
+        <a className='drawer-header' href="#">Tags</a>
+      </li>,
+      <li className="drawer-subheader">
+        <div className="form-group">
+          <TagsInput tags={tags} onChange={this.addTags} value={activeTags}/>
+        </div>
+      </li>
+    ])
   },
 
-  renderForm(filter) {
-    var form;
-    var formProps = {
+  filterProps(filter) {
+    return {
       name: filter.field,
       updateFilters: this.updateFilters,
       options: filter.criteriaOptions,
       criteria: filter.criteria,
       visible: true
-    };
-
-    switch (filter.type) {
-      case 'members':
-        form = <MembersFilter {...formProps}/>
-        break;
-      case 'checkbox':
-        form = <CheckboxFilter {...formProps} />
-        break;
-      case 'tags':
-        form = this.tagsInput();
-        break;
-      default:
-        form = '';
-        break;
     }
-    return form;
   },
 
-  buildFilterControls() {
-    return (
-      _.map(this.props.allFilters, function(filter, i) {
-        return (
-          <li key={i} className="drawer-subheader">
-            <a href="#" className="drawer-subheader">{filter.label}</a>
-            {this.renderForm(filter)}
-          </li>
-        );
-      }, this)
-    )
+  prepareMembersForSelect(members) {
+    return _.chain(members)
+            .map(function(member){
+              if (!member.revoked) {
+                return {label: `${member.first_name} ${member.last_name}`, value: member.id}
+              }
+            })
+            .compact()
+            .value()
   },
 
-  onChange() {
-    var product = ProductStore.getProduct(this.getParams().id) || {};
-    this.setState(_.assign({
-      allFilters: FiltersStore.all(),
-      activeFilters: FiltersStore.getActiveOrDefault()
-    }, product));
+  selectedPerson(members, filter) {
+    let person = _.find(this.props.members, {id: parseInt(filter.criteria)})
+
+    if (person) {
+      return `${person.first_name} ${person.last_name}`;
+    } else {
+      return 'Unassigned';
+    }
+  },
+
+  buildAssignFilter(field) {
+    let filter = _.find(this.props.allFilters, {field: field});
+    let filterProps = this.filterProps(filter);
+    let activeAssignee = this.selectedPerson(this.props.members, filter);
+
+    // Extract to util component data formatter
+    let members = this.prepareMembersForSelect(this.props.members);
+    return ([
+      <li className="drawer-header">
+        <a className='drawer-header' href="#">{filter.label}</a>
+      </li>,
+      <li className="drawer-subheader">
+        <Select placeholder='Unassigned'
+                name={filter.field}
+                className="assign-dropdown"
+                value={activeAssignee}
+                options={members}
+                onChange={_.partial(this.updateFilters, filter.field)}
+                clearable={true} />
+      </li>
+    ])
   },
 
   render() {
-    var filterControls = this.buildFilterControls();
+    var tagsInput = this.tagsInput();
+    let assignmentFields = _.map(['assigned_to', 'created_by'], (field) => {
+      return this.buildAssignFilter(field);
+    }, this);
 
     return (
-      <div>
-        <li className="drawer-header">
-          <a className='drawer-header' href="#">Filters</a>
-        </li>
-        <div className="filters-menu__scroll-wrapper">
-          <ul className="filters-menu__list">
-            {filterControls}
-          </ul>
-        </div>
+      <div className="filters-menu__scroll-wrapper">
+        <ul className="filters-menu__list">
+          {tagsInput}
+          {assignmentFields}
+        </ul>
       </div>
     );
   }
