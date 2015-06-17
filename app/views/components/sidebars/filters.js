@@ -163,6 +163,23 @@ let FiltersSidebar = React.createClass({
     )
   },
 
+  // Add clear filters button
+  clearFilters() {
+    FiltersActions.clearActiveFilters(this.props.user.id);
+  },
+
+  clearFiltersButton() {
+    let classes = React.addons.classSet({
+      "btn btn-primary": true,
+    })
+
+    return (
+      <li className="clear-button">
+        <a href="#" onClick={this.clearFilters} className={classes}>Clear Filters</a>
+      </li>
+    )
+  },
+
   buildFilterSideBar() {
     let classes = React.addons.classSet({
       'sidebar__menu': true,
@@ -176,12 +193,13 @@ let FiltersSidebar = React.createClass({
     var mineButton = this.mineButton();
 
     return (
-      <div style={minHeight} className={classes}>
-        <ul className="off-canvas-list">
+      <div className={classes}>
+        <ul style={minHeight} className="off-canvas-list">
           {this.mineButton()}
           {this.velocityControl()}
           {this.issueTypesControl()}
           <SidebarFilters {...this.props} />
+          {this.clearFiltersButton()}
         </ul>
       </div>
     )

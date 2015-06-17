@@ -116,7 +116,7 @@ var SidebarFilters = React.createClass({
   },
 
   render() {
-    var tagsInput = this.tagsInput();
+    let tagsInput = this.tagsInput();
     let assignmentFields = _.map(['assigned_to', 'created_by'], (field) => {
       return this.buildAssignFilter(field);
     }, this);

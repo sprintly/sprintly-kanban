@@ -274,6 +274,7 @@ footer {
 
 ul.off-canvas-list {
   padding: 0px 20px;
+  list-style: none;
 }
 
 ul.off-canvas-list li {
@@ -316,7 +317,7 @@ ul.off-canvas-list li a.drawer-subheader {
   font-weight: 100;
 
   &:hover {
-    color: #978A76;
+    color: white;
   }
 }
 
@@ -325,6 +326,11 @@ ul.off-canvas-list li.logout {
 
   a {
     margin-top: 20px;
+    height: 40px;
+    color: white;
+    line-height: 39px;
+    font-size: 16px;
+    font-weight: @fontWeight-9;
   }
 }
 
@@ -346,3 +352,27 @@ ul.off-canvas-list li.logout .username {
   line-height: 35px;
   padding-left: 15px;
 }
+
+ul.off-canvas-list li.clear-button a {
+  height: 40px;
+  background-color: @medium-grey;
+  color: white;
+  width: 100%;
+  border: 1px solid @medium-grey;
+  font-weight: @fontWeight-9;
+  line-height: 40px;
+  margin-top: 10px;
+}
+
+
+
+/* ul.off-canvas-list li a.drawer-subheader span.Select-clear {
+  width: 30px;
+  height: 40px;
+  background-color: red;
+  padding: 0;
+  margin: 0 10px;
+}
+ *//* ul.off-canvas-list .Select-clear {
+}
+ */
