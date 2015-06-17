@@ -9,60 +9,71 @@ const STATUS_MAPPINGS = {
   priority: 'priority'
 };
 
-function mergeFilters(configModel, filters) {
-  var defaultFilters = configModel.toJSON();
-  var updatedFilters = _.extend(defaultFilters, filters);
+var internals = {
 
-  // unset previously-set global filters
-  _.each(['tags', 'assigned_to', 'created_by', 'estimate', 'members'], function(field) {
-    if (_.has(filters, field) === false && _.has(updatedFilters, field)) {
-      configModel.unset(field, { silent: true });
-      delete updatedFilters[field];
+  mergeFilters(configModel, options) {
+    // user-requested filters
+    let filters = options.filters;
+    let defaultFilters = configModel.toJSON();
+    let updatedFilters = _.extend(defaultFilters, filters);
+
+    // unset previously-set global filters
+    _.each(['tags', 'assigned_to', 'created_by', 'estimate', 'members'], function(field) {
+      if (_.has(filters, field) === false && _.has(updatedFilters, field)) {
+        configModel.unset(field, { silent: true });
+        delete updatedFilters[field];
+      }
+    });
+
+    if (updatedFilters.assigned_to === 'unassigned') {
+      updatedFilters.assigned_to = '';
     }
-  });
 
-  if (updatedFilters.assigned_to === 'unassigned') {
-    updatedFilters.assigned_to = '';
-  }
-  return updatedFilters;
-}
+    // Set non-overrideable defaults for fetching products
+    updatedFilters.limit = 40;
+    updatedFilters.children = false;
+    updatedFilters.expand_sub_items = true;
+    updatedFilters.offset = 0;
 
-function getItemsCollection(product, options) {
-  var items = product.getItemsByStatus(options.status);
-
-  if (items.config.get('order_by')) {
-    // Set "Recent" as the default sort
-    let sort = STATUS_MAPPINGS[options.sortField] || 'recent';
-    items.config.set('order_by', sort);
-  }
-  var updatedFilters = mergeFilters(items.config, options.filters);
-
-  // Set additional defaults for fetching products
-  updatedFilters.limit = 30;
-  updatedFilters.children = false;
-  updatedFilters.expand_sub_items = true;
-  updatedFilters.offset = 0;
-
-  if(options.status === 'accepted') {
-    updatedFilters.limit = 5;
-  }
-
-  items.config.set(updatedFilters);
-  return items;
-}
-
-function setComparator(collection, field, direction) {
-  var presenter = (o) => +new Date(o);
-
-  collection.comparator = (model) => {
-    let criteria = model.get(field);
-    if (field === 'priority') {
-      return model.get('sort');
+    if (options.sortField === 'priority' && options.status === 'backlog') {
+      updatedFilters.limit = 100;
     }
-    let value = presenter(criteria)
-    return direction === 'desc' ? -value : value;
-  };
-}
+
+    if (options.status === 'accepted') {
+      updatedFilters.limit = 5;
+    }
+
+    return updatedFilters;
+  },
+
+  getItemsCollection(product, options) {
+    var items = product.getItemsByStatus(options.status);
+
+    if (items.config.get('order_by')) {
+      // Set "Recent" as the default sort
+      let sort = STATUS_MAPPINGS[options.sortField] || 'recent';
+      items.config.set('order_by', sort);
+    }
+
+    var updatedFilters = internals.mergeFilters(items.config, options);
+    items.config.set(updatedFilters);
+    return items;
+  },
+
+  setComparator(collection, field, direction) {
+    var presenter = (o) => +new Date(o);
+
+    collection.comparator = (model) => {
+      let criteria = model.get(field);
+      if (field === 'priority') {
+        return model.get('sort');
+      }
+      let value = presenter(criteria)
+      return direction === 'desc' ? -value : value;
+    };
+  }
+
+};
 
 var ProductActions = {
   init(productId) {
@@ -102,7 +113,7 @@ var ProductActions = {
   changeSortCriteria(itemCollection, options) {
     let field = options.field;
     let direction = options.direction;
-    setComparator(itemCollection, field, direction);
+    internals.setComparator(itemCollection, field, direction);
 
     if (field === 'last_modified') {
       field = direction === 'asc' ? 'stale' : 'recent';
@@ -127,9 +138,9 @@ var ProductActions = {
 
   getItemsForProduct(product, options) {
     let productModel = products.get(product);
-    let itemsCollection = getItemsCollection(productModel, options);
+    let itemsCollection = internals.getItemsCollection(productModel, options);
 
-    setComparator(itemsCollection, options.sortField, options.sortDirection);
+    internals.setComparator(itemsCollection, options.sortField, options.sortDirection);
 
     itemsCollection.fetch({ reset: true, silent: true })
       .then(function() {
@@ -252,5 +263,7 @@ var ProductActions = {
     });
   }
 };
+
+ProductActions.internals = internals;
 
 export default ProductActions;
