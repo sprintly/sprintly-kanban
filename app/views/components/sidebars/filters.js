@@ -100,7 +100,7 @@ let FiltersSidebar = React.createClass({
       val = '~';
     }
 
-    VelocityActions.setVelocity(this.props.product.product.id, val);
+    VelocityActions.setVelocity(this.props.product.id, val);
   },
 
   placeCursor() {
@@ -108,7 +108,7 @@ let FiltersSidebar = React.createClass({
   },
 
   velocityValue() {
-    let velocity = this.props.product && this.props.product.velocity;
+    let velocity = this.props.velocity;
 
     if (velocity && velocity.average) {
       if (velocity.average === '~') {
