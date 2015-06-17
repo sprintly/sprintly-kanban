@@ -34,9 +34,7 @@ let FiltersSidebar = React.createClass({
     let activeTypes;
 
     if (type === 'all') {
-      let allowedTypes = _.find(this.props.allFilters, {field: 'type'}).criteriaOptions;
-      let allTypes = _.pluck(allowedTypes, 'field');
-      activeTypes = allTypes;
+      activeTypes = ['story', 'task', 'test', 'defect'];
     } else if (types.length > 1 && _.contains(types, type)) {
       activeTypes = _.pull(types,type);
     } else {
@@ -46,8 +44,8 @@ let FiltersSidebar = React.createClass({
     FiltersActions.update('type', activeTypes);
   },
 
+
   issueTypesControl() {
-    // Confidence js this stuff
     let issueTypes = ['story', 'task', 'test', 'defect'];
     let activeTypes = _.find(this.props.activeFilters, {field: 'type'}).criteria;
 
@@ -163,9 +161,9 @@ let FiltersSidebar = React.createClass({
     )
   },
 
-  // Add clear filters button
   clearFilters() {
-    FiltersActions.clearActiveFilters(this.props.user.id);
+    FiltersActions.clear(this.props.members, this.props.tags);
+    this.updateItemTypes('alxl');
   },
 
   clearFiltersButton() {

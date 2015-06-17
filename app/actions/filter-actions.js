@@ -27,8 +27,15 @@ var FiltersActions = {
       field,
       criteria,
     });
-  }
+  },
 
+  clear: function(members, tags) {
+    AppDispatcher.dispatch({
+      actionType: FiltersConstants.CLEAR_FILTERS,
+      members,
+      tags
+    });
+  }
 };
 
 export default FiltersActions;
