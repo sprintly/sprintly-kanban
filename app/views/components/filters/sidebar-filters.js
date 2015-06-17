@@ -25,7 +25,7 @@ var SidebarFilters = React.createClass({
     filtersObject: React.PropTypes.object,
     members: React.PropTypes.array,
     product: React.PropTypes.object,
-    tags: React.PropTypes.Array,
+    tags: React.PropTypes.array,
     user: React.PropTypes.object
   },
 
@@ -97,7 +97,7 @@ var SidebarFilters = React.createClass({
     let filterProps = this.filterProps(filter);
     let activeAssignee = this.selectedPerson(this.props.members, filter);
     let members = this.prepareMembersForSelect(this.props.members);
-    
+
     return ([
       <li className="drawer-header">
         <a className='drawer-header' href="#">{filter.label}</a>
