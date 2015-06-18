@@ -28,7 +28,8 @@ function getColumnState(items=[], previousState={}) {
 var ItemColumn = React.createClass({
   propTypes: {
     status: React.PropTypes.string.isRequired,
-    product: React.PropTypes.object.isRequired
+    product: React.PropTypes.object.isRequired,
+    productHasItems: React.PropTypes.bool.isRequired
   },
 
   getInitialState() {
@@ -72,7 +73,7 @@ var ItemColumn = React.createClass({
       status: this.props.status,
       sortField: this.state.sortField,
       sortDirection: this.state.sortDirection
-    })
+    });
   },
 
   loadMoreItems() {
@@ -106,19 +107,19 @@ var ItemColumn = React.createClass({
   },
 
   renderItemCards() {
-    // Mock this.state.items to empty
-    if (_.isEmpty(this.state.items)) {
-      return <PlaceholderCards status={this.props.status} />
-    } else {
+    if (this.props.productHasItems) {
       let itemCards = _.map(this.state.items, this.renderItemCard)
 
       return <div>{itemCards}</div>
+    } else {
+      return <PlaceholderCards status={this.props.status} />
     }
   },
 
   renderSprintGroup() {
     return <SprintGroup
       items={this.state.items}
+      members={this.props.members}
       velocity={this.props.velocity}
       sortField={this.state.sortField}
       productId={this.props.product.id}

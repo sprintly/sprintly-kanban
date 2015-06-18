@@ -72,7 +72,8 @@ module.exports = React.createClass({
       members: this.state.members,
       filters: this.state.filtersObject,
       key: `col-${this.state.product.id}-${status}`,
-      velocity: this.state.velocity
+      velocity: this.state.velocity,
+      productHasItems: ProductStore.hasItems(this.state.product.id)
     };
 
     return <ItemColumn {...props} />;
@@ -149,5 +150,4 @@ module.exports = React.createClass({
       </div>
     );
   }
-
 });

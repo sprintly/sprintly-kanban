@@ -70,12 +70,12 @@
     ]
   },
   "dependencies": {
-    "bell": "git://github.com/wookiehangover/bell",
-    "config": "^1.10.0",
-    "good": "^5.1.1",
-    "good-console": "^4.1.0",
-    "hapi": "8.1.0",
-    "hapi-auth-cookie": "^2.0.0",
+    "bell": "^4.0.0",
+    "config": "^1.14.0",
+    "good": "^6.1.4",
+    "good-console": "^5.0.2",
+    "hapi": "^8.6.1",
+    "hapi-auth-cookie": "^3.0.1",
     "sprintly-data": "^2.0.0",
     "superagent": "^1.2.0",
     "swig": "^1.4.2"

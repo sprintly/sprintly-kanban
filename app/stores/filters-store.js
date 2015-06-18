@@ -51,21 +51,11 @@ var FiltersStore = module.exports = _.assign({}, EventEmitter.prototype, {
 });
 
 var internals = FiltersStore.internals = {
-  init: function(product) {
-    product = products.get(product);
+  init: function(members, tags) {
     filters.reset(filtersData, { silent: true });
-    let members = product.members;
-    let tags = product.tags;
-    return Promise.all([
-      members.fetch(),
-      tags.fetch()
-    ])
-    .then(function() {
-      internals.decorateMembers(members);
-      internals.decorateTags(tags);
-      ProductStore.getAll();
-      FiltersStore.emitChange();
-    });
+    internals.decorateMembers(members);
+    internals.decorateTags(tags);
+    FiltersStore.emitChange();
   },
 
   decorateMembers: function(members) {
@@ -113,13 +103,8 @@ var internals = FiltersStore.internals = {
 
 AppDispatcher.register(function(action) {
   switch(action.actionType) {
-    case 'INIT_PRODUCTS':
-      if (action.product) {
-        internals.init(action.product);
-      }
-      break;
     case FiltersConstants.INIT_FILTERS:
-      internals.init(action.product);
+      internals.init(action.members, action.tags);
       break;
     case FiltersConstants.UPDATE_FILTER:
       internals.update(action.field, action.criteria, action.unset);

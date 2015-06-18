@@ -7,7 +7,15 @@ import {EventEmitter} from 'events';
 // Flux
 import AppDispatcher from '../dispatchers/app-dispatcher';
 import ProductConstants from '../constants/product-constants';
-import FiltersAction from '../actions/filter-actions';
+import FilterActions from '../actions/filter-actions';
+
+const ITEM_STATUSES = [
+  'someday',
+  'backlog',
+  'in-progress',
+  'completed',
+  'accepted'
+];
 
 let columnCollections = {};
 
@@ -69,6 +77,24 @@ var ProductStore = module.exports = _.assign({}, EventEmitter.prototype, {
     };
   },
 
+  hasItems(productId) {
+    let collections = internals.collectionsForProduct(productId)
+    if(collections.length > 0) {
+      let hasItems = false;
+
+      _.each(collections, (col) => {
+        if (col.models.length > 0) {
+          hasItems = true;
+        }
+      });
+
+      return hasItems;
+    } else {
+      // Return true optimistically to prevent flicker of content
+      return true;
+    }
+  },
+
   getItemsCollection(productId, status) {
     let collection = columnCollections[`${productId}-${status}`];
     return collection;
@@ -118,6 +144,7 @@ var ProductStore = module.exports = _.assign({}, EventEmitter.prototype, {
 
 var internals = ProductStore.internals = {
   initProduct(product) {
+    FilterActions.init(product);
     product.items.on('change:status', function(model) {
       let status = model.get('status');
       let collection = product.getItemsByStatus(status);
@@ -306,6 +333,15 @@ var internals = ProductStore.internals = {
     if (col) {
       col.add(item);
     }
+  },
+
+  collectionsForProduct(productId) {
+    return _.chain(ITEM_STATUSES)
+            .map((status) => {
+              return ProductStore.getItemsCollection(productId, status);
+            })
+            .compact()
+            .value()
   }
 };
 
