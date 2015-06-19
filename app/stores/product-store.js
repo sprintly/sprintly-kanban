@@ -78,20 +78,23 @@ var ProductStore = module.exports = _.assign({}, EventEmitter.prototype, {
   },
 
   hasItems(productId) {
-    let collections = internals.collectionsForProduct(productId)
-    if(collections.length > 0) {
+    return products.get(productId).items.length > 0
+  },
+
+  hasItemsToRender(productId) {
+    let collections = internals.itemsForProduct(productId)
+    if (collections.length > 0) {
       let hasItems = false;
 
       _.each(collections, (col) => {
-        if (col.models.length > 0) {
+        if(col.items.length > 0) {
           hasItems = true;
         }
-      });
+      })
 
       return hasItems;
     } else {
-      // Return true optimistically to prevent flicker of content
-      return true;
+      return false;
     }
   },
 
@@ -335,10 +338,10 @@ var internals = ProductStore.internals = {
     }
   },
 
-  collectionsForProduct(productId) {
+  itemsForProduct(productId) {
     return _.chain(ITEM_STATUSES)
             .map((status) => {
-              return ProductStore.getItemsCollection(productId, status);
+              return ProductStore.getItems(productId, status);
             })
             .compact()
             .value()

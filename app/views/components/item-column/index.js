@@ -8,6 +8,7 @@ import PlaceholderCards from './placeholder-cards'
 import SprintGroup from './sprint-group';
 import ColumnSummary from './summary';
 import ColumnHeader from './header';
+import NoSearchResults from './no-search-results';
 // Flux
 import ProductStore from '../../../stores/product-store';
 import ProductActions from '../../../actions/product-actions';
@@ -29,7 +30,10 @@ var ItemColumn = React.createClass({
   propTypes: {
     status: React.PropTypes.string.isRequired,
     product: React.PropTypes.object.isRequired,
-    productHasItems: React.PropTypes.bool.isRequired
+    members: React.PropTypes.array.isRequired,
+    filters: React.PropTypes.object.isRequired,
+    key: React.PropTypes.string.isRequired,
+    velocity: React.PropTypes.object.isRequired
   },
 
   getInitialState() {
@@ -106,11 +110,24 @@ var ItemColumn = React.createClass({
     )
   },
 
-  renderItemCards() {
-    if (this.props.productHasItems) {
-      let itemCards = _.map(this.state.items, this.renderItemCard)
+  productHasItemsToRender() {
+    return ProductStore.hasItemsToRender(this.props.product.id);
+  },
 
-      return <div>{itemCards}</div>
+  productHasItems() {
+    return ProductStore.hasItems(this.props.product.id)
+  },
+
+  renderItemCards() {
+    if (this.productHasItems()) {
+      if (this.productHasItemsToRender()) {
+        let itemCards = _.map(this.state.items, this.renderItemCard)
+        return <div>{itemCards}</div>
+      } else if (this.props.status === 'in-progress') {
+        return <NoSearchResults />;
+      } else {
+        return '';
+      }
     } else {
       return <PlaceholderCards status={this.props.status} />
     }
