@@ -4,6 +4,7 @@ require("../app/actions/search-actions-test.js");
 require("../app/actions/velocity-actions-test.js");
 require("../app/stores/filters-store-test.js");
 require("../app/stores/product-store-test.js");
+require("../app/stores/sidebar-store-test.js");
 require("../app/views/components/add-item-modal-test.js");
 require("../app/views/components/filters/filter-component-test.js");
 require("../app/views/components/filters/forms/members-filter-test.js");
