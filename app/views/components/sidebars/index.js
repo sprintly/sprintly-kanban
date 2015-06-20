@@ -37,9 +37,19 @@ let Sidebars = React.createClass({
   },
 
   getLocation() {
+    // can get a router path registry??
+    debugger
+    // var path = this.getPathname();
+    // console.log('AT THIS PATH: ', path);
+    //
+    // if (path === 'search') {
+    //   return SidebarConstants.SEARCH;
+    // } else {
+    //   return SidebarConstants.FILTERS;
+    // }
+    return SidebarConstants.FILTERS;
     // Is there an interface to the React router which can be used?
     // SHIM: Make dynamic
-    return SidebarConstants.FILTERS;
   },
 
   secondarySidebar() {
