@@ -8,7 +8,7 @@ var SearchActions = {
       actionType: 'SEARCH_START',
       query
     });
-    debugger
+    
     let options = client.getOptions(query, {
       baseUrl: process.env.NODE_ENV === 'production' ? 'https://sprint.ly' : 'https://local.sprint.ly:9000',
       token: window.__token

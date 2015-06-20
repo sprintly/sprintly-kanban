@@ -308,7 +308,7 @@ describe('Search ViewController', function() {
       this.searchBar.value = 'type:story type:defect product:1';
       TestUtils.Simulate.change(this.searchBar);
 
-      this.form = TestUtils.findRenderedDOMComponentWithTag(this.component, 'form').getDOMNode();
+      this.form = TestUtils.findRenderedDOMComponentWithClass(this.component, 'desktop__search-form').getDOMNode();
       TestUtils.Simulate.submit(this.form);
     });
 
