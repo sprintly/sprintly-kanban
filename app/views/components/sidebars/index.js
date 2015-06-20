@@ -46,7 +46,6 @@ let Sidebars = React.createClass({
     let content;
     let user = this.props.user;
 
-
     switch (this.getLocation()) {
       case SidebarConstants.FILTERS:
         content = <FiltersSidebar {...this.state} user={user} />
@@ -65,7 +64,7 @@ let Sidebars = React.createClass({
     this.setState(getStateFromStores(this.getParams().id));
   },
 
-  componentDidMount(){
+  componentDidMount() {
     ProductStore.addChangeListener(this.onChange);
     FiltersStore.addChangeListener(this.onChange);
     SidebarStore.addChangeListener(this.onChange);
