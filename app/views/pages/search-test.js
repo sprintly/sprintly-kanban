@@ -35,6 +35,7 @@ describe('Search ViewController', function() {
     this.sinon = sinon.sandbox.create();
     this.ProductActions = Search.__get__('ProductActions');
     this.ProductStore = Search.__get__('ProductStore');
+    this.sinon.stub(this.ProductStore, 'getAll');
     this.SearchActions = Search.__get__('SearchActions');
     this.SearchStore = Search.__get__('SearchStore');
 

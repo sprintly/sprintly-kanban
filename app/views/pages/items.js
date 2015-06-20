@@ -40,6 +40,7 @@ module.exports = React.createClass({
   },
 
   _onChange: function() {
+    console.log()
     var product = ProductStore.getProduct(this.getParams().id) || {};
     this.setState(_.assign({
       allFilters: FiltersStore.all(),
