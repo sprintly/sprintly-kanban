@@ -23,29 +23,33 @@ var SidebarStore = module.exports = _.assign({}, EventEmitter.prototype, {
 
   openState() {
     return _openState;
-  },
-
-  // We have to reach out to the top level DOM node so that the sidebars react
-  show(side) {
-    var canvasWrap = document.getElementsByClassName('row-offcanvas')[0];
-
-    if (_.contains(canvasWrap.className.split(' '), 'active')) {
-      canvasWrap.className = 'row-offcanvas';
-
-      _openState.side = '';
-    } else {
-      canvasWrap.className = `row-offcanvas row-offcanvas-${side} active`;
-      _openState.side = side;
-    }
-
-    this.emitChange();
   }
 });
+
+var internals = SidebarStore.internals = {
+      // We have to reach out to the top level DOM node so that the sidebars react
+    show(side) {
+      var canvasWrap = document.getElementsByClassName('row-offcanvas')[0];
+
+      if (_.contains(canvasWrap.className.split(' '), 'active')) {
+        canvasWrap.className = 'row-offcanvas';
+
+        _openState.side = '';
+      } else {
+        canvasWrap.className = `row-offcanvas row-offcanvas-${side} active`;
+        _openState.side = side;
+      }
+
+      // Return value for testability
+      return canvasWrap.className;
+    }
+}
 
 SidebarStore.dispatchToken = AppDispatcher.register(function(action) {
   switch(action.actionType) {
     case SidebarConstants.SHOW:
-      SidebarStore.show(action.side)
+      internals.showSide(action.side);
+      SidebarStore.emitChange();
       break;
     default:
       break;

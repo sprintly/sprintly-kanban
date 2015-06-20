@@ -21,6 +21,11 @@ describe('ProductStore', function() {
       this.user = ProductStore.__get__('user');
       this.FilterActions = ProductStore.__get__('FilterActions');
       this.productsTriggerStub = sinon.stub();
+      this.filtersInitStub = sinon.stub();
+      ProductStore.__set__('FilterActions', {
+        init: this.filtersInitStub
+      });
+      // {products, user} from sprintly-client mocking
       ProductStore.__set__('products', {
         fetch: () => true,
         trigger: this.productsTriggerStub,
@@ -28,10 +33,6 @@ describe('ProductStore', function() {
       });
       ProductStore.__set__('user', {
         fetch: () => true
-      });
-      this.filtersInitStub = sinon.stub();
-      ProductStore.__set__('FilterActions', {
-        init: this.filtersInitStub
       });
     });
 

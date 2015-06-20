@@ -23,4 +23,46 @@ describe('SidebarStore', function() {
       assert.deepEqual(result, target);
     })
   })
+
+  describe('internals.show', function() {
+    describe('offcanvas row is active', function() {
+      beforeEach(function() {
+        var mockELClass = [{className: 'something active'}]
+        this.sinon.stub(document, 'getElementsByClassName').returns(mockELClass);
+        this.canvasWrapClass = SidebarStore.internals.show('irrelevant');
+      })
+
+      it('resets the canvas wrap class to \'row-offcanvas\'', function() {
+        var target = 'row-offcanvas';
+
+        assert.equal(this.canvasWrapClass, target);
+      });
+
+      it('sets the open side to empty string', function() {
+        var openState = SidebarStore.openState();
+
+        assert.equal(openState.side, '');
+      })
+    })
+
+    describe('offcanvas row is not active', function() {
+      beforeEach(function() {
+        var mockELClass = [{className: 'inactive'}]
+        this.sinon.stub(document, 'getElementsByClassName').returns(mockELClass);
+        this.canvasWrapClass = SidebarStore.internals.show('right');
+      })
+
+      it('adds the side && active to the canvas wrap class', function() {
+        var target = 'row-offcanvas row-offcanvas-right active';
+
+        assert.equal(this.canvasWrapClass, target);
+      });
+
+      it('sets the open side to empty string', function() {
+        var openState = SidebarStore.openState();
+
+        assert.equal(openState.side, 'right');
+      })
+    })
+  })
 })
