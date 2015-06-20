@@ -12,7 +12,7 @@ var user = {
   user: { get: function() {} }
 }
 
-describe.only('Sidebars/Index', function() {
+describe('Sidebars/Index', function() {
   beforeEach(function() {
     this.sinon = sinon.sandbox.create();
     this.VelocityActions = SidebarIndex.__get__('VelocityActions');
@@ -31,6 +31,9 @@ describe.only('Sidebars/Index', function() {
         var Component = stubRouterContext(SidebarIndex, user, {
           getCurrentParams: () => {
             return { id: 0 }
+          },
+          getCurrentPathname: () => {
+            return '/'
           }
         })
         this.component = TestUtils.renderIntoDocument(<Component />);
@@ -56,19 +59,19 @@ describe.only('Sidebars/Index', function() {
     })
 
     describe('Search Menu ', function() {
-      beforeEach(function() {
-        var currentParamsStub = { getCurrentParams: () => { return { id: 0 } } };
-        var currentPathStub = { getCurrentPath: () => { return 'serach' } };
+      it('renders the search menu when search is in the \'path\'', function() {
+        var Component = stubRouterContext(SidebarIndex, user, {
+          getCurrentParams: () => {
+            return { id: 0 }
+          },
+          getCurrentPathname: () => {
+            return '/search'
+          }
+        })
 
-        var Component = stubRouterContext(SidebarIndex, user,
-          currentParamsStub,
-          currentPathStub
-        )
-        this.component = TestUtils.renderIntoDocument(<Component />);
-      })
+        var component = TestUtils.renderIntoDocument(<Component />);
 
-      it.only('renders the search menu when search is in the \'path\'', function() {
-        var searchSidebarEl = TestUtils.findRenderedComponentWithType(this.component, SearchSidebar).getDOMNode();
+        var searchSidebarEl = TestUtils.findRenderedComponentWithType(component, SearchSidebar).getDOMNode();
 
         assert.isDefined(searchSidebarEl);
       })

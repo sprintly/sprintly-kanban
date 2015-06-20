@@ -48,7 +48,7 @@ var internals = SidebarStore.internals = {
 SidebarStore.dispatchToken = AppDispatcher.register(function(action) {
   switch(action.actionType) {
     case SidebarConstants.SHOW:
-      internals.showSide(action.side);
+      internals.show(action.side);
       SidebarStore.emitChange();
       break;
     default:
