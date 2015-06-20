@@ -104,6 +104,57 @@ describe('ProductStore', function() {
     });
   });
 
+  describe('#hasItems', function(){
+    it('returns false when the product has no items', function() {
+      let mockProduct  = {
+        get: function(id) {
+          console.log("HERE");
+          return {items: []}
+        }
+      }
+      ProductStore.__set__('products', mockProduct);
+      let result = ProductStore.hasItems();
+
+      assert.isFalse(result)
+    })
+    it('returns true when the product has items', function() {
+      let mockProduct  = {
+        get: function(id) {
+          console.log("HERE");
+          return {items: [1,2,3]}
+        }
+      }
+      ProductStore.__set__('products', mockProduct);
+      let result = ProductStore.hasItems();
+
+      assert.isTrue(result)
+    })
+  })
+
+  describe('#hasItemsToRender', function() {
+    describe('returns true', function() {
+      it('when product collection has items', function() {
+        let mockCollection = {items: [1,2,3]};
+        this.sinon.stub(ProductStore.internals, 'itemsForProduct').returns([mockCollection]);
+
+        let result = ProductStore.hasItemsToRender(1);
+        assert.isTrue(result);
+      })
+    })
+
+    describe('returns false', function() {
+      it('when product collection has no items', function() {
+        it('when product collection has items', function() {
+          let mockCollection = {items: []};
+          this.sinon.stub(ProductStore.internals, 'itemsForProduct').returns([mockCollection]);
+
+          let result = ProductStore.hasItemsToRender(1);
+          assert.isFalse(result);
+        })
+      })
+    })
+  })
+
   xdescribe('getItemsForProduct', function() {
     it('returns an items collection', function() {
 
