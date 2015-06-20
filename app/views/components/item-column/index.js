@@ -110,18 +110,20 @@ var ItemColumn = React.createClass({
     )
   },
 
-  productHasItemsToRender() {
-    return ProductStore.hasItemsToRender(this.props.product.id);
+  productHasItems() {
+    console.log(ProductStore)
+    return ProductStore.hasItems(this.props.product.id)
   },
 
-  productHasItems() {
-    return ProductStore.hasItems(this.props.product.id)
+  productHasItemsToRender() {
+    return ProductStore.hasItemsToRender(this.props.product.id);
   },
 
   renderItemCards() {
     if (this.productHasItems()) {
       if (this.productHasItemsToRender()) {
         let itemCards = _.map(this.state.items, this.renderItemCard)
+
         return <div>{itemCards}</div>
       } else if (this.props.status === 'in-progress') {
         return <NoSearchResults />;
