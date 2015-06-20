@@ -48,6 +48,7 @@ Run tests to run in a browser:
 
 ```bash
 $ make test-server
+$ npm run watchify-test
 ```
 
 #### npm shrinkwrap
