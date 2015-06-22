@@ -5,7 +5,6 @@ import SidebarFilters from '../filters/sidebar-filters'
 import FiltersActions from '../../../actions/filter-actions';
 import ProductStore from '../../../stores/product-store';
 import FiltersStore from '../../../stores/filters-store';
-import VelocityActions from '../../../actions/velocity-actions';
 
 let FiltersSidebar = React.createClass({
 
@@ -91,51 +90,6 @@ let FiltersSidebar = React.createClass({
     ])
   },
 
-  changeVelocity(e) {
-    e.preventDefault();
-    let val = this.refs.velocity_input.getDOMNode().value;
-    if (val === '') {
-      val = '~';
-    }
-
-    VelocityActions.setVelocity(this.props.product.id, val);
-  },
-
-  placeCursor() {
-    this.refs.velocity_input.getDOMNode().value = this.refs.velocity_input.getDOMNode().value;
-  },
-
-  velocityValue() {
-    let velocity = this.props.velocity;
-
-    if (velocity && velocity.average) {
-      if (velocity.average === '~') {
-        return '';
-      } else {
-        return velocity.average;
-      }
-    } else {
-      return '';
-    }
-  },
-
-  velocityControl() {
-    return ([
-      <li className="drawer-header">
-        <a className='drawer-header' href="#">Velocity</a>
-      </li>,
-      <div className="form-group">
-        <input
-          className="form-control"
-          ref="velocity_input"
-          value={this.velocityValue()}
-          onChange={this.changeVelocity}
-          onFocus={this.placeCursor}
-        />
-      </div>
-    ])
-  },
-
   mine() {
     this.toggleControlState(this.state.mine, 'active');
 
@@ -193,7 +147,6 @@ let FiltersSidebar = React.createClass({
       <div className={classes}>
         <ul style={minHeight} className="off-canvas-list">
           {this.mineButton()}
-          {this.velocityControl()}
           {this.issueTypesControl()}
           <SidebarFilters {...this.props} />
           {this.clearFiltersButton()}
