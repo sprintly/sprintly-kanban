@@ -30,6 +30,8 @@ let FiltersSidebar = React.createClass({
   },
 
   updateItemTypes(type) {
+    console.log('TYPE: ', type);
+
     let types = _.find(this.props.activeFilters, {field: 'type'}).criteria;
     let activeTypes;
 
@@ -62,10 +64,10 @@ let FiltersSidebar = React.createClass({
         'type-color-indicator': true,
         "active": active
       })
-
+      console.log('LINK TYPE CLASSES: ', linkClasses);
       return (
         <div className='issue-control' onClick={_.partial(this.updateItemTypes, type)}>
-          <a href="#" className={linkClasses}>{type}</a>
+          <a ref={`issue-link-${type}`} href="#" className={linkClasses}>{type}</a>
           <div className={`${colorIndicator} ${type}`}></div>
         </div>
       )
@@ -85,7 +87,7 @@ let FiltersSidebar = React.createClass({
           {issueTypeButtons}
         </div>
         <div className="all-types-control">
-          <a href="#" onClick={_.partial(this.updateItemTypes, 'all')} className={allClasses}>All</a>
+          <a ref='all-types' href="#" onClick={_.partial(this.updateItemTypes, 'all')} className={allClasses}>All</a>
         </div>
       </li>
     ])

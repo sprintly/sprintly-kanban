@@ -30,9 +30,6 @@ describe('Sidebars/Filters', function() {
       ],
       activeFilters: [filter]
     }, user);
-    // this.stubs = {
-    //   velocityGet: this.sinon.stub(this.VelocityActions, 'getVelocity')
-    // }
   })
 
   afterEach(function() {
@@ -50,6 +47,7 @@ describe('Sidebars/Filters', function() {
         assert.isFalse(sidebar.classList.contains('hidden'));
       })
     });
+
     describe('without side props', function() {
       it('is hidden', function() {
         var props = _.assign(this.props, {side: undefined});
@@ -58,6 +56,54 @@ describe('Sidebars/Filters', function() {
         var sidebar = component.refs['filters-sidebar'].getDOMNode();
 
         assert.isTrue(sidebar.classList.contains('hidden'));
+      })
+    })
+  })
+
+  describe('#issueTypesControl', function() {
+    describe('active', function() {
+      beforeEach(function() {
+        var props = _.assign(this.props, {side: 'right'});
+        this.component = TestUtils.renderIntoDocument(<FiltersSidebar {...props} />);
+      })
+
+      it('all button is active when all issue types are in active filters', function() {
+        var allButton = this.component.refs['all-types'].getDOMNode();
+
+        assert.isTrue(allButton.classList.contains('active'));
+      });
+
+      _.each(['story', 'test', 'task', 'defect'], function(type) {
+        it('issue control link: '+ type + ' is active', function() {
+          var refName = 'issue-link-'+type;
+          var link = this.component.refs[refName].getDOMNode();
+
+          assert.isTrue(link.classList.contains('active'));
+        })
+      }, this)
+    })
+
+    describe('inactive', function() {
+      beforeEach(function() {
+        var props = _.assign(this.props, {side: 'right'});
+        this.component = TestUtils.renderIntoDocument(<FiltersSidebar {...props} />);
+
+        var issueControl = TestUtils.scryRenderedDOMComponentsWithClass(this.component, 'issue-control')[0].getDOMNode();
+
+        TestUtils.Simulate.click(issueControl);
+        this.component.forceUpdate()
+      })
+
+      it('all button becomes inactive when issue type control is toggled', function() {
+        var allButton = this.component.refs['all-types'].getDOMNode();
+
+        assert.isFalse(allButton.classList.contains('active'))
+      })
+
+      it('all button becomes inactive when issue type control is toggled', function() {
+        var storyTypeLink = this.component.refs['issue-link-story'].getDOMNode();
+
+        assert.isFalse(storyTypeLink.classList.contains('active'))
       })
     })
   })
