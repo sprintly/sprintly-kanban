@@ -210,7 +210,7 @@ let FiltersSidebar = React.createClass({
     let sidebar = this.buildFilterSideBar();
 
     return (
-      <div className={classes}>
+      <div ref='filters-sidebar' className={classes}>
         {sidebar}
       </div>
     )
