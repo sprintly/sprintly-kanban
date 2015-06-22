@@ -30,8 +30,6 @@ let FiltersSidebar = React.createClass({
   },
 
   updateItemTypes(type) {
-    console.log('TYPE: ', type);
-
     let types = _.find(this.props.activeFilters, {field: 'type'}).criteria;
     let activeTypes;
 
@@ -174,7 +172,7 @@ let FiltersSidebar = React.createClass({
 
     return (
       <li className="clear-button">
-        <a href="#" onClick={this.clearFilters} className={classes}>Clear Filters</a>
+        <a href="#" ref='sidebar-clear-button' onClick={this.clearFilters} className={classes}>Clear Filters</a>
       </li>
     )
   },

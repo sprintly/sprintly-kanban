@@ -3,10 +3,14 @@ var assert = require('chai').assert;
 var React = require('react/addons');
 var TestUtils = React.addons.TestUtils;
 var stubRouterContext = require('../../../lib/stub-router-context');
+var FilterActions = require('../../../actions/filter-actions');
 var sinon = require('sinon')
 var FiltersSidebar = require('./filters');
 var user = {
-  user: { get: function() {} }
+  user: {
+    get: function() {},
+    id: 123
+  }
 }
 var filter = {
   field: 'type',
@@ -20,6 +24,8 @@ describe('Sidebars/Filters', function() {
       velocity: {
         average: 5
       },
+      members: ['memberA'],
+      tags: ['tagsA'],
       allFilters: [{
         field: 'assigned_to',
         criteria: ['person']
@@ -30,6 +36,11 @@ describe('Sidebars/Filters', function() {
       ],
       activeFilters: [filter]
     }, user);
+
+    this.stubs = {
+      filtersUpdate: this.sinon.stub(FilterActions, 'update'),
+      filtersClear: this.sinon.stub(FilterActions, 'clear')
+    }
   })
 
   afterEach(function() {
@@ -100,7 +111,7 @@ describe('Sidebars/Filters', function() {
         assert.isFalse(allButton.classList.contains('active'))
       })
 
-      it('all button becomes inactive when issue type control is toggled', function() {
+      it('issue type control link inactive when toggled', function() {
         var storyTypeLink = this.component.refs['issue-link-story'].getDOMNode();
 
         assert.isFalse(storyTypeLink.classList.contains('active'))
@@ -115,27 +126,71 @@ describe('Sidebars/Filters', function() {
     })
 
     context('mine state is active', function() {
-      it('button is active', function() {
+      beforeEach(function() {
         this.component.setState({
           mine: { active: true }
         });
+      })
 
+      it('button is active', function() {
         var mineButton = this.component.refs['sidebar-filter-mine'].getDOMNode();
 
         assert.isTrue(mineButton.classList.contains('active'))
       })
+
+      context('unset \'mine\' filter', function() {
+        it('unsets the assigned_to user filter', function() {
+          var mineButton = this.component.refs['sidebar-filter-mine'].getDOMNode();
+          TestUtils.Simulate.click(mineButton);
+
+          assert.isTrue(this.stubs.filtersUpdate.calledWith('assigned_to', 123, {unset: true}))
+        })
+      })
     })
 
     context('mine state is inactive', function() {
-      it('button is inactive', function() {
+      beforeEach(function() {
         this.component.setState({
           mine: { active: false }
         });
+      })
 
+      it('button is inactive', function() {
         var mineButton = this.component.refs['sidebar-filter-mine'].getDOMNode();
 
         assert.isFalse(mineButton.classList.contains('active'))
       })
+
+      context('set \'mine\' filter', function() {
+        it('sets the assigned_to filter to the user id', function() {
+          var mineButton = this.component.refs['sidebar-filter-mine'].getDOMNode();
+          TestUtils.Simulate.click(mineButton);
+
+          assert.isTrue(this.stubs.filtersUpdate.calledWith('assigned_to', 123, {}));
+        })
+      })
+    })
+  })
+
+  describe('#clearButton', function() {
+    beforeEach(function() {
+      this.props = _.assign(this.props, {side: 'right'})
+      this.props.activeFilters.criteria = ['task', 'test', 'defect'];
+      this.component = TestUtils.renderIntoDocument(<FiltersSidebar {...this.props} />);
+      this.clearButton = this.component.refs['sidebar-clear-button'].getDOMNode();
+      // Remove story from criteria so that it is 'inactive'
+    })
+
+    it('calls clear on filter actions', function() {
+      TestUtils.Simulate.click(this.clearButton);
+
+      assert.isTrue(this.stubs.filtersClear.calledWith(['memberA'], ['tagsA']));
+    })
+
+    it('resets the issue type control links to active', function() {
+      TestUtils.Simulate.click(this.clearButton);
+
+      assert.isTrue(this.stubs.filtersUpdate.calledWith('type', ['story', 'task', 'test', 'defect']))
     })
   })
 });
