@@ -11,7 +11,7 @@ import Select from 'react-select';
 import LocalStorageMixin from 'react-localstorage';
 
 import ItemActions from '../../actions/item-actions';
-
+import helpers from './helpers';
 
 const NAV_ITEMS = [
   { type: 'story', label: 'Story' },
@@ -149,12 +149,7 @@ var AddItemModal = React.createClass({
   },
 
   render() {
-    let mentions = _.map(this.props.members, function(member) {
-      return {
-        id: member.id,
-        display: `${member.first_name} ${member.last_name.slice(0,1)}.`
-      }
-    });
+    let mentions = helpers.formatMentionMembers(this.props.members);
 
     let tags = _.pluck(this.props.tags, 'tag');
     let members = this.prepareMembersForSelect();
