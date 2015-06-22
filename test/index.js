@@ -9,6 +9,7 @@ require("../app/views/components/filters/filter-component-test.js");
 require("../app/views/components/filters/forms/members-filter-test.js");
 require("../app/views/components/filters/velocity-component-test.js");
 require("../app/views/components/header-test.js");
+require("../app/views/components/helpers-test.js");
 require("../app/views/components/item-column/index-test.js");
 require("../app/views/components/item-column/sprint-group-test.js");
 require("../app/views/components/tags-input-test.js");
