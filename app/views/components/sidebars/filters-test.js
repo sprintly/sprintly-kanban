@@ -107,4 +107,35 @@ describe('Sidebars/Filters', function() {
       })
     })
   })
+
+  describe('#mineButton', function() {
+    beforeEach(function() {
+      var props = _.assign(this.props, {side: 'right'});
+      this.component = TestUtils.renderIntoDocument(<FiltersSidebar {...props} />);
+    })
+
+    context('mine state is active', function() {
+      it('button is active', function() {
+        this.component.setState({
+          mine: { active: true }
+        });
+
+        var mineButton = this.component.refs['sidebar-filter-mine'].getDOMNode();
+
+        assert.isTrue(mineButton.classList.contains('active'))
+      })
+    })
+
+    context('mine state is inactive', function() {
+      it('button is inactive', function() {
+        this.component.setState({
+          mine: { active: false }
+        });
+
+        var mineButton = this.component.refs['sidebar-filter-mine'].getDOMNode();
+
+        assert.isFalse(mineButton.classList.contains('active'))
+      })
+    })
+  })
 });

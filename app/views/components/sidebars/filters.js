@@ -64,7 +64,7 @@ let FiltersSidebar = React.createClass({
         'type-color-indicator': true,
         "active": active
       })
-      console.log('LINK TYPE CLASSES: ', linkClasses);
+
       return (
         <div className='issue-control' onClick={_.partial(this.updateItemTypes, type)}>
           <a ref={`issue-link-${type}`} href="#" className={linkClasses}>{type}</a>
@@ -156,7 +156,7 @@ let FiltersSidebar = React.createClass({
 
     return (
       <li>
-        <a href="#" onClick={this.mine} className={classes}>My Items</a>
+        <a ref='sidebar-filter-mine' href="#" onClick={this.mine} className={classes}>My Items</a>
       </li>
     )
   },
