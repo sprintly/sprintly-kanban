@@ -89,7 +89,8 @@ module.exports = React.createClass({
     };
 
     if (this.state.maxWidth) {
-      _.assign(props, {maxWidth: this.state.maxWidth});
+      var maxColWidth = {'max-width': `${window.innerWidth}px`};
+      _.assign(props, maxColWidth);
     }
 
     return <ItemColumn {...props} />;
