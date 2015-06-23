@@ -71,13 +71,14 @@
 
   nav {
     width: 20%;
-    max-width: 500px;
     height: 34px;
     display: inline-block;
     border-right: 1px solid #ababab;
   }
 
   nav h3 {
+    float: left;
+    width: 70%;
     text-align: center;
     font-size: 15px;
     font-weight: bold;
@@ -85,6 +86,29 @@
     line-height: 2.4em;
     color: #333;
   }
+}
+
+.column__nav button {
+  &.btn:focus,
+  &.btn:active {
+    outline: none;
+  }
+}
+
+
+.column__nav button.previous,
+.column__nav button.next {
+  height: 40px;
+  width: 15%;
+  background-color: transparent;
+}
+
+.column__nav button.previous {
+  float: left;
+}
+
+.column__nav button.next {
+  float: right;
 }
 
 .column__sort-options {

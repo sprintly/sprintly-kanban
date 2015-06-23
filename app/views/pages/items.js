@@ -110,13 +110,13 @@ module.exports = React.createClass({
     return _.map(ITEM_STATUSES, function(label, status) {
       return (
           <nav style={this.state.maxWidth} key={`header-nav-${status}`}>
-            <div onClick={_.partial(this.translateColumns, 'previous')} className='previous'>
-              previous
-            </div>
+            <button type="button" onClick={_.partial(this.translateColumns, 'previous')} className='btn previous'>
+              <span className="glyphicon glyphicon-chevron-left"></span>
+            </button>
             <h3>{label}</h3>
-            <div onClick={_.partial(this.translateColumns, 'next')} className='next'>
-              next
-            </div>
+            <button type="button" onClick={_.partial(this.translateColumns, 'next')} className='btn next'>
+              <span className="glyphicon glyphicon-chevron-right"></span>
+            </button>
           </nav>
       );
     }, this)
