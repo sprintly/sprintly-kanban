@@ -15,6 +15,8 @@ import ProductStore from '../../stores/product-store';
 import ProductActions from '../../actions/product-actions';
 import VelocityActions from '../../actions/velocity-actions';
 
+import helpers from './helpers';
+
 const ITEM_STATUSES = {
   someday: 'Someday',
   backlog: 'Backlog',
@@ -55,6 +57,12 @@ module.exports = React.createClass({
     ProductStore.addChangeListener(this._onChange);
     ProductActions.init(this.getParams().id);
     VelocityActions.getVelocity(this.getParams().id);
+
+    if (helpers.isMobile(window)) {
+      this.setState({
+        maxWidth: {'max-width': `${window.innerWidth}px`}
+      })
+    }
   },
 
   componentWillUnmount: function() {
@@ -75,8 +83,22 @@ module.exports = React.createClass({
       key: `col-${this.state.product.id}-${status}`,
       velocity: this.state.velocity
     };
-    
+
+    if (this.state.maxWidth) {
+      _.assign(props, {maxWidth: this.state.maxWidth});
+    }
+
     return <ItemColumn {...props} />;
+  },
+
+  colHeaders() {
+    return _.map(ITEM_STATUSES, function(label, status) {
+      return (
+          <nav style={this.state.maxWidth} key={`header-nav-${status}`}>
+            <h3>{label}</h3>
+          </nav>
+      );
+    }, this)
   },
 
   loadingColumn: function() {
@@ -116,13 +138,7 @@ module.exports = React.createClass({
     var velocity =  this.state.velocity && this.state.velocity.average ?
       this.state.velocity.average : '~';
 
-    var navHeaders = _.map(ITEM_STATUSES, function(label, status) {
-      return (
-          <nav key={`header-nav-${status}`}>
-            <h3>{label}</h3>
-          </nav>
-      );
-    })
+    var colHeaders = this.colHeaders()
 
     return (
       <div className="container-tray">
@@ -143,7 +159,7 @@ module.exports = React.createClass({
         />
         <div className={trayClasses}>
           <div className="column__nav">
-            {navHeaders}
+            {colHeaders}
           </div>
           {cols}
         </div>
