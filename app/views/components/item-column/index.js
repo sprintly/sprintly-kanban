@@ -111,7 +111,6 @@ var ItemColumn = React.createClass({
   },
 
   productHasItems() {
-    console.log(ProductStore)
     return ProductStore.hasItems(this.props.product.id)
   },
 
