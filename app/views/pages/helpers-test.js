@@ -89,4 +89,18 @@ describe('Pages/helpers', function() {
       })
     })
   })
+
+  describe('#browserPrefix', function() {
+    it('returns the prefixed version of the attr && value pair', function() {
+      var target = {
+        '-webkit-transform': "translateX(-320px)",
+        '-moz-transform': "translateX(-320px)",
+        '-o-transform': "translateX(-320px)"
+      }
+
+      var result = helpers.browserPrefix('transform', 'translateX(-320px)')
+
+      assert.deepEqual(result, target);
+    })
+  })
 })

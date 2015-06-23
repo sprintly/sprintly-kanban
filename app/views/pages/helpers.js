@@ -21,5 +21,15 @@ module.exports = {
       position: position,
       value: value
     }
+  },
+
+  browserPrefix(attr, value) {
+    var object = {}
+
+    object[`-webkit-${attr}`] = value;
+    object[`-moz-${attr}`] = value;
+    object[`-o-${attr}`] = value;
+
+    return object;
   }
 }

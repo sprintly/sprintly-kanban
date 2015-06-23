@@ -64,7 +64,7 @@ module.exports = React.createClass({
 
     if (helpers.isMobile(window)) {
       this.setState({
-        maxWidth: {'max-width': `${window.innerWidth}px`}
+        maxWidth: {'max-width': `${window.innerWidth * this.colCount()}px`}
       })
     }
   },
@@ -97,8 +97,7 @@ module.exports = React.createClass({
 
   translateColumns(direction) {
     var increment = direction === 'next';
-    var elWidth = parseFloat(this.state.maxWidth['max-width']);
-    var newTranslation = helpers.generateTranslation(this.state.translation, this.colCount(), elWidth, increment);
+    var newTranslation = helpers.generateTranslation(this.state.translation, this.colCount(), window.innerWidth, increment);
     this.setState({translation: newTranslation});
   },
 
@@ -138,6 +137,12 @@ module.exports = React.createClass({
     );
   },
 
+  trayStyles() {
+    var transform = helpers.browserPrefix('transform', `translateX(${this.state.translation.value})`)
+    var maxCopy = _.cloneDeep(this.state.maxWidth);
+    return _.merge(maxCopy, transform);
+  },
+
   componentWillReceiveProps: function(nextProps) {
     if (this.getParams().id !== this.state.product.id) {
       ProductActions.init(this.getParams().id);
@@ -160,10 +165,7 @@ module.exports = React.createClass({
       this.state.velocity.average : '~';
 
     var colHeaders = this.colHeaders();
-    var trayStyles = {
-      width: `${this.state.maxWidth * this.colCount()}px`,
-      transform: `translateX(${this.state.translation.value})`
-    };
+    var trayStyles = this.trayStyles();
 
     return (
       <div className="container-tray">
