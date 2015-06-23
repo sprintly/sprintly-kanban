@@ -37,7 +37,11 @@ module.exports = React.createClass({
       filtersObject: FiltersStore.getFlatObject(),
       allProducts: ProductStore.getAll(),
       activeItem: false,
-      showMenu: false
+      showMenu: false,
+      translation: {
+        position: 0,
+        value: '0px'
+      }
     }, product);
   },
 
@@ -91,11 +95,28 @@ module.exports = React.createClass({
     return <ItemColumn {...props} />;
   },
 
+  translateColumns(direction) {
+    var increment = direction === 'next';
+    var elWidth = parseFloat(this.state.maxWidth['max-width']);
+    var newTranslation = helpers.generateTranslation(this.state.translation, this.colCount(), elWidth, increment);
+    this.setState({translation: newTranslation});
+  },
+
+  colCount() {
+    return _.keys(ITEM_STATUSES).length;
+  },
+
   colHeaders() {
     return _.map(ITEM_STATUSES, function(label, status) {
       return (
           <nav style={this.state.maxWidth} key={`header-nav-${status}`}>
+            <div onClick={_.partial(this.translateColumns, 'previous')} className='previous'>
+              previous
+            </div>
             <h3>{label}</h3>
+            <div onClick={_.partial(this.translateColumns, 'next')} className='next'>
+              next
+            </div>
           </nav>
       );
     }, this)
@@ -138,7 +159,11 @@ module.exports = React.createClass({
     var velocity =  this.state.velocity && this.state.velocity.average ?
       this.state.velocity.average : '~';
 
-    var colHeaders = this.colHeaders()
+    var colHeaders = this.colHeaders();
+    var trayStyles = {
+      width: `${this.state.maxWidth * this.colCount()}px`,
+      transform: `translateX(${this.state.translation.value})`
+    };
 
     return (
       <div className="container-tray">
@@ -157,7 +182,7 @@ module.exports = React.createClass({
           velocity={velocity}
           productId={this.state.product.id}
         />
-        <div className={trayClasses}>
+        <div style={trayStyles} className={trayClasses}>
           <div className="column__nav">
             {colHeaders}
           </div>
