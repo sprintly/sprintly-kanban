@@ -24,7 +24,7 @@
 
 .product__header {
   background: @header;
-  position: absolute;
+  position: fixed;
   top: 0;
 
   width: 100%; //WIP
@@ -162,19 +162,39 @@ footer {
   }
 
   .row-offcanvas-right .sidebar-offcanvas {
-    right: -65%; /* 6 columns */
+    -webkit-transform: translateX(-100%);
+    -moz-transform: translateX(100%);
+    -o-transform: translateX(100%);
+    transform: translateX(100%);
   }
 
   .row-offcanvas-left .sidebar-offcanvas {
-    left: -65%; /* 6 columns */
+    -webkit-transform: translateX(100%);
+    -moz-transform: translateX(100%);
+    -o-transform: translateX(100%);
+    transform: translateX(100%);
   }
 
   .row-offcanvas-right.active {
-    right: 65%; /* 6 columns */
+    -webkit-transform: translateX(-65%);
+    -moz-transform: translateX(-65%);
+    -o-transform: translateX(-65%);
+    transform: translateX(-65%);
   }
 
   .row-offcanvas-left.active {
-    left: 65%; /* 6 columns */
+    -webkit-transform: translateX(65%);
+    -moz-transform: translateX(65%);
+    -o-transform: translateX(65%);
+    transform: translateX(65%);
+  }
+
+  .row-offcanvas-right.active .right-off-canvas-menu {
+    -webkit-transform: translateX(165%);
+  }
+
+  .row-offcanvas-left.active .left-off-canvas-menu {
+    -webkit-transform: translateX(-130%);
   }
 
   .sidebar-offcanvas {
