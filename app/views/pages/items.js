@@ -108,13 +108,23 @@ module.exports = React.createClass({
 
   colHeaders() {
     return _.map(ITEM_STATUSES, function(label, status) {
+      let index = _.keys(ITEM_STATUSES).indexOf(status)
+
+      let prevClasses = '';
+      let nextClasses = '';
+      if (index === 0) {
+        prevClasses = ' inactive';
+      } else if (index === this.colCount()-1) {
+        nextClasses = ' inactive';
+      }
+
       return (
           <nav style={this.state.maxWidth} key={`header-nav-${status}`}>
-            <button type="button" onClick={_.partial(this.translateColumns, 'previous')} className='btn previous'>
+            <button type="button" onClick={_.partial(this.translateColumns, 'previous')} className={`btn previous${prevClasses}`}>
               <span className="glyphicon glyphicon-chevron-left"></span>
             </button>
             <h3>{label}</h3>
-            <button type="button" onClick={_.partial(this.translateColumns, 'next')} className='btn next'>
+            <button type="button" onClick={_.partial(this.translateColumns, 'next')} className={`btn previous${nextClasses}`}>
               <span className="glyphicon glyphicon-chevron-right"></span>
             </button>
           </nav>
