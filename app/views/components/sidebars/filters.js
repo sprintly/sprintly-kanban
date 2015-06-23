@@ -139,11 +139,11 @@ let FiltersSidebar = React.createClass({
       'sidebar-offcanvas': true,
       'visible-xs': true
     })
-
+    var maxHeight = { 'max-height': `${window.innerHeight}px` };
     var mineButton = this.mineButton();
 
     return (
-      <div className={classes}>
+      <div style={maxHeight} className={classes}>
         <ul className="off-canvas-list">
           {this.mineButton()}
           {this.issueTypesControl()}

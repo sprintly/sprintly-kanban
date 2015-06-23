@@ -51,10 +51,10 @@ let MenuSidebar = React.createClass({
 
     let productLinks = this.productLinks();
     let settingsLinks = this.settingsLinks();
-    var minHeight = { 'min-height': `${window.innerHeight}px` };
+    var maxHeight = { 'max-height': `${window.innerHeight}px` };
 
     return (
-      <div style={minHeight} className={classes}>
+      <div style={maxHeight} className={classes}>
         <div className="logos__sprintly"></div>
         <ul className="off-canvas-list">
           {productLinks}
