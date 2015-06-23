@@ -11,6 +11,10 @@ describe('Items ViewController', function() {
     this.sinon = sinon.sandbox.create();
     this.ProductActions = Items.__get__('ProductActions');
     this.productInitStub = this.sinon.stub(this.ProductActions, 'init');
+
+    this.ProductStore = Items.__get__('ProductStore');
+    this.sinon.stub(this.ProductStore, 'getProduct');
+    this.sinon.stub(this.ProductStore, 'getAll');
   });
 
   afterEach(function() {
@@ -18,8 +22,9 @@ describe('Items ViewController', function() {
   });
 
   it('initializes the current product on mount', function() {
-    var ItemsStub = stubRouterContext(Items, { user: { get: function() {} } }, {
-      getCurrentParams: ()=> {
+    let user = { user: { get: function() {} } }
+    var ItemsStub = stubRouterContext(Items, user, {
+      getCurrentParams: () => {
         return { id: 1 }
       }
     });

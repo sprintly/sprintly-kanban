@@ -40,6 +40,7 @@ module.exports = React.createClass({
   },
 
   _onChange: function() {
+    console.log()
     var product = ProductStore.getProduct(this.getParams().id) || {};
     this.setState(_.assign({
       allFilters: FiltersStore.all(),
@@ -72,8 +73,7 @@ module.exports = React.createClass({
       members: this.state.members,
       filters: this.state.filtersObject,
       key: `col-${this.state.product.id}-${status}`,
-      velocity: this.state.velocity,
-      productHasItems: ProductStore.hasItems(this.state.product.id)
+      velocity: this.state.velocity
     };
 
     return <ItemColumn {...props} />;
