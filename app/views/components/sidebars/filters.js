@@ -140,12 +140,11 @@ let FiltersSidebar = React.createClass({
       'visible-xs': true
     })
 
-    let minHeight = { 'min-height': `${window.innerHeight}px` };
     var mineButton = this.mineButton();
 
     return (
       <div className={classes}>
-        <ul style={minHeight} className="off-canvas-list">
+        <ul className="off-canvas-list">
           {this.mineButton()}
           {this.issueTypesControl()}
           <SidebarFilters {...this.props} />

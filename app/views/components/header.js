@@ -104,7 +104,9 @@ var Header = React.createClass({
 
     return (
       <header className={navClasses}>
-        <div className="filter-icon" onClick={openRightSide}></div>
+        <button type="button" onClick={openRightSide} className='btn filter-icon'>
+          <span className="glyphicon glyphicon-filter"></span>
+        </button>
         <div className="mobile-search">
           <form className="navbar-right header-search" onSubmit={this.search} role="search">
             <div className="form-group">

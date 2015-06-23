@@ -81,15 +81,23 @@
   margin-left: 15px;
 }
 
-.product__header .filter-icon {
-  .backgroundImage('../../img/filter_icon.png');
+.product__header button.filter-icon {
+  &.btn:focus,
+  &.btn:active {
+    outline: none;
+  }
+  span {
+    color: white;
+  }
 
+  background-color: transparent;
   width: 40px;
   height: 30px;
   float: right;
-  margin-top: 12px;
-  margin-right: 9px;
+  margin-top: 7px;
+  margin-right: 10px;
   cursor: pointer;
+  font-size: 22px;
 }
 
 @media (min-width: @screen-sm-min) {
@@ -165,28 +173,25 @@ footer {
     -webkit-transform: translateX(-100%);
     -moz-transform: translateX(100%);
     -o-transform: translateX(100%);
-    transform: translateX(100%);
+
   }
 
   .row-offcanvas-left .sidebar-offcanvas {
     -webkit-transform: translateX(100%);
     -moz-transform: translateX(100%);
     -o-transform: translateX(100%);
-    transform: translateX(100%);
   }
 
   .row-offcanvas-right.active {
     -webkit-transform: translateX(-65%);
     -moz-transform: translateX(-65%);
     -o-transform: translateX(-65%);
-    transform: translateX(-65%);
   }
 
   .row-offcanvas-left.active {
     -webkit-transform: translateX(65%);
     -moz-transform: translateX(65%);
     -o-transform: translateX(65%);
-    transform: translateX(65%);
   }
 
   .row-offcanvas-right.active .right-off-canvas-menu {
