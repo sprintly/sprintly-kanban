@@ -95,9 +95,10 @@ let FiltersSidebar = React.createClass({
 
     let options = {}
     if (!this.state.mine.active) {
-      options = {unset: true};
+      this.clearFilters();
+    } else {
+      FiltersActions.update('assigned_to', this.props.user.id, options);
     }
-    FiltersActions.update('assigned_to', this.props.user.id, options);
   },
 
   mineButton() {
@@ -114,7 +115,9 @@ let FiltersSidebar = React.createClass({
   },
 
   clearFilters() {
-    this.mine();
+    this.setState({
+      mine: { active: false }
+    })
     FiltersActions.clear(this.props.members, this.props.tags);
     this.updateItemTypes('all');
   },

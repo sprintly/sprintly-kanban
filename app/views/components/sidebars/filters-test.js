@@ -139,11 +139,17 @@ describe('Sidebars/Filters', function() {
       })
 
       context('unset \'mine\' filter', function() {
-        it('unsets the assigned_to user filter', function() {
+        beforeEach(function() {
           var mineButton = this.component.refs['sidebar-filter-mine'].getDOMNode();
           TestUtils.Simulate.click(mineButton);
+        })
 
-          assert.isTrue(this.stubs.filtersUpdate.calledWith('assigned_to', 123, {unset: true}))
+        it('sets \'mine\' active state to false', function() {
+          assert.deepEqual(this.component.state.mine, {active: false})
+        })
+
+        it('clears all filters', function() {
+          assert.isTrue(this.stubs.filtersClear.called);
         })
       })
     })
