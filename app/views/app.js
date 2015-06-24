@@ -9,8 +9,10 @@ export default React.createClass({
   },
 
   render: function() {
+    let style = {'min-height': `${window.innerHeight}px`};
+
     return (
-      <div className="app-view" onTouchEnd={this.muteTap}>
+      <div style={style} className="app-view" onTouchEnd={this.muteTap}>
         <RouteHandler {...this.props} />
         <Sidebars {...this.props} />
       </div>
