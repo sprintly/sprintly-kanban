@@ -12,7 +12,7 @@ import SidebarConstants from '../../../constants/sidebar-constants'
 import ProductStore from '../../../stores/product-store';
 import FiltersStore from '../../../stores/filters-store';
 import SidebarStore from '../../../stores/sidebar-store';
-import VelocityActions from '../../../actions/velocity-actions';
+// import VelocityActions from '../../../actions/velocity-actions';
 
 let getStateFromStores = function(id) {
   var product = ProductStore.getProduct(id) || {};
@@ -72,7 +72,7 @@ let Sidebars = React.createClass({
     ProductStore.addChangeListener(this.onChange);
     FiltersStore.addChangeListener(this.onChange);
     SidebarStore.addChangeListener(this.onChange);
-    VelocityActions.getVelocity(this.getParams().id);
+    // VelocityActions.getVelocity(this.getParams().id);
   },
 
   componentWillUnmount() {

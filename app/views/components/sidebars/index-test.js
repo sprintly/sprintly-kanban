@@ -8,6 +8,7 @@ var SidebarIndex = require('./index');
 var MenuSidebar = require('./menu');
 var FiltersSidebar = require('./filters');
 var SearchSidebar = require('./search');
+var ProductStore = require('../../../stores/product-store');
 var user = {
   user: { get: function() {} }
 }
@@ -15,9 +16,11 @@ var user = {
 describe('Sidebars/Index', function() {
   beforeEach(function() {
     this.sinon = sinon.sandbox.create();
-    this.VelocityActions = SidebarIndex.__get__('VelocityActions');
+    this.ProductStore = SidebarIndex.__get__('ProductStore');
+
     this.stubs = {
-      velocityGet: this.sinon.stub(this.VelocityActions, 'getVelocity')
+      productGet: this.sinon.stub(this.ProductStore, 'getProduct'),
+      getAll: this.sinon.stub(this.ProductStore, 'getAll')
     }
   })
 
@@ -26,7 +29,7 @@ describe('Sidebars/Index', function() {
   })
 
   describe('SidebarRendering', function() {
-    describe('default', function() {
+    describe('default configuration', function() {
       beforeEach(function() {
         var Component = stubRouterContext(SidebarIndex, user, {
           getCurrentParams: () => {
@@ -37,12 +40,6 @@ describe('Sidebars/Index', function() {
           }
         })
         this.component = TestUtils.renderIntoDocument(<Component />);
-      })
-
-      describe('componentDidMount', function() {
-        it('velocity is retrieved', function() {
-          assert.isTrue(this.stubs.velocityGet.called)
-        })
       })
 
       it('renders the MenuSidebar', function() {
