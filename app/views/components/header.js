@@ -3,10 +3,12 @@ import React from 'react/addons';
 import Gravatar from './gravatar';
 import AddItemModal from './add-item-modal';
 import FiltersMenu from './filters/filters-menu';
+import {ModalTrigger} from 'react-bootstrap';
+import {Link, Navigation, State} from 'react-router';
+
 import SidebarActions from  '../../actions/sidebar-actions';
 
-import {ModalTrigger} from 'react-bootstrap';
-import {Link, Navigation} from 'react-router';
+import helpers from  '../pages/helpers';
 
 // compose to confidence
 const ACCOUNT_SETTINGS = [
@@ -15,7 +17,7 @@ const ACCOUNT_SETTINGS = [
 
 var Header = React.createClass({
 
-  mixins: [Navigation],
+  mixins: [State, Navigation],
 
   propTypes: {
     product: React.PropTypes.object,
@@ -95,19 +97,31 @@ var Header = React.createClass({
 
   smallScreenHeader() {
     let navClasses = this.getClasses('small');
-    let menuClasses = React.addons.classSet({
+    let burgerClasses = React.addons.classSet({
       '_burger': true,
       'open': this.state.drawerOpen === 'left'
     });
     let openRightSide = _.partial(SidebarActions.show, 'right');
     let openLeftSide = _.partial(SidebarActions.show, 'left');
 
+    let isProductSelectPage = this.getPathname() === '/';
+    let filterClasses = React.addons.classSet({
+      'btn filter-icon': true,
+      'hidden': isProductSelectPage
+    });
+    let menuClasses = React.addons.classSet({
+      "small-menu": true,
+      'hidden': isProductSelectPage
+    });
+
+    let searchBarStyle = isProductSelectPage ? {width: '100%'} : {width: '70%'};
+
     return (
       <header className={navClasses}>
-        <button type="button" onClick={openRightSide} className='btn filter-icon'>
+        <button type="button" onClick={openRightSide} className={filterClasses}>
           <span className="glyphicon glyphicon-filter"></span>
         </button>
-        <div className="mobile-search">
+        <div style={searchBarStyle} className="mobile-search">
           <form className="navbar-right header-search" onSubmit={this.search} role="search">
             <div className="form-group">
                 <input className="form-control" type="search" name="q" placeholder="Search" ref="search" onKeyDown={this.onKeyDown} />
@@ -115,10 +129,10 @@ var Header = React.createClass({
             <input type="submit" className="hidden" />
           </form>
         </div>
-        <ul className="small-menu">
+        <ul className={menuClasses}>
           <li className="menu-list-item">
             <a href="#" className="small-screen-menu burger-button">
-              <div className={menuClasses} onClick={openLeftSide}>
+              <div className={burgerClasses} onClick={openLeftSide}>
                 <span></span>
                 <span></span>
                 <span></span>
