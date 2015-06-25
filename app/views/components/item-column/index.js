@@ -34,7 +34,7 @@ var ItemColumn = React.createClass({
     filters: React.PropTypes.object.isRequired,
     key: React.PropTypes.string.isRequired,
     velocity: React.PropTypes.object.isRequired,
-    maxWidth: React.PropTypes.object
+    colWidth: React.PropTypes.object
   },
 
   getInitialState() {
@@ -195,9 +195,8 @@ var ItemColumn = React.createClass({
       this.setSortCriteria(this.state.sortField, direction);
     };
 
-
     return (
-      <div style={this.props.maxWidth} className={React.addons.classSet(classes)} {...this.props}>
+      <div style={this.props.colWidth} className={React.addons.classSet(classes)} {...this.props}>
         <ColumnHeader {...this.props}
           reverse={reverseSort}
           setSortCriteria={this.setSortCriteria}

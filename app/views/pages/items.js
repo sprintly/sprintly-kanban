@@ -64,7 +64,8 @@ module.exports = React.createClass({
 
     if (helpers.isMobile(window)) {
       this.setState({
-        maxWidth: {'max-width': `${window.innerWidth * this.colCount()}px`}
+        trayWidth: {'width': `${window.innerWidth * this.colCount()}px`},
+        colWidth: {'width': `${window.innerWidth}px`}
       })
     }
   },
@@ -85,13 +86,9 @@ module.exports = React.createClass({
       members: this.state.members,
       filters: this.state.filtersObject,
       key: `col-${this.state.product.id}-${status}`,
-      velocity: this.state.velocity
+      velocity: this.state.velocity,
+      colWidth: this.state.colWidth
     };
-
-    if (this.state.maxWidth) {
-      var maxColWidth = {'max-width': `${window.innerWidth}px`};
-      _.assign(props, maxColWidth);
-    }
 
     return <ItemColumn {...props} />;
   },
@@ -119,7 +116,7 @@ module.exports = React.createClass({
       }
 
       return (
-          <nav style={this.state.maxWidth} key={`header-nav-${status}`}>
+          <nav style={this.state.colWidth} key={`header-nav-${status}`}>
             <button type="button" onClick={_.partial(this.translateColumns, 'previous')} className={`visible-xs btn previous${prevClasses}`}>
               <span className="glyphicon glyphicon-chevron-left"></span>
             </button>
@@ -150,8 +147,7 @@ module.exports = React.createClass({
 
   trayStyles() {
     var transform = helpers.browserPrefix('transform', `translateX(${this.state.translation.value})`)
-    var maxCopy = _.cloneDeep(this.state.maxWidth);
-    return _.merge(maxCopy, transform);
+    return _.merge(this.state.trayWidth, transform);
   },
 
   componentWillReceiveProps: function(nextProps) {
