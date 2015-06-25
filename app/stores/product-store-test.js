@@ -109,7 +109,6 @@ describe('ProductStore', function() {
     it('returns false when the product has no items', function() {
       let mockProduct  = {
         get: function(id) {
-          console.log("HERE");
           return {items: []}
         }
       }
@@ -118,10 +117,10 @@ describe('ProductStore', function() {
 
       assert.isFalse(result)
     })
+    
     it('returns true when the product has items', function() {
       let mockProduct  = {
         get: function(id) {
-          console.log("HERE");
           return {items: [1,2,3]}
         }
       }

@@ -91,8 +91,6 @@ let FiltersSidebar = React.createClass({
   },
 
   assignedToUser() {
-    console.log('ACTIVE FILTERS: ', this.props.activeFilters.length);
-    console.log('FLAT FILTERS: ', this.props.allFilters.length);
     let assignee = _.find(this.props.activeFilters, {field: 'assigned_to'});
     return assignee && assignee.criteria === this.props.user.id;
   },
