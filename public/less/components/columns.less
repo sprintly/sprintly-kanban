@@ -1,5 +1,4 @@
 @header: #333333;
-@background: #FAFAFA;
 @column-border: #979797;
 
 @header-title: #EFEFEF;
@@ -8,43 +7,61 @@
 // Item Column Tray
 .container-tray {
   position: absolute;
-  overflow-x: hidden;
+
   box-sizing: border-box;
   height: 100%;
   width: 100%;
-  min-width: 1200px;
-  background: @background;
+  background: @sprintly-background;
+
+  @media (min-width: @screen-md-min) {
+    min-width: @screen-lg-min;
+    overflow-x: hidden;
+  }
+
+  // Mobile width stylings
+  @media (max-width: @screen-sm-min) {
+    overflow: scroll;
+  }
 }
 
 .tray {
   height: 100%;
   float: left;
+  width: 1875px;
   .transition(all 400ms);
-  width: 120%;
-  .translate(-8%, 0);
 
-  &.show-accepted {
-    .translate(-16.8%, 0);
-  }
+  @media (min-width: @screen-md-min) {
+    width: 120%;
+    .translate(-8%, 0);
 
-  &.show-someday {
-    .translate(0, 0)
-  }
+    &.show-accepted {
+      .translate(-16.8%, 0);
+    }
 
-  .column {
-    box-sizing: border-box;
-    float: left;
-    min-height: 100%;
-    width: 100%;
-    padding: 1em;
-    position: relative;
-    width: 20%;
-    max-width: 500px;
+    &.show-someday {
+      .translate(0, 0)
+    }
   }
+  overflow: scroll;
+}
+
+.tray .column {
+  box-sizing: border-box;
+  float: left;
+  min-height: 100%;
+  padding: 1em;
+  position: relative;
+  width: 20%;
+  max-width: 500px;
 }
 
 .column__nav {
   margin-top: 93px;
+
+  @media (max-width: @screen-sm-min) {
+    margin-top: 54px;
+  }
+
   width: 100%;
   background: #ECECEC;
   color: @header;
@@ -53,21 +70,52 @@
 
   nav {
     width: 20%;
-    max-width: 500px;
     height: 34px;
     display: inline-block;
     border-right: 1px solid #ababab;
   }
 
   nav h3 {
+    float: left;
     text-align: center;
     font-size: 15px;
     font-weight: bold;
     margin: 0;
     line-height: 2.4em;
     color: #333;
-  }
+    width: 100%;
 
+    @media (max-width: @screen-sm-min) {
+      width: 70%;
+    }
+  }
+}
+
+.column__nav button {
+  background-color: transparent;
+  &.btn:focus,
+  &.btn:active {
+    outline: none;
+  }
+}
+.column__nav button.inactive {
+  span {
+    opacity: 0.3;
+  }
+}
+
+.column__nav button.previous,
+.column__nav button.next {
+  height: 40px;
+  width: 15%;
+}
+
+.column__nav button.previous {
+  float: left;
+}
+
+.column__nav button.next {
+  float: right;
 }
 
 .column__sort-options {
@@ -116,7 +164,7 @@
   }
 }
 
-@media (min-width: 1300px) {
+@media (min-width: 1200px) {
   .tray {
     width: 100%;
     .translate(0, 0);

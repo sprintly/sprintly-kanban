@@ -61,7 +61,8 @@ var internals = FiltersStore.internals = {
   decorateMembers: function(members) {
     let needsMembers = filters.where({ type: 'members' });
     if (needsMembers.length > 0) {
-      let activeMembers = _.invoke(members.where({ revoked: false }), 'toJSON');
+      let activeMembers = internals.membersWithAccess(members);
+
       _.each(needsMembers, function(filter) {
         let options = _.clone(filter.get('criteriaOptions'));
         let prevMembers = _.findWhere(options, function(opt) {
@@ -85,10 +86,23 @@ var internals = FiltersStore.internals = {
     }
   },
 
+  membersWithAccess: function(members) {
+    let access = {revoked: false};
+
+    if(_.isArray(members)) {
+      return _.where(members, access);
+    } else {
+      return _.invoke(members.where(access), 'toJSON');
+    }
+  },
+
   decorateTags: function(tags) {
     let needsTags = filters.findWhere({ type: 'tags' });
     if (needsTags) {
-      needsTags.set('criteriaOptions', tags.toJSON());
+      if(!_.isArray(tags)) {
+        tags = tags.toJSON();
+      }
+      needsTags.set('criteriaOptions', tags);
     }
   },
 
@@ -98,7 +112,7 @@ var internals = FiltersStore.internals = {
       filter.set({ active: unset !== true, criteria });
       FiltersStore.emitChange();
     }
-  },
+  }
 };
 
 AppDispatcher.register(function(action) {
@@ -108,6 +122,9 @@ AppDispatcher.register(function(action) {
       break;
     case FiltersConstants.UPDATE_FILTER:
       internals.update(action.field, action.criteria, action.unset);
+      break;
+    case FiltersConstants.CLEAR_FILTERS:
+      internals.init(action.members, action.tags);
       break;
     default:
       break;

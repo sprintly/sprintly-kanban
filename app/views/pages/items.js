@@ -15,6 +15,8 @@ import ProductStore from '../../stores/product-store';
 import ProductActions from '../../actions/product-actions';
 import VelocityActions from '../../actions/velocity-actions';
 
+import helpers from './helpers';
+
 const ITEM_STATUSES = {
   someday: 'Someday',
   backlog: 'Backlog',
@@ -35,7 +37,11 @@ module.exports = React.createClass({
       filtersObject: FiltersStore.getFlatObject(),
       allProducts: ProductStore.getAll(),
       activeItem: false,
-      showMenu: false
+      showMenu: false,
+      translation: {
+        position: 0,
+        value: '0px'
+      }
     }, product);
   },
 
@@ -55,6 +61,12 @@ module.exports = React.createClass({
     ProductStore.addChangeListener(this._onChange);
     ProductActions.init(this.getParams().id);
     VelocityActions.getVelocity(this.getParams().id);
+
+    if (helpers.isMobile(window)) {
+      this.setState({
+        maxWidth: {'max-width': `${window.innerWidth * this.colCount()}px`}
+      })
+    }
   },
 
   componentWillUnmount: function() {
@@ -76,7 +88,48 @@ module.exports = React.createClass({
       velocity: this.state.velocity
     };
 
+    if (this.state.maxWidth) {
+      var maxColWidth = {'max-width': `${window.innerWidth}px`};
+      _.assign(props, maxColWidth);
+    }
+
     return <ItemColumn {...props} />;
+  },
+
+  translateColumns(direction) {
+    var increment = direction === 'next';
+    var newTranslation = helpers.generateTranslation(this.state.translation, this.colCount(), window.innerWidth, increment);
+    this.setState({translation: newTranslation});
+  },
+
+  colCount() {
+    return _.keys(ITEM_STATUSES).length;
+  },
+
+  colHeaders() {
+    return _.map(ITEM_STATUSES, function(label, status) {
+      let index = _.keys(ITEM_STATUSES).indexOf(status)
+
+      let prevClasses = '';
+      let nextClasses = '';
+      if (index === 0) {
+        prevClasses = ' inactive';
+      } else if (index === this.colCount()-1) {
+        nextClasses = ' inactive';
+      }
+
+      return (
+          <nav style={this.state.maxWidth} key={`header-nav-${status}`}>
+            <button type="button" onClick={_.partial(this.translateColumns, 'previous')} className={`visible-xs btn previous${prevClasses}`}>
+              <span className="glyphicon glyphicon-chevron-left"></span>
+            </button>
+            <h3>{label}</h3>
+            <button type="button" onClick={_.partial(this.translateColumns, 'next')} className={`visible-xs btn previous${nextClasses}`}>
+              <span className="glyphicon glyphicon-chevron-right"></span>
+            </button>
+          </nav>
+      );
+    }, this)
   },
 
   loadingColumn: function() {
@@ -93,6 +146,12 @@ module.exports = React.createClass({
         </div>
       </div>
     );
+  },
+
+  trayStyles() {
+    var transform = helpers.browserPrefix('transform', `translateX(${this.state.translation.value})`)
+    var maxCopy = _.cloneDeep(this.state.maxWidth);
+    return _.merge(maxCopy, transform);
   },
 
   componentWillReceiveProps: function(nextProps) {
@@ -116,13 +175,8 @@ module.exports = React.createClass({
     var velocity =  this.state.velocity && this.state.velocity.average ?
       this.state.velocity.average : '~';
 
-    var navHeaders = _.map(ITEM_STATUSES, function(label, status) {
-      return (
-          <nav key={`header-nav-${status}`}>
-            <h3>{label}</h3>
-          </nav>
-      );
-    })
+    var colHeaders = this.colHeaders();
+    var trayStyles = this.trayStyles();
 
     return (
       <div className="container-tray">
@@ -141,9 +195,9 @@ module.exports = React.createClass({
           velocity={velocity}
           productId={this.state.product.id}
         />
-        <div className={trayClasses}>
+        <div style={trayStyles} className={trayClasses}>
           <div className="column__nav">
-            {navHeaders}
+            {colHeaders}
           </div>
           {cols}
         </div>

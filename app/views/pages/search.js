@@ -112,7 +112,7 @@ var Search = React.createClass({
   searchBar() {
     return (
       <div className="row">
-        <form onSubmit={this.onSubmit}>
+        <form className="desktop__search-form" onSubmit={this.onSubmit}>
           <div className="col-xs-10 col-sm-6 search__query-bar">
             <input
               name="q"
