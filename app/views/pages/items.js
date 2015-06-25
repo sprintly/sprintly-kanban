@@ -120,11 +120,11 @@ module.exports = React.createClass({
 
       return (
           <nav style={this.state.maxWidth} key={`header-nav-${status}`}>
-            <button type="button" onClick={_.partial(this.translateColumns, 'previous')} className={`btn previous${prevClasses}`}>
+            <button type="button" onClick={_.partial(this.translateColumns, 'previous')} className={`visible-xs btn previous${prevClasses}`}>
               <span className="glyphicon glyphicon-chevron-left"></span>
             </button>
             <h3>{label}</h3>
-            <button type="button" onClick={_.partial(this.translateColumns, 'next')} className={`btn previous${nextClasses}`}>
+            <button type="button" onClick={_.partial(this.translateColumns, 'next')} className={`visible-xs btn previous${nextClasses}`}>
               <span className="glyphicon glyphicon-chevron-right"></span>
             </button>
           </nav>
