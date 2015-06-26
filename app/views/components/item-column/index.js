@@ -126,7 +126,7 @@ var ItemColumn = React.createClass({
 
         return <div>{itemCards}</div>
       } else if (this.props.status === 'in-progress') {
-        return <NoSearchResults />;
+        return <NoSearchResults product={this.props.product} />;
       } else {
         return '';
       }

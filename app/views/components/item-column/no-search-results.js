@@ -1,8 +1,17 @@
 import React from 'react';
+import FilterActions from '../../../actions/filter-actions';
+import ProductStore from '../../../stores/product-store';
 
 var NoSearchResults = React.createClass({
+
+  propsTypes: {
+    product: React.PropTypes.object.isRequired
+  },
+
   clearFilters() {
-    console.log('Clear Filters Dependant on Mobile Nav Land');
+    let product = ProductStore.getProduct(this.props.product.id);
+
+    FilterActions.clear(product.members, product.tags);
   },
 
   render() {
