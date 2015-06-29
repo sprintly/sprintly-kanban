@@ -8,7 +8,7 @@ const SORT_OPTIONS = {
   last_modified: 'Recent'
 };
 
-var Header = React.createClass({
+let ColumnHeader = React.createClass({
 
   getDefaultProps: function() {
     return {
@@ -59,4 +59,4 @@ var Header = React.createClass({
   }
 })
 
-module.exports = Header
+export default ColumnHeader

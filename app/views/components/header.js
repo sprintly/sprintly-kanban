@@ -15,7 +15,7 @@ const ACCOUNT_SETTINGS = [
   'Profile', 'Plan', 'Billing', 'Invoices', 'Products', 'Members', 'Notifications', 'Services'
 ];
 
-var Header = React.createClass({
+let KanbanHeader = React.createClass({
 
   mixins: [State, Navigation],
 
@@ -191,7 +191,7 @@ var Header = React.createClass({
 
   logoutLink() {
     return (
-      <li className="logout">
+      <li className="logout" key="logout">
         <a href="https://sprint.ly/logout" className="btn btn-danger btn-sm btn-block">Logout</a>
       </li>
     )
@@ -271,4 +271,4 @@ var Header = React.createClass({
   },
 });
 
-export default Header;
+export default KanbanHeader;

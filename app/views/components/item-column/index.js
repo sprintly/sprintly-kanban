@@ -32,7 +32,6 @@ var ItemColumn = React.createClass({
     product: React.PropTypes.object.isRequired,
     members: React.PropTypes.array.isRequired,
     filters: React.PropTypes.object.isRequired,
-    key: React.PropTypes.string.isRequired,
     velocity: React.PropTypes.object.isRequired,
     colWidth: React.PropTypes.object
   },

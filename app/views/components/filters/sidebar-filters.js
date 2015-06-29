@@ -50,10 +50,10 @@ var SidebarFilters = React.createClass({
     }
 
     return ([
-      <li className="drawer-header">
+      <li className="drawer-header" key="drawer-header">
         <a className='drawer-header' href="#">Tags</a>
       </li>,
-      <li className="drawer-subheader">
+      <li className="drawer-subheader" key="drawer-subheader">
         <div className="form-group">
           <TagsInput tags={tags} onChange={this.addTags} value={activeTags}/>
         </div>

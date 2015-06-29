@@ -25,7 +25,7 @@ const ITEM_STATUSES = {
   accepted: 'Accepted'
 };
 
-module.exports = React.createClass({
+let ItemsViewController = React.createClass({
 
   mixins: [State],
 
@@ -161,12 +161,6 @@ module.exports = React.createClass({
       return this.loadingColumn();
     }
 
-    var cols = _.map(ITEM_STATUSES, this.renderColumn);
-
-    var trayClasses = React.addons.classSet({
-      tray: true
-    });
-
     var velocity =  this.state.velocity && this.state.velocity.average ?
       this.state.velocity.average : '~';
 
@@ -190,13 +184,15 @@ module.exports = React.createClass({
           velocity={velocity}
           productId={this.state.product.id}
         />
-        <div style={trayStyles} className={trayClasses}>
+        <div style={trayStyles} className="tray">
           <div className="column__nav">
             {colHeaders}
           </div>
-          {cols}
+          {_.map(ITEM_STATUSES, this.renderColumn)}
         </div>
       </div>
     );
   }
 });
+
+export default ItemsViewController;

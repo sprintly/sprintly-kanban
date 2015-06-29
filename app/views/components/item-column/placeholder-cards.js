@@ -20,14 +20,14 @@ var PlaceholderCards = React.createClass({
     return _.times(length, (n) => {
       var width = (n === length-1) ? Math.floor((Math.random() * (100 - 50) + 50)) : 100;
 
-      return <div style={ {width: `${width}%`} } className="ipsum-block"></div>
+      return <div style={ {width: `${width}%`} } className="ipsum-block" key={n}></div>
     })
   },
 
   actionContent() {
     return ([
-        <div className="prompt__create-item">Add an Item to get started!</div>,
-        <button style={ {width: "100%"} } className="btn btn-primary" onClick={this.triggerModal}>Add an Item</button>
+        <div className="prompt__create-item" key="add-item-label">Add an Item to get started!</div>,
+        <button style={ {width: "100%"} }  key="add-item-button" className="btn btn-primary" onClick={this.triggerModal}>Add an Item</button>
       ]
     )
   },
@@ -46,7 +46,7 @@ var PlaceholderCards = React.createClass({
       }
 
       return (
-        <div className="item-card placeholder">
+        <div className="item-card placeholder" key={n}>
           <div className="row">
             <div className="item-card__header col-sm-12">
               <div className="item-card__header-right">
