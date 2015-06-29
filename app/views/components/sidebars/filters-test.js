@@ -127,25 +127,26 @@ describe('Sidebars/Filters', function() {
 
     context('mine state is active', function() {
       beforeEach(function() {
-        this.component.setState({
-          mine: { active: true }
-        });
+        this.component.setProps({
+          activeFilters: [
+            filter,
+            {
+              field: 'assigned_to',
+              criteria: 123
+            }
+          ]
+        })
+
+        this.mineButton = this.component.refs['sidebar-filter-mine'].getDOMNode();
       })
 
       it('button is active', function() {
-        var mineButton = this.component.refs['sidebar-filter-mine'].getDOMNode();
-
-        assert.isTrue(mineButton.classList.contains('active'))
+        assert.isTrue(this.mineButton.classList.contains('active'))
       })
 
       context('unset \'mine\' filter', function() {
         beforeEach(function() {
-          var mineButton = this.component.refs['sidebar-filter-mine'].getDOMNode();
-          TestUtils.Simulate.click(mineButton);
-        })
-
-        it('sets \'mine\' active state to false', function() {
-          assert.deepEqual(this.component.state.mine, {active: false})
+          TestUtils.Simulate.click(this.mineButton);
         })
 
         it('clears all filters', function() {
@@ -155,15 +156,8 @@ describe('Sidebars/Filters', function() {
     })
 
     context('mine state is inactive', function() {
-      beforeEach(function() {
-        this.component.setState({
-          mine: { active: false }
-        });
-      })
-
       it('button is inactive', function() {
         var mineButton = this.component.refs['sidebar-filter-mine'].getDOMNode();
-
         assert.isFalse(mineButton.classList.contains('active'))
       })
 

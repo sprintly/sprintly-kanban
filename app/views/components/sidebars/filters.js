@@ -17,11 +17,11 @@ let FiltersSidebar = React.createClass({
     activeFilters: React.PropTypes.array.isRequired
   },
 
-  getInitialState: function() {
-    return {
-      mine: { active: false }
-    };
-  },
+  // getInitialState: function() {
+  //   return {
+  //     mine: { active: false }
+  //   };
+  // },
 
   toggleControlState(controls, value) {
     controls[value] = (controls[value]) ? false : true;
@@ -90,21 +90,23 @@ let FiltersSidebar = React.createClass({
     ])
   },
 
-  mine() {
-    this.toggleControlState(this.state.mine, 'active');
+  assignedToUser() {
+    let assignee = _.find(this.props.activeFilters, {field: 'assigned_to'});
+    return assignee && assignee.criteria === this.props.user.id;
+  },
 
-    let options = {}
-    if (!this.state.mine.active) {
+  mine() {
+    if (this.assignedToUser()) {
       this.clearFilters();
     } else {
-      FiltersActions.update('assigned_to', this.props.user.id, options);
+      FiltersActions.update('assigned_to', this.props.user.id, {});
     }
   },
 
   mineButton() {
     let classes = React.addons.classSet({
       "btn btn-primary mine-button": true,
-      "active": this.state.mine.active
+      "active": this.assignedToUser()
     })
 
     return (
@@ -115,9 +117,6 @@ let FiltersSidebar = React.createClass({
   },
 
   clearFilters() {
-    this.setState({
-      mine: { active: false }
-    })
     FiltersActions.clear(this.props.members, this.props.tags);
     this.updateItemTypes('all');
   },
