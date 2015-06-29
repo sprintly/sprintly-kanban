@@ -12,6 +12,7 @@ require("../app/views/components/filters/velocity-component-test.js");
 require("../app/views/components/header-test.js");
 require("../app/views/components/helpers-test.js");
 require("../app/views/components/item-column/index-test.js");
+require("../app/views/components/item-column/no-search-results-test.js");
 require("../app/views/components/item-column/sprint-group-test.js");
 require("../app/views/components/sidebars/filters-test.js");
 require("../app/views/components/sidebars/index-test.js");
