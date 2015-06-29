@@ -22,7 +22,7 @@ export default React.createClass({
   },
 
   render: function() {
-    let style = {'min-height': `${window.innerHeight}px`};
+    let style = { minHeight: `${window.innerHeight}px`};
 
     let touchEndFn = helpers.isMobile(window) ? this.muteDoubleTap : function() {};
 

@@ -89,11 +89,11 @@ let Sidebar = React.createClass({
     })
 
     return ([
-        <li className="drawer-header">
+        <li className="drawer-header" key="drawer-header">
           <a className='drawer-header' href="#">Settings</a>
         </li>
       ].concat(settingsLinks).concat([
-        <li className="logout">
+        <li className="logout" key="logout">
           <a href="/logout" className="btn btn-danger btn-sm btn-block">Logout</a>
         </li>
       ])
@@ -114,7 +114,7 @@ let Sidebar = React.createClass({
     })
 
     return ([
-      <li className="drawer-header">
+      <li className="drawer-header" key="drawer-header">
         <a className={'drawer-header'} href="#">Products</a>
       </li>
     ].concat(productLinks))

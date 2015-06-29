@@ -17,12 +17,6 @@ let FiltersSidebar = React.createClass({
     activeFilters: React.PropTypes.array.isRequired
   },
 
-  // getInitialState: function() {
-  //   return {
-  //     mine: { active: false }
-  //   };
-  // },
-
   toggleControlState(controls, value) {
     controls[value] = (controls[value]) ? false : true;
     this.setState(controls);
@@ -48,7 +42,7 @@ let FiltersSidebar = React.createClass({
     let issueTypes = ['story', 'task', 'test', 'defect'];
     let activeTypes = _.find(this.props.activeFilters, {field: 'type'}).criteria;
 
-    let issueTypeButtons = _.map(issueTypes, (type) => {
+    let issueTypeButtons = _.map(issueTypes, (type, i) => {
       let typeClass = {}
       typeClass[type] = true;
 
@@ -63,7 +57,7 @@ let FiltersSidebar = React.createClass({
       })
 
       return (
-        <div className='issue-control' onClick={_.partial(this.updateItemTypes, type)}>
+        <div className='issue-control' onClick={_.partial(this.updateItemTypes, type)} key={i}>
           <a ref={`issue-link-${type}`} href="#" className={linkClasses}>{type}</a>
           <div className={`${colorIndicator} ${type}`}></div>
         </div>
@@ -76,10 +70,10 @@ let FiltersSidebar = React.createClass({
     });
 
     return ([
-      <li className="drawer-header">
+      <li className="drawer-header" key="drawer-header">
         <a className='drawer-header' href="#">Issue Types</a>
       </li>,
-      <li className="drawer-subheader">
+      <li className="drawer-subheader" key="drawer-subheader">
         <div className="issue-types-control">
           {issueTypeButtons}
         </div>
@@ -141,7 +135,7 @@ let FiltersSidebar = React.createClass({
       'sidebar-offcanvas': true,
       'visible-xs': true
     })
-    var maxHeight = { 'max-height': `${window.innerHeight}px` };
+    var maxHeight = { maxHeight: `${window.innerHeight}px` };
     var mineButton = this.mineButton();
 
     return (

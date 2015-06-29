@@ -51,14 +51,14 @@ let MenuSidebar = React.createClass({
 
     let productLinks = this.productLinks();
     let settingsLinks = this.settingsLinks();
-    var maxHeight = { 'max-height': `${window.innerHeight}px` };
+    let menuContent = productLinks.concat(settingsLinks);
+    let maxHeight = { maxHeight: `${window.innerHeight}px` };
 
     return (
       <div style={maxHeight} className={classes}>
         <div className="logos__sprintly"></div>
         <ul className="off-canvas-list">
-          {productLinks}
-          {settingsLinks}
+          {menuContent}
         </ul>
       </div>
     )
@@ -77,7 +77,7 @@ let MenuSidebar = React.createClass({
     })
 
     return ([
-        <li className="drawer-header">
+        <li className="drawer-header" key="settings-drawer-header">
           <a className='drawer-header' href="#">Settings</a>
         </li>
       ].concat(settingsLinks).concat([this.logoutSection()])
@@ -90,7 +90,7 @@ let MenuSidebar = React.createClass({
     let name = `${user.get('first_name')} ${user.get('last_name')}`;
 
     return (
-      <li className="logout">
+      <li className="logout" key="logout-button">
         <div className="profile">
           <div className='gravatar'>
             <Gravatar email={email} className="img-rounded" size={40} />
@@ -117,7 +117,7 @@ let MenuSidebar = React.createClass({
     })
 
     return ([
-      <li className="drawer-header">
+      <li className="drawer-header" key="products-drawer-header">
         <a className={'drawer-header'} href="#">Products</a>
       </li>
     ].concat(productLinks))
