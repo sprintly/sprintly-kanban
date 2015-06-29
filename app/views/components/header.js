@@ -79,15 +79,20 @@ var Header = React.createClass({
     return '';
   },
 
-  renderSearch() {
+  getScope() {
     let scope = '';
     if (this.props.product.id && this.state.scoped) {
       scope = <span className="header-search__scope label label-info">{this.props.product.name}</span>
     }
+
+    return scope;
+  },
+
+  renderSearch() {
     return (
       <form className="navbar-form navbar-right header-search" onSubmit={this.search} role="search">
         <div className="form-group">
-          {scope}
+          {this.getScope()}
           <input className="form-control" type="search" name="q" placeholder="Search" ref="search" onKeyDown={this.onKeyDown} />
         </div>
         <input type="submit" className="hidden" />
@@ -104,17 +109,25 @@ var Header = React.createClass({
     let openRightSide = _.partial(SidebarActions.show, 'right');
     let openLeftSide = _.partial(SidebarActions.show, 'left');
 
-    let isProductSelectPage = this.getPathname() === '/';
+    let hideRightMenuTrigger = this.getPathname() === '/' || this.getPathname() === '/search';
     let filterClasses = React.addons.classSet({
       'btn filter-icon': true,
-      'hidden': isProductSelectPage
+      'hidden': hideRightMenuTrigger
     });
+    let hideLeftMenuTrigger = this.getPathname() === '/';
     let menuClasses = React.addons.classSet({
       "small-menu": true,
-      'hidden': isProductSelectPage
+      'hidden': hideLeftMenuTrigger
     });
 
-    let searchBarStyle = isProductSelectPage ? {width: '100%'} : {width: '70%'};
+    let searchBarStyle;
+    if (hideLeftMenuTrigger && hideRightMenuTrigger) {
+      searchBarStyle = {width: '100%'};
+    } else if (hideRightMenuTrigger) {
+      searchBarStyle = {width: '85%'};
+    } else {
+      searchBarStyle = {width: '70%'};
+    }
 
     return (
       <header className={navClasses}>
@@ -124,7 +137,8 @@ var Header = React.createClass({
         <div style={searchBarStyle} className="mobile-search">
           <form className="navbar-right header-search" onSubmit={this.search} role="search">
             <div className="form-group">
-                <input className="form-control" type="search" name="q" placeholder="Search" ref="search" onKeyDown={this.onKeyDown} />
+              {this.getScope()}
+              <input className="form-control" type="search" name="q" placeholder="Search" ref="search" onKeyDown={this.onKeyDown} />
             </div>
             <input type="submit" className="hidden" />
           </form>
