@@ -374,7 +374,7 @@ var Search = React.createClass({
 
   render() {
     return (
-      <div>
+      <div className="container-tray">
         <Header
           searchBar={false}
           user={this.props.user}
