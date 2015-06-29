@@ -35,7 +35,9 @@ var SubItem = React.createClass({
       title,
       type: 'task',
       parent: this.props.parentId
-    });
+    }).then(function() {
+      node.value = '';
+    })
   },
 
   renderSubItem(subitem, i) {
