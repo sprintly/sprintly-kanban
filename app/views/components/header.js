@@ -79,15 +79,20 @@ var Header = React.createClass({
     return '';
   },
 
-  renderSearch() {
+  getScope() {
     let scope = '';
     if (this.props.product.id && this.state.scoped) {
       scope = <span className="header-search__scope label label-info">{this.props.product.name}</span>
     }
+
+    return scope;
+  },
+
+  renderSearch() {
     return (
       <form className="navbar-form navbar-right header-search" onSubmit={this.search} role="search">
         <div className="form-group">
-          {scope}
+          {this.getScope()}
           <input className="form-control" type="search" name="q" placeholder="Search" ref="search" onKeyDown={this.onKeyDown} />
         </div>
         <input type="submit" className="hidden" />
@@ -132,7 +137,8 @@ var Header = React.createClass({
         <div style={searchBarStyle} className="mobile-search">
           <form className="navbar-right header-search" onSubmit={this.search} role="search">
             <div className="form-group">
-                <input className="form-control" type="search" name="q" placeholder="Search" ref="search" onKeyDown={this.onKeyDown} />
+              {this.getScope()}
+              <input className="form-control" type="search" name="q" placeholder="Search" ref="search" onKeyDown={this.onKeyDown} />
             </div>
             <input type="submit" className="hidden" />
           </form>
