@@ -101,13 +101,10 @@ var ItemCardDetails = React.createClass({
   },
 
   renderSubItems() {
-    if (this.props.item.sub_items && this.props.item.sub_items.length > 0) {
-      return (
-        <SubItems subitems={this.props.item.sub_items} />
-      );
-    } else {
-      return ''
-    }
+    let subitems = this.props.item.sub_items || [];
+    return (
+      <SubItems subitems={subitems} productId={this.props.productId} parentId={this.props.item.number} />
+    );
   },
 
   renderMenuItems() {
