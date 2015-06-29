@@ -32,6 +32,26 @@ describe('Header', function() {
     it('renders the header component', function () {
       assert.isTrue(TestUtils.isCompositeComponentWithType(this.component.refs.stub, Header));
     });
+
+    describe('header bar components', function() {
+      beforeEach(function() {
+        this.headers = TestUtils.scryRenderedDOMComponentsWithTag(this.component.refs.stub, 'header');
+      })
+
+      it('renders two', function() {
+        assert.lengthOf(this.headers, 2)
+      })
+
+      it('one header is visible for small screens', function() {
+        let mobileHeader = this.headers[0].getDOMNode();
+        assert.isTrue(mobileHeader.classList.contains('visible-xs'));
+      })
+
+      it('one header is visible for larger screens', function() {
+        let mobileHeader = this.headers[1].getDOMNode()
+        assert.isTrue(mobileHeader.classList.contains('hidden-xs'));
+      })
+    })
   });
 
   describe('click on \'Add Item\'', function () {
