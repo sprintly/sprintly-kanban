@@ -24,9 +24,10 @@ let ItemActions = {
         });
       });
     } else {
-      return new Promise(function(resolve) {
-        resolve(item)
-      });
+      return new Promise(function(resolve, reject) {
+        console.error(item.validationError)
+        reject(item)
+      })
     }
   },
 
