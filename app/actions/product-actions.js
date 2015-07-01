@@ -65,21 +65,19 @@ function setComparator(collection, field, direction) {
 }
 
 var ProductActions = {
+
   init(productId) {
-    var dependencies;
+    var fetchDependencies;
     if (products.length > 0 && user.id) {
-      products.each(function(product) {
-        product.items.off();
-      });
-      dependencies = [true];
+      fetchDependencies = Promise.resolve()
     } else {
-      dependencies = [
+      fetchDependencies = Promise.all([
         user.fetch(),
         products.fetch({ silent: true })
-      ]
+      ])
     }
 
-    Promise.all(dependencies)
+    fetchDependencies
       .then(function() {
         let action = {
           actionType: 'INIT_PRODUCTS',
@@ -116,6 +114,7 @@ var ProductActions = {
       order_by: field,
       offset: 0
     });
+
     window.localStorage.setItem(`itemColumn-${options.status}-sortField`, field);
 
     itemCollection.fetch({ reset: true, silent: true }).then(function() {
