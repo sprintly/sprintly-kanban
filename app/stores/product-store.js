@@ -17,9 +17,15 @@ const ITEM_STATUSES = [
   'accepted'
 ];
 
-let columnCollections = {};
-
 let productVelocity = {};
+let columnCollections = {};
+let columnsLoading = {
+  'someday': true,
+  'backlog': true,
+  'in-progress': true,
+  'completed': true,
+  'accepted': true
+};
 
 var ProductStore = module.exports = _.assign({}, EventEmitter.prototype, {
   emitChange() {
@@ -66,7 +72,8 @@ var ProductStore = module.exports = _.assign({}, EventEmitter.prototype, {
         limit: 0,
         offset: 0,
         sortDirection: 'desc',
-        sortField: 'last_modified'
+        sortField: 'last_modified',
+        loading: columnsLoading[status]
       }
     }
 
@@ -84,6 +91,7 @@ var ProductStore = module.exports = _.assign({}, EventEmitter.prototype, {
       items: itemsJSON,
       limit: items.config.get('limit'),
       offset: items.config.get('offset'),
+      loading: columnsLoading[status],
       sortDirection,
       sortField
     };
@@ -159,6 +167,9 @@ var ProductStore = module.exports = _.assign({}, EventEmitter.prototype, {
 
 var internals = ProductStore.internals = {
   initProduct(product) {
+    _.each(columnsLoading, function(val, status) {
+      columnsLoading[status] = true;
+    });
     FilterActions.init(product);
     product.items.on('change:status', function(model) {
       let status = model.get('status');
@@ -372,6 +383,7 @@ ProductStore.dispatchToken = AppDispatcher.register(function(action) {
 
     case ProductConstants.GET_ITEMS:
       columnCollections[`${action.product.id}-${action.status}`] = action.itemsCollection;
+      columnsLoading[action.status] = false;
       ProductStore.emitChange();
       break;
 
@@ -389,7 +401,6 @@ ProductStore.dispatchToken = AppDispatcher.register(function(action) {
     case ProductConstants.UPDATE_ITEM_PRIORITY:
     case ProductConstants.CHANGE_SORT_CRITERIA:
     case ProductConstants.LOAD_MORE:
-    case 'GET_ITEMS':
       ProductStore.emitChange();
       break;
 

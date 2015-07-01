@@ -105,6 +105,10 @@ let ItemColumn = React.createClass({
   },
 
   renderItemCards() {
+    if (this.props.loading) {
+      return <div className="loading"><Loading type="bubbles" color="#ccc"/></div>;
+    }
+
     if (this.productHasItems()) {
       if (this.productHasItemsToRender()) {
         let itemCards = _.map(this.props.items, this.renderItemCard)
