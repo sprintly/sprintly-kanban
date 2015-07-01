@@ -125,7 +125,7 @@ var ProductActions = {
     })
   },
 
-  getItemsForProduct(product, options) {
+  getItemsForStatus(product, options) {
     let productModel = products.get(product);
     let itemsCollection = getItemsCollection(productModel, options);
 
