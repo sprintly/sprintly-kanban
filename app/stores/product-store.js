@@ -52,10 +52,22 @@ var ProductStore = module.exports = _.assign({}, EventEmitter.prototype, {
     };
   },
 
+  getItemsByStatus(productId) {
+    return _.transform(ITEM_STATUSES, (result, status) => {
+      result[status] = this.getItems(productId, status);
+    });
+  },
+
   getItems(productId, status) {
     let items = ProductStore.getItemsCollection(productId, status);
     if (!items) {
-      return;
+      return {
+        items: [],
+        limit: 0,
+        offset: 0,
+        sortDirection: 'desc',
+        sortField: 'last_modified'
+      }
     }
 
     let itemsJSON = _.compact(_.map(items.sort().toJSON(), function(model) {
@@ -377,6 +389,7 @@ ProductStore.dispatchToken = AppDispatcher.register(function(action) {
     case ProductConstants.UPDATE_ITEM_PRIORITY:
     case ProductConstants.CHANGE_SORT_CRITERIA:
     case ProductConstants.LOAD_MORE:
+    case 'GET_ITEMS':
       ProductStore.emitChange();
       break;
 
