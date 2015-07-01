@@ -46,13 +46,13 @@ let ItemsViewController = React.createClass({
   },
 
   _onChange: function() {
-    console.log()
     var product = ProductStore.getProduct(this.getParams().id) || {};
     this.setState(_.assign({
       allFilters: FiltersStore.all(),
       activeFilters: FiltersStore.getActiveOrDefault(),
       filtersObject: FiltersStore.getFlatObject(),
       allProducts: ProductStore.getAll(),
+      itemsByStatus: ProductStore.getItemsByStatus(this.getParams().id)
     }, product));
   },
 
@@ -70,6 +70,12 @@ let ItemsViewController = React.createClass({
     }
   },
 
+  componentWillReceiveProps: function(nextProps) {
+    if (this.getParams().id !== this.state.product.id) {
+      VelocityActions.getVelocity(this.getParams().id);
+    }
+  },
+
   componentWillUnmount: function() {
     FiltersStore.removeChangeListener(this._onChange);
     ProductStore.removeChangeListener(this._onChange);
@@ -80,7 +86,12 @@ let ItemsViewController = React.createClass({
   },
 
   renderColumn: function(label, status) {
-    var props = {
+    // If we don't have items or velocity yet, there's nothing to do
+    if (!this.state.itemsByStatus || !this.state.velocity) {
+      return '';
+    }
+    let items = this.state.itemsByStatus[status];
+    let props = _.assign({
       status,
       product: this.state.product,
       members: this.state.members,
@@ -88,7 +99,7 @@ let ItemsViewController = React.createClass({
       key: `col-${this.state.product.id}-${status}`,
       velocity: this.state.velocity,
       colWidth: this.state.colWidth
-    };
+    }, items);
 
     return <ItemColumn {...props} />;
   },
@@ -148,12 +159,6 @@ let ItemsViewController = React.createClass({
   trayStyles() {
     var transform = helpers.browserPrefix('transform', `translateX(${this.state.translation.value})`)
     return _.merge(this.state.trayWidth, transform);
-  },
-
-  componentWillReceiveProps: function(nextProps) {
-    if (this.getParams().id !== this.state.product.id) {
-      VelocityActions.getVelocity(this.getParams().id);
-    }
   },
 
   render: function() {
