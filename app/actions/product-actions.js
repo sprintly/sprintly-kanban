@@ -31,8 +31,8 @@ function getItemsCollection(product, options) {
   var items = product.getItemsByStatus(options.status);
 
   if (items.config.get('order_by')) {
-    // Set "Recent" as the default sort
-    let sort = STATUS_MAPPINGS[options.sortField] || 'recent';
+    let previousSortField = window.localStorage.getItem(`itemColumn-${options.status}-sortField`);
+    let sort = previousSortField || STATUS_MAPPINGS[options.sortField] || 'recent';
     items.config.set('order_by', sort);
   }
   var updatedFilters = mergeFilters(items.config, options.filters);
