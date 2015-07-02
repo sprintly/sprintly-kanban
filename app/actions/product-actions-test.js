@@ -35,7 +35,7 @@ describe('Product Actions', function() {
     });
   });
 
-  describe('getItemsForProduct', function() {
+  describe('getItemsForStatus', function() {
     beforeEach(function() {
       this.products = ProductActions.__get__('products');
       this.product = this.products.add({ id: 1 });
@@ -49,7 +49,7 @@ describe('Product Actions', function() {
     });
 
     it('sets the collection config order by', function() {
-      ProductActions.getItemsForProduct(1, {
+      ProductActions.getItemsForStatus(1, {
         sortField: 'priority'
       });
       assert.equal('priority', this.itemsCollection.config.get('order_by'));

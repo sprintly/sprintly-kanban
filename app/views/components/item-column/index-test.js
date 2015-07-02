@@ -19,7 +19,7 @@ describe('Item Column', function() {
     this.ProductStore = ItemColumn.__get__('ProductStore');
     this.getItemsStub = this.sinon.stub(this.ProductStore, 'getItems');
     this.ProductActions = ItemColumn.__get__('ProductActions');
-    this.getItemsForProductStub = this.sinon.stub(this.ProductActions, 'getItemsForProduct');
+    this.getItemsForStatusStub = this.sinon.stub(this.ProductActions, 'getItemsForStatus');
     this.props = {
       filters: {},
       product: {},
@@ -89,10 +89,9 @@ describe('Item Column', function() {
       this.sinon.stub(this.ProductStore, 'hasItems').returns(true);
       this.sinon.stub(this.ProductStore, 'hasItemsToRender').returns(true);
 
-      this.component.refs.stub.setState({
-        items: [{}],
-        isLoading: false
-      });
+      this.component = renderComponent(_.assign({}, this.props, {
+        items: [{}]
+      }), this)
 
       let itemCards = TestUtils.scryRenderedDOMComponentsWithClass(
         this.component.refs.stub,

@@ -31,8 +31,8 @@ function getItemsCollection(product, options) {
   var items = product.getItemsByStatus(options.status);
 
   if (items.config.get('order_by')) {
-    // Set "Recent" as the default sort
-    let sort = STATUS_MAPPINGS[options.sortField] || 'recent';
+    let previousSortField = window.localStorage.getItem(`itemColumn-${options.status}-sortField`);
+    let sort = previousSortField || STATUS_MAPPINGS[options.sortField] || 'recent';
     items.config.set('order_by', sort);
   }
   var updatedFilters = mergeFilters(items.config, options.filters);
@@ -65,21 +65,19 @@ function setComparator(collection, field, direction) {
 }
 
 var ProductActions = {
+
   init(productId) {
-    var dependencies;
+    var fetchDependencies;
     if (products.length > 0 && user.id) {
-      products.each(function(product) {
-        product.items.off();
-      });
-      dependencies = [true];
+      fetchDependencies = Promise.resolve()
     } else {
-      dependencies = [
+      fetchDependencies = Promise.all([
         user.fetch(),
         products.fetch({ silent: true })
-      ]
+      ])
     }
 
-    Promise.all(dependencies)
+    fetchDependencies
       .then(function() {
         let action = {
           actionType: 'INIT_PRODUCTS',
@@ -116,6 +114,7 @@ var ProductActions = {
       order_by: field,
       offset: 0
     });
+
     window.localStorage.setItem(`itemColumn-${options.status}-sortField`, field);
 
     itemCollection.fetch({ reset: true, silent: true }).then(function() {
@@ -125,7 +124,7 @@ var ProductActions = {
     })
   },
 
-  getItemsForProduct(product, options) {
+  getItemsForStatus(product, options) {
     let productModel = products.get(product);
     let itemsCollection = getItemsCollection(productModel, options);
 
