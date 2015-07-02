@@ -100,13 +100,6 @@ var ItemCardDetails = React.createClass({
     );
   },
 
-  renderSubItems() {
-    let subitems = this.props.item.sub_items || [];
-    return (
-      <SubItems subitems={subitems} productId={this.props.productId} parentId={this.props.item.number} />
-    );
-  },
-
   renderMenuItems() {
     let statusOptions = _.omit(STATUSES, this.props.item.status);
     let menuItems = _.map(statusOptions, function(label, status) {
@@ -122,6 +115,7 @@ var ItemCardDetails = React.createClass({
     let hasTags = _.isString(item.tags) && !_.isEmpty(item.tags);
     let tags = hasTags ? item.tags.split(',') : item.tags || [];
     let statusOptions = _.omit(STATUSES, item.status);
+    let subitems = this.props.item.sub_items || [];
 
     return (
       <div className="item-card__details">
@@ -134,7 +128,12 @@ var ItemCardDetails = React.createClass({
             {this.renderMenuItems()}
           </DropdownButton>
         </div>
-        {this.renderSubItems()}
+        <SubItems
+          item={this.props.item}
+          subitems={subitems}
+          productId={this.props.productId}
+          parentId={this.props.item.number}
+        />
         <div className="item-card__tags col-sm-12">
           <TagEditor
             modelId={[item.product.id, item.number]}

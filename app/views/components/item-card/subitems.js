@@ -8,7 +8,8 @@ var SubItem = React.createClass({
   propTypes: {
     subitems: React.PropTypes.array.isRequired,
     productId: React.PropTypes.number.isRequired,
-    parentId: React.PropTypes.number.isRequired
+    parentId: React.PropTypes.number.isRequired,
+    item: React.PropTypes.object.isRequired
   },
 
   updateSubItem(subitem, ev) {
@@ -67,10 +68,12 @@ var SubItem = React.createClass({
           {_.map(this.props.subitems, this.renderSubItem)}
           </ul>
         }
-        <form className="item-card__add-subitem" onSubmit={this.createSubItem}>
-          <input ref="addItemInput" type="text" placeholder={addItemText} className="form-control" />
-          <button className="btn btn-default">+</button>
-        </form>
+        {this.props.item.type !== 'story' ? '' :
+          <form className="item-card__add-subitem" onSubmit={this.createSubItem}>
+            <input ref="addItemInput" type="text" placeholder={addItemText} className="form-control" />
+            <button className="btn btn-default">+</button>
+          </form>
+        }
       </div>
     );
   }
