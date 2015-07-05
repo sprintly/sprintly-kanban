@@ -1,4 +1,5 @@
 import React from 'react/addons';
+import classNames from "classnames";
 
 let AddItemTitle = React.createClass({
   propTypes: {
@@ -7,7 +8,7 @@ let AddItemTitle = React.createClass({
   },
 
   render() {
-    var classes = React.addons.classSet({
+    var classes = classNames({
       "form-group": true,
       'has-error': !this.props.validation.value['title']
     });

@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import React from 'react/addons';
+import classNames from "classnames";
 import {Input} from 'react-bootstrap';
 import {SelectorMenu} from 'sprintly-ui';
 
@@ -87,7 +88,7 @@ var MembersFilter = React.createClass({
   },
 
   render: function() {
-    var classes = React.addons.classSet({
+    var classes = classNames({
       'form-horizontal': true,
       'filter__criteria-selector': true,
       visible: this.props.visible

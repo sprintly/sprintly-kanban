@@ -3,6 +3,7 @@ import React from 'react/addons';
 import MembersFilter from './forms/members-filter';
 import CheckboxFilter from './forms/checkbox-filter';
 import TagsFilter from './forms/tags-filter';
+import classNames from "classnames";
 
 var FiltersMenu = React.createClass({
 
@@ -81,7 +82,7 @@ var FiltersMenu = React.createClass({
   },
 
   render() {
-    var classes = React.addons.classSet({
+    var classes = classNames({
       'col-sm-2': true,
       'filters-menu': true,
       'show-popup': this.state.showPopup

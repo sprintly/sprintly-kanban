@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import React from 'react/addons';
+import classNames from "classnames";
 import moment from 'moment';
 import OwnerAvatar from './owner';
 import Controls from './controls';
@@ -132,7 +133,7 @@ let ItemCard = React.createClass({
     }
 
     return (
-      <div className={React.addons.classSet(classes)} {...this.props}>
+      <div className={classNames(classes)} {...this.props}>
         <div className="row">
           <div className="item-card__header col-sm-12">
             <Controls

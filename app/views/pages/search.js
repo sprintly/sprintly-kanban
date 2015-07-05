@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import React from "react";
+import classNames from "classnames";
 
 import {State, Navigation} from "react-router";
 import {ProgressBar, ButtonGroup, DropdownButton, MenuItem} from 'react-bootstrap';
@@ -150,7 +151,7 @@ let Search = React.createClass({
       let typeClass = {}
       typeClass[type] = true;
 
-      var classes = React.addons.classSet(_.extend({
+      var classes = classNames(_.extend({
         "btn btn-default issue-control": true,
         "active": this.state.issueControls[type]
       }, typeClass));
@@ -164,7 +165,7 @@ let Search = React.createClass({
       let productClass = {}
       productClass[`product-${product.id}`] = true;
 
-      var classes = React.addons.classSet(_.extend({
+      var classes = classNames(_.extend({
         "btn btn-default product-control": true,
         "active": this.state.productControls[product.id]
       }, productClass));

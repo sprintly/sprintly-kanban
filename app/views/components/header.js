@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import React from 'react/addons';
+import classNames from "classnames";
 import Gravatar from './gravatar';
 import AddItemModal from './add-item-modal';
 import FiltersMenu from './filters/filters-menu';
@@ -116,7 +117,7 @@ let KanbanHeader = React.createClass({
 
   smallScreenHeader() {
     let navClasses = this.getClasses('small');
-    let burgerClasses = React.addons.classSet({
+    let burgerClasses = classNames({
       '_burger': true,
       'open': this.state.drawerOpen === 'left'
     });
@@ -124,12 +125,12 @@ let KanbanHeader = React.createClass({
     let openLeftSide = _.partial(SidebarActions.show, 'left');
 
     let hideRightMenuTrigger = this.getPathname() === '/' || this.getPathname() === '/search';
-    let filterClasses = React.addons.classSet({
+    let filterClasses = classNames({
       'btn filter-icon': true,
       'hidden': hideRightMenuTrigger
     });
     let hideLeftMenuTrigger = this.getPathname() === '/';
-    let menuClasses = React.addons.classSet({
+    let menuClasses = classNames({
       "small-menu": true,
       'hidden': hideLeftMenuTrigger
     });

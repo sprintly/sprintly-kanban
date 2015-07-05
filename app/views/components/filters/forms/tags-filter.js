@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import React from 'react/addons';
+import classNames from "classnames";
 import {Input} from 'react-bootstrap';
 import {Tokenizer} from 'react-typeahead';
 
@@ -26,7 +27,7 @@ var TagsFilter = React.createClass({
   },
 
   render: function() {
-    var classes = React.addons.classSet({
+    var classes = classNames({
       'form-horizontal': true,
       'filter__criteria-selector': true,
       visible: this.props.visible

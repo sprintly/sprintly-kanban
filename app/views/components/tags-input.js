@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import React from 'react/addons';
+import classNames from "classnames";
 import {ListGroup, ListGroupItem} from 'react-bootstrap';
 import fuzzy from 'fuzzy';
 
@@ -227,7 +228,7 @@ var TagsInput = React.createClass({
       <ListGroup>
         {_.map(this.state.filteredTags, (value, index) => {
 
-          let focusedClass = React.addons.classSet({
+          let focusedClass = classNames({
             'tag-item__focused': (value === this.state.focusedOption)
           })
 

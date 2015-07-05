@@ -114,12 +114,6 @@ var Filter = React.createClass({
   },
 
   render: function() {
-    var criteriaFormClasses = React.addons.classSet({
-      'form-horizontal': true,
-      'filter__criteria-selector': true,
-      visible: this.state.selectorVisible
-    });
-
     return (
       <div className="filter" onClick={this.toggleSelector}>
         <button className="btn filter__label">{this.props.label}</button>

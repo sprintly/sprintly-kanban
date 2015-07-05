@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import React from 'react/addons';
+import classNames from "classnames";
 import {State} from 'react-router';
 import SidebarFilters from '../filters/sidebar-filters'
 import FiltersActions from '../../../actions/filter-actions';
@@ -47,11 +48,11 @@ let FiltersSidebar = React.createClass({
       typeClass[type] = true;
 
       let active = _.contains(activeTypes, type)
-      let linkClasses = React.addons.classSet(_.extend({
+      let linkClasses = classNames(_.extend({
         "active": active
       }, typeClass));
 
-      let colorIndicator = React.addons.classSet({
+      let colorIndicator = classNames({
         'type-color-indicator': true,
         "active": active
       })
@@ -65,7 +66,7 @@ let FiltersSidebar = React.createClass({
     })
 
     let sameMembers = _.isEmpty(_.xor(activeTypes, issueTypes));
-    let allClasses = React.addons.classSet({
+    let allClasses = classNames({
       'active': sameMembers
     });
 
@@ -98,7 +99,7 @@ let FiltersSidebar = React.createClass({
   },
 
   mineButton() {
-    let classes = React.addons.classSet({
+    let classes = classNames({
       "btn btn-primary mine-button": true,
       "active": this.assignedToUser()
     })
@@ -116,7 +117,7 @@ let FiltersSidebar = React.createClass({
   },
 
   clearFiltersButton() {
-    let classes = React.addons.classSet({
+    let classes = classNames({
       "btn btn-primary": true,
     })
 
@@ -128,7 +129,7 @@ let FiltersSidebar = React.createClass({
   },
 
   buildFilterSideBar() {
-    let classes = React.addons.classSet({
+    let classes = classNames({
       'sidebar__menu': true,
       'col-xs-6': true,
       'col-sm-3': true,
@@ -151,7 +152,7 @@ let FiltersSidebar = React.createClass({
   },
 
   render() {
-    let classes = React.addons.classSet({
+    let classes = classNames({
       'right-off-canvas-menu': true,
       'hidden': this.props.side !== 'right'
     });
