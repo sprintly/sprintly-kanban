@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import Router, { Route, DefaultRoute } from 'react-router';
 
 import App from './views/app';
@@ -16,17 +16,17 @@ var routes = (
 
 function analytics(state) {
   if (typeof ga !== 'undefined') {
-    ga('send', 'pageview', {
+    window.ga('send', 'pageview', {
       'page': state.path
     });
   }
 }
 
-module.exports = function(sprintlyClient) {
+export default function(sprintlyClient) {
   sprintlyClient.router = Router.run(routes, Router.HistoryLocation, function(Handler, state) {
     React.render(<Handler user={sprintlyClient.user} />, document.getElementById('manifold'));
     analytics(state);
   });
 
   return sprintlyClient;
-};
+}

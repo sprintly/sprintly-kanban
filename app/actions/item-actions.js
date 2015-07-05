@@ -1,6 +1,5 @@
-import _ from 'lodash';
 import AppDispatcher from '../dispatchers/app-dispatcher';
-import {products, user} from '../lib/sprintly-client';
+import {products} from '../lib/sprintly-client';
 import Promise from 'bluebird';
 
 let ItemActions = {
@@ -24,10 +23,7 @@ let ItemActions = {
         });
       });
     } else {
-      return new Promise(function(resolve, reject) {
-        console.error(item.validationError)
-        reject(item)
-      })
+      return Promise.reject(item);
     }
   },
 
@@ -52,6 +48,7 @@ let ItemActions = {
           product,
           itemData
         });
+        resolve();
       });
     }
   }

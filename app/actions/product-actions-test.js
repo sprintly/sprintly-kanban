@@ -1,3 +1,5 @@
+/*eslint semi: 0, camelcase: 0 */
+/*eslint-env node, mocha */
 var _ = require('lodash');
 var ProductActions = require('./product-actions');
 var sinon = require('sinon');
@@ -102,7 +104,7 @@ describe('Product Actions', function() {
     });
 
     it('throws when unexpected sort argument encountered', function() {
-      assert.throws(() => ProductActions.updateItemPriority(1,1,'sideways'), /Invalid priority direction/);
+      assert.throws(() => ProductActions.updateItemPriority(1, 1, 'sideways'), /Invalid priority direction/);
     });
 
     context('up', function() {

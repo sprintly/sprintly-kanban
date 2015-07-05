@@ -6,7 +6,7 @@ let SidebarActions = {
     AppDispatcher.dispatch({
       actionType: SidebarConstants.SHOW,
       side
-    })
+    });
   }
 };
 

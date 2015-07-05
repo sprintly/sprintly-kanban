@@ -1,3 +1,4 @@
+/*eslint camelcase: 0, eqeqeq: 0 */
 import _ from 'lodash';
 import AppDispatcher from '../dispatchers/app-dispatcher';
 import ProductConstants from '../constants/product-constants';
@@ -59,7 +60,7 @@ function setComparator(collection, field, direction) {
     if (field === 'priority') {
       return model.get('sort');
     }
-    let value = presenter(criteria)
+    let value = presenter(criteria);
     return direction === 'desc' ? -value : value;
   };
 }
@@ -69,12 +70,12 @@ var ProductActions = {
   init(productId) {
     var fetchDependencies;
     if (products.length > 0 && user.id) {
-      fetchDependencies = Promise.resolve()
+      fetchDependencies = Promise.resolve();
     } else {
       fetchDependencies = Promise.all([
         user.fetch(),
         products.fetch({ silent: true })
-      ])
+      ]);
     }
 
     fetchDependencies
@@ -89,7 +90,7 @@ var ProductActions = {
         AppDispatcher.dispatch(action);
       })
       .catch(function(err) {
-        console.error(err);
+        // console.error(err)
         AppDispatcher.dispatch({
           actionType: 'INIT_PRODUCTS_ERROR',
           payload: err
@@ -121,7 +122,7 @@ var ProductActions = {
       AppDispatcher.dispatch({
         actionType: ProductConstants.CHANGE_SORT_CRITERIA
       });
-    })
+    });
   },
 
   getItemsForStatus(product, options) {
@@ -148,7 +149,7 @@ var ProductActions = {
 
     itemCollection.config.set({ limit: newLimit });
 
-    itemCollection.fetch({ silent:true }).then(function() {
+    itemCollection.fetch({ silent: true }).then(function() {
       AppDispatcher.dispatch({
         actionType: ProductConstants.LOAD_MORE
       });
@@ -196,11 +197,10 @@ var ProductActions = {
     let product = products.get(productId);
     let item = product.items.get(itemId);
     let status = item.get('status');
-    let sort = item.get('sort');
     let payload = {};
-    let col = product._filters[status].sortBy('sort');
-    let index = _.findIndex(col, function(item) {
-      return item.get('number') === itemId;
+    let col = product.getItemsByStatus(status).sortBy('sort');
+    let index = _.findIndex(col, function(model) {
+      return model.get('number') === itemId;
     });
 
     let previousItems = {
@@ -209,8 +209,8 @@ var ProductActions = {
     };
     let nextItems = {
       after: col[index + 1],
-      before: col[index + 2],
-    }
+      before: col[index + 2]
+    };
 
     switch(priority) {
       case 'up':
@@ -238,7 +238,7 @@ var ProductActions = {
         payload.before = bottomItem.get('number');
         break;
       default:
-        throw new Error('Invalid priority direction: '+ priority);
+        throw new Error(`Invalid priority direction: ${priority}`);
     }
 
     item.resort(payload).then(function() {

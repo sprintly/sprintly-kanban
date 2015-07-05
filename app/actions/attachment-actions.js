@@ -1,7 +1,7 @@
 import AppDispatcher from '../dispatchers/app-dispatcher.js';
 import TransloaditUpload from '../lib/transloadit';
 
-var AttachmentActions = {
+let AttachmentActions = {
 
   createUpload(file) {
 
@@ -17,12 +17,12 @@ var AttachmentActions = {
           actionType: 'UPLOAD_COMPLETE',
           payload: upload,
           file: file
-        })
+        });
       });
   },
 
   createAttachment() {
-    
+
   }
 
 };
