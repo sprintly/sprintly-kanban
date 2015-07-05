@@ -14,7 +14,7 @@ import Select from 'react-select';
 
 const REVERSE_SCORE_MAP = _.zipObject(_.values(ScoreMap), _.keys(ScoreMap))
 
-var ItemCard = React.createClass({
+let ItemCard = React.createClass({
 
   propTypes: {
     productId: React.PropTypes.number.isRequired,

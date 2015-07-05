@@ -3,7 +3,6 @@ import React from "react/addons";
 import {State,Link} from 'react-router';
 
 // Components
-import Loading from "react-loading"
 import ItemColumn from "../components/item-column";
 import FiltersToolbar from '../components/filters/filters-toolbar';
 import Header from '../components/header';
@@ -149,8 +148,6 @@ let ItemsViewController = React.createClass({
           user={this.props.user}
         />
         <div className="loading">
-          <Loading type="spin" color="#ccc" />
-          <br/>
           <small><i>{ob.draw()}</i></small>
         </div>
       </div>

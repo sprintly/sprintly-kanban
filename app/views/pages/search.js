@@ -24,7 +24,7 @@ function getSearchSelectorState() {
   };
 }
 
-var Search = React.createClass({
+let Search = React.createClass({
 
   mixins: [State, Navigation],
 
@@ -411,4 +411,4 @@ var Search = React.createClass({
   }
 });
 
-module.exports = Search;
+export default Search;

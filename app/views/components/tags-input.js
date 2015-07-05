@@ -188,7 +188,7 @@ var TagsInput = React.createClass({
     return true;
   },
 
-  componentWillMount() {
+  componentDidMount() {
     this._closeMenuIfClickedOutside = function(event) {
 
       var menuElem = this.refs.listGroup.getDOMNode();

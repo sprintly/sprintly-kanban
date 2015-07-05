@@ -2,10 +2,6 @@ import _ from 'lodash';
 import React from 'react/addons';
 
 // Components
-import MembersFilter from './forms/members-filter';
-import CheckboxFilter from './forms/checkbox-filter';
-import TagsFilter from './forms/tags-filter';
-import Filter from './filters-toolbar-filter';
 import TagsInput from '../tags-input.js';
 import Select from 'react-select';
 

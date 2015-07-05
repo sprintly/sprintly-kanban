@@ -22,7 +22,7 @@ const NAV_ITEMS = [
 
 const STORY_ATTRS = ['who', 'what', 'why'];
 
-var AddItemModal = React.createClass({
+let AddItemModal = React.createClass({
 
   propTypes: {
     tags: React.PropTypes.array,
@@ -88,7 +88,7 @@ var AddItemModal = React.createClass({
 
   dismiss(ev) {
     ev.preventDefault();
-    this.props.onRequestHide();
+    this.props.onHide();
   },
 
   createItem(ev) {
@@ -156,21 +156,29 @@ var AddItemModal = React.createClass({
 
     let title;
     if (this.state.type === 'story') {
-      title = <StoryTitle who={this.linkState('who')}
-                             what={this.linkState('what')}
-                              why={this.linkState('why')}
-                      validation={this.linkState('validation')} />
+      title = (
+        <StoryTitle
+          who={this.linkState('who')}
+          what={this.linkState('what')}
+          why={this.linkState('why')}
+          validation={this.linkState('validation')}
+        />
+      );
     } else {
-      title = <Title title={this.linkState('title')}
-                   validation={this.linkState('validation')} />;
+      title = (
+        <Title
+          title={this.linkState('title')}
+          validation={this.linkState('validation')}
+        />
+      )
     }
 
     return (
       <Modal {...this.props} className="add-item">
         <Nav className="add-item__tabs" bsStyle='tabs' activeKey={this.state.type} onSelect={this.changeType}>
-          {_.map(NAV_ITEMS, (item) => {
+          {_.map(NAV_ITEMS, (item, i) => {
             return (
-              <NavItem tabIndex="1" aria-role="tab" eventKey={item.type} className={`add-item__nav-${item.type}`}>
+              <NavItem key={i} tabIndex="1" aria-role="tab" eventKey={item.type} className={`add-item__nav-${item.type}`}>
                 {item.label}
               </NavItem>
             )

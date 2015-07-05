@@ -29,6 +29,7 @@ let KanbanHeader = React.createClass({
 
   getInitialState() {
     return {
+      showModal: false,
       scoped: true,
       showMenu: true,
       drawerOpen: false
@@ -60,19 +61,32 @@ let KanbanHeader = React.createClass({
     }
   },
 
+  closeModal() {
+    this.setState({ showModal: false });
+  },
+
+  openModal() {
+    this.setState({ showModal: true });
+  },
+
   renderAddItem() {
     if (this.props.members && this.props.tags) {
       let modal = (
         <AddItemModal
+          onHide={this.closeModal}
+          show={this.state.showModal}
           product={this.props.product}
           members={this.props.members}
           tags={this.props.tags}
         />
       );
       return (
-        <ModalTrigger modal={modal}>
-          <button className="btn btn-primary add-item"><span className="glyphicon glyphicon-plus-sign"/> Add Item</button>
-        </ModalTrigger>
+        <div style={{ float: 'right' }}>
+          <button className="btn btn-primary add-item" onClick={this.openModal}>
+            <span className="glyphicon glyphicon-plus-sign"/> Add Item
+          </button>
+          {modal}
+        </div>
       );
     }
 
@@ -169,9 +183,9 @@ let KanbanHeader = React.createClass({
       'container-fluid': true
     };
 
-    return React.addons.classSet(
+    return _.keys(
       _.extend(defaults, visibilityClasses[size])
-    );
+    ).join(' ');
   },
 
   sprintlyFlask() {
