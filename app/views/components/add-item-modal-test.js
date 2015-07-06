@@ -51,7 +51,7 @@ describe('Add Item Modal', function() {
       product: {
         id: '1'
       },
-      onRequestHide: this.dismissSpy
+      onHide: this.dismissSpy
     }
 
     let Component = stubRouterContext(AddItemModal, props);
