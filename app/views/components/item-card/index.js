@@ -10,7 +10,6 @@ import ProductActions from '../../../actions/product-actions';
 import FilterActions from '../../../actions/filter-actions';
 import ItemCardDetails from './details';
 import ScoreMap from '../../../lib/score-map';
-import onClickOutside from 'react-onclickoutside';
 import Select from 'react-select';
 
 const REVERSE_SCORE_MAP = _.zipObject(_.values(ScoreMap), _.keys(ScoreMap))
@@ -24,7 +23,6 @@ let ItemCard = React.createClass({
     members: React.PropTypes.array.isRequired
   },
 
-  mixins: [onClickOutside],
 
   getInitialState() {
     return {
@@ -85,7 +83,7 @@ let ItemCard = React.createClass({
   popoverMenu() {
     let members = this.prepareMembersForSelect();
     return (
-      <Popover ref='popover' className='ignore-react-onclickoutside' enableOnClickOutside={true}>
+      <Popover ref='popover'>
         <div className='item_card__member-dropdown'>
           <Select name="form-field-name"
                   value={this.assigneeName()}
@@ -153,9 +151,7 @@ let ItemCard = React.createClass({
                 estimateChanger={{changeScore: this.changeScore}}
               />
               {this.isAssignable() ?
-                <OverlayTrigger ref='trigger' trigger='click' placement='bottom' overlay={this.popoverMenu()}>
-                  <span className="clickable-avatar"><OwnerAvatar person={owner} /></span>
-                </OverlayTrigger> :
+                <span className="clickable-avatar"><OwnerAvatar person={owner} /></span> :
                 <span><OwnerAvatar person={owner} /></span>}
             </div>
           </div>

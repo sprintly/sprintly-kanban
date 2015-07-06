@@ -1,11 +1,9 @@
 import _ from 'lodash';
 import React from 'react/addons';
 import ItemCard from '../item-card';
-import onClickOutside from 'react-onclickoutside';
 import {Label, Popover} from 'react-bootstrap'
 
 let Sprint = React.createClass({
-  mixins: [ onClickOutside ],
 
   getInitialState() {
     return {

@@ -1,11 +1,9 @@
 import _ from 'lodash';
 import React from 'react/addons';
 import {Popover} from 'react-bootstrap';
-import onClickOutside from 'react-onclickoutside';
 import VelocityActions from '../../../actions/velocity-actions';
 
 var VelocityComponent = React.createClass({
-  mixins: [ onClickOutside ],
 
   getInitialState() {
     return {
