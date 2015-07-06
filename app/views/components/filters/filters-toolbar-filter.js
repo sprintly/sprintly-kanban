@@ -69,7 +69,7 @@ var Filter = React.createClass({
     if (this.props.type === 'members') {
       if (this.props.user.id == this.props.criteria) {
         criteriaLabel = 'Me';
-      } else if (this.props.criteria == 'unassigned' || this.props.criteria === '') {
+      } else if (this.props.criteria == 'unassigned' || this.props.criteria === 'None' || this.props.criteria === '') {
         criteriaLabel = 'Unassigned';
       } else {
         let member = _.findWhere(this.props.members, { id: parseInt(this.props.criteria, 10) });
@@ -98,7 +98,7 @@ var Filter = React.createClass({
     };
     switch (this.props.type) {
       case 'members':
-        form = <MembersFilter {...formProps}/>
+        form = <MembersFilter {...formProps} members={this.props.members}/>
         break;
       case 'checkbox':
         form = <CheckboxFilter {...formProps} />

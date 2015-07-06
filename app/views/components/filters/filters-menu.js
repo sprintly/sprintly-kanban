@@ -15,6 +15,7 @@ var FiltersMenu = React.createClass({
   },
 
   propTypes: {
+    members: React.PropTypes.array.isRequired,
     allFilters: React.PropTypes.array.isRequired,
     updateFilters: React.PropTypes.func.isRequired
   },
@@ -44,7 +45,7 @@ var FiltersMenu = React.createClass({
     };
     switch (filter.type) {
       case 'members':
-        form = <MembersFilter {...formProps}/>
+        form = <MembersFilter {...formProps} members={this.props.members}/>
         break;
       case 'checkbox':
         form = <CheckboxFilter {...formProps} />
@@ -62,10 +63,10 @@ var FiltersMenu = React.createClass({
   buildFilters() {
     return (
       _.map(this.props.allFilters, function(filter, i) {
-        var classes = React.addons.classSet({
+        var classes = classNames({
           'show-form': _.contains(this.state.visibleFilters, filter.field)
         });
-        
+
         return (
           <li className={classes} key={i}>
             <h3 onClick={_.partial(this.toggleVisible, filter.field)}>{filter.label}</h3>

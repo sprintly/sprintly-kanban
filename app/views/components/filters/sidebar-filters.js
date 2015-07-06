@@ -90,7 +90,6 @@ var SidebarFilters = React.createClass({
 
   buildAssignFilter(field) {
     let filter = _.find(this.props.allFilters, {field: field});
-    let filterProps = this.filterProps(filter);
     let activeAssignee = this.selectedPerson(this.props.members, filter);
     let members = this.prepareMembersForSelect(this.props.members);
 

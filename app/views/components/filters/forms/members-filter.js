@@ -3,10 +3,12 @@ import React from 'react/addons';
 import classNames from "classnames";
 import {Input} from 'react-bootstrap';
 import {SelectorMenu} from 'sprintly-ui';
+import Select from 'react-select';
 
 var MembersFilter = React.createClass({
 
   propTypes: {
+    members: React.PropTypes.array.isRequired,
     name: React.PropTypes.string.isRequired,
     updateFilters: React.PropTypes.func,
     criteria: React.PropTypes.oneOfType([
@@ -23,9 +25,12 @@ var MembersFilter = React.createClass({
     }
   },
 
-  onChange: function(member) {
-    let value = member.value;
-    this.props.updateFilters(this.props.name, value)
+  onChange: function(value) {
+    let options = {}
+    if (value === '') {
+      options.unset = true;
+    }
+    this.props.updateFilters(this.props.name, value, options)
   },
 
   update: function(field, value, ev) {
@@ -42,27 +47,49 @@ var MembersFilter = React.createClass({
     this.props.updateFilters(this.props.name, criteria, options);
   },
 
-  renderMembers: function(option) {
-    let active = _.findWhere(option.members, { id: this.props.criteria });
-    let selection = active ? `${active.first_name} ${active.last_name.slice(0,1)}.` : 'All';
+  prepareMembersForSelect(members) {
+    return _.chain(members)
+            .map(function(member){
+              if (!member.revoked) {
+                return {
+                  label: `${member.first_name} ${member.last_name}`,
+                  value: member.id
+                };
+              }
+            })
+            .compact()
+            .value();
+  },
 
-    let members = _.map(option.members, function(member) {
-      let title = `${member.first_name} ${member.last_name.slice(0,1)}.`;
-      return {
-        title,
-        value: member.id
-      }
-    }, this);
+  selectedPerson(members, criteria) {
+    let person = _.find(members, { id: criteria })
+
+    if (person) {
+      return `${person.first_name} ${person.last_name}`;
+    } else {
+      return 'Unassigned';
+    }
+  },
+
+  renderMembers: function(option) {
+    let activeAssignee = this.selectedPerson(this.props.members, this.props.criteria);
+    let members = this.prepareMembersForSelect(this.props.members);
+    var props = {
+      placeholder: 'All',
+      name: option.field,
+      className: 'assign-dropdown',
+      options: members,
+      onChange: this.onChange,
+      clearable: true,
+      value: null
+    };
+    if (this.props.criteria) {
+      props.value = activeAssignee;
+    }
 
     return (
       <div className="form-group selector" key="members-dropdown">
-        <SelectorMenu
-          optionsList={_.sortBy(members, 'title')}
-          selection={selection}
-          onSelectionChange={(title) => {
-            this.onChange(_.findWhere(members, { title }))
-          }}
-        />
+        <Select {...props}/>
       </div>
     );
   },
