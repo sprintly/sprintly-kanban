@@ -2,7 +2,7 @@ import _ from 'lodash';
 import React from 'react/addons';
 import classNames from "classnames";
 import {Input} from 'react-bootstrap';
-import {Tokenizer} from 'react-typeahead';
+import TagsInput from '../../tags-input';
 
 var TagsFilter = React.createClass({
 
@@ -37,7 +37,9 @@ var TagsFilter = React.createClass({
     if (tags.length === 0) {
       input = '';
     } else {
-      input = (<Tokenizer options={tags} onTokenAdd={this.update} onTokenRemove={this.update} />);
+      input = (
+        <TagsInput tags={tags} onChange={this.update} value={this.props.criteria}/>
+      );
     }
     return (
       <form className={classes} onClick={(e) => e.stopPropagation() }>
