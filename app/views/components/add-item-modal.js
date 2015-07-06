@@ -1,7 +1,7 @@
 import _ from 'lodash'; import React from 'react/addons';
 
 import {Modal,Nav,NavItem} from 'react-bootstrap';
-import {MentionsInput, Mention} from 'react-mentions';
+import {MentionsInput, Mention} from '@sprintly/react-mentions';
 import Title from './add-item/title';
 import TagsInput from './tags-input';
 import StoryTitle from './add-item/story-title';

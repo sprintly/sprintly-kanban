@@ -10,8 +10,8 @@ var Modal = require('react-bootstrap').Modal;
 var Nav = require('react-bootstrap').Nav;
 var NavItem = require('react-bootstrap').NavItem;
 
-var MentionsInput = require('react-mentions').MentionsInput;
-var Mention = require('react-mentions').Mention;
+var MentionsInput = require('@sprintly/react-mentions').MentionsInput;
+var Mention = require('@sprintly/react-mentions').Mention;
 
 var Title = require('./add-item/title');
 var TagsInput = require('./tags-input');

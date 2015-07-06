@@ -3,6 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "devDependencies": {
+    "@sprintly/react-mentions": "^0.1.10",
     "babelify": "^5.0.4",
     "backdash": "^1.1.2-2.4.1",
     "bluebird": "^2.5.3",
@@ -40,8 +41,6 @@
     "react-bootstrap": "^0.23.7",
     "react-loading": "0.0.7",
     "react-localstorage": "^0.2.4",
-    "react-mentions": "^0.1.10",
-    "react-onclickoutside": "^0.2.4",
     "react-router": "^0.13.3",
     "react-select": "^0.5.2",
     "react-typeahead": "1.0.1",
