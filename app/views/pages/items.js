@@ -44,20 +44,25 @@ let ItemsViewController = React.createClass({
     }, product);
   },
 
-  _onChange: function() {
+  _onProductChange() {
     var product = ProductStore.getProduct(this.getParams().id) || {};
     this.setState(_.assign({
-      allFilters: FiltersStore.all(),
-      activeFilters: FiltersStore.getActiveOrDefault(),
-      filtersObject: FiltersStore.getFlatObject(),
       allProducts: ProductStore.getAll(),
       itemsByStatus: ProductStore.getItemsByStatus(this.getParams().id)
     }, product));
   },
 
+  _onFilterChange() {
+    this.setState({
+      allFilters: FiltersStore.all(),
+      activeFilters: FiltersStore.getActiveOrDefault(),
+      filtersObject: FiltersStore.getFlatObject(),
+    })
+  },
+
   componentDidMount: function() {
-    FiltersStore.addChangeListener(this._onChange);
-    ProductStore.addChangeListener(this._onChange);
+    FiltersStore.addChangeListener(this._onFilterChange);
+    ProductStore.addChangeListener(this._onProductChange);
     ProductActions.init(this.getParams().id);
     VelocityActions.getVelocity(this.getParams().id);
 
@@ -77,8 +82,8 @@ let ItemsViewController = React.createClass({
   },
 
   componentWillUnmount: function() {
-    FiltersStore.removeChangeListener(this._onChange);
-    ProductStore.removeChangeListener(this._onChange);
+    FiltersStore.removeChangeListener(this._onFilterChange);
+    ProductStore.removeChangeListener(this._onProductChange);
   },
 
   selectItem: function(activeItem, event) {
