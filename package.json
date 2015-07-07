@@ -77,7 +77,7 @@
     "good-console": "^5.0.2",
     "hapi": "^8.6.1",
     "hapi-auth-cookie": "^3.0.1",
-    "sprintly-data": "^2.0.4",
+    "sprintly-data": "^2.0.5",
     "superagent": "^1.2.0",
     "swig": "^1.4.2"
   },
