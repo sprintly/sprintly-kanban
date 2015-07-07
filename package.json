@@ -5,7 +5,7 @@
   "devDependencies": {
     "@sprintly/react-mentions": "^0.1.10",
     "@sprintly/react-onclickoutside": "^1.0.0",
-    "babelify": "^6.1.2",
+    "babelify": "^5.0.5",
     "backdash": "^1.1.2-2.4.1",
     "bluebird": "^2.5.3",
     "bootstrap": "^3.3.1",
@@ -44,7 +44,7 @@
     "react-select": "^0.5.2",
     "react-typeahead": "1.0.1",
     "reactify": "^1.1.0",
-    "rewireify": "0.0.13",
+    "rewireify": "^0.2.1",
     "sinon": "^1.13.0",
     "sprintly-search": "^2.3.0",
     "sprintly-ui": "sprintly/sprintly-ui#react-v0.13",
