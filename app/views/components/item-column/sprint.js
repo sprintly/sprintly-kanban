@@ -2,7 +2,7 @@ import _ from 'lodash';
 import React from 'react/addons';
 import ItemCard from '../item-card';
 import {Label, Popover} from 'react-bootstrap';
-import onClickOutside from 'react-onclickoutside';
+import onClickOutside from '@sprintly/react-onclickoutside';
 
 let Sprint = React.createClass({
 
