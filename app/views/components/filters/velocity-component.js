@@ -2,6 +2,7 @@ import _ from 'lodash';
 import React from 'react/addons';
 import {Popover} from 'react-bootstrap';
 import VelocityActions from '../../../actions/velocity-actions';
+import onClickOutside from '@sprintly/react-onclickoutside';
 
 var VelocityComponent = React.createClass({
 
@@ -11,6 +12,10 @@ var VelocityComponent = React.createClass({
       showVelocityPopover: false
     };
   },
+
+  mixins: [
+    onClickOutside
+  ],
 
   changeVelocity(e) {
     e.preventDefault();
@@ -29,7 +34,9 @@ var VelocityComponent = React.createClass({
   },
 
   hideVelocityPopover() {
-    this.setState({ showVelocityPopover: false });
+    this.setState({
+      showVelocityPopover: false
+    });
   },
 
   handleClickOutside() {

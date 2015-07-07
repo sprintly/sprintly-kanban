@@ -1,7 +1,8 @@
 import _ from 'lodash';
 import React from 'react/addons';
 import ItemCard from '../item-card';
-import {Label, Popover} from 'react-bootstrap'
+import {Label, Popover} from 'react-bootstrap';
+import onClickOutside from 'react-onclickoutside';
 
 let Sprint = React.createClass({
 
@@ -11,6 +12,10 @@ let Sprint = React.createClass({
       teamStrength: 1
     };
   },
+
+  mixins: [
+    onClickOutside
+  ],
 
   toggleTeamStrengthPopover(e) {
     e.stopPropagation();

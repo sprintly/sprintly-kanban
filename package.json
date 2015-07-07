@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "devDependencies": {
     "@sprintly/react-mentions": "^0.1.10",
+    "@sprintly/react-onclickoutside": "^1.0.0",
     "babelify": "^5.0.4",
     "backdash": "^1.1.2-2.4.1",
     "bluebird": "^2.5.3",

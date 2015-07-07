@@ -4,14 +4,32 @@ import MembersFilter from './forms/members-filter';
 import CheckboxFilter from './forms/checkbox-filter';
 import TagsFilter from './forms/tags-filter';
 import classNames from "classnames";
+import onClickOutside from '@sprintly/react-onclickoutside';
 
 var FiltersMenu = React.createClass({
+
+  getDefaultProps() {
+    return {
+      disableOnClickOutside: true
+    }
+  },
 
   getInitialState() {
     return {
       showPopup: false,
       visibleFilters: []
     }
+  },
+
+  mixins: [
+    onClickOutside
+  ],
+
+  handleClickOutside() {
+    this.setState({
+      showPopup: false
+    });
+    this.disableOnClickOutside();
   },
 
   propTypes: {
@@ -21,7 +39,14 @@ var FiltersMenu = React.createClass({
   },
 
   toggleFiltersMenu() {
-    this.setState({ showPopup: !this.state.showPopup });
+    let showPopup = !this.state.showPopup;
+
+    if (showPopup) {
+      this.enableOnClickOutside();
+    } else {
+      this.disableOnClickOutside();
+    }
+    this.setState({ showPopup });
   },
 
   toggleVisible(filter) {
@@ -92,7 +117,9 @@ var FiltersMenu = React.createClass({
     var filters = this.buildFilters();
     return (
       <div className={classes}>
-        <button className="btn btn-default filters-menu__button" onClick={this.toggleFiltersMenu}>Add Filter</button>
+        <button className="btn filters-menu__button" onClick={this.toggleFiltersMenu}>
+          <span className="glyphicon glyphicon-filter"/> Add Filter
+        </button>
         <a href="#" onClick={this.mine} className="filters-menu__mine">My Items</a>
         <div className="col-sm-12 filters-menu__popup">
           <div className="filters-menu__scroll-wrapper">
