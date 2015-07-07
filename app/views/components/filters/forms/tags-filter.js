@@ -33,17 +33,24 @@ var TagsFilter = React.createClass({
       visible: this.props.visible
     });
     var tags = _.pluck(this.props.options, 'tag');
-    var input;
-    if (tags.length === 0) {
-      input = '';
+    var criteria;
+    if (this.props.criteria) {
+      criteria = _.isArray(this.props.criteria) ?
+        this.props.criteria : [this.props.criteria];
     } else {
-      input = (
-        <TagsInput tags={tags} onChange={this.update} value={this.props.criteria}/>
-      );
+      criteria = [];
     }
+
     return (
       <form className={classes} onClick={(e) => e.stopPropagation() }>
-        {input}
+        {tags.length === 0 ? '' :
+          <TagsInput
+            tags={tags}
+            onChange={this.update}
+            value={criteria}
+            placeholder="Filter by Tags"
+          />
+        }
       </form>
     )
   }

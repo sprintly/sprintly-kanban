@@ -156,9 +156,9 @@ var TagsInput = React.createClass({
 
     let tags = this.props.value || this.props.defaultValue || [];
 
-    return _.map(tags, (value) => {
+    return _.map(tags, (value, i) => {
       return (
-        <div className="label label-default">
+        <div className="label label-default" key={i}>
           <span>{value}</span>
           <button
             type="button"
@@ -227,19 +227,20 @@ var TagsInput = React.createClass({
     return (
       <ListGroup>
         {_.map(this.state.filteredTags, (value, index) => {
-
           let focusedClass = classNames({
             'tag-item__focused': (value === this.state.focusedOption)
           })
 
+          let props = {
+            href: "#",
+            key: index,
+            className: focusedClass,
+            onMouseOver: this.updateFocusedOption,
+            onClick: _.partial(this.addTag, value)
+          }
+
           return (
-            <ListGroupItem onClick={_.partial(this.addTag, value)}
-                              href="#"
-                               key={index}
-                         className={focusedClass}
-                       onMouseOver={this.updateFocusedOption} >
-              {value}
-            </ListGroupItem>
+            <ListGroupItem {...props}>{value}</ListGroupItem>
           );
         })}
       </ListGroup>
@@ -250,12 +251,14 @@ var TagsInput = React.createClass({
     return (
       <div className="tags-input" ref='listGroup'>
         {this.renderValues()}
-        <input onChange={this.filterTags}
-              onKeyDown={this.onKeyDown}
-                onKeyUp={this.onKeyUp}
-                onFocus={this.handleInputFocus}
-            placeholder="Type to Search and Add Tags..."
-                    ref="input" />
+        <input
+          ref="input"
+          onKeyUp={this.onKeyUp}
+          onKeyDown={this.onKeyDown}
+          onChange={this.filterTags}
+          onFocus={this.handleInputFocus}
+          placeholder={this.props.placeholder || "Type to Search and Add Tags..."}
+        />
         {this.renderMenu()}
       </div>
     )
