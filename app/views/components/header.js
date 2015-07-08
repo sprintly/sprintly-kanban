@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import React from 'react/addons';
+import classNames from "classnames";
 import Gravatar from './gravatar';
 import AddItemModal from './add-item-modal';
 import FiltersMenu from './filters/filters-menu';
@@ -29,6 +30,7 @@ let KanbanHeader = React.createClass({
 
   getInitialState() {
     return {
+      showModal: false,
       scoped: true,
       showMenu: true,
       drawerOpen: false
@@ -60,19 +62,32 @@ let KanbanHeader = React.createClass({
     }
   },
 
+  closeModal() {
+    this.setState({ showModal: false });
+  },
+
+  openModal() {
+    this.setState({ showModal: true });
+  },
+
   renderAddItem() {
     if (this.props.members && this.props.tags) {
       let modal = (
         <AddItemModal
+          onHide={this.closeModal}
+          show={this.state.showModal}
           product={this.props.product}
           members={this.props.members}
           tags={this.props.tags}
         />
       );
       return (
-        <ModalTrigger modal={modal}>
-          <button className="btn btn-primary add-item"><span className="glyphicon glyphicon-plus-sign"/> Add Item</button>
-        </ModalTrigger>
+        <div style={{ float: 'right' }}>
+          <button className="btn btn-primary add-item" onClick={this.openModal}>
+            <span className="glyphicon glyphicon-plus-sign"/> Add Item
+          </button>
+          {modal}
+        </div>
       );
     }
 
@@ -102,7 +117,7 @@ let KanbanHeader = React.createClass({
 
   smallScreenHeader() {
     let navClasses = this.getClasses('small');
-    let burgerClasses = React.addons.classSet({
+    let burgerClasses = classNames({
       '_burger': true,
       'open': this.state.drawerOpen === 'left'
     });
@@ -110,12 +125,12 @@ let KanbanHeader = React.createClass({
     let openLeftSide = _.partial(SidebarActions.show, 'left');
 
     let hideRightMenuTrigger = this.getPathname() === '/' || this.getPathname() === '/search';
-    let filterClasses = React.addons.classSet({
+    let filterClasses = classNames({
       'btn filter-icon': true,
       'hidden': hideRightMenuTrigger
     });
     let hideLeftMenuTrigger = this.getPathname() === '/';
-    let menuClasses = React.addons.classSet({
+    let menuClasses = classNames({
       "small-menu": true,
       'hidden': hideLeftMenuTrigger
     });
@@ -169,9 +184,9 @@ let KanbanHeader = React.createClass({
       'container-fluid': true
     };
 
-    return React.addons.classSet(
+    return _.keys(
       _.extend(defaults, visibilityClasses[size])
-    );
+    ).join(' ');
   },
 
   sprintlyFlask() {

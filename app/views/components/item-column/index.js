@@ -1,6 +1,5 @@
 import _ from 'lodash';
 import React from 'react/addons';
-import Loading from 'react-loading';
 import ScoreMap from '../../../lib/score-map';
 // Components
 import ItemCard from '../item-card';
@@ -32,15 +31,6 @@ let ItemColumn = React.createClass({
     return {
       hideLoadMore: false
     }
-  },
-
-  _onChange() {
-    let state = ProductStore.getItems(this.props.product.id, this.props.status);
-    if (!state) {
-      return;
-    }
-
-    this.setState(state);
   },
 
   setSortCriteria(field=this.props.sortField, direction=this.props.sortDirection, status=this.props.status) {
@@ -106,7 +96,7 @@ let ItemColumn = React.createClass({
 
   renderItemCards() {
     if (this.props.loading) {
-      return <div className="loading"><Loading type="bubbles" color="#ccc"/></div>;
+      return <div className="loading">...</div>;
     }
 
     if (this.productHasItems()) {
@@ -168,18 +158,13 @@ let ItemColumn = React.createClass({
   },
 
   render() {
-    let classes = {
-      column: true,
-      [this.props.status]: true
-    };
-
     let reverseSort = (ev) => {
       let direction = this.props.sortDirection === 'desc' ? 'asc' : 'desc';
       this.setSortCriteria(this.props.sortField, direction);
     };
 
     return (
-      <div style={this.props.colWidth} className={React.addons.classSet(classes)} {...this.props}>
+      <div style={this.props.colWidth} className={`column ${this.props.status}`} {...this.props}>
         <ColumnHeader {...this.props}
           reverse={reverseSort}
           setSortCriteria={this.setSortCriteria}

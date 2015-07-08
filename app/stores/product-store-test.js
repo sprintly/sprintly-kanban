@@ -1,4 +1,3 @@
-var $ = require('jquery');
 var _ = require('lodash');
 var ProductStore = require('./product-store');
 var Backbone = require('backdash');

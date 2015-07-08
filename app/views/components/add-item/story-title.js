@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import React from 'react/addons';
+import classNames from "classnames";
 
 const TITLE_ATTRS = {
   who: {
@@ -32,7 +33,7 @@ let AddItemStoryTitle = React.createClass({
 
   titleNodes() {
     return _.map(STORY_ATTRS, (attr) => {
-      var classes = React.addons.classSet({
+      var classes = classNames({
         "form-control": true,
         'invalid': !this.props.validation.value[attr]
       });

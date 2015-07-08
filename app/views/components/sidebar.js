@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import React from 'react/addons'
+import classNames from "classnames";
 import {State,Link} from 'react-router';
 
 import SidebarConstants from '../../constants/sidebar-constants'
@@ -57,7 +58,7 @@ let Sidebar = React.createClass({
   },
 
   coreSidebar() {
-    let sidebarClasses = React.addons.classSet({
+    let sidebarClasses = classNames({
       'left-off-canvas-menu': true,
       'hidden': this.props.open
     });
@@ -127,7 +128,7 @@ let Sidebar = React.createClass({
   },
 
   render() {
-    let classes = React.addons.classSet({
+    let classes = classNames({
       'col-xs-6': true,
       'col-sm-3': true,
       'sidebar-offcanvas': true,

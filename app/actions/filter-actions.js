@@ -1,9 +1,8 @@
 import AppDispatcher from '../dispatchers/app-dispatcher';
 import FiltersConstants from '../constants/filters-constants';
-import {products, user} from '../lib/sprintly-client';
 
-var FiltersActions = {
-  init: function(product, user, query) {
+let FiltersActions = {
+  init: function(product) {
     let members = product.members;
     let tags = product.tags;
     return Promise.all([
@@ -16,7 +15,7 @@ var FiltersActions = {
         product,
         members,
         tags
-      })
+      });
     });
   },
 
@@ -25,7 +24,7 @@ var FiltersActions = {
       actionType: FiltersConstants.UPDATE_FILTER,
       unset: options.unset === true,
       field,
-      criteria,
+      criteria
     });
   },
 

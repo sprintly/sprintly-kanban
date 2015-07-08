@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import React from 'react/addons'
+import classNames from "classnames";
 import {State,Link} from 'react-router';
 import Gravatar from '../gravatar';
 
@@ -41,7 +42,7 @@ let MenuSidebar = React.createClass({
   },
 
   buildMenuSide() {
-    let classes = React.addons.classSet({
+    let classes = classNames({
       'sidebar__menu': true,
       'col-xs-6': true,
       'col-sm-3': true,
@@ -124,7 +125,7 @@ let MenuSidebar = React.createClass({
   },
 
   render() {
-    let classes = React.addons.classSet({
+    let classes = classNames({
       'left-off-canvas-menu': true,
       'hidden': this.props.side !== 'left'
     });

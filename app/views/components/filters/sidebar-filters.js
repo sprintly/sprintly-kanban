@@ -2,10 +2,6 @@ import _ from 'lodash';
 import React from 'react/addons';
 
 // Components
-import MembersFilter from './forms/members-filter';
-import CheckboxFilter from './forms/checkbox-filter';
-import TagsFilter from './forms/tags-filter';
-import Filter from './filters-toolbar-filter';
 import TagsInput from '../tags-input.js';
 import Select from 'react-select';
 
@@ -94,7 +90,6 @@ var SidebarFilters = React.createClass({
 
   buildAssignFilter(field) {
     let filter = _.find(this.props.allFilters, {field: field});
-    let filterProps = this.filterProps(filter);
     let activeAssignee = this.selectedPerson(this.props.members, filter);
     let members = this.prepareMembersForSelect(this.props.members);
 

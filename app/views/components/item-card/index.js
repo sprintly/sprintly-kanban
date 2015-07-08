@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import React from 'react/addons';
+import classNames from "classnames";
 import moment from 'moment';
 import OwnerAvatar from './owner';
 import Controls from './controls';
@@ -9,12 +10,12 @@ import ProductActions from '../../../actions/product-actions';
 import FilterActions from '../../../actions/filter-actions';
 import ItemCardDetails from './details';
 import ScoreMap from '../../../lib/score-map';
-import onClickOutside from 'react-onclickoutside';
 import Select from 'react-select';
+import onClickOutside from '@sprintly/react-onclickoutside';
 
 const REVERSE_SCORE_MAP = _.zipObject(_.values(ScoreMap), _.keys(ScoreMap))
 
-var ItemCard = React.createClass({
+let ItemCard = React.createClass({
 
   propTypes: {
     productId: React.PropTypes.number.isRequired,
@@ -23,7 +24,9 @@ var ItemCard = React.createClass({
     members: React.PropTypes.array.isRequired
   },
 
-  mixins: [onClickOutside],
+  mixins: [
+    onClickOutside
+  ],
 
   getInitialState() {
     return {
@@ -132,7 +135,7 @@ var ItemCard = React.createClass({
     }
 
     return (
-      <div className={React.addons.classSet(classes)} {...this.props}>
+      <div className={classNames(classes)} {...this.props}>
         <div className="row">
           <div className="item-card__header col-sm-12">
             <Controls

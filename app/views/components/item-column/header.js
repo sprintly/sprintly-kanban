@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import React from 'react/addons';
+import classNames from "classnames";
 import {SplitButton, ButtonGroup, MenuItem} from 'react-bootstrap';
 
 const SORT_OPTIONS = {
@@ -44,7 +45,7 @@ let ColumnHeader = React.createClass({
             }, this)}
           </SplitButton>
           <button className="reverse-sort" disabled={this.props.sortField === 'priority'} type="button" onClick={this.onReverseClick} aria-label="Change sort direction">
-            <span aria-hidden="true" className={React.addons.classSet(directionClasses)}/>
+            <span aria-hidden="true" className={classNames(directionClasses)}/>
           </button>
         </div>
 

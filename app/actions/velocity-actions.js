@@ -1,9 +1,8 @@
 import request from 'superagent';
 import AppDispatcher from '../dispatchers/app-dispatcher';
+import {BASE_URL} from '../config';
 
-let BASE_URL = process.env.NODE_ENV === 'production' ? 'https://sprint.ly' : 'https://local.sprint.ly:9000';
-let token = window.__token;
-
+const token = window.__token;
 const DEFAULT_VELOCITY = 10;
 const DEFAULT_ITERATION_LENGTH = 7;
 
@@ -24,7 +23,7 @@ var internals = {
 
     return velocity;
   }
-}
+};
 
 var VelocityActions = {
   getVelocity(productId) {

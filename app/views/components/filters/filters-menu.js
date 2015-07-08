@@ -3,8 +3,16 @@ import React from 'react/addons';
 import MembersFilter from './forms/members-filter';
 import CheckboxFilter from './forms/checkbox-filter';
 import TagsFilter from './forms/tags-filter';
+import classNames from "classnames";
+import onClickOutside from '@sprintly/react-onclickoutside';
 
 var FiltersMenu = React.createClass({
+
+  getDefaultProps() {
+    return {
+      disableOnClickOutside: true
+    }
+  },
 
   getInitialState() {
     return {
@@ -13,13 +21,32 @@ var FiltersMenu = React.createClass({
     }
   },
 
+  mixins: [
+    onClickOutside
+  ],
+
+  handleClickOutside() {
+    this.setState({
+      showPopup: false
+    });
+    this.disableOnClickOutside();
+  },
+
   propTypes: {
+    members: React.PropTypes.array.isRequired,
     allFilters: React.PropTypes.array.isRequired,
     updateFilters: React.PropTypes.func.isRequired
   },
 
   toggleFiltersMenu() {
-    this.setState({ showPopup: !this.state.showPopup });
+    let showPopup = !this.state.showPopup;
+
+    if (showPopup) {
+      this.enableOnClickOutside();
+    } else {
+      this.disableOnClickOutside();
+    }
+    this.setState({ showPopup });
   },
 
   toggleVisible(filter) {
@@ -43,7 +70,7 @@ var FiltersMenu = React.createClass({
     };
     switch (filter.type) {
       case 'members':
-        form = <MembersFilter {...formProps}/>
+        form = <MembersFilter {...formProps} members={this.props.members}/>
         break;
       case 'checkbox':
         form = <CheckboxFilter {...formProps} />
@@ -61,10 +88,10 @@ var FiltersMenu = React.createClass({
   buildFilters() {
     return (
       _.map(this.props.allFilters, function(filter, i) {
-        var classes = React.addons.classSet({
+        var classes = classNames({
           'show-form': _.contains(this.state.visibleFilters, filter.field)
         });
-        
+
         return (
           <li className={classes} key={i}>
             <h3 onClick={_.partial(this.toggleVisible, filter.field)}>{filter.label}</h3>
@@ -81,7 +108,7 @@ var FiltersMenu = React.createClass({
   },
 
   render() {
-    var classes = React.addons.classSet({
+    var classes = classNames({
       'col-sm-2': true,
       'filters-menu': true,
       'show-popup': this.state.showPopup
@@ -90,7 +117,9 @@ var FiltersMenu = React.createClass({
     var filters = this.buildFilters();
     return (
       <div className={classes}>
-        <button className="btn btn-default filters-menu__button" onClick={this.toggleFiltersMenu}>Add Filter</button>
+        <button className="btn filters-menu__button" onClick={this.toggleFiltersMenu}>
+          <span className="glyphicon glyphicon-filter"/> Add Filter
+        </button>
         <a href="#" onClick={this.mine} className="filters-menu__mine">My Items</a>
         <div className="col-sm-12 filters-menu__popup">
           <div className="filters-menu__scroll-wrapper">
