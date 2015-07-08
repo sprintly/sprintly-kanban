@@ -108,7 +108,7 @@ let AddItemModal = React.createClass({
     ItemActions.addItem(this.props.product.id, item).then( (err) => {
       if (!err) {
         this.setState(this.getInitialState());
-        this.props.onRequestHide();
+        this.props.onHide();
       } else {
         this.updateValidation(err)
       }

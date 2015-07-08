@@ -32,14 +32,14 @@ let AddItemStoryTitle = React.createClass({
   },
 
   titleNodes() {
-    return _.map(STORY_ATTRS, (attr) => {
+    return _.map(STORY_ATTRS, (attr, i) => {
       var classes = classNames({
         "form-control": true,
         'invalid': !this.props.validation.value[attr]
       });
 
       return (
-        <div className={`add-item__field ${attr}`}>
+        <div className={`add-item__field ${attr}`} key={i}>
           <span>{TITLE_ATTRS[attr].title}</span>
           <div className="input-group">
             <label>{toTitleCase(attr)}</label>
