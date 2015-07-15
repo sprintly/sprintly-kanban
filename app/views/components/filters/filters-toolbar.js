@@ -28,41 +28,41 @@ var FiltersToolbar = React.createClass({
   },
 
   buildFilters() {
-    return (
-      _.map(this.props.activeFilters, function(filter, i) {
-        return (
-          <Filter
-            key={i}
-            user={this.props.user}
-            members={this.props.members}
-            updateFilters={this.updateFilters}
-            {...filter}
-          />
-          )
-      }, this)
-    )
+    return _.map(this.props.activeFilters, (filter, i) => {
+      return (
+        <Filter
+          key={i}
+          user={this.props.user}
+          members={this.props.members}
+          updateFilters={this.updateFilters}
+          {...filter}
+        />
+      );
+    });
   },
 
   render() {
-    var filters = this.buildFilters();
+    let filters = this.buildFilters();
 
     return (
       <div className="hidden-xs">
         <div className="filters__toolbar container-fluid">
           <div className="col-sm-10">
-            <VelocityComponent productId={this.props.productId}
-                                velocity={this.props.velocity} />
+            <VelocityComponent
+              productId={this.props.productId}
+              velocity={this.props.velocity}
+            />
             {filters}
           </div>
           <FiltersMenu
             user={this.props.user}
-            updateFilters={this.updateFilters}
             allFilters={this.props.allFilters}
+            activeFilters={this.props.activeFilters}
             members={this.props.members}
           />
         </div>
       </div>
-    )
+    );
   }
 });
 

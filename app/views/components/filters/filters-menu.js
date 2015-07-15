@@ -5,37 +5,47 @@ import CheckboxFilter from './forms/checkbox-filter';
 import TagsFilter from './forms/tags-filter';
 import classNames from "classnames";
 import onClickOutside from '@sprintly/react-onclickoutside';
+import FilterActions from '../../../actions/filter-actions';
 
-var FiltersMenu = React.createClass({
+let MyItems = React.createClass({
+  render() {
+    let labelText = this.props.active ? 'Everything' : 'My Items';
+    return (
+      <a href="#" onClick={this.props.onClick} className="filters-menu__mine">{labelText}</a>
+    );
+  }
+});
+
+let FiltersMenu = React.createClass({
 
   getDefaultProps() {
     return {
       disableOnClickOutside: true
-    }
+    };
   },
 
   getInitialState() {
     return {
       showPopup: false,
       visibleFilters: []
-    }
+    };
   },
 
   mixins: [
     onClickOutside
   ],
 
+  propTypes: {
+    members: React.PropTypes.array.isRequired,
+    allFilters: React.PropTypes.array.isRequired,
+    activeFilters: React.PropTypes.array.isRequired
+  },
+
   handleClickOutside() {
     this.setState({
       showPopup: false
     });
     this.disableOnClickOutside();
-  },
-
-  propTypes: {
-    members: React.PropTypes.array.isRequired,
-    allFilters: React.PropTypes.array.isRequired,
-    updateFilters: React.PropTypes.func.isRequired
   },
 
   toggleFiltersMenu() {
@@ -61,22 +71,22 @@ var FiltersMenu = React.createClass({
 
   renderForm(filter) {
     var form;
-    var formProps = {
+    let formProps = {
       name: filter.field,
-      updateFilters: this.props.updateFilters,
+      updateFilters: FilterActions.update,
       options: filter.criteriaOptions,
       criteria: filter.criteria,
       visible: true
     };
     switch (filter.type) {
       case 'members':
-        form = <MembersFilter {...formProps} members={this.props.members}/>
+        form = <MembersFilter {...formProps} members={this.props.members}/>;
         break;
       case 'checkbox':
-        form = <CheckboxFilter {...formProps} />
+        form = <CheckboxFilter {...formProps} />;
         break;
       case 'tags':
-        form = <TagsFilter {...formProps} />
+        form = <TagsFilter {...formProps} />;
         break;
       default:
         form = '';
@@ -99,28 +109,35 @@ var FiltersMenu = React.createClass({
           </li>
         );
       }, this)
-    )
+    );
   },
 
   mine(ev) {
     ev.preventDefault();
-    this.props.updateFilters('assigned_to', this.props.user.id)
+    let activeFilters = _.findWhere(this.props.activeFilters, { field: 'assigned_to' });
+
+    if (activeFilters) {
+      FilterActions.clear();
+    } else {
+      FilterActions.update('assigned_to', this.props.user.id);
+    }
   },
 
   render() {
-    var classes = classNames({
+    let classes = classNames({
       'col-sm-2': true,
       'filters-menu': true,
       'show-popup': this.state.showPopup
-    })
+    });
+    let filters = this.buildFilters();
+    let activeFiltersCount = _.where(this.props.activeFilters, { active: true }).length;
 
-    var filters = this.buildFilters();
     return (
       <div className={classes}>
         <button className="btn filters-menu__button" onClick={this.toggleFiltersMenu}>
           <span className="glyphicon glyphicon-filter"/> Add Filter
         </button>
-        <a href="#" onClick={this.mine} className="filters-menu__mine">My Items</a>
+        <MyItems onClick={this.mine} active={activeFiltersCount > 0}/>
         <div className="col-sm-12 filters-menu__popup">
           <div className="filters-menu__scroll-wrapper">
             <ul className="filters-menu__list">
@@ -129,7 +146,7 @@ var FiltersMenu = React.createClass({
           </div>
         </div>
       </div>
-    )
+    );
   }
 });
 

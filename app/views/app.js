@@ -1,13 +1,13 @@
-import React from "react";
-import { RouteHandler } from "react-router";
-import Promise from "bluebird";
-import Sidebars from "./components/sidebars";
-import helpers from "./pages/helpers";
+import React from 'react';
+import { RouteHandler } from 'react-router';
+import Sidebars from './components/sidebars';
+import { DragDropContext } from 'react-dnd';
+import HTML5Backend from 'react-dnd/modules/backends/HTML5';
 
-export default React.createClass({
+let Kanban = React.createClass({
 
   getInitialState() {
-    return {lastTap: 0}
+    return { lastTap: 0 };
   },
 
   muteDoubleTap(e) {
@@ -18,19 +18,19 @@ export default React.createClass({
     }
     this.setState({
       lastTap: e.timeStamp
-    })
+    });
   },
 
   render: function() {
     let style = { minHeight: `${window.innerHeight}px`};
-
-    let touchEndFn = helpers.isMobile(window) ? this.muteDoubleTap : function() {};
 
     return (
       <div style={style} className="app-view" onTouchEnd={this.muteDoubleTap}>
         <RouteHandler {...this.props} />
         <Sidebars {...this.props} />
       </div>
-    )
+    );
   }
 });
+
+export default DragDropContext(HTML5Backend)(Kanban);

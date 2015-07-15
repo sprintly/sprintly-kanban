@@ -1,27 +1,52 @@
 import _ from 'lodash';
-import React from 'react/addons';
+import React, { PropTypes } from 'react/addons';
+import ProductActions from '../../../actions/product-actions';
 import classNames from "classnames";
-import moment from 'moment';
+import ScoreMap from '../../../lib/score-map';
+import onClickOutside from '@sprintly/react-onclickoutside';
+// Components
+import { Estimator } from 'sprintly-ui';
+import { OverlayTrigger, Popover} from 'react-bootstrap';
+import { DragSource } from 'react-dnd';
 import OwnerAvatar from './owner';
 import Controls from './controls';
-import {Estimator} from 'sprintly-ui';
-import {OverlayTrigger, Popover} from 'react-bootstrap';
-import ProductActions from '../../../actions/product-actions';
-import FilterActions from '../../../actions/filter-actions';
 import ItemCardDetails from './details';
-import ScoreMap from '../../../lib/score-map';
 import Select from 'react-select';
-import onClickOutside from '@sprintly/react-onclickoutside';
 
 const REVERSE_SCORE_MAP = _.zipObject(_.values(ScoreMap), _.keys(ScoreMap))
+
+const cardSource = {
+  beginDrag(props) {
+    return {
+      item: props.item
+    };
+  },
+
+  isDragging(props, monitor) {
+    console.log('is dragging');
+    return true;
+  }
+};
+
+function collect(connect, monitor) {
+  return {
+    // Call this function inside render()
+    // to let React DnD handle the drag events:
+    connectDragSource: connect.dragSource(),
+    // You can ask the monitor about the current drag state:
+    isDragging: monitor.isDragging()
+  };
+}
 
 let ItemCard = React.createClass({
 
   propTypes: {
-    productId: React.PropTypes.number.isRequired,
-    item: React.PropTypes.object.isRequired,
-    sortField: React.PropTypes.string.isRequired,
-    members: React.PropTypes.array.isRequired
+    isDragging: PropTypes.bool.isRequired,
+    connectDragSource: PropTypes.func.isRequired,
+    productId: PropTypes.number.isRequired,
+    item: PropTypes.object.isRequired,
+    sortField: PropTypes.string.isRequired,
+    members: PropTypes.array.isRequired
   },
 
   mixins: [
@@ -31,7 +56,7 @@ let ItemCard = React.createClass({
   getInitialState() {
     return {
       showDetails: false
-    }
+    };
   },
 
   handleClickOutside() {
@@ -39,17 +64,17 @@ let ItemCard = React.createClass({
   },
 
   closePopover() {
-    if (!!this.refs.trigger) {
-      this.refs.trigger.hide()
+    if (this.refs.trigger) {
+      this.refs.trigger.hide();
     }
   },
 
   toggleDetails(e) {
     e.preventDefault();
-    this.setState({ showDetails: !this.state.showDetails })
+    this.setState({ showDetails: !this.state.showDetails });
   },
 
-  changeScore([productId, itemId], score) {
+  changeScore: function([productId, itemId], score) {
     ProductActions.updateItem(productId, itemId, { score: REVERSE_SCORE_MAP[score] });
   },
 
@@ -65,23 +90,23 @@ let ItemCard = React.createClass({
     ProductActions.updateItem(productId, itemId, { assigned_to: value });
     setTimeout(() => {
       this.closePopover();
-    }, 0)
+    }, 0);
   },
 
   prepareMembersForSelect() {
     return _.chain(this.props.members)
             .map(function(member){
               if (!member.revoked && !this.isCurrentOwner(member.id)) {
-                return {label: `${member.first_name} ${member.last_name}`, value: member.id}
+                return { label: `${member.first_name} ${member.last_name}`, value: member.id }
               }
             }, this)
             .compact()
-            .value()
+            .value();
   },
 
   assigneeName() {
     let owner = this.props.item.assigned_to;
-    return !!owner ? owner.first_name + ' ' + owner.last_name : 'Unassigned'
+    return owner ? owner.first_name + ' ' + owner.last_name : 'Unassigned';
   },
 
   popoverMenu() {
@@ -116,44 +141,49 @@ let ItemCard = React.createClass({
         <span> so that </span>
         <span className="item-card__title-why">{this.props.item.why}</span>
       </span>
-    ]
+    ];
   },
 
   render() {
-    var classes = {
+    let isDragging = this.props.isDragging;
+    let connectDragSource = this.props.connectDragSource;
+    let classes = {
       'item-card': true,
       'active': this.props.active || this.state.showDetails,
       [this.props.item.type]: true,
       'parent': this.props.item.sub_items && this.props.item.sub_items.length > 0
     };
 
-    var owner = this.props.item.assigned_to;
-    var title = this.props.item.title
-
+    let owner = this.props.item.assigned_to;
+    var title = this.props.item.title;
     if (this.props.item.type === 'story') {
       title = this.renderStoryTitle();
     }
 
-    return (
-      <div className={classNames(classes)} {...this.props}>
+    let controlsProps = {
+      productId: this.props.productId,
+      number: this.props.item.number,
+      status: this.props.item.status,
+      toggleDetails: this.changeStatus
+    };
+
+    let estimatorProps = {
+      modelId: [this.props.productId, this.props.item.number],
+      itemType: this.props.item.type,
+      score: this.props.item.score,
+      estimateChanger: {changeScore: this.changeScore}
+    };
+
+    return connectDragSource(
+      <div className={classNames(classes)}>
         <div className="row">
           <div className="item-card__header col-sm-12">
-            <Controls
-              productId={this.props.productId}
-              number={this.props.item.number}
-              status={this.props.item.status}
-              toggleDetails={this.changeStatus}
-            />
+            <Controls {...controlsProps}/>
             <div className="item-card__header-right">
               <div className="item-card__number">
                 <a href={`https://sprint.ly/product/${this.props.productId}/item/${this.props.item.number}`} target="_blank">#{this.props.item.number}</a>
               </div>
-              <Estimator
-                modelId={[this.props.productId, this.props.item.number]}
-                itemType={this.props.item.type}
-                score={this.props.item.score}
-                estimateChanger={{changeScore: this.changeScore}}
-              />
+              <Estimator {...estimatorProps}/>
               {this.isAssignable() ?
                 <OverlayTrigger ref='trigger' trigger='click' placement='bottom' overlay={this.popoverMenu()}>
                   <span className="clickable-avatar"><OwnerAvatar person={owner} /></span>
@@ -174,9 +204,9 @@ let ItemCard = React.createClass({
           {this.state.showDetails ? <ItemCardDetails {...this.props} /> : ''}
         </div>
       </div>
-    )
+    );
   }
 
 })
 
-module.exports = ItemCard;
+export default DragSource('ITEM_CARD', cardSource, collect)(ItemCard);
