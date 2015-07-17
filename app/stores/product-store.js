@@ -59,6 +59,20 @@ var ProductStore = module.exports = _.assign({}, EventEmitter.prototype, {
     });
   },
 
+  getItem(productId, number) {
+    let product = products.get(productId);
+    if (!product) {
+      return;
+    }
+
+    let item = product.items.get(number);
+    if (!item) {
+      return;
+    }
+
+    return item.toJSON();
+  },
+
   getItems(productId, status) {
     let items = ProductStore.getItemsCollection(productId, status);
     if (!items) {
@@ -396,6 +410,7 @@ ProductStore.dispatchToken = AppDispatcher.register(function(action) {
     case ProductConstants.UPDATE_ITEM_PRIORITY:
     case ProductConstants.CHANGE_SORT_CRITERIA:
     case ProductConstants.LOAD_MORE:
+    case 'ITEM_UPDATED':
       ProductStore.emitChange();
       break;
 

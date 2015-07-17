@@ -1,6 +1,6 @@
 import _ from "lodash";
 import React from "react/addons";
-import {State,Link} from 'react-router';
+import {RouteHandler, State,Link} from 'react-router';
 
 // Components
 import ItemColumn from "../components/item-column";
@@ -170,6 +170,11 @@ let ItemsViewController = React.createClass({
 
     return (
       <div className="container-tray">
+        <RouteHandler
+          members={this.state.members}
+          product={this.state.product}
+          number={this.getParams().number}
+        />
         <Header
           product={this.state.product}
           allProducts={this.state.allProducts}

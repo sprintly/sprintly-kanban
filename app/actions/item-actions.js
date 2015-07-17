@@ -27,6 +27,40 @@ let ItemActions = {
     }
   },
 
+  fetchItem(productId, number) {
+    let product = products.get(productId);
+
+    if (!product) {
+      throw new Error('Missing product: %s', productId);
+    }
+
+    let item = product.items.get(item);
+
+    if (!item) {
+      item = product.createItem({
+        number,
+        product: {
+          id: product.get('id')
+        }
+      })
+    } else {
+      AppDispatcher.dispatch({
+        actionType: 'ITEM_UPDATED',
+        product,
+        item
+      });
+    }
+
+    return item.fetch()
+      .then(function() {
+        AppDispatcher.dispatch({
+          actionType: 'ITEM_UPDATED',
+          product,
+          item
+        })
+      });
+  },
+
   deleteItem(productId, itemId) {
     let product = products.get(productId);
     let item = product.items.get(itemId);

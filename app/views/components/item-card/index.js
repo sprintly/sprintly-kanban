@@ -12,6 +12,8 @@ import OwnerAvatar from './owner';
 import Controls from './controls';
 import ItemCardDetails from './details';
 import Select from 'react-select';
+import onClickOutside from '@sprintly/react-onclickoutside';
+import {Link} from 'react-router';
 
 const REVERSE_SCORE_MAP = _.zipObject(_.values(ScoreMap), _.keys(ScoreMap))
 
@@ -192,7 +194,7 @@ let ItemCard = React.createClass({
           </div>
           <div className="item-card__title col-sm-12">
             <h2 className="item-card__title-left">
-              <a href={`https://sprint.ly/product/${this.props.productId}/item/${this.props.item.number}`} target="_blank">{title}</a>
+              <Link to={`/product/${this.props.productId}/item/${this.props.item.number}`}>{title}</Link>
             </h2>
             <button className="item-card__show-details" onClick={this.toggleDetails}>
               <span className="glyphicon glyphicon-option-horizontal" />
