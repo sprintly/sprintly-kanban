@@ -10,6 +10,7 @@ import Select from 'react-select';
 import ItemCard from '../components/item-card';
 import marked from 'marked';
 import Gravatar from '../components/gravatar';
+import Slick from 'react-slick';
 
 var ItemDetail = React.createClass({
 
@@ -17,7 +18,8 @@ var ItemDetail = React.createClass({
 
   getInitialState() {
     return {
-      item: {}
+      item: {},
+      attachments: false
     };
   },
 
@@ -179,14 +181,119 @@ var ItemDetail = React.createClass({
     )
   },
 
-  attachments() {
+  toggleAttachments() {
+    this.setState({attachments: !this.state.attachments});
+  },
+
+  showAttachment() {
+    console.log('Implement attachment viewer: ');
+  },
+
+  attachmentsViewer() {
+    var _this = this;
+    var attachments = _.chain(_.times(4))
+                            .map(function(i) {
+                              var styles = {
+                                width: '33%',
+                                height: '170px',
+                                'background-color': `RGBA(69, 69, 69, ${1-(0.15*(i+1))})`,
+                              }
+
+                              return (
+                                <div className="attachment-slide" key={i} style={styles} onClick={_this.showAttachment}></div>
+                              );
+                            }).value();
+
+    var settings = {
+      dots: true,
+      infinite: true,
+      slidesToShow: 3,
+      speed: 500,
+      slidesToScroll: 1,
+      responsive: [
+        {
+          breakpoint: 1024,
+          settings: {
+            slidesToShow: 3,
+            slidesToScroll: 3,
+            infinite: true,
+            dots: true
+          }
+        },
+        {
+          breakpoint: 600,
+          settings: {
+            slidesToShow: 2,
+            slidesToScroll: 2
+          }
+        },
+        {
+          breakpoint: 480,
+          settings: {
+            slidesToShow: 1,
+            slidesToScroll: 1
+          }
+        }
+      ]
+    };
+
     return (
-      <div className="col-md-12 section">
-        <Accordion>
-          <Panel header='Attachments' eventKey='1'>
-            Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
-          </Panel>
-        </Accordion>
+      <Slick {...settings}>
+        {attachments}
+      </Slick>
+    );
+  },
+
+  openAttachments(ev, value) {
+    ev.preventDefault();
+    console.log('openAttachments: ', value);
+  },
+
+  attachments() {
+    var contentClasses = React.addons.classSet({
+      'content': true,
+      'open': this.state.attachments
+    })
+
+    var attachmentLinks = _.chain(_.times(10))
+                          .map(function(i) {
+                            return (
+                              <li>
+                                <a className="attachment-link">{`customer-req-doc-${i}`}</a>
+                              </li>
+                            )
+                          }).value();
+
+    return (
+      <div className="col-md-12 attachments">
+        <div className="header">
+          <a className="toggle" onClick={this.toggleAttachments}>
+            <span aria-hidden="true" className="glyphicon glyphicon-menu-right"/>
+          </a>
+          <div className="sep-vertical"></div>
+          <div className="title">Attachments</div>
+        </div>
+        <div className={contentClasses}>
+          <div className="col-md-12">
+            <div className="col-md-9">
+              <div className="title">
+                Attachments: #TBD
+              </div>
+              <div className="attachments-viewer">
+                {this.attachmentsViewer()}
+              </div>
+            </div>
+            <div className="col-md-3">
+              <div className="title">
+                Links: {attachmentLinks.length}
+              </div>
+              <div className="sep"></div>
+              <ul className="links">
+                {attachmentLinks}
+              </ul>
+            </div>
+          </div>
+        </div>
       </div>
     )
   },

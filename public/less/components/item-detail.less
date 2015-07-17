@@ -1,3 +1,10 @@
+/* Make this a mixin */
+.hairline {
+  border-bottom: 1px @sprintly-black solid;
+  transform: scaleY(0.5);
+  -webkit-transform: scaleY(0.5);
+}
+
 .item-detail {
   position: fixed;
   height: 100%;
@@ -70,6 +77,7 @@
 }
 
 .item-detail .section {
+  .no-gutter;
   margin-bottom: 10px;
 }
 
@@ -210,3 +218,76 @@
     outline:none;
   }
 }
+.item-detail .attachments .header {
+  height: 40px;
+  border-radius: 2px;
+  background-color: #eee;
+  border: 1px solid @sprintly-black;
+
+  > a.toggle {
+    width: 25px;
+    height: 25px;
+    margin-top: 10px;
+    line-height: 25px;
+    text-align: center;
+  }
+
+  span {
+    height: 40px;
+    width: 40px;
+    line-height: 38px;
+    font-size: 12px;
+  }
+}
+.item-detail .attachments .header .title {
+  font-size: 16px;
+}
+
+.item-detail .attachments .header .title,
+.item-detail .attachments .header .sep-vertical {
+  display: inline;
+}
+
+.item-detail .attachments .header .sep-vertical {
+  margin-right: 20px;
+  border-right: 1px @sprintly-black solid;
+  transform: scaleY(0.5);
+  -webkit-transform: scaleY(0.5);
+}
+.item-detail .attachments .content {
+  max-height: 0px;
+  width: 100%;
+  height: auto;
+  margin: 0 auto;
+  background: #eee;
+  overflow: hidden;
+  cursor: pointer;
+  -webkit-transition: max-height 0.6s ease-out;
+  -moz-transition: max-height 0.6s ease-out;
+  -o-transition: max-height 0.6s ease-out;
+  transition: max-height 0.6s ease-out;
+
+  &.open {
+    max-height: 200px;
+  }
+}
+.item-detail .attachments .content {
+  ul.links {
+    padding: 0;
+    list-style: none;
+    overflow: scroll;
+    height: 170px;
+  }
+
+  li {
+    font-weight: @fontWeight-6;
+    color: @sprintly-blue;
+    margin-top: 3px;
+  }
+}
+
+.item-detail .attachments .content .sep {
+  .hairline;
+}
+
+/* .item-detail .attachments .slick */
