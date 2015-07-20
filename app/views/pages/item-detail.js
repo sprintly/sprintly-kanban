@@ -19,33 +19,11 @@ var ItemDetail = React.createClass({
   getInitialState() {
     return {
       item: {},
-      attachments: false
+      attachments: false,
+      subitems: [
+        true
+      ]
     };
-  },
-
-  _onChange() {
-    let item = ProductStore.getItem(this.getParams().id, this.getParams().number);
-    if (item) {
-      this.setState({
-        item
-      });
-    }
-  },
-
-  componentDidMount() {
-    ProductStore.addChangeListener(this._onChange);
-    ItemActions.fetchItem(this.getParams().id, this.getParams().number);
-  },
-
-  componentWillUnmount() {
-    ProductStore.removeChangeListener(this._onChange);
-  },
-
-  componentWillReceiveProps: function(nextProps) {
-    if (this.getParams().number != this.state.item.number) {
-      this._onChange();
-      // ItemActions.fetchItem(this.getParams().id, this.props.number);
-    }
   },
 
   renderDescription() {
@@ -63,14 +41,16 @@ var ItemDetail = React.createClass({
     }
   },
 
-  ticketDetail() {
-    let members = helpers.formatSelectMembers(this.props.members);
-
-    let tags = _.chain(_.times(2)).map(function(n) {
+  buildTags() {
+    return _.chain(_.times(2)).map(function(n) {
       return (
         <li>{`feature-tag-${n}`}</li>
       )
     })
+  },
+
+  ticketDetail() {
+    let members = helpers.formatSelectMembers(this.props.members);
 
     return (
       <div className="col-md-12 section ticket__detail">
@@ -93,7 +73,7 @@ var ItemDetail = React.createClass({
                   <li>
                     <span className="glyphicon glyphicon-tag"></span>
                   </li>
-                  {tags}
+                  {this.buildTags()}
                 </ul>
               </div>
               <div className="col-md-6 timestamp">
@@ -190,9 +170,8 @@ var ItemDetail = React.createClass({
   },
 
   attachmentsViewer() {
-    var _this = this;
     var attachments = _.chain(_.times(4))
-                            .map(function(i) {
+                            .map((i) => {
                               var styles = {
                                 width: '33%',
                                 height: '170px',
@@ -200,7 +179,7 @@ var ItemDetail = React.createClass({
                               }
 
                               return (
-                                <div className="attachment-slide" key={i} style={styles} onClick={_this.showAttachment}></div>
+                                <div className="attachment-slide" key={i} style={styles} onClick={this.showAttachment}></div>
                               );
                             }).value();
 
@@ -302,82 +281,94 @@ var ItemDetail = React.createClass({
     console.log('create the sub item');
   },
 
+  toggleSubItem(index, ev) {
+    var subitems = _.clone(this.state.subitems);
+
+    subitems[index] = !this.state.subitems[index];
+
+    this.setState({subitems: subitems})
+  },
+
   subItems() {
+    var mockItems = [
+      {
+        id: '1234',
+        title: 'Swap radio buttons for checkboxes',
+        status: 'current',
+        assignee: 'srogers@quickleft.com',
+        score: 'S',
+        description: "Swap out existing radio buttons for a React component.\nhttp://react-components.com/component/react-radio-group\nEnsure selections are bubbled up through the flux arch and represented in the view state"
+      }
+    ]
+
+    var subItems = _.map(mockItems, (item, i) => {
+      var contentClasses = React.addons.classSet({
+        'content': true,
+        'open': this.state.subitems[i]
+      })
+
+      return (
+        <div className="subitem">
+          <div className="header">
+            <a className="toggle" onClick={_.partial(this.toggleSubItem, i)}>
+              <span aria-hidden="true" className="glyphicon glyphicon-menu-right"/>
+            </a>
+            <div className="sep-vertical"></div>
+            <div className="title">Swap radio buttons for checkboxes</div>
+            <div className="col-md-4 state">
+              <ul>
+                <li><div className="meta status">Current</div></li>
+                <li><div className="meta id">#2834</div></li>
+                <li><div className="meta"><Gravatar email={"srogers@quickleft.com"} size={36} /></div></li>
+                <li><div className="meta"><button className="estimator__button story">2</button></div></li>
+              </ul>
+            </div>
+          </div>
+          <div className={contentClasses}>
+            <div className="col-md-12">
+              <div className="col-md-12 collapse-right">
+                <div className="col-md-9 description">
+                  Swap out existing radio buttons for a React component.
+
+                  http://react-components.com/component/react-radio-group. Ensure selections are bubbled up through the flux arch and represented in the view state
+                </div>
+                <div className="col-md-3 collapse-right">
+                  <button className="detail-button kanban-button-secondary">View Full Ticket</button>
+                </div>
+              </div>
+              <div className="col-md-12 meta collapse-right">
+                <div className="col-md-6 tags no-gutter">
+                  <ul>
+                    <li>
+                      <span className="glyphicon glyphicon-tag"></span>
+                    </li>
+                    {this.buildTags()}
+                  </ul>
+                </div>
+                <div className="col-md-6 timestamp no-gutter">
+                  Created by Sasha Genet 1 day ago
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )
+    });
+
     return (
       <div className="col-md-12 section">
-        <Accordion>
-          <Panel header='SubItem-1' eventKey='1'>
-            <div className="col-md-12">
-              <div className="col-md-2">
-              </div>
-              <div className="col-md-6">
-              </div>
-              <div className="col-md-4">
-                <a className="btn btn-primary">View Full Ticket</a>
-              </div>
-            </div>
-            <div className="col-md-12">
-              <div className="col-md-2">
-              </div>
-              <div className="col-md-6">
-                Tags
-              </div>
-              <div className="col-md-4">
-                timestamp
-              </div>
-            </div>
-          </Panel>
-        </Accordion>
-        <Accordion>
-          <Panel header='SubItem-2' eventKey='2'>
-            <div className="col-md-12">
-              <div className="col-md-2">
-              </div>
-              <div className="col-md-6">
-              </div>
-              <div className="col-md-4">
-                <a className="btn btn-primary">View Full Ticket</a>
-              </div>
-            </div>
-            <div className="col-md-12">
-              <div className="col-md-2">
-              </div>
-              <div className="col-md-6">
-                Tags
-              </div>
-              <div className="col-md-4">
-                timestamp
-              </div>
-            </div>
-          </Panel>
-        </Accordion>
-        <Accordion>
-          <Panel header='SubItem-3' eventKey='3'>
-            <div className="col-md-12">
-              <div className="col-md-2">
-              </div>
-              <div className="col-md-6">
-              </div>
-              <div className="col-md-4">
-                <a className="btn btn-primary">View Full Ticket</a>
-              </div>
-            </div>
-            <div className="col-md-12">
-              <div className="col-md-2">
-              </div>
-              <div className="col-md-6">
-                Tags
-              </div>
-              <div className="col-md-4">
-                timestamp
-              </div>
-            </div>
-          </Panel>
-        </Accordion>
-        <form className="item-card__add-subitem" onSubmit={this.createSubItem}>
-          <input ref="addItemInput" type="text" placeholder={"Add new sub-task"} className="form-control" />
-          <button className="btn btn-default">+</button>
-        </form>
+        <div className="col-md-12">
+          {this.header('sub-items')}
+        </div>
+        <div className="col-md-12">
+          {subItems}
+        </div>
+        <div className="col-md-12 add-subitem">
+          <form className="item-card__add-subitem" onSubmit={this.createSubItem}>
+            <input ref="addItemInput" type="text" placeholder={"Add new sub-task"} className="form-control" />
+            <button className="btn btn-default">+</button>
+          </form>
+        </div>
       </div>
     )
   },
@@ -425,6 +416,24 @@ var ItemDetail = React.createClass({
     )
   },
 
+  componentDidMount() {
+    ProductStore.addChangeListener(this._onChange);
+    ItemActions.fetchItem(this.getParams().id, this.getParams().number);
+
+    console.log('Setup the subitem visibility state based on item.subitems');
+  },
+
+  componentWillUnmount() {
+    ProductStore.removeChangeListener(this._onChange);
+  },
+
+  componentWillReceiveProps: function(nextProps) {
+    if (this.getParams().number != this.state.item.number) {
+      this._onChange();
+      // ItemActions.fetchItem(this.getParams().id, this.props.number);
+    }
+  },
+
   render() {
     if (!this.state.item.number) {
       return <div/>;
@@ -439,6 +448,8 @@ var ItemDetail = React.createClass({
     // />
     // {this.renderDescription()}
 
+    // {this.comments()}
+    // {this.activity()}
     return (
       <div className="container-fluid item-detail no-gutter">
         <div className="stripe">
@@ -453,11 +464,18 @@ var ItemDetail = React.createClass({
             {this.ticketDescription()}
             {this.attachments()}
             {this.subItems()}
-            {this.comments()}
-            {this.activity()}
         </div>
       </div>
     )
+  },
+
+  _onChange() {
+    let item = ProductStore.getItem(this.getParams().id, this.getParams().number);
+    if (item) {
+      this.setState({
+        item
+      });
+    }
   }
 });
 
