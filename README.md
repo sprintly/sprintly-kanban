@@ -3,6 +3,7 @@
 > Oauth2 Client App w/ Hapi, React, Flux, and Sprinlty-Data
 
 [![wercker status](https://app.wercker.com/status/43e50b14b2bd09d40a96c8bb04b095c8/m/master "wercker status")](https://app.wercker.com/project/bykey/43e50b14b2bd09d40a96c8bb04b095c8)
+[![Gitter chat](https://badges.gitter.im/inkling/Subliminal.png)](https://gitter.im/sprintly/sprintly-kanban)
 
 * [Production - https://kanban.sprint.ly](https://kanban.sprint.ly)
 * [Staging - https://sprintly-manifold.herokuapp.com](https://sprintly-manifold.herokuapp.com)
