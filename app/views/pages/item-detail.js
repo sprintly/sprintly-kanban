@@ -21,7 +21,9 @@ var ItemDetail = React.createClass({
       item: {},
       attachments: false,
       subitems: [
-        true
+        true,
+        false,
+        false
       ]
     };
   },
@@ -244,32 +246,34 @@ var ItemDetail = React.createClass({
                           }).value();
 
     return (
-      <div className="col-md-12 attachments">
-        <div className="header">
-          <a className="toggle" onClick={this.toggleAttachments}>
-            <span aria-hidden="true" className="glyphicon glyphicon-menu-right"/>
-          </a>
-          <div className="sep-vertical"></div>
-          <div className="title">Attachments</div>
-        </div>
-        <div className={contentClasses}>
-          <div className="col-md-12">
-            <div className="col-md-9">
-              <div className="title">
-                Attachments: #TBD
+      <div className="col-md-12 section attachments">
+        <div className="col-md-12">
+          <div className="header">
+            <a className="toggle" onClick={this.toggleAttachments}>
+              <span aria-hidden="true" className="glyphicon glyphicon-menu-right"/>
+            </a>
+            <div className="sep-vertical"></div>
+            <div className="title">Attachments</div>
+          </div>
+          <div className={contentClasses}>
+            <div className="col-md-12">
+              <div className="col-md-9">
+                <div className="title">
+                  Attachments: #TBD
+                </div>
+                <div className="attachments-viewer">
+                  {this.attachmentsViewer()}
+                </div>
               </div>
-              <div className="attachments-viewer">
-                {this.attachmentsViewer()}
+              <div className="col-md-3">
+                <div className="title">
+                  Links: {attachmentLinks.length}
+                </div>
+                <div className="sep"></div>
+                <ul className="links">
+                  {attachmentLinks}
+                </ul>
               </div>
-            </div>
-            <div className="col-md-3">
-              <div className="title">
-                Links: {attachmentLinks.length}
-              </div>
-              <div className="sep"></div>
-              <ul className="links">
-                {attachmentLinks}
-              </ul>
             </div>
           </div>
         </div>
@@ -370,9 +374,13 @@ var ItemDetail = React.createClass({
     });
 
     return (
-      <div className="col-md-12 section">
+      <div className="col-md-12 section subitems">
         <div className="col-md-12">
-          {this.header('sub-items')}
+          <div className="header">
+            <div className="title">{helpers.toTitleCase('sub-items')}</div>
+            <a className="collapse__subitems"onClick={this.collapseSubitems}>collapse all</a>
+            <div className="sep"></div>
+          </div>
         </div>
         <div className="col-md-12">
           {subItems}
@@ -385,6 +393,12 @@ var ItemDetail = React.createClass({
         </div>
       </div>
     )
+  },
+
+  collapseSubitems() {
+    var subitemsLength = 3;
+    var closedState = _.map(new Array(subitemsLength), () => { return false});
+    this.setState({subitems: closedState});
   },
 
   header(title) {
@@ -402,16 +416,18 @@ var ItemDetail = React.createClass({
     let placeholder = "Use '@' to mention another Sprintly user.  Use #[item number] (e.g. #1234) to reference another Sprintly item.";
 
     return (
-      <div className="col-md-12 section">
-        {this.header('comment')}
-        <div className="comment-container">
-          <textarea placeholder={placeholder} name="comment-textarea">Write something here</textarea>
+      <div className="col-md-12 section comments">
+        <div className="col-md-12">
+          {this.header('comment')}
+          <div contentEditable></div>
           <div className="instructions">
             <div className="upload">Drag and drop or click here to attach files</div>
             <div className="syntax">Use Markdown & Emoji</div>
           </div>
+          <div className="col-md-3 collapse-right pull-right">
+            <button className="detail-button kanban-button-secondary">Comment</button>
+          </div>
         </div>
-        <a className="btn btn-primary">Comment</a>
       </div>
     )
   },
@@ -478,6 +494,7 @@ var ItemDetail = React.createClass({
             {this.ticketDescription()}
             {this.attachments()}
             {this.subItems()}
+            {this.comments()}
         </div>
       </div>
     )

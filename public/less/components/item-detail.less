@@ -227,6 +227,18 @@
     outline:none;
   }
 }
+
+.item-detail .section.subitems .header .title {
+  display: inline-block;
+  margin-right: 20px;
+}
+
+.item-detail .section.subitems .header  {
+  a.collapse__subitems {
+    font-size: 12px;
+  }
+}
+
 .item-detail .attachments .header,
 .item-detail .subitem .header {
   height: 40px;
@@ -391,4 +403,46 @@
     margin-top: 5px;
      padding-left:0;
   }
+}
+
+.item-detail .section.comments {
+  div[contenteditable]{
+    .border-top-radius(5px);
+    border-color: @sprintly-grey;
+    border-style: solid;
+    width: 100%;
+    padding: 0;
+    text-indent: 10px;
+    padding-top: 10px;
+    min-height: 60px;
+    outline: none;
+  }
+
+  button {
+    margin-top: 5px;
+  }
+}
+.item-detail .section.comments .instructions {
+  .border-bottom-radius(5px);
+  border-color: @sprintly-grey;
+  border-style: solid;
+  background-color: @sprintly-light-grey;
+  border-width: 0px 1px 1px 1px;
+  top: -5px;
+  position: relative;
+  height: 30px;
+  line-height: 30px;
+  font-size: 13px;
+}
+.item-detail .section.comments .instructions .upload,
+.item-detail .section.comments .instructions .syntax {
+  display: inline-block;
+}
+.item-detail .section.comments .instructions .upload {
+  float: left;
+  margin-left: 10px;
+}
+.item-detail .section.comments .instructions .syntax {
+  float: right;
+  margin-right: 10px;
 }
