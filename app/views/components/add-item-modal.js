@@ -8,7 +8,6 @@ import StoryTitle from './add-item/story-title';
 import MembersDropdown from './add-item/members-dropdown';
 import IssueTemplates from './add-item/issue-templates';
 import Select from 'react-select';
-import LocalStorageMixin from 'react-localstorage';
 
 import ItemActions from '../../actions/item-actions';
 import helpers from './helpers';
@@ -31,8 +30,7 @@ let AddItemModal = React.createClass({
   },
 
   mixins: [
-    React.addons.LinkedStateMixin,
-    LocalStorageMixin
+    React.addons.LinkedStateMixin
   ],
 
   getInitialState() {
@@ -85,10 +83,14 @@ let AddItemModal = React.createClass({
 
     this.setState({ type: type }, () => {
       // ensure focus follows tabbing through types
-      let ref = type === 'story' ? this.refs.title.refs.whoInput :
+      this.setFocus(type);
+    });
+  },
+
+  setFocus(itemType) {
+    let ref = itemType === 'story' ? this.refs.title.refs.whoInput :
         this.refs.title.refs.titleInput;
       React.findDOMNode(ref).focus();
-    });
   },
 
   dismiss(ev) {
@@ -96,7 +98,15 @@ let AddItemModal = React.createClass({
     this.props.onHide();
   },
 
-  createItem(ev) {
+  onKeyDown(ev) {
+    let charCode = (typeof ev.which === "number") ? ev.which : ev.keyCode;
+    if ((ev.metaKey || ev.ctrlKey) && (charCode === 13 || charCode === 10)) {
+      this.createItem(ev, false);
+    }
+    return;
+  },
+
+  createItem(ev, closeModal=true) {
     ev.preventDefault();
     let item = _.pick(this.state, ['type', 'description', 'tags', 'assigned_to']);
 
@@ -110,22 +120,28 @@ let AddItemModal = React.createClass({
       item.status = 'backlog';
     }
 
-    ItemActions.addItem(this.props.product.id, item).then( (err) => {
-      if (!err) {
-        this.setState(this.getInitialState());
+    ItemActions.addItem(this.props.product.id, item).then( (resp) => {
+      let resetState = closeModal ? this.getInitialState() :
+        _.extend({}, this.getInitialState(), {type: this.state.type});
+
+      this.setState(resetState);
+      this.setFocus(this.state.type);
+
+      if (closeModal) {
         this.props.onHide();
-      } else {
-        this.updateValidation(err)
       }
+    }, (err) => {
+      this.updateValidation(err);
     });
   },
 
   updateValidation(err) {
     let validationState = this.state.validation;
+    let errors = err.validationError.split(':')[1].replace(/\s+/g, '').split(',');
 
-    _.each(err.validationError, (attr) => {
+    _.each(errors, (attr) => {
       validationState[attr] = false;
-    })
+    });
 
     this.setState({validation: validationState});
   },
@@ -192,7 +208,7 @@ let AddItemModal = React.createClass({
           })}
         </Nav>
         <div className='modal-body'>
-          <form onSubmit={this.createItem}>
+          <form onSubmit={this.createItem} onKeyDown={this.onKeyDown}>
             {title}
             <div className="form-group">
               <MentionsInput
