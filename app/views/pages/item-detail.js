@@ -296,7 +296,23 @@ var ItemDetail = React.createClass({
         title: 'Swap radio buttons for checkboxes',
         status: 'current',
         assignee: 'srogers@quickleft.com',
-        score: 'S',
+        score: '2',
+        description: "Swap out existing radio buttons for a React component.\nhttp://react-components.com/component/react-radio-group\nEnsure selections are bubbled up through the flux arch and represented in the view state"
+      },
+      {
+        id: '1234',
+        title: 'Swap radio buttons for checkboxes',
+        status: 'current',
+        assignee: 'srogers@quickleft.com',
+        score: '2',
+        description: "Swap out existing radio buttons for a React component.\nhttp://react-components.com/component/react-radio-group\nEnsure selections are bubbled up through the flux arch and represented in the view state"
+      },
+      {
+        id: '1234',
+        title: 'Swap radio buttons for checkboxes',
+        status: 'current',
+        assignee: 'srogers@quickleft.com',
+        score: '2',
         description: "Swap out existing radio buttons for a React component.\nhttp://react-components.com/component/react-radio-group\nEnsure selections are bubbled up through the flux arch and represented in the view state"
       }
     ]
@@ -314,13 +330,13 @@ var ItemDetail = React.createClass({
               <span aria-hidden="true" className="glyphicon glyphicon-menu-right"/>
             </a>
             <div className="sep-vertical"></div>
-            <div className="title">Swap radio buttons for checkboxes</div>
+            <div className="title">{item.title}</div>
             <div className="col-md-4 state">
               <ul>
-                <li><div className="meta status">Current</div></li>
-                <li><div className="meta id">#2834</div></li>
+                <li><div className="meta status">{item.status}</div></li>
+                <li><div className="meta id">#{item.id}</div></li>
                 <li><div className="meta"><Gravatar email={"srogers@quickleft.com"} size={36} /></div></li>
-                <li><div className="meta"><button className="estimator__button story">2</button></div></li>
+                <li><div className="meta"><button className="estimator__button story">{item.score}</button></div></li>
               </ul>
             </div>
           </div>
@@ -328,9 +344,7 @@ var ItemDetail = React.createClass({
             <div className="col-md-12">
               <div className="col-md-12 collapse-right">
                 <div className="col-md-9 description">
-                  Swap out existing radio buttons for a React component.
-
-                  http://react-components.com/component/react-radio-group. Ensure selections are bubbled up through the flux arch and represented in the view state
+                  {item.description}
                 </div>
                 <div className="col-md-3 collapse-right">
                   <button className="detail-button kanban-button-secondary">View Full Ticket</button>
