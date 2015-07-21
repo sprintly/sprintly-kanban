@@ -41,7 +41,7 @@ export default React.createClass({
           allProducts={this.state.products}
         />
         <div className="container product-selector">
-          <div className="col-sm-6 product__tout">
+          <div className="col-sm-6 product__tout hidden-xs">
             <img src="https://sprintly-wasatch.global.ssl.fastly.net/4957/static/images/briefcase.png"/>
             <h1>Sprintly Kanban Board</h1>
           </div>
