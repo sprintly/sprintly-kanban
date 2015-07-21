@@ -83,7 +83,12 @@ let AddItemModal = React.createClass({
     var descriptionTemplate = (type === 'defect') ? IssueTemplates.defect : '';
     this.setDescription(null, descriptionTemplate);
 
-    this.setState({ type: type });
+    this.setState({ type: type }, () => {
+      // ensure focus follows tabbing through types
+      let ref = type === 'story' ? this.refs.title.refs.whoInput :
+        this.refs.title.refs.titleInput;
+      React.findDOMNode(ref).focus();
+    });
   },
 
   dismiss(ev) {
@@ -158,6 +163,7 @@ let AddItemModal = React.createClass({
     if (this.state.type === 'story') {
       title = (
         <StoryTitle
+          ref="title"
           who={this.linkState('who')}
           what={this.linkState('what')}
           why={this.linkState('why')}
@@ -167,6 +173,7 @@ let AddItemModal = React.createClass({
     } else {
       title = (
         <Title
+          ref="title"
           title={this.linkState('title')}
           validation={this.linkState('validation')}
         />
