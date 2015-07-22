@@ -626,7 +626,7 @@ var ItemDetail = React.createClass({
   itemChanged(meta) {
     let valueMap = this.fieldToValueMap(meta)
     let field = helpers.toTitleCase(meta.field);
-    return `${field} from ${valueMap.oldVal} to ${valueMap.newVal}`;
+    return `the ${field} from ${valueMap.oldVal} to ${valueMap.newVal}`;
   },
 
   itemReassigned(meta) {
@@ -679,7 +679,7 @@ var ItemDetail = React.createClass({
   activityTypeMap(action) {
     const ACTIVITY_TYPES = {
       'item created': 'created this',
-      'item changed': 'changed',
+      'item changed': 'updated',
       'attachment': 'attached',
       'assigned': 'reassigned',
       '': 'commented'
@@ -720,7 +720,7 @@ var ItemDetail = React.createClass({
               </div>
               <div className="col-md-2 creator no-wrap-truncate">{creatorName}</div>
               <div className="col-md-1 activity-type no-gutter">{activityType}</div>
-              <div className="col-md-7 description">
+              <div className="col-md-7 description collapse-right">
                 {description}
               </div>
               <div className="timestamp pull-right">
@@ -738,7 +738,8 @@ var ItemDetail = React.createClass({
           <div className="col-md-12">
             <div className="header">
               <div className="title">{helpers.toTitleCase('activity')}</div>
-              <div className="activity__counter">{totalActivityCount}</div>
+              <div className="activity__counter">{totalActivityCount} items</div>
+              <div className="sep"></div>
             </div>
             <ul>
               {activityItems}

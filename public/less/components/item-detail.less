@@ -95,7 +95,7 @@
 }
 
 .item-detail .section .header .title {
-  font-size: 14px;
+  font-size: 16px;
   font-weight: @fontWeight-6;
 }
 
@@ -228,9 +228,10 @@
   }
 }
 
-.item-detail .section.subitems .header .title {
+.item-detail .section.subitems .header .title,
+.item-detail .section.activity .header .title {
   display: inline-block;
-  margin-right: 20px;
+  margin-right: 10px;
 }
 
 .item-detail .section.subitems .header  {
@@ -476,6 +477,7 @@
     .border-top-radius(5px);
     border-color: @sprintly-grey;
     border-style: solid;
+    border-width: 1px;
     width: 100%;
     padding: 0;
     text-indent: 10px;
@@ -493,7 +495,7 @@
   border-color: @sprintly-grey;
   border-style: solid;
   background-color: @sprintly-light-grey;
-  border-width: 0px 1px 1px 1px;
+  border-width: 1px 1px 1px 1px;
   top: -5px;
   position: relative;
   height: 30px;
@@ -520,16 +522,18 @@
     overflow: scroll;
   }
   li {
-    height: 40px;
+    height: 100%;
+    min-height: 40px;
+    width: 100%;
+    display: inline-block;
   }
   img {
     border-radius: 15px;
   }
 }
 .item-detail .section.activity .avatar {
-  display: inline-block;
-  text-align: left;
   float: left;
+  padding-left: 12px;
 }
 .item-detail .section.activity .creator {
   font-weight: @fontWeight-6;
@@ -538,15 +542,28 @@
 }
 .item-detail .section.activity .activity-type {
   font-size: 14px;
-  font-style: italic;
+  color: @sprintly-blue;
   text-align: right;
 }
 .item-detail .section.activity .timestamp,
 .item-detail .section.activity .description {
   font-size: 14px;
 }
+.item-detail .section.activity .description {
+  margin-bottom: 10px;
+}
 .item-detail .section.activity .timestamp {
-  width: 15%;
+  width: 12%;
   font-style: italic;
   text-align: right;
+}
+
+.item-detail .section.activity .header .activity__counter {
+  display: inline-block;
+  text-align: left;
+  color: @sprintly-black;
+  font-style: italic;
+  font-weight: @fontWeight-6;
+  line-height: 28px;
+  font-size: 13px;
 }
