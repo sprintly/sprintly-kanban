@@ -23,9 +23,32 @@ module.exports = {
             .value()
   },
 
-  toTitleCase: function(str) {
-    return str.replace(/\w\S*/g, function(text){
-      return text.charAt(0).toUpperCase() + text.substr(1).toLowerCase();
-    });
+  toTitleCase(str) {
+    if (str) {
+      return str.replace(/\w\S*/g, function(text){
+        return text.charAt(0).toUpperCase() + text.substr(1).toLowerCase();
+      });
+    } else {
+      return '';
+    }
   },
+
+  vowelSound(word) {
+    let firstLetter = word.charAt(0).toLowerCase();
+    let vowelSounds = ['a','e','i','o'];
+
+    return _.contains(vowelSounds, firstLetter)
+  },
+
+  itemStatusMap(status) {
+    var ITEM_STATUS_MAP = {
+      'in-progress': 'current',
+      'completed': 'done',
+      'someday': 'someday',
+      'backlog': 'backlog',
+      'accepted': 'accepted'
+    }
+
+    return ITEM_STATUS_MAP[status];
+  }
 }

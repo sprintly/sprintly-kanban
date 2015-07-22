@@ -11,6 +11,8 @@ import ItemCard from '../components/item-card';
 import marked from 'marked';
 import Gravatar from '../components/gravatar';
 import Slick from 'react-slick';
+import moment from 'moment';
+import OwnerAvatar from '../components/item-card/owner';
 
 var ItemDetail = React.createClass({
 
@@ -19,12 +21,7 @@ var ItemDetail = React.createClass({
   getInitialState() {
     return {
       item: {},
-      attachments: false,
-      subitems: [
-        true,
-        false,
-        false
-      ]
+      attachments: false
     };
   },
 
@@ -43,102 +40,215 @@ var ItemDetail = React.createClass({
     }
   },
 
-  buildTags() {
-    return _.chain(_.times(2)).map(function(n) {
-      return (
-        <li>{`feature-tag-${n}`}</li>
-      )
-    })
+  buildTags(item) {
+    if (item && item.tags) {
+      var tags = item.tags.split(',');
+
+      if (tags.length) {
+        var tagIcon = <li><span className="glyphicon glyphicon-tag"></span></li>
+        var tags = _.map(tags, function(tag, i) {
+          return (
+            <li key={i}>{tag}</li>
+          )
+        })
+        tags.unshift(tagIcon)
+
+        return (
+          <ul>
+            {tags}
+          </ul>
+        )
+      }
+    }
   },
 
-  ticketDetail() {
-    let members = helpers.formatSelectMembers(this.props.members);
+  buildTitle(item) {
+    if (item.type === 'story') {
+      var whoFirstWord = item.who.split(' ')[0];
+      var whoPre = helpers.vowelSound(whoFirstWord) ? 'As an ' : 'As a ' ;
 
+      return  [
+        <span className="italicize">{whoPre}</span>,
+        `${item.who}`,
+        <span className="italicize"> I want </span>,
+        `${item.what}`,
+        <span className="italicize"> so that </span>,
+        `${item.why}`
+      ]
+    } else {
+      return item.title
+    }
+  },
+
+  createdByTimestamp(item) {
+    if (item.created_at) {
+      let timeSinceNow = moment(item.created_at).fromNow();
+
+      let creator = `${item.created_by.first_name} ${item.created_by.last_name}`;
+
+      return `Created by ${creator} ${timeSinceNow}`;
+    }
+  },
+
+  itemStatus(item) {
+    let status = helpers.itemStatusMap(item.status);
+
+    return helpers.toTitleCase(status);
+  },
+
+  assigneeGravatar(item) {
+    let assignee = item.assigned_to;
+
+    if (!assignee || !assignee.email) {
+      <span><OwnerAvatar person="placeholder" /></span>
+    } else {
+      return (
+        <Gravatar email={assignee.email} size={36} />
+      )
+    }
+  },
+
+  itemSizeButton(item) {
+    // TODO: let the user toggle state between t-shirt and fibonnaci sizes
     return (
-      <div className="col-md-12 section ticket__detail">
-        <div className="col-md-9 info">
-          <div className="col-md-1 no-gutter collapse-gutters">
-            <div className="col-md-12 type">
-              Story
-            </div>
-            <div className="col-md-12 id">
-              #91
-            </div>
-          </div>
-          <div className="col-md-11">
-            <div className="col-md-12 title">
-              <span className="who">As an</span> accountant I want a QuickBooks integration so that I am more productive
-            </div>
-            <div className="col-md-12 meta">
-              <div className="col-md-6 tags no-gutter">
-                <ul>
-                  <li>
-                    <span className="glyphicon glyphicon-tag"></span>
-                  </li>
-                  {this.buildTags()}
-                </ul>
-              </div>
-              <div className="col-md-6 timestamp">
-                Created by Sasha Genet 1 day ago
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="col-md-3 ticket-actions collapse-gutters">
-          <div className="col-md-12 ticket-state">
-            <div className="col-md-4">
-              <div className="col-md-12 title">
-                Progress
-              </div>
-              <div className="col-md-12 value">
-                Current
-              </div>
-            </div>
-            <div className="col-md-4">
-              <div className="col-md-12 title">
-                Owner
-              </div>
-              <div className="col-md-12 value">
-                <Gravatar email={"srogers@quickleft.com"} size={36} />
-              </div>
-            </div>
-            <div className="col-md-4">
-              <div className="col-md-12 title">
-                Size
-              </div>
-              <div className="col-md-12 value">
-                <button className="estimator__button story">2</button>
-              </div>
-            </div>
-          </div>
-          <div className="col-md-12 control">
-            <Select placeholder={"Choose owner"}
-                    name="form-field-name"
-                    className="assign-dropdown"
-                    disabled={false}
-                    value={"Update to ticket owner"}
-                    options={members}
-                    onChange={this.setAssignedTo}
-                    clearable={true} />
-          </div>
-        </div>
-      </div>
+      <button className="estimator__button story">{item.score}</button>
     )
   },
 
+  ticketDetail() {
+    let item = this.state.item;
+
+    if (item) {
+      let members = helpers.formatSelectMembers(this.props.members);
+      let type = helpers.toTitleCase(item.type);
+      let ticketId = `#${item.number}`
+      let title = this.buildTitle(item);
+      let tags = this.buildTags(item);
+      let createdByTimestamp = this.createdByTimestamp(item);
+      let itemStatus = this.itemStatus(item);
+      let assigneeGravatar = this.assigneeGravatar(item);
+      let itemSizeButton = this.itemSizeButton(item);
+
+      return (
+        <div className="col-md-12 section ticket__detail">
+          <div className="col-md-9 info">
+            <div className="col-md-1 no-gutter collapse-gutters">
+              <div className="col-md-12 type">
+                {type}
+              </div>
+              <div className="col-md-12 id">
+                {ticketId}
+              </div>
+            </div>
+            <div className="col-md-11">
+              <div className="col-md-12 title">
+                {title}
+              </div>
+              <div className="col-md-12 meta">
+                <div className="col-md-6 tags no-gutter">
+                  {tags}
+                </div>
+                <div className="col-md-6 timestamp">
+                  {createdByTimestamp}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="col-md-3 ticket-actions collapse-gutters">
+            <div className="col-md-12 ticket-state">
+              <div className="col-md-4">
+                <div className="col-md-12 title">
+                  Progress
+                </div>
+                <div className="col-md-12 value">
+                  {itemStatus}
+                </div>
+              </div>
+              <div className="col-md-4">
+                <div className="col-md-12 title">
+                  Owner
+                </div>
+                <div className="col-md-12 value">
+                  {assigneeGravatar}
+                </div>
+              </div>
+              <div className="col-md-4">
+                <div className="col-md-12 title">
+                  Size
+                </div>
+                <div className="col-md-12 value">
+                  {itemSizeButton}
+                </div>
+              </div>
+            </div>
+            <div className="col-md-12 control">
+              <Select placeholder={"Choose owner"}
+                      name="form-field-name"
+                      className="assign-dropdown"
+                      disabled={false}
+                      value={"Update to ticket owner"}
+                      options={members}
+                      onChange={this.setAssignedTo}
+                      clearable={true} />
+            </div>
+          </div>
+        </div>
+      )
+    }
+  },
+
   setDescription(ev, value) {
-    console.log('Description value: ', value);
+    console.log('NEW DESCRIPTION: ', value)
+    let item = _.cloneDeep(this.state.item);
+    item.description = value;
+
+    this.setState({item: item});
+
+    _.debounce(this.updateItem, 500);
+  },
+
+  updateItem() {
+    console.log('trigger action to update the item via a item action');
+  },
+
+  buildFollowers(item) {
+    let followers;
+    if (item.followers) {
+      followers = _.map(item.followers, (follower, i) => {
+        return (
+          <div key={i} className="col-md-4">
+            <li><Gravatar email={follower.email} size={36} /></li>
+          </div>
+        )
+      })
+    } else {
+      followers = (
+        <div className="no-followers">No followers of this item yet</div>
+      )
+    }
+
+    return (
+      <ul>
+        {followers}
+      </ul>
+    )
+  },
+
+  followItem() {
+    console.log('Follow the item');
   },
 
   ticketDescription() {
+    let item = this.state.item;
     let mentions = helpers.formatMentionMembers(this.props.members);
+    let followers = this.buildFollowers(item);
 
     return (
       <div className="col-md-12 section">
         <div className="col-md-9">
           {this.header('description')}
           <MentionsInput
-            value={"Use ticket model description data"}
+            value={item.description}
             onChange={this.setDescription}
             placeholder="Add a description...">
               <Mention data={mentions} />
@@ -146,18 +256,8 @@ var ItemDetail = React.createClass({
         </div>
         <div className="col-md-3 followers">
           {this.header('followers')}
-          <ul>
-            <div className="col-md-4">
-              <li><Gravatar email={"srogers@quickleft.com"} size={36} /></li>
-            </div>
-            <div className="col-md-4">
-              <li><Gravatar email={"srogers@quickleft.com"} size={36} /></li>
-            </div>
-            <div className="col-md-4">
-              <li><Gravatar email={"srogers@quickleft.com"} size={36} /></li>
-            </div>
-          </ul>
-          <button className="detail-button kanban-button-secondary">Follow</button>
+          {followers}
+          <button className="detail-button kanban-button-secondary" onClick={this.followItem}>Follow</button>
         </div>
       </div>
     )
@@ -198,7 +298,7 @@ var ItemDetail = React.createClass({
             slidesToShow: 3,
             slidesToScroll: 3,
             infinite: true,
-            dots: true
+            dots: false
           }
         },
         {
@@ -293,54 +393,95 @@ var ItemDetail = React.createClass({
     this.setState({subitems: subitems})
   },
 
-  subItems() {
-    var mockItems = [
-      {
-        id: '1234',
-        title: 'Swap radio buttons for checkboxes',
-        status: 'current',
-        assignee: 'srogers@quickleft.com',
-        score: '2',
-        description: "Swap out existing radio buttons for a React component.\nhttp://react-components.com/component/react-radio-group\nEnsure selections are bubbled up through the flux arch and represented in the view state"
-      },
-      {
-        id: '1234',
-        title: 'Swap radio buttons for checkboxes',
-        status: 'current',
-        assignee: 'srogers@quickleft.com',
-        score: '2',
-        description: "Swap out existing radio buttons for a React component.\nhttp://react-components.com/component/react-radio-group\nEnsure selections are bubbled up through the flux arch and represented in the view state"
-      },
-      {
-        id: '1234',
-        title: 'Swap radio buttons for checkboxes',
-        status: 'current',
-        assignee: 'srogers@quickleft.com',
-        score: '2',
-        description: "Swap out existing radio buttons for a React component.\nhttp://react-components.com/component/react-radio-group\nEnsure selections are bubbled up through the flux arch and represented in the view state"
-      }
-    ]
+  viewFullTicket(ticketID) {
+    console.log('Show full ticket with number: ', ticketID);
+  },
 
-    var subItems = _.map(mockItems, (item, i) => {
+  updateSubItem(subitem, ev) {
+    var status;
+    if (_.contains(['someday', 'backlog', 'in-progress'], subitem.status)) {
+      status = 'accepted';
+    } else if (_.contains(['completed', 'accepted'], subitem.status)) {
+      status = 'in-progress';
+    }
+
+    ProductActions.updateItem(
+      subitem.product.id,
+      subitem.number,
+      _.assign({}, subitem, { status }),
+      { wait: false }
+    );
+  },
+
+  subItems() {
+    // var mockItems = [
+    //   {
+    //     id: '1234',
+    //     title: 'Swap radio buttons for checkboxes',
+    //     status: 'current',
+    //     assignee: 'srogers@quickleft.com',
+    //     score: '2',
+    //     description: "Swap out existing radio buttons for a React component.\nhttp://react-components.com/component/react-radio-group\nEnsure selections are bubbled up through the flux arch and represented in the view state"
+    //   },
+    //   {
+    //     id: '1234',
+    //     title: 'Swap radio buttons for checkboxes',
+    //     status: 'current',
+    //     assignee: 'srogers@quickleft.com',
+    //     score: '2',
+    //     description: "Swap out existing radio buttons for a React component.\nhttp://react-components.com/component/react-radio-group\nEnsure selections are bubbled up through the flux arch and represented in the view state"
+    //   },
+    //   {
+    //     id: '1234',
+    //     title: 'Swap radio buttons for checkboxes',
+    //     status: 'current',
+    //     assignee: 'srogers@quickleft.com',
+    //     score: '2',
+    //     description: "Swap out existing radio buttons for a React component.\nhttp://react-components.com/component/react-radio-group\nEnsure selections are bubbled up through the flux arch and represented in the view state"
+    //   }
+    // ]
+
+    let item = this.state.item;
+
+    var subItems = _.map(item.sub_items, (subitem, i) => {
       var contentClasses = React.addons.classSet({
         'content': true,
         'open': this.state.subitems[i]
       })
 
+      var title = subitem.title;
+      var status = this.itemStatus(subitem);
+      var itemID = subitem.number;
+      var assigneeGravatar = this.assigneeGravatar(subitem);
+      var itemSizeButton = this.itemSizeButton(subitem);
+      // var description = this.ticketDescription(subitem);
+      var description = subitem.description;
+      var tags = this.buildTags(subitem);
+      var createdByTimestamp = this.createdByTimestamp(subitem);
+      let checked = subitem.status === 'completed' || subitem.status === 'accepted';
+
       return (
-        <div className="subitem">
+        <div key={i} className="subitem">
           <div className="header">
             <a className="toggle" onClick={_.partial(this.toggleSubItem, i)}>
-              <span aria-hidden="true" className="glyphicon glyphicon-menu-right"/>
+              <span aria-hidden="true" className="glyphicon glyphicon-menu-right" />
             </a>
             <div className="sep-vertical"></div>
-            <div className="title">{item.title}</div>
-            <div className="col-md-4 state">
+            <div className="title">{title}</div>
+            <div className="col-md-4 state collapse-right">
               <ul>
-                <li><div className="meta status">{item.status}</div></li>
-                <li><div className="meta id">#{item.id}</div></li>
-                <li><div className="meta"><Gravatar email={"srogers@quickleft.com"} size={36} /></div></li>
-                <li><div className="meta"><button className="estimator__button story">{item.score}</button></div></li>
+                <li><div className="meta status">{status}</div></li>
+                <li><div className="meta id">#{itemID}</div></li>
+                <li><div className="meta">{assigneeGravatar}</div></li>
+                <li><div className="meta">{itemSizeButton}</div></li>
+                <li>
+                  <div className="meta">
+                    <div className="subitemCheck">
+                    	<input type="checkbox" checked={checked} onChange={_.partial(this.updateSubItem, subitem)} id="subitemCheck" />
+                      <label for="subitemCheck"></label>
+                    </div>
+                  </div>
+                </li>
               </ul>
             </div>
           </div>
@@ -348,23 +489,18 @@ var ItemDetail = React.createClass({
             <div className="col-md-12">
               <div className="col-md-12 collapse-right">
                 <div className="col-md-9 description">
-                  {item.description}
+                  {description}
                 </div>
                 <div className="col-md-3 collapse-right">
-                  <button className="detail-button kanban-button-secondary">View Full Ticket</button>
+                  <button className="detail-button kanban-button-secondary" onClick={this.viewFullTicket(itemID)}>View Full Ticket</button>
                 </div>
               </div>
               <div className="col-md-12 meta collapse-right">
                 <div className="col-md-6 tags no-gutter">
-                  <ul>
-                    <li>
-                      <span className="glyphicon glyphicon-tag"></span>
-                    </li>
-                    {this.buildTags()}
-                  </ul>
+                  {tags}
                 </div>
                 <div className="col-md-6 timestamp no-gutter">
-                  Created by Sasha Genet 1 day ago
+                  {createdByTimestamp}
                 </div>
               </div>
             </div>
@@ -396,7 +532,7 @@ var ItemDetail = React.createClass({
   },
 
   collapseSubitems() {
-    var subitemsLength = 3;
+    var subitemsLength = this.state.item.sub_items;
     var closedState = _.map(new Array(subitemsLength), () => { return false});
     this.setState({subitems: closedState});
   },
@@ -433,24 +569,44 @@ var ItemDetail = React.createClass({
   },
 
   activity() {
-    let activityItems = _.chain(_.times(5)).map(function(n){
-      return (
-        <li>{n}</li>
-      )
-    }).value();
-
-    return (
-      <div className="col-md-12 section">
-        {activityItems}
-      </div>
-    )
+    // let activityItems = _.chain(_.times(15)).map(function(n){
+    //   return (
+    //     <li className="comment">
+    //       <div className="avatar no-gutter">
+    //         <Gravatar email={"srogers@quickleft.com"} size={30} />
+    //       </div>
+    //       <div className="col-md-2 creator">
+    //         Shane Rogers
+    //       </div>
+    //       <div className="col-md-8 description">
+    //         Justin here are the mockups for this story https://www.invision.co...
+    //       </div>
+    //       <div className="timestamp pull-right">
+    //         5 mins ago
+    //       </div>
+    //     </li>
+    //   )
+    // }).value();
+    //
+    // return (
+    //   <div className="col-md-12 section activity">
+    //     <div className="col-md-12">
+    //       {this.header('activity')}
+    //       <ul>
+    //         {activityItems}
+    //       </ul>
+    //     </div>
+    //   </div>
+    // )
   },
 
+  // Display some sort of loading state via the item store
   componentDidMount() {
     ProductStore.addChangeListener(this._onChange);
     ItemActions.fetchItem(this.getParams().id, this.getParams().number);
+    // TODO: Fetch the item followers on component did mount
 
-    console.log('Setup the subitem visibility state based on item.subitems');
+    ItemActions.fetchActivity(this.getParams().id, this.getParams().number);
   },
 
   componentWillUnmount() {
@@ -466,20 +622,10 @@ var ItemDetail = React.createClass({
 
   render() {
     if (!this.state.item.number) {
+      // Update to loading state where correct
       return <div/>;
     }
 
-    // <ItemCard
-    //   item={this.state.item}
-    //   members={this.props.members}
-    //   productId={this.props.product.id}
-    //   sortField='priority'
-    //   showDetails={true}
-    // />
-    // {this.renderDescription()}
-
-    // {this.comments()}
-    // {this.activity()}
     return (
       <div className="container-fluid item-detail no-gutter">
         <div className="stripe">
@@ -495,6 +641,7 @@ var ItemDetail = React.createClass({
             {this.attachments()}
             {this.subItems()}
             {this.comments()}
+            {this.activity()}
         </div>
       </div>
     )
@@ -502,10 +649,18 @@ var ItemDetail = React.createClass({
 
   _onChange() {
     let item = ProductStore.getItem(this.getParams().id, this.getParams().number);
+    console.log('ITEM UPDATED');
+
     if (item) {
-      this.setState({
-        item
-      });
+      let subitemsState = {};
+      let subitemsLength = item.sub_items.length;
+
+      if (!this.state.subitems && subitemsLength) {
+        var subitemState = _.map(new Array(subitemsLength), () => { return false});
+        subitemsState['subitems'] = subitemState
+      }
+
+      this.setState(_.extend({item}, subitemsState));
     }
   }
 });
