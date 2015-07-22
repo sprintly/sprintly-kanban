@@ -108,6 +108,7 @@ let AddItemModal = React.createClass({
 
   createItem(ev, closeModal=true) {
     ev.preventDefault();
+
     let item = _.pick(this.state, ['type', 'description', 'tags', 'assigned_to']);
 
     if (this.state.type === 'story') {
@@ -120,9 +121,9 @@ let AddItemModal = React.createClass({
       item.status = 'backlog';
     }
 
-    ItemActions.addItem(this.props.product.id, item).then( (resp) => {
+    ItemActions.addItem(this.props.product.id, item).then( () => {
       let resetState = closeModal ? this.getInitialState() :
-        _.extend({}, this.getInitialState(), {type: this.state.type});
+        _.extend({}, this.getInitialState(), { type: this.state.type });
 
       this.setState(resetState);
       this.setFocus(this.state.type);
