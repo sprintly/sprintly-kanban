@@ -168,15 +168,15 @@ var ItemDetail = React.createClass({
                 {ticketId}
               </div>
             </div>
-            <div className="col-md-11">
-              <div className="col-md-12 title">
+            <div className="col-md-11 collapse-right">
+              <div className="col-md-12 title collapse-right">
                 {title}
               </div>
-              <div className="col-md-12 meta">
+              <div className="col-md-12 meta collapse-right">
                 <div className="col-md-6 tags no-gutter">
                   {tags}
                 </div>
-                <div className="col-md-6 timestamp">
+                <div className="col-md-6 timestamp collapse-right">
                   {createdByTimestamp}
                 </div>
               </div>
@@ -192,7 +192,7 @@ var ItemDetail = React.createClass({
                   {itemStatus}
                 </div>
               </div>
-              <div className="col-md-4">
+              <div className="col-md-5">
                 <div className="col-md-12 title">
                   Owner
                 </div>
@@ -200,7 +200,7 @@ var ItemDetail = React.createClass({
                   {assigneeGravatar}
                 </div>
               </div>
-              <div className="col-md-4">
+              <div className="col-md-3">
                 <div className="col-md-12 title">
                   Size
                 </div>
@@ -357,13 +357,17 @@ var ItemDetail = React.createClass({
     console.log('openAttachments: ', value);
   },
 
+  caretState(item) {
+    return item ? 'down' : 'right'
+  },
+
   attachments() {
     var contentClasses = React.addons.classSet({
       'content': true,
       'open': this.state.attachments
     })
 
-    var attachmentLinks = _.chain(_.times(10))
+    var attachmentLinks = _.chain(_.times(5))
                           .map(function(i) {
                             return (
                               <li>
@@ -371,13 +375,13 @@ var ItemDetail = React.createClass({
                               </li>
                             )
                           }).value();
-
+    var caretClasses = `glyphicon glyphicon-menu-${this.caretState(this.state.attachments)}`;
     return (
       <div className="col-md-12 section attachments">
         <div className="col-md-12">
           <div className="header">
             <a className="toggle" onClick={this.toggleAttachments}>
-              <span aria-hidden="true" className="glyphicon glyphicon-menu-right"/>
+              <span aria-hidden="true" className={caretClasses}/>
             </a>
             <div className="sep-vertical"></div>
             <div className="title">Attachments</div>
