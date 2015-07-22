@@ -325,8 +325,7 @@ var ItemDetail = React.createClass({
           settings: {
             slidesToShow: 3,
             slidesToScroll: 3,
-            infinite: true,
-            dots: false
+            infinite: true
           }
         },
         {
@@ -384,10 +383,10 @@ var ItemDetail = React.createClass({
             <div className="title">Attachments</div>
           </div>
           <div className={contentClasses}>
-            <div className="col-md-12">
+            <div className="col-md-12 attachments__internals">
               <div className="col-md-9">
                 <div className="title">
-                  Attachments: #TBD
+                  Previews: {10}
                 </div>
                 <div className="attachments-viewer">
                   {this.attachmentsViewer()}

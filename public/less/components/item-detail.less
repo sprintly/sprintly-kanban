@@ -386,13 +386,29 @@
 .item-detail .subitem .header .state .meta.id {
   font-style: italic;
 }
+.item-detail .attachments .content {
+  border-width: 1px 2px 1px 1px;
+}
+.item-detail .attachments .content .attachments__internals {
+  margin-top: 10px;
+
+  .slick-prev:before, .slick-next:before {
+    color: @sprintly-black;
+  }
+
+  ul.slick-dots {
+    // Todo hide dots via slider configuration
+    display: none !important;
+  }
+}
+.item-detail .subitem .content {
+  border-width: 0px 1px 1px 1px;
+}
 .item-detail .attachments .content,
 .item-detail .subitem .content {
   .border-bottom-radius(5px);
   border-color: @sprintly-grey;
   border-style: solid;
-  border-width: 0px 1px 1px 1px;
-
   max-height: 0px;
   width: 100%;
   height: auto;
@@ -407,10 +423,11 @@
 
   position: relative;
   top: -15px;
-  padding-top: 35px;
+  padding-top: 38px;
+  padding-bottom: 0px;
 
   &.open {
-    max-height: 200px;
+    max-height: 260px;
   }
 }
 
@@ -452,12 +469,14 @@
     list-style: none;
     overflow: scroll;
     height: 170px;
+    background-color: @sprintly-black-lightest;
   }
 
   li {
     font-weight: @fontWeight-6;
     color: @sprintly-blue;
     margin-top: 3px;
+    text-align: right;
   }
 }
 
@@ -501,6 +520,7 @@
   height: 30px;
   line-height: 30px;
   font-size: 13px;
+  margin-bottom: 1px;
 }
 .item-detail .section.comments .instructions .upload,
 .item-detail .section.comments .instructions .syntax {
