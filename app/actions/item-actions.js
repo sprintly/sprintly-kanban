@@ -1,6 +1,10 @@
 import AppDispatcher from '../dispatchers/app-dispatcher';
 import {products} from '../lib/sprintly-client';
+import request from 'superagent';
 import Promise from 'bluebird';
+import {BASE_URL} from '../config';
+
+const token = window.__token;
 
 let ItemActions = {
   addItem(productId, data) {
@@ -25,6 +29,32 @@ let ItemActions = {
     } else {
       return Promise.reject(item);
     }
+  },
+
+  fetchActivity(productId, itemId) {
+    var activityEndpoint = `${BASE_URL}/api/products/${productId}/items/${itemId}/activities.json`;
+
+    request
+      .get(activityEndpoint)
+      .set('Authorization', `Bearer ${token}`)
+      .end(function(err, res) {
+        if (err) {
+          AppDispatcher.dispatch({
+            actionType: 'ITEM_ACTIVITY_ERROR',
+            err
+          });
+          return;
+        }
+
+        if (res.body) {
+          AppDispatcher.dispatch({
+            actionType: 'ITEM_ACTIVITY',
+            payload: res.body,
+            productId,
+            itemId
+          });
+        }
+      });
   },
 
   fetchItem(productId, number) {

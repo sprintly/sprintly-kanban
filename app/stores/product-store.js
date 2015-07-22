@@ -377,6 +377,13 @@ var internals = ProductStore.internals = {
             })
             .compact()
             .value()
+  },
+
+  extendItemWithActivity(productId, itemId, activityPayload) {
+    let product = products.get(productId);
+    let item = product.items.get(itemId);
+
+    item.set({'activity': activityPayload}, { silent: true })
   }
 };
 
@@ -418,6 +425,16 @@ ProductStore.dispatchToken = AppDispatcher.register(function(action) {
       productVelocity[action.productId] = action.payload;
       ProductStore.emitChange();
       break;
+
+    case 'ITEM_ACTIVITY':
+      internals.extendItemWithActivity(action.productId, action.itemId, action.payload);
+
+      ProductStore.emitChange();
+      break;
+    case 'ITEM_ACTIVITY_ERROR':
+      console.log('ITEM_ACTIVITY_ERROR: ', action.err)
+      break;
+
 
     default:
       break;
