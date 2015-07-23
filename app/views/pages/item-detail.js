@@ -46,7 +46,7 @@ var ItemDetail = React.createClass({
   getInitialState() {
     return {
       item: {},
-      attachments: false
+      attachmentsPanel: false
     };
   },
 
@@ -293,30 +293,30 @@ var ItemDetail = React.createClass({
     )
   },
 
-  toggleAttachments() {
-    this.setState({attachments: !this.state.attachments});
+  toggleAttachmentsPanel() {
+    this.setState({attachmentsPanel: !this.state.attachmentsPanel});
   },
 
   showAttachment() {
     console.log('Implement attachment viewer: ');
   },
 
-  attachmentsViewer() {
-    var attachments = _.chain(_.times(4))
-                            .map((i) => {
-                              var styles = {
-                                width: '33%',
-                                height: '170px',
-                                'background-color': `RGBA(69, 69, 69, ${1-(0.15*(i+1))})`,
-                              }
+  attachmentsViewer(imageAttachments) {
+    var attachments = _.map(imageAttachments, (image, i) => {
+                        var styles = {
+                          width: '33%',
+                          height: '170px',
+                          'background-color': `RGBA(69,69,69, ${parseFloat((Math.random() * (0.120 - 0.0200) + 0.0200))})`,
+                        }
+                          // background: `url(${image.meta.permalink}) no-repeat`
 
-                              return (
-                                <div className="attachment-slide" key={i} style={styles} onClick={this.showAttachment}></div>
-                              );
-                            }).value();
+                        return (
+                          <div className="attachment-slide" key={i} style={styles} onClick={this.showAttachment}></div>
+                        );
+                      });
 
     var settings = {
-      dots: true,
+      dots: false,
       infinite: true,
       slidesToShow: 3,
       speed: 500,
@@ -363,59 +363,77 @@ var ItemDetail = React.createClass({
     return item ? 'down' : 'right'
   },
 
-  attachments() {
-    var contentClasses = React.addons.classSet({
-      'content': true,
-      'open': this.state.attachments
-    });
-    var headerClasses = React.addons.classSet({
-      'header': true,
-      'open': this.state.attachments
-    });
+  imageFileExt(url) {
+    return (/\.(gif|jpg|jpeg|tiff|png)$/i).test(url);
+  },
 
-    var attachmentLinks = _.chain(_.times(5))
-                          .map(function(i) {
-                            return (
-                              <li>
-                                <a className="attachment-link">{`customer-req-doc-${i}`}</a>
-                              </li>
-                            )
-                          }).value();
-    var caretClasses = `glyphicon glyphicon-menu-${this.caretState(this.state.attachments)}`;
-    return (
-      <div className="col-md-12 section attachments">
-        <div className="col-md-12">
-          <div className={headerClasses}>
-            <a className="toggle" onClick={this.toggleAttachments}>
-              <span aria-hidden="true" className={caretClasses}/>
-            </a>
-            <div className="sep-vertical"></div>
-            <div className="title">Attachments</div>
-          </div>
-          <div className={contentClasses}>
-            <div className="col-md-12 attachments__internals">
-              <div className="col-md-9">
-                <div className="title">
-                  Images: {10}
+  attachments() {
+    if (this.state.attachments) {
+      var contentClasses = React.addons.classSet({
+        'content': true,
+        'open': this.state.attachmentsPanel
+      });
+      var headerClasses = React.addons.classSet({
+        'header': true,
+        'open': this.state.attachmentsPanel
+      });
+
+      var imageAttachments = _.chain(this.state.attachments)
+                                .map((attachment) => {
+                                  if (this.imageFileExt(attachment.meta.url)) {
+                                    return attachment;
+                                  }
+                                })
+                                .compact()
+                                .value();
+      var fileAttachments = _.difference(this.state.attachments, imageAttachments);
+
+      var fileLinks = _.map(fileAttachments, function(file) {
+        return (
+          <li>
+            <a className="attachment-link">{file.meta.title}</a>
+          </li>
+        )
+      })
+
+      var caretClasses = `glyphicon glyphicon-menu-${this.caretState(this.state.attachmentsPanel)}`;
+      let attachmentViewer = this.attachmentsViewer(imageAttachments);
+
+      return (
+        <div className="col-md-12 section attachments">
+          <div className="col-md-12">
+            <div className={headerClasses}>
+              <a className="toggle" onClick={this.toggleAttachmentsPanel}>
+                <span aria-hidden="true" className={caretClasses}/>
+              </a>
+              <div className="sep-vertical"></div>
+              <div className="title">Attachments</div>
+            </div>
+            <div className={contentClasses}>
+              <div className="col-md-12 attachments__internals">
+                <div className="col-md-9">
+                  <div className="title">
+                    Images: {imageAttachments.length}
+                  </div>
+                  <div className="attachments-viewer">
+                    {attachmentViewer}
+                  </div>
                 </div>
-                <div className="attachments-viewer">
-                  {this.attachmentsViewer()}
+                <div className="attachments__links">
+                  <div className="title">
+                    Files: {fileLinks.length}
+                  </div>
+                  <div className="sep"></div>
+                  <ul className="links">
+                    {fileLinks}
+                  </ul>
                 </div>
-              </div>
-              <div className="attachments__links">
-                <div className="title">
-                  Files: {attachmentLinks.length}
-                </div>
-                <div className="sep"></div>
-                <ul className="links">
-                  {attachmentLinks}
-                </ul>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    )
+      )
+    }
   },
 
   createSubItem() {
@@ -424,30 +442,30 @@ var ItemDetail = React.createClass({
 
   toggleSubItem(index, ev) {
     var subitems = _.clone(this.state.subitems);
-
     subitems[index] = !this.state.subitems[index];
-
     this.setState({subitems: subitems})
   },
 
   viewFullTicket(ticketID) {
+
     console.log('Show full ticket with number: ', ticketID);
   },
 
   updateSubItem(subitem, ev) {
-    var status;
-    if (_.contains(['someday', 'backlog', 'in-progress'], subitem.status)) {
-      status = 'accepted';
-    } else if (_.contains(['completed', 'accepted'], subitem.status)) {
-      status = 'in-progress';
-    }
-
-    ProductActions.updateItem(
-      subitem.product.id,
-      subitem.number,
-      _.assign({}, subitem, { status }),
-      { wait: false }
-    );
+    console.log('Update Subitem');
+    // var status;
+    // if (_.contains(['someday', 'backlog', 'in-progress'], subitem.status)) {
+    //   status = 'accepted';
+    // } else if (_.contains(['completed', 'accepted'], subitem.status)) {
+    //   status = 'in-progress';
+    // }
+    //
+    // ProductActions.updateItem(
+    //   subitem.product.id,
+    //   subitem.number,
+    //   _.assign({}, subitem, { status }),
+    //   { wait: false }
+    // );
   },
 
   subItems() {
@@ -469,7 +487,6 @@ var ItemDetail = React.createClass({
       var itemID = subitem.number;
       var assigneeGravatar = this.assigneeGravatar(subitem);
       var itemSizeButton = this.itemSizeButton(subitem);
-      // var description = this.ticketDescription(subitem);
       var description = subitem.description;
       var tags = this.buildTags(subitem);
       var createdByTimestamp = this.createdByTimestamp(subitem);
@@ -507,7 +524,9 @@ var ItemDetail = React.createClass({
                   {description}
                 </div>
                 <div className="col-md-3 collapse-right">
-                  <button className="detail-button kanban-button-secondary" onClick={this.viewFullTicket(itemID)}>View Full Ticket</button>
+                  <button className="detail-button kanban-button-secondary">
+                    <Link to={`/product/${this.getParams().id}/item/${itemID}`}>View Full Ticket</Link>
+                  </button>
                 </div>
               </div>
               <div className="col-md-12 meta collapse-right">
@@ -786,18 +805,23 @@ var ItemDetail = React.createClass({
 
   _onChange() {
     let item = ProductStore.getItem(this.getParams().id, this.getParams().number);
-    console.log('ITEM UPDATED');
 
     if (item) {
-      let subitemsState = {};
+
+      let extendedState = {};
       let subitemsLength = item.sub_items.length;
 
       if (!this.state.subitems && subitemsLength) {
         var subitemState = _.map(new Array(subitemsLength), () => { return false});
-        subitemsState['subitems'] = subitemState
+        extendedState['subitems'] = subitemState
       }
 
-      this.setState(_.extend({item}, subitemsState));
+      let attachments = {};
+      if (item.activity && item.activity.activities) {
+        extendedState['attachments'] = _.where(item.activity.activities, {'action':'attachment'});
+      }
+
+      this.setState(_.extend({item}, extendedState));
     }
   }
 });
