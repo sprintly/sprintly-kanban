@@ -5,7 +5,6 @@ import App from './views/app';
 import ProductSelector from './views/pages/product-selector';
 import Items from './views/pages/items';
 import ItemDetail from './views/pages/item-detail';
-import Settings from './views/pages/settings';
 import Search from './views/pages/search';
 
 var routes = (
