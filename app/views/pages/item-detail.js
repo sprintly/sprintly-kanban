@@ -458,7 +458,11 @@ var ItemDetail = React.createClass({
       var contentClasses = React.addons.classSet({
         'content': true,
         'open': this.state.subitems[i]
-      })
+      });
+      var headerClasses = React.addons.classSet({
+        'header': true,
+        'open': this.state.subitems[i]
+      });
 
       var title = subitem.title;
       var status = this.itemStatus(subitem);
@@ -473,7 +477,7 @@ var ItemDetail = React.createClass({
 
       return (
         <div key={i} className="subitem">
-          <div className="header">
+          <div className={headerClasses}>
             <a className="toggle" onClick={_.partial(this.toggleSubItem, i)}>
               <span aria-hidden="true" className="glyphicon glyphicon-menu-right" />
             </a>

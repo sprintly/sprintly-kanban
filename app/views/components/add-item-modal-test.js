@@ -180,7 +180,7 @@ describe('Add Item Modal', function() {
     });
 
     describe('#preparesMembersForSelect', function () {
-      it('includes only members whom are not revoked', function () {
+      xit('includes only members whom are not revoked', function () {
         let targetStructure = [
           {label: 'Sarah Morrow', value: 123}
         ];
