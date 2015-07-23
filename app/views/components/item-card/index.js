@@ -15,11 +15,9 @@ import Select from 'react-select';
 
 const REVERSE_SCORE_MAP = _.zipObject(_.values(ScoreMap), _.keys(ScoreMap))
 
-const cardSource = {
+const cardSpec = {
   beginDrag(props) {
-    return {
-      item: props.item
-    };
+    return props.item;
   },
 
   isDragging(props, monitor) {
@@ -41,12 +39,13 @@ function collect(connect, monitor) {
 let ItemCard = React.createClass({
 
   propTypes: {
-    isDragging: PropTypes.bool.isRequired,
-    connectDragSource: PropTypes.func.isRequired,
     productId: PropTypes.number.isRequired,
     item: PropTypes.object.isRequired,
     sortField: PropTypes.string.isRequired,
-    members: PropTypes.array.isRequired
+    members: PropTypes.array.isRequired,
+    // For React DnD
+    isDragging: PropTypes.bool.isRequired,
+    connectDragSource: PropTypes.func.isRequired
   },
 
   mixins: [
@@ -207,6 +206,6 @@ let ItemCard = React.createClass({
     );
   }
 
-})
+});
 
-export default DragSource('ITEM_CARD', cardSource, collect)(ItemCard);
+export default DragSource('ITEM_CARD', cardSpec, collect)(ItemCard);
