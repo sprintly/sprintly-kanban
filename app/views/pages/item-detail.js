@@ -46,7 +46,8 @@ var ItemDetail = React.createClass({
   getInitialState() {
     return {
       item: {},
-      attachmentsPanel: false
+      attachmentsPanel: false,
+      itemDetailHeight: 0,
     };
   },
 
@@ -388,16 +389,33 @@ var ItemDetail = React.createClass({
                                 .value();
       var fileAttachments = _.difference(this.state.attachments, imageAttachments);
 
-      var fileLinks = _.map(fileAttachments, function(file) {
-        return (
-          <li>
-            <a className="attachment-link">{file.meta.title}</a>
-          </li>
+      let fileList;
+      if (fileAttachments.length) {
+        let fileLinks = _.map(fileAttachments, function(file) {
+          return (
+            <li>
+              <a className="attachment-link">{file.meta.title}</a>
+            </li>
+          )
+        })
+
+        fileList = (
+          <ul className="links">
+            {fileLinks}
+          </ul>
         )
-      })
+      } else {
+        fileList = <div className="well">No Files Attached</div>
+      }
+
+      let attachmentViewer;
+      if (imageAttachments.length) {
+        attachmentViewer = this.attachmentsViewer(imageAttachments);
+      } else {
+        return <div className="well">No image attachment</div>;
+      }
 
       var caretClasses = `glyphicon glyphicon-menu-${this.caretState(this.state.attachmentsPanel)}`;
-      let attachmentViewer = this.attachmentsViewer(imageAttachments);
 
       return (
         <div className="col-md-12 section attachments">
@@ -424,9 +442,7 @@ var ItemDetail = React.createClass({
                     Files: {fileLinks.length}
                   </div>
                   <div className="sep"></div>
-                  <ul className="links">
-                    {fileLinks}
-                  </ul>
+                  {fileList}
                 </div>
               </div>
             </div>
@@ -756,8 +772,19 @@ var ItemDetail = React.createClass({
     }
   },
 
+  setItemDetailHeight() {
+    if (this.refs.itemDetail) {
+      let itemDetail = this.refs.itemDetail.getDOMNode();
+      console.log('item detial: ', itemDetail.getBoundingClientRect().height);
+      this.setState({
+        itemDetailHeight: itemDetail.getBoundingClientRect().height
+      })
+    }
+  },
+
   // Display some sort of loading state via the item store
   componentDidMount() {
+    this.setItemDetailHeight();
     ProductStore.addChangeListener(this._onChange);
     ItemActions.fetchItem(this.getParams().id, this.getParams().number);
     // TODO: Fetch the item followers on component did mount
@@ -783,10 +810,11 @@ var ItemDetail = React.createClass({
     }
     let stripeClass = `stripe ${this.state.item.type}`;
     let closeClass = `item-detail__close ${this.state.item.type}`;
+    var stripeStyles = {height: `${this.state.itemDetailHeight}px`};
 
     return (
-      <div className="container-fluid item-detail no-gutter">
-        <div className={stripeClass}>
+      <div ref="itemDetail" className="container-fluid item-detail no-gutter">
+        <div style={stripeStyles} className={stripeClass}>
           <Link to="product" params={{ id: this.getParams().id }} className={closeClass}>
             <span aria-hidden="true" className="glyphicon glyphicon-menu-right"/>
           </Link>
@@ -807,7 +835,7 @@ var ItemDetail = React.createClass({
     let item = ProductStore.getItem(this.getParams().id, this.getParams().number);
 
     if (item) {
-
+      this.setItemDetailHeight();
       let extendedState = {};
       let subitemsLength = item.sub_items.length;
 

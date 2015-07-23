@@ -55,7 +55,6 @@
 
 .item-detail .stripe {
   width: 30px;
-  height: 100%;
   float: left;
   display: inline-block;
 }
@@ -76,7 +75,7 @@
   z-index: @zIndex-1;
 }
 .item-detail .content {
-  width: 97%;
+  width: 96%;
   display: inline-block;
 }
 
@@ -255,12 +254,15 @@
 .item-detail .ticket__detail .ticket-state {
   text-align: center;
 }
+.item-detail .ticket__detail .ticket-state .title,
+.item-detail .ticket__detail .ticket-state .value {
+  font-size: 14px;
+}
 .item-detail .ticket__detail .ticket-state .title {
-  font-size: 16px;
+  font-weight: @fontWeight-6;
 }
 .item-detail .ticket__detail .ticket-state .value {
   margin-top: 10px;
-  font-size: 16px;
 
   img {
     border-radius: 34px;
@@ -649,15 +651,18 @@
 }
 .item-detail .section.activity .creator {
   font-weight: @fontWeight-6;
-  font-size: 16px;
+  font-size: 14px;
   text-align: center;
 }
 .item-detail .section.activity .activity-type {
-  font-size: 14px;
+  font-size: 12px;
   color: @sprintly-blue;
   text-align: right;
+  line-height: 23px;
 }
-.item-detail .section.activity .timestamp,
+.item-detail .section.activity .timestamp {
+  font-size: 12px;
+}
 .item-detail .section.activity .description {
   font-size: 14px;
 }
