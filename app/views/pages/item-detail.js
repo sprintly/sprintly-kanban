@@ -391,28 +391,26 @@ var ItemDetail = React.createClass({
 
       let fileList;
       if (fileAttachments.length) {
-        let fileLinks = _.map(fileAttachments, function(file) {
+        fileList = _.map(fileAttachments, function(file) {
           return (
             <li>
               <a className="attachment-link">{file.meta.title}</a>
             </li>
           )
         })
-
-        fileList = (
-          <ul className="links">
-            {fileLinks}
-          </ul>
-        )
       } else {
-        fileList = <div className="well">No Files Attached</div>
+        fileList = (
+          <li>
+            <a className="attachment-link">No files attached</a>
+          </li>
+        )
       }
 
       let attachmentViewer;
       if (imageAttachments.length) {
         attachmentViewer = this.attachmentsViewer(imageAttachments);
       } else {
-        return <div className="well">No image attachment</div>;
+        attachmentViewer = <div>No image attachments</div>;
       }
 
       var caretClasses = `glyphicon glyphicon-menu-${this.caretState(this.state.attachmentsPanel)}`;
@@ -439,10 +437,12 @@ var ItemDetail = React.createClass({
                 </div>
                 <div className="attachments__links">
                   <div className="title">
-                    Files: {fileLinks.length}
+                    Files: {fileAttachments.length}
                   </div>
                   <div className="sep"></div>
-                  {fileList}
+                  <ul className="links">
+                    {fileList}
+                  </ul>
                 </div>
               </div>
             </div>
