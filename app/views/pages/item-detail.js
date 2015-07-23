@@ -138,8 +138,9 @@ var ItemDetail = React.createClass({
 
   itemSizeButton(item) {
     // TODO: let the user toggle state between t-shirt and fibonnaci sizes
+    let buttonClass = `estimator__button ${item.type}`;
     return (
-      <button className="estimator__button story">{item.score}</button>
+      <button className={buttonClass}>{item.score}</button>
     )
   },
 
@@ -156,11 +157,12 @@ var ItemDetail = React.createClass({
       let itemStatus = this.itemStatus(item);
       let assigneeGravatar = this.assigneeGravatar(item);
       let itemSizeButton = this.itemSizeButton(item);
+      let titleClass = `title ${item.type}`
 
       return (
         <div className="col-md-12 section ticket__detail">
           <div className="col-md-9 info">
-            <div className="col-md-1 no-gutter collapse-gutters">
+            <div className="ticket__type">
               <div className="col-md-12 type">
                 {type}
               </div>
@@ -168,8 +170,8 @@ var ItemDetail = React.createClass({
                 {ticketId}
               </div>
             </div>
-            <div className="col-md-11 collapse-right">
-              <div className="col-md-12 title collapse-right">
+            <div className="ticket__description">
+              <div className={titleClass}>
                 {title}
               </div>
               <div className="col-md-12 meta collapse-right">
@@ -365,7 +367,11 @@ var ItemDetail = React.createClass({
     var contentClasses = React.addons.classSet({
       'content': true,
       'open': this.state.attachments
-    })
+    });
+    var headerClasses = React.addons.classSet({
+      'header': true,
+      'open': this.state.attachments
+    });
 
     var attachmentLinks = _.chain(_.times(5))
                           .map(function(i) {
@@ -379,7 +385,7 @@ var ItemDetail = React.createClass({
     return (
       <div className="col-md-12 section attachments">
         <div className="col-md-12">
-          <div className="header">
+          <div className={headerClasses}>
             <a className="toggle" onClick={this.toggleAttachments}>
               <span aria-hidden="true" className={caretClasses}/>
             </a>
@@ -390,15 +396,15 @@ var ItemDetail = React.createClass({
             <div className="col-md-12 attachments__internals">
               <div className="col-md-9">
                 <div className="title">
-                  Previews: {10}
+                  Images: {10}
                 </div>
                 <div className="attachments-viewer">
                   {this.attachmentsViewer()}
                 </div>
               </div>
-              <div className="col-md-3">
+              <div className="attachments__links">
                 <div className="title">
-                  Links: {attachmentLinks.length}
+                  Files: {attachmentLinks.length}
                 </div>
                 <div className="sep"></div>
                 <ul className="links">
@@ -445,34 +451,8 @@ var ItemDetail = React.createClass({
   },
 
   subItems() {
-    // var mockItems = [
-    //   {
-    //     id: '1234',
-    //     title: 'Swap radio buttons for checkboxes',
-    //     status: 'current',
-    //     assignee: 'srogers@quickleft.com',
-    //     score: '2',
-    //     description: "Swap out existing radio buttons for a React component.\nhttp://react-components.com/component/react-radio-group\nEnsure selections are bubbled up through the flux arch and represented in the view state"
-    //   },
-    //   {
-    //     id: '1234',
-    //     title: 'Swap radio buttons for checkboxes',
-    //     status: 'current',
-    //     assignee: 'srogers@quickleft.com',
-    //     score: '2',
-    //     description: "Swap out existing radio buttons for a React component.\nhttp://react-components.com/component/react-radio-group\nEnsure selections are bubbled up through the flux arch and represented in the view state"
-    //   },
-    //   {
-    //     id: '1234',
-    //     title: 'Swap radio buttons for checkboxes',
-    //     status: 'current',
-    //     assignee: 'srogers@quickleft.com',
-    //     score: '2',
-    //     description: "Swap out existing radio buttons for a React component.\nhttp://react-components.com/component/react-radio-group\nEnsure selections are bubbled up through the flux arch and represented in the view state"
-    //   }
-    // ]
-
     let item = this.state.item;
+    var collapseAllLink = item.subItems ? <a className="collapse__subitems"onClick={this.collapseSubitems}>collapse all</a> : '';
 
     var subItems = _.map(item.sub_items, (subitem, i) => {
       var contentClasses = React.addons.classSet({
@@ -545,7 +525,7 @@ var ItemDetail = React.createClass({
         <div className="col-md-12">
           <div className="header">
             <div className="title">{helpers.toTitleCase('sub-items')}</div>
-            <a className="collapse__subitems"onClick={this.collapseSubitems}>collapse all</a>
+            {collapseAllLink}
             <div className="sep"></div>
           </div>
         </div>
@@ -588,8 +568,8 @@ var ItemDetail = React.createClass({
           {this.header('comment')}
           <div contentEditable></div>
           <div className="instructions">
-            <div className="upload">Drag and drop or click here to attach files</div>
-            <div className="syntax">Use Markdown & Emoji</div>
+            <div className="upload">Drag and drop or <span className="blue__light">click here</span> to attach files</div>
+            <div className="syntax">Use <span className="blue">Markdown</span> & <span className="blue">Emoji</span></div>
           </div>
           <div className="col-md-3 collapse-right pull-right">
             <button className="detail-button kanban-button-secondary">Comment</button>
@@ -778,15 +758,15 @@ var ItemDetail = React.createClass({
       // Update to loading state where correct
       return <div/>;
     }
+    let stripeClass = `stripe ${this.state.item.type}`;
+    let closeClass = `item-detail__close ${this.state.item.type}`;
 
     return (
       <div className="container-fluid item-detail no-gutter">
-        <div className="stripe">
-          <Link to="product" params={{ id: this.getParams().id }} className="item-detail__close">
+        <div className={stripeClass}>
+          <Link to="product" params={{ id: this.getParams().id }} className={closeClass}>
             <span aria-hidden="true" className="glyphicon glyphicon-menu-right"/>
           </Link>
-          <div className={"story"}>
-          </div>
         </div>
         <div className="content">
             {this.ticketDetail()}

@@ -59,11 +59,17 @@
   float: left;
   display: inline-block;
 }
-
-.item-detail .stripe .story {
-  height: 95%;
-  bottom: 0;
+.item-detail .stripe.story {
   background-color: @story-bg;
+}
+.item-detail .stripe.defect {
+  background-color: @defect-bg;
+}
+.item-detail .stripe.task {
+  background-color: @task-bg;
+}
+.item-detail .stripe.test {
+  background-color: @test-bg;
 }
 .item-detail .header {
   position: relative;
@@ -76,24 +82,42 @@
 
 .item-detail__close {
   display: inline-block;
-  display: inline-block;
   margin: 0px;
   width: 30px;
-  height: 30px;
   text-align: center;
-  line-height: 30px;
+  line-height: 52px;
   border-radius: 0px;
   color: white;
   font-weight: 600;
   font-size: 20px;
-  background-color: @story-color;
   padding-top: 12px;
-  height: 55px
+  height: 75px
 }
-
+.item-detail__close.story {
+  background-color: @story-color;
+}
+.item-detail__close.defect {
+  background-color: @defect-color;
+}
+.item-detail__close.task {
+  background-color: @task-color;
+}
+.item-detail__close.test {
+  background-color: @test-color;
+}
 .item-detail .section {
   .no-gutter;
-  margin-bottom: 10px;
+  margin-bottom: 20px
+}
+.item-detail .section.subitems {
+  // TODO: This spacing compensation shouldnt be necessary. Fix markup
+  margin-top: -20px;
+}
+.item-detail .section .toggle {
+  cursor: pointer;
+}
+.item-detail .section .italicize {
+  font-style: italic;
 }
 .item-detail .subitem {
   margin-top: -20px;
@@ -113,16 +137,48 @@
 
 .item-detail .section .header .sep {
   margin: 10px 0;
+  opacity: 0.3;
   border-bottom: 1px @sprintly-black solid;
   transform: scaleY(0.5);
   -webkit-transform: scaleY(0.5);
 }
+
+.item-detail .ticket__detail .ticket__type {
+  margin-top: 0px;
+  float: left;
+  width: 10%;
+  text-align: center;
+}
+.item-detail .ticket__detail .ticket__description {
+  width: 88%;
+  float: right;
+  display: inline-block;
+}
 .item-detail .ticket__detail .info .title {
   font-size: 21px;
+  width: 97%;
   min-height: 50px;
   margin-bottom: 15px;
+  margin-left: 40px;
+  border-radius: 5px;
+  padding-top: 5px;
+  padding-left: 15px;
+  padding-bottom: 10px;
+  display: inline-block;
+  margin-left: 20px;
 }
-
+.item-detail .ticket__detail .info .title.story {
+  background-color: @story-detail-color;
+}
+.item-detail .ticket__detail .info .title.defect {
+  background-color: @defect-detail-color;
+}
+.item-detail .ticket__detail .info .title.task {
+  background-color: @task-detail-color;
+}
+.item-detail .ticket__detail .info .title.test {
+  background-color: @test-detail-color;
+}
 .item-detail .ticket__detail .type,
 .item-detail .ticket__detail .id {
   font-size: 22px;
@@ -253,12 +309,15 @@
   }
 }
 
+.item-detail .attachments .header.open {
+  border-bottom: none;
+}
 .item-detail .attachments .header,
 .item-detail .subitem .header {
   height: 40px;
   border-radius: 2px;
-  background-color: #eee;
-  border: 1px solid @sprintly-black;
+  background-color: @sprintly-light-grey;
+  border: 1px solid @sprintly-grey;
 
   > a.toggle {
     width: 25px;
@@ -266,14 +325,15 @@
     margin-top: 10px;
     line-height: 25px;
     text-align: center;
+    font-weight: @fontWeight-6;
   }
 
   span {
     height: 40px;
     width: 40px;
     line-height: 38px;
-    font-size: 12px;
-    color: @sprintly-black;
+    font-size: 15px;
+    color: @sprintly-grey;
   }
 }
 .item-detail .attachments .header .title,
@@ -403,7 +463,7 @@
   border-width: 1px 1px 1px 1px;
 }
 .item-detail .attachments .content .attachments__internals {
-  margin-top: 10px;
+  margin-top: 5px;
 
   .slick-prev:before, .slick-next:before {
     color: @sprintly-black;
@@ -414,6 +474,11 @@
     display: none !important;
   }
 }
+.item-detail .attachments .content .attachments__links {
+  width: 21%;
+  display: inline-block;
+  float: right;
+}
 .item-detail .subitem .content {
   border-width: 0px 1px 1px 1px;
 }
@@ -422,17 +487,17 @@
   .border-bottom-radius(5px);
   border-color: @sprintly-grey;
   border-style: solid;
+  background-color: @sprintly-light-grey;
   max-height: 0px;
   width: 100%;
   height: auto;
   margin-top: -25px;
-  background: #eee;
   overflow: hidden;
   cursor: pointer;
-  -webkit-transition: max-height 0.6s ease-out;
-  -moz-transition: max-height 0.6s ease-out;
-  -o-transition: max-height 0.6s ease-out;
-  transition: max-height 0.6s ease-out;
+  -webkit-transition: max-height 0.4s ease-out;
+  -moz-transition: max-height 0.4s ease-out;
+  -o-transition: max-height 0.4s ease-out;
+  transition: max-height 0.4s ease-out;
 
   position: relative;
   top: -15px;
@@ -440,8 +505,12 @@
   padding-bottom: 0px;
 
   &.open {
-    max-height: 260px;
+    max-height: 255px;
   }
+}
+.item-detail .attachments .content .title {
+  font-style: italic;
+  font-size: 13px;
 }
 
 .item-detail .subitem .content .meta {
@@ -482,14 +551,13 @@
     list-style: none;
     overflow: scroll;
     height: 170px;
-    background-color: @sprintly-black-lightest;
   }
 
   li {
     font-weight: @fontWeight-6;
     color: @sprintly-blue;
     margin-top: 3px;
-    text-align: right;
+    text-align: left;
   }
 }
 
@@ -533,11 +601,22 @@
   height: 30px;
   line-height: 30px;
   font-size: 13px;
-  margin-bottom: 1px;
+  margin-bottom: 5px;
 }
 .item-detail .section.comments .instructions .upload,
 .item-detail .section.comments .instructions .syntax {
   display: inline-block;
+
+  span.blue,
+  span.blue__light {
+    color: @sprintly-blue;
+  }
+  span.blue {
+    font-weight: @fontWeight-6;
+  }
+  span.blue__light {
+    font-style: italic;
+  }
 }
 .item-detail .section.comments .instructions .upload {
   float: left;
