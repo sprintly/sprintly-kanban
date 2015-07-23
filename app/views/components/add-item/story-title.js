@@ -31,6 +31,10 @@ let AddItemStoryTitle = React.createClass({
     validation: React.PropTypes.object.isRequired
   },
 
+  componentDidMount() {
+    React.findDOMNode(this.refs.whoInput).focus();
+  },
+
   titleNodes() {
     return _.map(STORY_ATTRS, (attr, i) => {
       var classes = classNames({
@@ -46,6 +50,7 @@ let AddItemStoryTitle = React.createClass({
             <input className={classes}
                         type="text"
                         name={attr}
+                        ref={attr + 'Input'}
                  placeholder={attr.placeholder}
                  valueLink={this.props[attr]} />
           </div>
