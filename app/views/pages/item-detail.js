@@ -1,6 +1,7 @@
 import React from 'react/addons';
 import _ from 'lodash';
 import ItemActions from '../../actions/item-actions';
+import ProductActions from '../../actions/product-actions';
 import ProductStore from '../../stores/product-store';
 import {State,Link} from 'react-router';
 import {MentionsInput, Mention} from '@sprintly/react-mentions';
@@ -468,20 +469,19 @@ var ItemDetail = React.createClass({
   },
 
   updateSubItem(subitem, ev) {
-    console.log('Update Subitem');
-    // var status;
-    // if (_.contains(['someday', 'backlog', 'in-progress'], subitem.status)) {
-    //   status = 'accepted';
-    // } else if (_.contains(['completed', 'accepted'], subitem.status)) {
-    //   status = 'in-progress';
-    // }
-    //
-    // ProductActions.updateItem(
-    //   subitem.product.id,
-    //   subitem.number,
-    //   _.assign({}, subitem, { status }),
-    //   { wait: false }
-    // );
+    // TODO: Composition opportunity in item-card also
+    if (_.contains(['someday', 'backlog', 'in-progress'], subitem.status)) {
+      status = 'accepted';
+    } else if (_.contains(['completed', 'accepted'], subitem.status)) {
+      status = 'in-progress';
+    }
+
+    ProductActions.updateItem(
+      subitem.product.id,
+      subitem.number,
+      _.assign({}, subitem, { status }),
+      { wait: false }
+    );
   },
 
   subItems() {
@@ -489,23 +489,28 @@ var ItemDetail = React.createClass({
     var collapseAllLink = item.subItems ? <a className="collapse__subitems"onClick={this.collapseSubitems}>collapse all</a> : '';
 
     var subItems = _.map(item.sub_items, (subitem, i) => {
-      var contentClasses = React.addons.classSet({
+      let contentClasses = React.addons.classSet({
         'content': true,
         'open': this.state.subitems[i]
       });
-      var headerClasses = React.addons.classSet({
+      let headerClasses = React.addons.classSet({
         'header': true,
         'open': this.state.subitems[i]
       });
+      let descriptionClasses = React.addons.classSet({
+        "col-md-9": true,
+        "description": true,
+        'italicize': !subitem.description
+      })
+      let description = subitem.description || 'This subitem has no description yet...';
 
-      var title = subitem.title;
-      var status = this.itemStatus(subitem);
-      var itemID = subitem.number;
-      var assigneeGravatar = this.assigneeGravatar(subitem);
-      var itemSizeButton = this.itemSizeButton(subitem);
-      var description = subitem.description;
-      var tags = this.buildTags(subitem);
-      var createdByTimestamp = this.createdByTimestamp(subitem);
+      let title = subitem.title;
+      let status = this.itemStatus(subitem);
+      let itemID = subitem.number;
+      let assigneeGravatar = this.assigneeGravatar(subitem);
+      let itemSizeButton = this.itemSizeButton(subitem);
+      let tags = this.buildTags(subitem);
+      let createdByTimestamp = this.createdByTimestamp(subitem);
       let checked = subitem.status === 'completed' || subitem.status === 'accepted';
 
       return (
@@ -525,8 +530,8 @@ var ItemDetail = React.createClass({
                 <li>
                   <div className="meta">
                     <div className="subitemCheck">
-                    	<input type="checkbox" checked={checked} onChange={_.partial(this.updateSubItem, subitem)} id="subitemCheck" />
-                      <label for="subitemCheck"></label>
+                    	<input name="subitemCheck" type="checkbox" checked={checked} onChange={_.partial(this.updateSubItem, subitem)} id={`subitem-${i}`} />
+                      <label htmlFor={`subitem-${i}`}></label>
                     </div>
                   </div>
                 </li>
@@ -536,7 +541,7 @@ var ItemDetail = React.createClass({
           <div className={contentClasses}>
             <div className="col-md-12">
               <div className="col-md-12 collapse-right">
-                <div className="col-md-9 description">
+                <div className={descriptionClasses}>
                   {description}
                 </div>
                 <div className="col-md-3 collapse-right">
@@ -798,8 +803,9 @@ var ItemDetail = React.createClass({
 
   componentWillReceiveProps: function(nextProps) {
     if (this.getParams().number != this.state.item.number) {
+      // ItemActions.fetchActivity(this.getParams().id, this.getParams().number);
+      ItemActions.fetchItem(this.getParams().id, this.props.number);
       this._onChange();
-      // ItemActions.fetchItem(this.getParams().id, this.props.number);
     }
   },
 
@@ -835,7 +841,6 @@ var ItemDetail = React.createClass({
     let item = ProductStore.getItem(this.getParams().id, this.getParams().number);
 
     if (item) {
-      this.setItemDetailHeight();
       let extendedState = {};
       let subitemsLength = item.sub_items.length;
 
