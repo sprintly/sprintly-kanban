@@ -3,14 +3,16 @@ import {assert} from 'chai';
 import React from 'react/addons';
 import sinon from 'sinon';
 import stubRouterContext from '../../../lib/stub-router-context';
-
 import ItemColumn from './index';
 
 let TestUtils = React.addons.TestUtils;
 
+import { DragDropContext } from 'react-dnd'
+import TestBackend from 'react-dnd/modules/backends/Test'
+
 function renderComponent(props, ctx) {
-  let Component = stubRouterContext(ItemColumn, props);
-  return TestUtils.renderIntoDocument(<Component {...props}/>);
+  let Component = DragDropContext(TestBackend)(stubRouterContext(ItemColumn, props));
+  return TestUtils.renderIntoDocument(<Component {...props} />);
 }
 
 describe('Item Column', function() {
@@ -23,6 +25,7 @@ describe('Item Column', function() {
     this.props = {
       filters: {},
       product: {},
+      items: [],
       status: 'backlog',
       velocity: {
         average: 10
@@ -43,15 +46,17 @@ describe('Item Column', function() {
       beforeEach(function() {
         this.props.status = 'backlog';
         this.component = renderComponent(this.props, this);
+        this.column = this.component.refs.child.refs.stub;
       });
 
       it('does not show the item summary', function() {
-        this.component.refs.stub.setState({
+        this.column.setState({
           sortField: 'priority',
           isLoading: false
         });
+
         let itemSummary = TestUtils.scryRenderedDOMComponentsWithClass(
-          this.component.refs.stub,
+          this.component,
           'item__summary'
         );
         assert.lengthOf(itemSummary, 0);
@@ -62,16 +67,17 @@ describe('Item Column', function() {
       beforeEach(function() {
         this.props.status = 'in-progress';
         this.component = renderComponent(this.props, this);
+        this.column = this.component.refs.child.refs.stub;
       });
 
       it('shows the item summary', function() {
-        this.component.refs.stub.setState({
+        this.column.setState({
           sortField: 'last_updated',
           isLoading: false
         });
 
         let itemSummary = TestUtils.scryRenderedDOMComponentsWithClass(
-          this.component.refs.stub,
+          this.column,
           'item__summary'
         );
         assert.lengthOf(itemSummary, 0);
@@ -83,6 +89,7 @@ describe('Item Column', function() {
     beforeEach(function() {
       this.props.status = 'backlog';
       this.component = renderComponent(this.props, this);
+      this.column = this.component.refs.child.refs.stub;
     });
 
     it('renders item cards', function() {
@@ -90,11 +97,11 @@ describe('Item Column', function() {
       this.sinon.stub(this.ProductStore, 'hasItemsToRender').returns(true);
 
       this.component = renderComponent(_.assign({}, this.props, {
-        items: [{}]
-      }), this)
+        items: [{ number:1, product: { id: 1 } }]
+      }), this);
 
       let itemCards = TestUtils.scryRenderedDOMComponentsWithClass(
-        this.component.refs.stub,
+        this.component,
         'item-card'
       );
 
@@ -108,17 +115,17 @@ describe('Item Column', function() {
       })
 
       it('renders NoSearchResults for \'in-progress\' status', function() {
-        let props = {status: 'in-progress', product:{id:0}};
-        let Component = stubRouterContext(ItemColumn, props);
-        let columnComponent = TestUtils.renderIntoDocument(<Component {...props}/>);
+        let props = { status: 'in-progress', product: { id: 0 } };
+        let component = renderComponent(props, this);
+        let column = component.refs.child.refs.stub;
 
-        columnComponent.refs.stub.setState({
+        column.setState({
           items: [],
           isLoading: false
         });
 
         let noSearchResults = TestUtils.scryRenderedDOMComponentsWithClass(
-          columnComponent.refs.stub,
+          component,
           'no-search-results'
         );
 
@@ -126,14 +133,14 @@ describe('Item Column', function() {
       })
 
       it('renders nothing for non \'in-progress\'', function() {
-        this.component.refs.stub.setState({
+        this.column.setState({
           status: 'backlog',
           items: [{}],
           isLoading: false
         });
 
         let noSearchResults = TestUtils.scryRenderedDOMComponentsWithClass(
-          this.component.refs.stub,
+          this.column,
           'no-search-results'
         );
 
@@ -145,18 +152,18 @@ describe('Item Column', function() {
       this.sinon.stub(this.ProductStore, 'hasItems').returns(false);
       this.sinon.stub(this.ProductStore, 'hasItemsToRender').returns(false);
 
-      let props = {status: 'in-progress', product:{id:0}};
-      let Component = stubRouterContext(ItemColumn, props);
-      let columnComponent = TestUtils.renderIntoDocument(<Component {...props}/>);
+      let props = { status: 'in-progress', product: { id: 0 } };
+      let component = renderComponent(props, this);
+      let column = component.refs.child.refs.stub;
 
-      columnComponent.refs.stub.setState({
+      column.setState({
         status: 'backlog',
         items: [{}],
         isLoading: false
       })
 
       let placeholderCards = TestUtils.scryRenderedDOMComponentsWithClass(
-        columnComponent.refs.stub,
+        column,
         'placeholder-cards'
       );
 

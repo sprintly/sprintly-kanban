@@ -30,6 +30,14 @@ const PRODUCTS = [
   }
 ]
 
+import { DragDropContext } from 'react-dnd'
+import TestBackend from 'react-dnd/modules/backends/Test'
+
+function renderComponent(props) {
+  let Component = DragDropContext(TestBackend)(stubRouterContext(Search, props));
+  return TestUtils.renderIntoDocument(<Component {...props} />);
+}
+
 describe('Search ViewController', function() {
   beforeEach(function() {
     this.sinon = sinon.sandbox.create();
@@ -115,10 +123,9 @@ describe('Search ViewController', function() {
 
   context('query returned results', function () {
     beforeEach(function () {
-      let Component = stubRouterContext(Search, user, {});
-      this.component = TestUtils.renderIntoDocument(<Component/>);
+      this.component = renderComponent(user);
 
-      this.component.refs.stub.setState({
+      this.component.refs.child.refs.stub.setState({
         loading: false,
         showProgress: false,
         results: {
@@ -139,7 +146,7 @@ describe('Search ViewController', function() {
 
     context('filtering results', function () {
       it('does not render progressBar', function () {
-        this.component.refs.stub.setState({
+        this.component.refs.child.refs.stub.setState({
           loading: true,
           showProgress: false
         });
