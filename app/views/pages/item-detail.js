@@ -369,8 +369,28 @@ var ItemDetail = React.createClass({
     return (/\.(gif|jpg|jpeg|tiff|png)$/i).test(url);
   },
 
+  attachmentsInfoList(imageCount, fileCount) {
+    let attachmentsInfoList = [];
+
+    if (!imageCount && !fileCount) {
+      attachmentsInfoList.push(<li>No Attachments</li>);
+    }
+
+    if (imageCount) {
+      attachmentsInfoList.push(<li>Images: {imageCount}</li>)
+    }
+    if (fileCount) {
+      attachmentsInfoList.push(<li>Files: {fileCount}</li>);
+    }
+
+    return attachmentsInfoList;
+  },
+
   attachments() {
     if (this.state.attachments) {
+      let fileList;
+      let attachmentViewer;
+
       var contentClasses = React.addons.classSet({
         'content': true,
         'open': this.state.attachmentsPanel
@@ -390,7 +410,6 @@ var ItemDetail = React.createClass({
                                 .value();
       var fileAttachments = _.difference(this.state.attachments, imageAttachments);
 
-      let fileList;
       if (fileAttachments.length) {
         fileList = _.map(fileAttachments, function(file) {
           return (
@@ -400,31 +419,31 @@ var ItemDetail = React.createClass({
           )
         })
       } else {
-        fileList = (
-          <li>
-            <a className="attachment-link">No files attached</a>
-          </li>
-        )
+        fileList = (<li><a className="attachment-link">No files attached</a></li>)
       }
 
-      let attachmentViewer;
       if (imageAttachments.length) {
         attachmentViewer = this.attachmentsViewer(imageAttachments);
-      } else {
-        attachmentViewer = <div>No image attachments</div>;
       }
 
-      var caretClasses = `glyphicon glyphicon-menu-${this.caretState(this.state.attachmentsPanel)}`;
+      let attachmentsInfoList = this.attachmentsInfoList(imageAttachments.length, fileAttachments.length);
+
+      let caretClasses = `glyphicon glyphicon-menu-${this.caretState(this.state.attachmentsPanel)}`;
+      let toggleClasses = React.addons.classSet({
+        "toggle": true,
+        "transparent": !this.state.attachments.length
+      })
 
       return (
         <div className="col-md-12 section attachments">
           <div className="col-md-12">
             <div className={headerClasses}>
-              <a className="toggle" onClick={this.toggleAttachmentsPanel}>
+              <a className={toggleClasses} onClick={this.toggleAttachmentsPanel}>
                 <span aria-hidden="true" className={caretClasses}/>
               </a>
               <div className="sep-vertical"></div>
               <div className="title">Attachments</div>
+              <ul className="attachments__info-list">{attachmentsInfoList}</ul>
             </div>
             <div className={contentClasses}>
               <div className="col-md-12 attachments__internals">
@@ -803,8 +822,8 @@ var ItemDetail = React.createClass({
 
   componentWillReceiveProps: function(nextProps) {
     if (this.getParams().number != this.state.item.number) {
-      // ItemActions.fetchActivity(this.getParams().id, this.getParams().number);
       ItemActions.fetchItem(this.getParams().id, this.props.number);
+      ItemActions.fetchActivity(this.getParams().id, this.getParams().number);
       this._onChange();
     }
   },
@@ -852,6 +871,8 @@ var ItemDetail = React.createClass({
       let attachments = {};
       if (item.activity && item.activity.activities) {
         extendedState['attachments'] = _.where(item.activity.activities, {'action':'attachment'});
+      } else {
+        extendedState['attachments'] = [];
       }
 
       this.setState(_.extend({item}, extendedState));

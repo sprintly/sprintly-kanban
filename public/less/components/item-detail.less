@@ -115,6 +115,14 @@
 .item-detail .section .toggle {
   cursor: pointer;
 }
+.item-detail .section {
+  a.transparent {
+    span {
+      color: transparent;
+    }
+    pointer-events: none;
+  }
+}
 .item-detail .section .italicize {
   font-style: italic;
 }
@@ -315,14 +323,24 @@
     font-size: 12px;
   }
 }
+.item-detail .attachments .header.open {
+  .border-top-radius(5px);
+}
 .item-detail .attachments .header.open,
 .item-detail .subitem .header.open {
+  .border-bottom-radius(0px);
   border-bottom: none;
+}
+
+.item-detail .attachments .header {
+  border-radius: 5px;
+}
+.item-detail .subitem .header {
+  border-radius: 2px;
 }
 .item-detail .attachments .header,
 .item-detail .subitem .header {
   height: 40px;
-  border-radius: 2px;
   background-color: @sprintly-light-grey;
   border: 1px solid @sprintly-grey;
 
@@ -471,6 +489,24 @@
   font-size: 14px;
   font-style: italic
 }
+.item-detail .attachments {
+  ul.attachments__info-list {
+    list-style: none;
+    display: inline-block;
+    font-style: italic;
+    float: right;
+    margin-bottom: 0;
+    padding-left: 0;
+    padding-right: 20px;
+    line-height: 38px;
+    color: @sprintly-grey;
+  }
+
+  li {
+    display: inline;
+  }
+}
+
 .item-detail .attachments .content {
   border-width: 1px 1px 1px 1px;
 }
@@ -494,9 +530,11 @@
 .item-detail .subitem .content {
   border-width: 0px 1px 1px 1px;
 }
+.item-detail .attachments .content {
+  border-radius: 5px;
+}
 .item-detail .attachments .content,
 .item-detail .subitem .content {
-  .border-bottom-radius(5px);
   border-color: @sprintly-grey;
   border-style: solid;
   background-color: @sprintly-light-grey;
