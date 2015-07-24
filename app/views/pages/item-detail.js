@@ -123,7 +123,7 @@ var ItemDetail = React.createClass({
       return `Created by ${creator} ${timestamp}`;
     }
   },
-
+  
   itemStatus(item) {
     let status = helpers.itemStatusMap(item.status);
 
@@ -474,23 +474,30 @@ var ItemDetail = React.createClass({
     }
   },
 
-  createSubItem() {
-    console.log('create the sub item');
-  },
-
   toggleSubItem(index, ev) {
     var subitems = _.clone(this.state.subitems);
     subitems[index] = !this.state.subitems[index];
     this.setState({subitems: subitems})
   },
 
-  viewFullTicket(ticketID) {
+  // TODO: Composition opportunity in item-card also - use the shared component dummy!
+  createSubItem(ev) {
+    ev.preventDefault()
+    let node = this.refs.addItemInput.getDOMNode()
+    let title = node.value
+    let productId = this.getParams().id
+    let ticketNumber = this.getParams().number
 
-    console.log('Show full ticket with number: ', ticketID);
+    ItemActions.addItem(productId, {
+      title,
+      type: 'task',
+      parent: ticketNumber
+    }).then(function() {
+      node.value = '';
+    })
   },
 
   updateSubItem(subitem, ev) {
-    // TODO: Composition opportunity in item-card also
     if (_.contains(['someday', 'backlog', 'in-progress'], subitem.status)) {
       status = 'accepted';
     } else if (_.contains(['completed', 'accepted'], subitem.status)) {
@@ -830,6 +837,7 @@ var ItemDetail = React.createClass({
   },
 
   render() {
+    let subitems;
     if (!this.state.item.number) {
       // Update to loading state where correct
       return <div/>;
@@ -837,6 +845,10 @@ var ItemDetail = React.createClass({
     let stripeClass = `stripe ${this.state.item.type}`;
     let closeClass = `item-detail__close ${this.state.item.type}`;
     var stripeStyles = {height: `${this.state.itemDetailHeight}px`};
+
+    if (this.state.item.type == 'story') {
+      subitems = this.subItems();
+    }
 
     return (
       <div ref="itemDetail" className="container-fluid item-detail no-gutter">
@@ -849,7 +861,7 @@ var ItemDetail = React.createClass({
             {this.ticketDetail()}
             {this.ticketDescription()}
             {this.attachments()}
-            {this.subItems()}
+            {subitems}
             {this.comments()}
             {this.activity()}
         </div>

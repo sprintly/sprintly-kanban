@@ -32,10 +32,13 @@ var SubItem = React.createClass({
     ev.preventDefault();
     let node = this.refs.addItemInput.getDOMNode();
     let title = node.value;
-    ItemActions.addItem(this.props.productId, {
+    let productId = this.getParams().id;
+    let storyId = this.getParams().number;
+
+    ItemActions.addItem(productId, {
       title,
       type: 'task',
-      parent: this.props.parentId
+      parent: storyId
     }).then(function() {
       node.value = '';
     })
@@ -80,4 +83,3 @@ var SubItem = React.createClass({
 });
 
 export default SubItem;
-
