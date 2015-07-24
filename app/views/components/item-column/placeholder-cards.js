@@ -50,7 +50,7 @@ var PlaceholderCards = React.createClass({
           <div className="row">
             <div className="item-card__header col-sm-12">
               <div className="item-card__header-right">
-                <span><OwnerAvatar person="placeholder" /></span>
+                <span><OwnerAvatar person="placeholder-light" /></span>
               </div>
             </div>
             <div className="item-card__title col-sm-12">

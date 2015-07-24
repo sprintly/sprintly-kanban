@@ -174,7 +174,8 @@
   }
 
   .item-card__owner-unassigned,
-  .item-card__owner-placeholder,
+  .item-card__owner-placeholder-light,
+  .item-card__owner-placeholder-dark,
   img {
     border: 1px solid @medium-grey;
     width: 28px;
@@ -182,11 +183,20 @@
     border-radius: 14px;
   }
 
-  .item-card__owner-placeholder {
-    border: 1px solid @light-grey;
-    background-image: url('../../img/item-card__owner-placeholder.png');
+  .item-card__owner-placeholder-dark,
+  .item-card__owner-placeholder-light {
     background-repeat: no-repeat;
     background-size: contain;
+  }
+
+  .item-card__owner-placeholder-light {
+    border: 1px solid @light-grey;
+    background-image: url('../../img/item-card__owner-placeholder-light.png');
+  }
+
+  .item-card__owner-placeholder-dark {
+    border: 1px solid @sprintly-grey;
+    background-image: url('../../img/item-card__owner-placeholder-dark.png');
   }
 }
 
@@ -307,6 +317,7 @@
     padding: 0 1rem;
   }
 
+  // TODO: Compose to common stylesheet
   li {
     &.story a {
       background-color: @story-bg;

@@ -13,8 +13,10 @@ var Owner = React.createClass({
     let person = this.props.person;
 
     if (person) {
-      if (person === 'placeholder') {
-        return <div className="item-card__owner-placeholder"></div>
+      if (person === 'placeholder-light') {
+        return <div className="item-card__owner-placeholder-light"></div>
+      } else if (person === 'placeholder-dark') {
+        return <div className="item-card__owner-placeholder-dark"></div>
       } else {
         return <Gravatar email={this.props.person.email} size={this.props.size} />;
       }

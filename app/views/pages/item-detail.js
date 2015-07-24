@@ -45,10 +45,14 @@ var ItemDetail = React.createClass({
   mixins: [State],
 
   getInitialState() {
+    let bodyHeight = document.body.getBoundingClientRect().height;
+    let headerHeight = document.getElementsByClassName('product__header-menu')[0].getBoundingClientRect().height;
+    let detailHeight = bodyHeight - headerHeight;
+
     return {
       item: {},
       attachmentsPanel: false,
-      itemDetailHeight: 0,
+      itemDetailHeight: detailHeight,
     };
   },
 
@@ -130,11 +134,9 @@ var ItemDetail = React.createClass({
     let assignee = item.assigned_to;
 
     if (!assignee || !assignee.email) {
-      <span><OwnerAvatar person="placeholder" /></span>
+      return <OwnerAvatar person="placeholder-dark" />
     } else {
-      return (
-        <Gravatar email={assignee.email} size={36} />
-      )
+      return <Gravatar email={assignee.email} size={36} />
     }
   },
 
@@ -808,7 +810,6 @@ var ItemDetail = React.createClass({
 
   // Display some sort of loading state via the item store
   componentDidMount() {
-    this.setItemDetailHeight();
     ProductStore.addChangeListener(this._onChange);
     ItemActions.fetchItem(this.getParams().id, this.getParams().number);
     // TODO: Fetch the item followers on component did mount
