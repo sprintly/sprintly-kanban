@@ -1,15 +1,13 @@
 import _ from 'lodash';
-import {Model, Collection} from 'backdash';
+import {Collection} from 'backdash';
 import AppDispatcher from '../dispatchers/app-dispatcher';
 import FiltersConstants from '../constants/filters-constants';
-import Promise from 'bluebird';
 import filtersData from './filters-data';
-import ProductStore from '../stores/product-store';
-import {products, user} from '../lib/sprintly-client';
+import {user} from '../lib/sprintly-client';
 import {EventEmitter} from 'events';
 
 // TODO this needs it's own file eventually
-var FiltersCollection = Collection.extend({
+let FiltersCollection = Collection.extend({
   active: function() {
     return this.where({ active: true });
   },
@@ -20,9 +18,9 @@ var FiltersCollection = Collection.extend({
   }
 });
 
-var filters = new FiltersCollection(filtersData);
+let filters = new FiltersCollection(filtersData);
 
-var FiltersStore = module.exports = _.assign({}, EventEmitter.prototype, {
+let FiltersStore = _.assign({}, EventEmitter.prototype, {
   emitChange() {
     this.emit('change');
   },
@@ -47,18 +45,19 @@ var FiltersStore = module.exports = _.assign({}, EventEmitter.prototype, {
 
   all: function() {
     return filters.toJSON();
-  },
+  }
 });
 
-var internals = FiltersStore.internals = {
-  init: function(members, tags) {
+let internals = FiltersStore.internals = {
+  init(members, tags) {
     filters.reset(filtersData, { silent: true });
     internals.decorateMembers(members);
     internals.decorateTags(tags);
     FiltersStore.emitChange();
   },
 
-  decorateMembers: function(members) {
+  decorateMembers(members) {
+    filters.members = members;
     let needsMembers = filters.where({ type: 'members' });
     if (needsMembers.length > 0) {
       let activeMembers = internals.membersWithAccess(members);
@@ -97,6 +96,7 @@ var internals = FiltersStore.internals = {
   },
 
   decorateTags: function(tags) {
+    filters.tags = tags;
     let needsTags = filters.findWhere({ type: 'tags' });
     if (needsTags) {
       if(!_.isArray(tags)) {
@@ -124,9 +124,11 @@ AppDispatcher.register(function(action) {
       internals.update(action.field, action.criteria, action.unset);
       break;
     case FiltersConstants.CLEAR_FILTERS:
-      internals.init(action.members, action.tags);
+      internals.init(filters.members, filters.tags);
       break;
     default:
       break;
   }
 });
+
+export default FiltersStore;

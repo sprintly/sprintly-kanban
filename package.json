@@ -39,6 +39,7 @@
     "oblique-strategies": "^1.0.1",
     "react": "^0.13.3",
     "react-bootstrap": "^0.23.7",
+    "react-dnd": "^1.1.3",
     "react-localstorage": "^0.2.4",
     "react-router": "^0.13.3",
     "react-select": "^0.5.2",
@@ -52,17 +53,18 @@
     "watchify": "~3.1.2"
   },
   "scripts": {
-    "build": "BASE_URL=https://local.sprint.ly:9000/api browserify app -d | exorcist public/js/manifold.js.map > public/js/manifold.js",
+    "dev": "gulp dev",
+    "build": "BASE_URL=https://local.sprint.ly:9000/api browserify app -d | exorcist -b './app' public/js/manifold.js.map > public/js/manifold.js",
     "build-less": "gulp less",
     "build-production": "npm run build-production-js && npm run build-production-css",
     "build-production-css": "gulp css",
     "build-production-js": "NODE_ENV=production browserify app | uglifyjs -cm > public/js/manifold.min.js",
-    "build-test": "NODE_ENV=test browserify test/index.js -t rewireify -t babelify -t envify -d | exorcist test/test-bundle.js.map > test/test-bundle.js",
+    "build-test": "NODE_ENV=test browserify test/index.js -t rewireify -t babelify -t envify -d | exorcist -b './app' test/test-bundle.js.map > test/test-bundle.js",
     "start": "node server.js",
     "test": "NODE_ENV=test ./node_modules/karma/bin/karma start --browsers Firefox --single-run",
     "watch-test": "NODE_ENV=test ./node_modules/karma/bin/karma start",
-    "watchify": "BASE_URL=https://local.sprint.ly:9000/api watchify app -d -v -o 'exorcist public/js/manifold.js.map > public/js/manifold.js'",
-    "watchify-test": "NODE_ENV=test watchify test/index.js -o 'exorcist test/test-bundle.js.map > test/test-bundle.js' -t rewireify -t babelify -t envify -dv"
+    "watchify": "BASE_URL=https://local.sprint.ly:9000/api watchify app -d -v -o 'exorcist -b './app' public/js/manifold.js.map > public/js/manifold.js'",
+    "watchify-test": "NODE_ENV=test watchify test/index.js -o 'exorcist -b './app' test/test-bundle.js.map > test/test-bundle.js' -t rewireify -t babelify -t envify -dv"
   },
   "browserify": {
     "transform": [

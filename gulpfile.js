@@ -5,6 +5,18 @@ var sourcemaps = require('gulp-sourcemaps');
 var csso = require('gulp-csso');
 var rename = require('gulp-rename');
 
+function run(command) {
+  var child = exec(command);
+  child.stdout.pipe(process.stdout);
+  child.stderr.pipe(process.stderr);
+  process.on('exit', function(code) {
+    if (child.exit) { child.exit(code); }
+  });
+  child.on('exit', function(code) {
+    process.exit(code);
+  });
+}
+
 gulp.task('less', function() {
   gulp.src('public/less/main.less')
     .pipe(sourcemaps.init())
@@ -23,17 +35,13 @@ gulp.task('cssmin', function() {
 });
 
 gulp.task('watch', function() {
-  var child = exec('npm run watchify');
-  child.stdout.pipe(process.stdout);
-  child.stderr.pipe(process.stderr);
-  process.on('exit', function(code) {
-    if (child.exit) { child.exit(code); }
-  });
-  child.on('exit', function(code) {
-    process.exit(code);
-  });
-
+  run('npm run watchify');
+  run('npm run watchify-test');
   gulp.watch('public/less/**/*.less', ['less']);
+});
+
+gulp.task('dev', ['default'], function() {
+  run('npm start');
 });
 
 gulp.task('css', ['less', 'cssmin']);

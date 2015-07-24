@@ -28,11 +28,9 @@ let FiltersActions = {
     });
   },
 
-  clear: function(members, tags) {
+  clear: function() {
     AppDispatcher.dispatch({
-      actionType: FiltersConstants.CLEAR_FILTERS,
-      members,
-      tags
+      actionType: FiltersConstants.CLEAR_FILTERS
     });
   }
 };

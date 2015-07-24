@@ -8,9 +8,12 @@ import SprintGroup from './sprint-group';
 
 let TestUtils = React.addons.TestUtils;
 
-function renderComponent(props, ctx) {
-  let Component = stubRouterContext(SprintGroup, props);
-  return TestUtils.renderIntoDocument(<Component {...props}/>);
+import { DragDropContext } from 'react-dnd'
+import TestBackend from 'react-dnd/modules/backends/Test'
+
+function renderComponent(props) {
+  let Component = DragDropContext(TestBackend)(stubRouterContext(SprintGroup, props));
+  return TestUtils.renderIntoDocument(<Component {...props} />);
 }
 
 describe('SprintGroup', function() {
@@ -34,11 +37,12 @@ describe('SprintGroup', function() {
   describe('chunkItems', function() {
     context('no items', function() {
       beforeEach(function() {
-        this.component = renderComponent(this.props, this);
+        this.component = renderComponent(this.props);
+        this.group = this.component.refs.child.refs.stub
       });
 
       it('returns an empty array', function() {
-        let chunks = this.component.refs.stub.chunkItems();
+        let chunks = this.group.chunkItems();
         assert.isTrue(Array.isArray(chunks));
         assert.lengthOf(chunks, 0);
       });
@@ -55,11 +59,12 @@ describe('SprintGroup', function() {
         _.times(5, (i) => {
           this.props.items.push({ score: 'S' });
         });
-        this.component = renderComponent(this.props, this);
+        this.component = renderComponent(this.props);
+        this.group = this.component.refs.child.refs.stub
       });
 
       it('are not counted toward the total', function() {
-        let chunks = this.component.refs.stub.chunkItems();
+        let chunks = this.group.chunkItems();
         assert.lengthOf(chunks, 1);
         assert.equal(chunks[0].points, 10);
         assert.include(chunks[0].items, this.unscoredItem);
@@ -71,11 +76,12 @@ describe('SprintGroup', function() {
         _.times(22, (i) => {
           this.props.items.push({ score: 'S' });
         });
-        this.component = renderComponent(this.props, this);
+        this.component = renderComponent(this.props);
+        this.group = this.component.refs.child.refs.stub
       });
 
       it('chunks the items by 10', function() {
-        let chunks = this.component.refs.stub.chunkItems();
+        let chunks = this.group.chunkItems();
         assert.lengthOf(chunks, 3);
         assert.equal(chunks[0].points, 10);
         assert.equal(chunks[1].points, 10);
@@ -89,11 +95,12 @@ describe('SprintGroup', function() {
         // velocity - total underage (10 - 5 = 5) would be more than the overage
         // caused by adding the next item (13 - 10 = 3)
         this.props.items.push({ score: 'XL' });
-        this.component = renderComponent(this.props, this);
+        this.component = renderComponent(this.props);
       });
 
       it('allows the chunk to go over the velocity', function() {
-        let chunks = this.component.refs.stub.chunkItems();
+        let group = this.component.refs.child.refs.stub
+        let chunks = group.chunkItems();
         assert.lengthOf(chunks, 1);
         assert.equal(chunks[0].points, 13);
       });
@@ -105,11 +112,12 @@ describe('SprintGroup', function() {
         // velocity - total underage (10 - 8 = 2) would less than the overage
         // caused by adding the next item (13 - 10 = 3)
         this.props.items.push({ score: 'L' });
-        this.component = renderComponent(this.props, this);
+        this.component = renderComponent(this.props);
       });
 
       it('does not allow the chunk to go over the velocity', function() {
-        let chunks = this.component.refs.stub.chunkItems();
+        let group = this.component.refs.child.refs.stub
+        let chunks = group.chunkItems();
         assert.lengthOf(chunks, 2);
         assert.equal(chunks[0].points, 8);
         assert.equal(chunks[1].points, 5);

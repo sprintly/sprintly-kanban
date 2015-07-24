@@ -1,36 +1,70 @@
 import _ from 'lodash';
-import React from 'react/addons';
+import React, { PropTypes } from 'react/addons';
 import ScoreMap from '../../../lib/score-map';
 // Components
 import ItemCard from '../item-card';
-import PlaceholderCards from './placeholder-cards'
+import PlaceholderCards from './placeholder-cards';
 import SprintGroup from './sprint-group';
-import ColumnSummary from './summary';
 import ColumnHeader from './header';
 import NoSearchResults from './no-search-results';
 // Flux
 import ProductStore from '../../../stores/product-store';
 import ProductActions from '../../../actions/product-actions';
-import FilterActions from '../../../actions/filter-actions';
+
+import { DropTarget } from 'react-dnd';
+
+const dropSpec = {
+  drop(props, monitor, component) {
+    if (monitor.didDrop()) {
+      return;
+    }
+
+    let item = monitor.getItem();
+    let { props } = component;
+
+    if (item.status !== props.status) {
+      ProductActions.updateItem(
+        props.product.id,
+        item.number,
+        { status: props.status },
+        { wait: false }
+      );
+    }
+
+    return { moved: true };
+  }
+};
+
+function collect(connect, monitor) {
+  return {
+    connectDropTarget: connect.dropTarget(),
+    isOver: monitor.isOver(),
+    isOverCurrent: monitor.isOver({ shallow: true }),
+    canDrop: monitor.canDrop(),
+    itemType: monitor.getItemType()
+  };
+}
 
 let ItemColumn = React.createClass({
   propTypes: {
-    status: React.PropTypes.string.isRequired,
-    product: React.PropTypes.object.isRequired,
-    members: React.PropTypes.array.isRequired,
-    filters: React.PropTypes.object.isRequired,
-    velocity: React.PropTypes.object.isRequired,
-    colWidth: React.PropTypes.object,
-    sortField: React.PropTypes.string.isRequired,
-    sortDirection: React.PropTypes.string.isRequired,
-    limit: React.PropTypes.number.isRequired,
-    items: React.PropTypes.array.isRequired
+    status: PropTypes.string.isRequired,
+    product: PropTypes.object.isRequired,
+    members: PropTypes.array.isRequired,
+    filters: PropTypes.object.isRequired,
+    velocity: PropTypes.object.isRequired,
+    colWidth: PropTypes.object,
+    sortField: PropTypes.string.isRequired,
+    sortDirection: PropTypes.string.isRequired,
+    limit: PropTypes.number.isRequired,
+    items: PropTypes.array.isRequired,
+    // DnD
+    connectDropTarget: PropTypes.func.isRequired
   },
 
   getInitialState() {
     return {
       hideLoadMore: false
-    }
+    };
   },
 
   setSortCriteria(field=this.props.sortField, direction=this.props.sortDirection, status=this.props.status) {
@@ -163,7 +197,7 @@ let ItemColumn = React.createClass({
       this.setSortCriteria(this.props.sortField, direction);
     };
 
-    return (
+    return this.props.connectDropTarget(
       <div style={this.props.colWidth} className={`column ${this.props.status}`} {...this.props}>
         <ColumnHeader {...this.props}
           reverse={reverseSort}
@@ -178,4 +212,4 @@ let ItemColumn = React.createClass({
   }
 });
 
-module.exports = ItemColumn
+export default DropTarget('ITEM_CARD', dropSpec, collect)(ItemColumn);

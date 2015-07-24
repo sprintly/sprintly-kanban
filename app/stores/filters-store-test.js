@@ -4,6 +4,7 @@ var assert = require('chai').assert;
 var Backbone = require('backdash');
 var sinon = require('sinon');
 var filtersJSON = require('./filters-data');
+let { products } = require('../lib/sprintly-client');
 
 describe('FiltersStore', function() {
   before(function() {
@@ -44,7 +45,7 @@ describe('FiltersStore', function() {
   describe('internals', function() {
 
     beforeEach(function() {
-      this.products = FiltersStore.__get__('products');
+      this.products = products;
       this.product = this.products.add({
         id: 10001,
       });
