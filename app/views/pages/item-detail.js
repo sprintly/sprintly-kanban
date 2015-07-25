@@ -14,6 +14,7 @@ import Gravatar from '../components/gravatar';
 import Slick from 'react-slick';
 import moment from 'moment';
 import OwnerAvatar from '../components/item-card/owner';
+import Markdown from 'react-markdown';
 
 const ITEM_CLOSE_MAP = {
   10: 'invalid',
@@ -53,6 +54,7 @@ var ItemDetail = React.createClass({
       item: {},
       attachmentsPanel: false,
       itemDetailHeight: detailHeight,
+      descriptionEditable: false
     };
   },
 
@@ -123,7 +125,7 @@ var ItemDetail = React.createClass({
       return `Created by ${creator} ${timestamp}`;
     }
   },
-  
+
   itemStatus(item) {
     let status = helpers.itemStatusMap(item.status);
 
@@ -232,17 +234,18 @@ var ItemDetail = React.createClass({
   },
 
   setDescription(ev, value) {
-    console.log('NEW DESCRIPTION: ', value)
     let item = _.cloneDeep(this.state.item);
     item.description = value;
 
     this.setState({item: item});
-
-    _.debounce(this.updateItem, 500);
   },
 
-  updateItem() {
-    console.log('trigger action to update the item via a item action');
+  updateDescription(value) {
+    let productId = this.getParams().id
+    let itemId = this.getParams().number
+
+    this.toggleDescriptionEdit();
+    ProductActions.updateItem(productId, itemId, { description: this.state.item.description });
   },
 
   buildFollowers(item) {
@@ -262,9 +265,13 @@ var ItemDetail = React.createClass({
     }
 
     return (
-      <ul>
-        {followers}
-      </ul>
+      <div className="col-md-3 followers">
+        {this.header('followers')}
+        <ul>
+          {followers}
+        </ul>
+        <button className="detail-button kanban-button-secondary" onClick={this.followItem}>Follow</button>
+      </div>
     )
   },
 
@@ -272,26 +279,65 @@ var ItemDetail = React.createClass({
     console.log('Follow the item');
   },
 
+  descriptionMention(item) {
+    let mentions = helpers.formatMentionMembers(this.props.members);
+    let descriptionCopy = "Use '@' to mention another Sprintly user.  Use #[item number] (e.g. #1234) to reference another Sprintly item."
+
+    return ([
+        <MentionsInput
+          value={item.description}
+          onChange={this.setDescription}
+          placeholder={descriptionCopy}>
+            <Mention data={mentions} />
+        </MentionsInput>,
+        <div className="col-md-2 description__control collapse-right pull-right">
+          <button className="detail-button kanban-button-secondary" onClick={this.updateDescription}>
+            Save
+          </button>
+        </div>
+      ]
+    )
+  },
+
+  descriptionMarkdown(item) {
+    let markdown = <Markdown source={item.description} />
+
+    return ([
+        markdown,
+        <div className="col-md-2 description__control collapse-right pull-right">
+          <button className="detail-button kanban-button-secondary" onClick={this.toggleDescriptionEdit}>
+            Edit
+          </button>
+        </div>
+      ]
+    )
+  },
+
   ticketDescription() {
     let item = this.state.item;
-    let mentions = helpers.formatMentionMembers(this.props.members);
     let followers = this.buildFollowers(item);
+    let descriptionEl = this.state.descriptionEditable ? this.descriptionMention(item) : this.descriptionMarkdown(item);
+
+    // let caretClasses = `glyphicon glyphicon-menu-${this.caretState(this.state.attachmentsPanel)}`;
+    // let controlClasses = React.addons.classSet({
+    //   "": this.state.descriptionEditable,
+    //   "": !this.state.descriptionEditable
+    //   "transparent": !this.state.attachments.length
+    // })
+    let descriptionClasses = React.addons.classSet({
+      "col-md-9": true,
+      "item__description": true,
+      "collapse-left": this.state.descriptionEditable
+    })
 
     return (
-      <div className="col-md-12 section">
-        <div className="col-md-9">
+      <div className="col-md-12 section description">
+        <div className="col-md-12">
           {this.header('description')}
-          <MentionsInput
-            value={item.description}
-            onChange={this.setDescription}
-            placeholder="Add a description...">
-              <Mention data={mentions} />
-          </MentionsInput>
-        </div>
-        <div className="col-md-3 followers">
-          {this.header('followers')}
+          <div className={descriptionClasses}>
+            {descriptionEl}
+          </div>
           {followers}
-          <button className="detail-button kanban-button-secondary" onClick={this.followItem}>Follow</button>
         </div>
       </div>
     )
@@ -299,6 +345,10 @@ var ItemDetail = React.createClass({
 
   toggleAttachmentsPanel() {
     this.setState({attachmentsPanel: !this.state.attachmentsPanel});
+  },
+
+  toggleDescriptionEdit() {
+    this.setState({descriptionEditable: !this.state.descriptionEditable});
   },
 
   showAttachment() {
