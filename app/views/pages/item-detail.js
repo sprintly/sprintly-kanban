@@ -54,7 +54,8 @@ var ItemDetail = React.createClass({
       item: {},
       attachmentsPanel: false,
       itemDetailHeight: detailHeight,
-      descriptionEditable: false
+      descriptionEditable: false,
+      comment: ''
     };
   },
 
@@ -240,7 +241,8 @@ var ItemDetail = React.createClass({
     this.setState({item: item});
   },
 
-  updateDescription(value) {
+  updateDescription(ev) {
+    ev.preventDefault()
     let productId = this.getParams().id
     let itemId = this.getParams().number
 
@@ -279,17 +281,25 @@ var ItemDetail = React.createClass({
     console.log('Follow the item');
   },
 
-  descriptionMention(item) {
+  mentionsComponent(value, placeholder, changeFn) {
     let mentions = helpers.formatMentionMembers(this.props.members);
+
+    return (
+      <MentionsInput
+        value={value}
+        onChange={changeFn}
+        placeholder={placeholder}>
+          <Mention data={mentions} />
+      </MentionsInput>
+    )
+  },
+
+  descriptionMention(item) {
     let descriptionCopy = "Use '@' to mention another Sprintly user.  Use #[item number] (e.g. #1234) to reference another Sprintly item."
+    let mentionsComponent = this.mentionsComponent(item.description, descriptionCopy, this.setDescription);
 
     return ([
-        <MentionsInput
-          value={item.description}
-          onChange={this.setDescription}
-          placeholder={descriptionCopy}>
-            <Mention data={mentions} />
-        </MentionsInput>,
+        mentionsComponent,
         <div className="col-md-2 description__control collapse-right pull-right">
           <button className="detail-button kanban-button-secondary" onClick={this.updateDescription}>
             Save
@@ -683,22 +693,42 @@ var ItemDetail = React.createClass({
 
   comments() {
     let placeholder = "Use '@' to mention another Sprintly user.  Use #[item number] (e.g. #1234) to reference another Sprintly item.";
+    let mentionsComponent = this.mentionsComponent(this.state.comment, placeholder, this.updateComment);
 
     return (
       <div className="col-md-12 section comments">
         <div className="col-md-12">
           {this.header('comment')}
-          <div contentEditable></div>
-          <div className="instructions">
-            <div className="upload">Drag and drop or <span className="blue__light">click here</span> to attach files</div>
-            <div className="syntax">Use <span className="blue">Markdown</span> & <span className="blue">Emoji</span></div>
-          </div>
-          <div className="col-md-3 collapse-right pull-right">
-            <button className="detail-button kanban-button-secondary">Comment</button>
-          </div>
+          <form className="comment__form" onSubmit={this.saveComment}>
+            <div className="col-md-12 no-gutter">
+              {mentionsComponent}
+            </div>
+            <div className="col-md-12 no-gutter">
+              <div className="instructions">
+                <div className="upload">Drag and drop or <span className="blue__light">click here</span> to attach files</div>
+                <div className="syntax">Use <span className="blue">Markdown</span> & <span className="blue">Emoji</span></div>
+              </div>
+              <div className="col-md-3 collapse-right pull-right">
+                <button className="detail-button kanban-button-secondary">Comment</button>
+              </div>
+            </div>
+          </form>
         </div>
       </div>
     )
+  },
+
+  updateComment(ev, value) {
+    this.setState({comment: value})
+  },
+
+  saveComment(ev) {
+    let comment = ev.currentTarget.getElementsByTagName("textarea")[0].value
+    console.log('saveComment: ', comment);
+
+    // should be some activity spinner
+    ItemActions.createComment(this.getParams().id, this.getParams().number, comment, this.clearComment)
+    this.setState({comment: ''});
   },
 
   fieldToValueMap(meta) {

@@ -31,6 +31,33 @@ let ItemActions = {
     }
   },
 
+  createComment(productId, itemId, comment) {
+    var commentsEndpoint = `${BASE_URL}/api/products/${productId}/items/${itemId}/comments.json`;
+
+    request
+      .post(commentsEndpoint)
+      .set('Authorization', `Bearer ${token}`)
+      .send({body: comment})
+      .end(function(err, res) {
+        if (err) {
+          AppDispatcher.dispatch({
+            actionType: 'ITEM_COMMENT_ERROR',
+            err
+          });
+          return;
+        }
+
+        if (res.body) {
+          AppDispatcher.dispatch({
+            actionType: 'ITEM_COMMENTED',
+            payload: res.body,
+            productId,
+            itemId
+          });
+        }
+      });
+  },
+
   fetchActivity(productId, itemId) {
     var activityEndpoint = `${BASE_URL}/api/products/${productId}/items/${itemId}/activities.json`;
 

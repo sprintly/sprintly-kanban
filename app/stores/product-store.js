@@ -433,9 +433,15 @@ ProductStore.dispatchToken = AppDispatcher.register(function(action) {
       break;
     case 'ITEM_ACTIVITY_ERROR':
       console.log('ITEM_ACTIVITY_ERROR: ', action.err)
+      ProductStore.emitChange();
       break;
-
-
+    case 'ITEM_COMMENT_ERROR':
+      console.log('ITEM_ACTIVITY_ERROR: ', action.err)
+      ProductStore.emitChange();
+      break
+    case 'ITEM_COMMENTED':
+      ProductStore.emitChange();
+      break
     default:
       break;
   }

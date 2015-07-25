@@ -641,7 +641,6 @@
   border-style: solid;
   background-color: @sprintly-light-grey;
   border-width: 1px 1px 1px 1px;
-  top: -5px;
   position: relative;
   height: 30px;
   line-height: 30px;
@@ -727,7 +726,7 @@
   font-size: 13px;
 }
 
-.item-detail .react-mentions {
+.item-detail .item__description .react-mentions {
   textarea {
     display: block;
     position: absolute;
@@ -743,5 +742,28 @@
     border-width: 1px;
     padding-left: 5px;
     padding-right: 5px;
+  }
+}
+.item-detail .section.comments .react-mentions {
+  display: block;
+  min-height: 39px;
+
+  textarea {
+    .border-top-radius(5px);
+    min-height: 40px;
+    display: block;
+    position: absolute;
+    top: 0;
+    box-sizing: border-box;
+    background: transparent;
+    width: 100%;
+    bottom: -10px;
+    overflow: hidden;
+    resize: none;
+    border-color: @sprintly-black-light;
+    border-width: 1px;
+    padding-left: 10px;
+    padding-right: 5px;
+    padding-top: 10px;
   }
 }
