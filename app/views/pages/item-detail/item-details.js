@@ -1,11 +1,14 @@
-var React = require('react');
+import React from 'react/addons';
+import _ from 'lodash';
 import helpers from '../../components/helpers';
 import ItemDetailMixin from './detail-mixin';
+import ProductActions from '../../../actions/product-actions';
 import Select from 'react-select';
+import {State} from 'react-router'
 
 var ItemDetails = React.createClass({
 
-  mixins: [ItemDetailMixin],
+  mixins: [State, ItemDetailMixin],
 
   propTypes: {
     members: React.PropTypes.array,
@@ -17,12 +20,15 @@ var ItemDetails = React.createClass({
     tags: React.PropTypes.string,
     createdAt: React.PropTypes.string,
     createdBy: React.PropTypes.shape({
-      firstName: React.PropTypes.string,
-      lastName: React.PropTypes.string
+      first_name: React.PropTypes.string,
+      last_name: React.PropTypes.string
     }),
     status: React.PropTypes.string,
     score: React.PropTypes.string,
-    assigneeEmail: React.PropTypes.string
+    assignee: React.PropTypes.shape({
+      email: React.PropTypes.string,
+      id: React.PropTypes.number
+    })
   },
 
   buildTitle() {
@@ -78,11 +84,18 @@ var ItemDetails = React.createClass({
     )
   },
 
+  currentAssignee() {
+    let member = _.findWhere(this.props.members, {id: this.props.assignee.id})
+
+    return member ? `${member.first_name} ${member.last_name}` : null;
+  },
+
   actionsSection() {
     let members = helpers.formatSelectMembers(this.props.members);
     let itemStatus = this.itemStatus(this.props.status);
-    let assigneeGravatar = this.assigneeGravatar(this.props.assigneeEmail);
+    let assigneeGravatar = this.assigneeGravatar(this.props.assignee.email);
     let itemSizeButton = this.itemScoreButton(this.props.type, this.props.score);
+    let currentAssignee = this.currentAssignee();
 
     return (
       <div className="col-md-3 ticket-actions collapse-gutters">
@@ -113,11 +126,11 @@ var ItemDetails = React.createClass({
           </div>
         </div>
         <div className="col-md-12 control">
-          <Select placeholder={"Choose owner"}
+          <Select placeholder={"Choose assignee"}
                   name="form-field-name"
                   className="assign-dropdown"
                   disabled={false}
-                  value={"Update to ticket owner"}
+                  value={currentAssignee}
                   options={members}
                   onChange={this.setAssignedTo}
                   clearable={true} />
@@ -126,8 +139,11 @@ var ItemDetails = React.createClass({
     )
   },
 
-  setAssignedTo() {
-    console.log('UPDATE ASSIGNEE');
+  setAssignedTo(value) {
+    let productId = this.getParams().id;
+    let itemId = this.getParams().number;
+
+    ProductActions.updateItem(productId, itemId, { assigned_to: value });
   },
 
   render: function() {
@@ -135,10 +151,10 @@ var ItemDetails = React.createClass({
     let infoSection = this.infoSection();
     let actionsSection = this.actionsSection();
 
-        // {actionsSection}
     return (
       <div className="col-md-12 section ticket__detail">
         {infoSection}
+        {actionsSection}
       </div>
     )
   }

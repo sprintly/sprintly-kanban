@@ -28,10 +28,12 @@ var DetailMixin = {
   },
 
   createdByTimestamp(createdAt, createdBy) {
-    let timestamp = this.timeSinceNow(createdAt);
-    let creator = `${createdBy.firstName} ${createdBy.lastName}`;
+    if (createdBy) {
+      let timestamp = this.timeSinceNow(createdAt);
+      let creator = `${createdBy.first_name} ${createdBy.last_name}`;
 
-    return `Created by ${creator} ${timestamp}`;
+      return `Created by ${creator} ${timestamp}`;
+    }
   },
 
   itemStatus(status) {
