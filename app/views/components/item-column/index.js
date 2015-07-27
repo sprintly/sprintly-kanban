@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import React, { PropTypes } from 'react/addons';
-import classNames from 'classNames';
+import classNames from 'classnames';
 import STATUS_MAP from '../../../lib/status-map';
 // Components
 import ItemCard from '../item-card';
