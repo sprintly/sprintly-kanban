@@ -21,7 +21,6 @@ const cardSpec = {
   },
 
   isDragging(props, monitor) {
-    console.log('is dragging');
     return true;
   }
 };
