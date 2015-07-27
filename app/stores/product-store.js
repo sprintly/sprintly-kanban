@@ -9,13 +9,8 @@ import AppDispatcher from '../dispatchers/app-dispatcher';
 import ProductConstants from '../constants/product-constants';
 import FilterActions from '../actions/filter-actions';
 
-const ITEM_STATUSES = [
-  'someday',
-  'backlog',
-  'in-progress',
-  'completed',
-  'accepted'
-];
+import STATUSES from '../lib/status-map';
+const ITEM_STATUSES = _.keys(STATUSES);
 
 let productVelocity = {};
 let columnCollections = {};

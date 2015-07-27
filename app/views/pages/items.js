@@ -15,14 +15,7 @@ import ProductActions from '../../actions/product-actions';
 import VelocityActions from '../../actions/velocity-actions';
 
 import helpers from './helpers';
-
-const ITEM_STATUSES = {
-  someday: 'Someday',
-  backlog: 'Backlog',
-  'in-progress': 'Current',
-  completed: 'Done',
-  accepted: 'Accepted'
-};
+import ITEM_STATUSES from '../../lib/status-map';
 
 let ItemsViewController = React.createClass({
 

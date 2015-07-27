@@ -21,8 +21,7 @@ const cardSpec = {
   },
 
   isDragging(props, monitor) {
-    console.log('is dragging');
-    return true;
+    return monitor.getItem().number === props.item.number;
   }
 };
 
@@ -148,6 +147,7 @@ let ItemCard = React.createClass({
     let connectDragSource = this.props.connectDragSource;
     let classes = {
       'item-card': true,
+      'is-dragging': this.props.isDragging,
       'active': this.props.active || this.state.showDetails,
       [this.props.item.type]: true,
       'parent': this.props.item.sub_items && this.props.item.sub_items.length > 0

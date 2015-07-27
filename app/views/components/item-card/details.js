@@ -10,13 +10,7 @@ import SubItems from './subitems'
 import {TagEditor, Tags} from 'sprintly-ui';
 import {DropdownButton, MenuItem, OverlayTrigger, Tooltip, Button, Input} from 'react-bootstrap';
 
-const STATUSES = {
-  'someday': 'Someday',
-  'backlog': 'Backlog',
-  'in-progress': 'Current',
-  'completed': 'Complete',
-  'accepted': 'Accepted'
-};
+import STATUSES from '../../../lib/status-map';
 
 var ItemCardDetails = React.createClass({
 
