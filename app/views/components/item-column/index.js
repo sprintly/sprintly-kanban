@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import React, { PropTypes } from 'react/addons';
-import ScoreMap from '../../../lib/score-map';
+import classNames from 'classNames';
+import STATUS_MAP from '../../../lib/status-map';
 // Components
 import ItemCard from '../item-card';
 import PlaceholderCards from './placeholder-cards';
@@ -58,7 +59,9 @@ let ItemColumn = React.createClass({
     limit: PropTypes.number.isRequired,
     items: PropTypes.array.isRequired,
     // DnD
-    connectDropTarget: PropTypes.func.isRequired
+    connectDropTarget: PropTypes.func.isRequired,
+    isOver: PropTypes.bool.isRequired,
+    canDrop: PropTypes.bool.isRequired
   },
 
   getInitialState() {
@@ -197,8 +200,14 @@ let ItemColumn = React.createClass({
       this.setSortCriteria(this.props.sortField, direction);
     };
 
+    let classes = classNames({
+      column: true,
+      [this.props.status]: true,
+      'dropzone-active': this.props.canDrop && this.props.isOverCurrent
+    });
+
     return this.props.connectDropTarget(
-      <div style={this.props.colWidth} className={`column ${this.props.status}`} {...this.props}>
+      <div style={this.props.colWidth} className={classes} {...this.props}>
         <ColumnHeader {...this.props}
           reverse={reverseSort}
           setSortCriteria={this.setSortCriteria}
@@ -207,6 +216,9 @@ let ItemColumn = React.createClass({
         />
         {this.columnContent()}
         {this.renderLoadMore()}
+        <div className="column__dropzone">
+          <h3>Move to {STATUS_MAP[this.props.status]}</h3>
+        </div>
       </div>
     );
   }

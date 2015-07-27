@@ -55,6 +55,29 @@
   max-width: 500px;
 }
 
+.column__dropzone {
+  display: none;
+  background: rgba(0,0,0,0.5);
+  border: 3px dashed #333;
+  position: absolute;
+  float: left;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+
+  h3 {
+    color: #ececec;
+    text-align: center;
+    margin-top: 50%;
+  }
+
+}
+
+.column.dropzone-active .column__dropzone {
+  display: block;
+}
+
 .column__nav {
   margin-top: 93px;
 
