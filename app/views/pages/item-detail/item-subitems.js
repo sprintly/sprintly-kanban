@@ -4,6 +4,7 @@ import helpers from '../../components/helpers';
 import ItemDetailMixin from './detail-mixin';
 import {State, Link} from 'react-router';
 import ProductActions from '../../../actions/product-actions';
+import ItemActions from '../../../actions/item-actions';
 
 var ItemSubitems = React.createClass({
   mixins: [State, ItemDetailMixin],
@@ -49,7 +50,9 @@ var ItemSubitems = React.createClass({
     let title = subitem.title;
     let status = ctx.itemStatus(subitem.status);
     let itemID = subitem.number;
-    let assigneeGravatar = ctx.assigneeGravatar(subitem.assigned_to.email);
+
+    let email = (subitem.assigned_to && subitem.assigned_to.email) ? subitem.assigned_to.email : '';
+    let assigneeGravatar = ctx.assigneeGravatar(email);
     let itemScoreButton = ctx.itemScoreButton(subitem.type, subitem.score);
     let checked = subitem.status === 'completed' || subitem.status === 'accepted';
 
@@ -163,7 +166,7 @@ var ItemSubitems = React.createClass({
     this.setState({openStates: openStates})
   },
 
-  createSubItem(ev) {
+  createSubitem(ev) {
     ev.preventDefault()
     let node = this.refs.addItemInput.getDOMNode()
     let title = node.value

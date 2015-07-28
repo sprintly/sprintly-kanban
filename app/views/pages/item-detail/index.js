@@ -34,24 +34,11 @@ var ItemDetail = React.createClass({
     };
   },
 
-  // Display some sort of loading state via the item store
-  componentDidMount() {
-    ProductStore.addChangeListener(this._onChange);
-    ItemActions.fetchItem(this.getParams().id, this.getParams().number);
-    // TODO: Fetch the item followers on component did mount
-
-    ItemActions.fetchActivity(this.getParams().id, this.getParams().number);
-  },
-
-  componentWillUnmount() {
-    ProductStore.removeChangeListener(this._onChange);
-  },
-
   updateStripeHeight() {
     let content = document.getElementsByClassName('item-detail__content')[0];
     let height = content ? content.getBoundingClientRect().height : 0;
 
-    if (height != this.state.itemDetailHeight) {
+    if (height > this.state.itemDetailHeight) {
       this.setState({itemDetailHeight: height})
     }
   },
@@ -79,8 +66,6 @@ var ItemDetail = React.createClass({
 
     ProductActions.updateItem(productId, itemId, { description: this.state.item.description });
   },
-
-  // *********** Convenience Line
 
   itemDetails() {
     return (
@@ -143,6 +128,18 @@ var ItemDetail = React.createClass({
       <ItemActivity members={this.props.members}
                     activity={activity} />
     )
+  },
+
+  componentDidMount() {
+    ProductStore.addChangeListener(this._onChange);
+    ItemActions.fetchItem(this.getParams().id, this.getParams().number);
+    // TODO: Fetch the item followers on component did mount
+
+    ItemActions.fetchActivity(this.getParams().id, this.getParams().number);
+  },
+
+  componentWillUnmount() {
+    ProductStore.removeChangeListener(this._onChange);
   },
 
   render() {
