@@ -253,6 +253,9 @@
 .item-detail .ticket__detail .ticket-state {
   text-align: center;
 }
+.item-detail .ticket__detail .ticket-state .action__toggle {
+  cursor: pointer;
+}
 .item-detail .ticket__detail .ticket-state .title,
 .item-detail .ticket__detail .ticket-state .value {
   font-size: 14px;
@@ -266,7 +269,9 @@
   img {
     border-radius: 34px;
   }
-  // TODO: Compose commonalities between this and item card
+}
+.item-detail .ticket__detail .control,
+.item-detail .ticket__detail .ticket-state .value {
   button {
     border-radius: 34px;
     width: 34px;
@@ -280,9 +285,28 @@
     outline: none;
   }
 }
-
 .item-detail .ticket__detail .control {
   margin-top: 15px;
+
+  ul {
+    padding: 0;
+    list-style: none;
+  }
+
+  li.estimator-option {
+    width: 20%;
+    pointer: cursor;
+    float: left;
+    opacity: 0.6;
+  }
+
+  li.estimator-option.selected {
+    opacity: 1;
+  }
+
+  li.estimator-option:hover {
+    opacity: 1;
+  }
 }
 
 .item-detail .detail-button {

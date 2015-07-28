@@ -5,6 +5,7 @@ import ItemDetailMixin from './detail-mixin';
 import ProductActions from '../../../actions/product-actions';
 import Select from 'react-select';
 import {State} from 'react-router';
+import ScoreMap from '../../../lib/score-map';
 
 var ItemDetails = React.createClass({
 
@@ -30,6 +31,31 @@ var ItemDetails = React.createClass({
       email: React.PropTypes.string,
       id: React.PropTypes.number
     })
+  },
+
+  getInitialState() {
+    return {
+      actionControls: {
+        status: false,
+        assignee: false,
+        score: false
+      }
+    }
+  },
+
+  toggleActionControl(type, ev) {
+    let actionControls = _.reduce(this.state.actionControls, (memo, val, key) => {
+      if (key == type) {
+        memo[key] = true;
+      } else {
+        memo[key] = false;
+      }
+
+      return memo;
+    }, {});
+
+
+    this.setState({actionControls: actionControls})
   },
 
   buildTitle() {
@@ -92,13 +118,71 @@ var ItemDetails = React.createClass({
     return member ? `${member.first_name} ${member.last_name}` : null;
   },
 
-  actionsSection() {
+  componentVisible(type) {
+    return this.state.actionControls[type] ? 'visible' : 'hidden';
+  },
+
+  changeScore(score) {
+    let productId = this.getParams().id;
+    let itemId = this.getParams().number;
+
+    ProductActions.updateItem(productId, itemId, { score: score });
+  },
+
+  actionControl () {
     let members = helpers.formatSelectMembers(this.props.members);
+    let currentAssignee = this.currentAssignee();
+    let productId = this.getParams().id;
+    let itemId = this.getParams().number;
+    let estimator = this.estimator(this.props.type);
+
+    return (
+      <div className="col-md-12 control">
+        <div className={this.componentVisible('assignee')}>
+          <Select placeholder={"Choose assignee"}
+                name="form-field-name"
+                className="assign-dropdown"
+                disabled={false}
+                value={currentAssignee}
+                options={members}
+                onChange={this.setAssignedTo}
+                clearable={true} />
+        </div>
+        <div className={this.componentVisible('score')}>
+          {estimator}
+        </div>
+      </div>
+    )
+  },
+
+  estimator(type) {
+    var options = _.map(_.keys(ScoreMap), (key) => {
+      let estimatorClasses = React.addons.classSet({
+        "estimator-option": true,
+        "selected": key === this.props.score
+      })
+
+      return (
+        <li className={estimatorClasses} onClick={_.partial(this.changeScore, key)}>
+          {this.itemScoreButton(type, key)}
+        </li>
+      )
+    })
+
+    return (
+      <ul className="estimator">
+        {options}
+      </ul>
+    )
+  },
+
+  actionsSection() {
     let itemStatus = this.itemStatus(this.props.status);
     let email = this.props.assignee ? this.props.assignee.email: '';
     let assigneeGravatar = this.assigneeGravatar(email);
     let itemSizeButton = this.itemScoreButton(this.props.type, this.props.score);
-    let currentAssignee = this.currentAssignee();
+
+    let actionControl = this.actionControl()
 
     return (
       <div className="col-md-3 ticket-actions collapse-gutters">
@@ -107,7 +191,7 @@ var ItemDetails = React.createClass({
             <div className="col-md-12 title">
               Progress
             </div>
-            <div className="col-md-12 value">
+            <div className="col-md-12 value action__toggle" onClick={_.partial(this.toggleActionControl, 'status')}>
               {itemStatus}
             </div>
           </div>
@@ -115,7 +199,7 @@ var ItemDetails = React.createClass({
             <div className="col-md-12 title">
               Owner
             </div>
-            <div className="col-md-12 value">
+            <div className="col-md-12 value action__toggle" onClick={_.partial(this.toggleActionControl, 'assignee')}>
               {assigneeGravatar}
             </div>
           </div>
@@ -123,21 +207,12 @@ var ItemDetails = React.createClass({
             <div className="col-md-12 title">
               Size
             </div>
-            <div className="col-md-12 value">
+            <div className="col-md-12 value action__toggle" onClick={_.partial(this.toggleActionControl, 'score')}>
               {itemSizeButton}
             </div>
           </div>
         </div>
-        <div className="col-md-12 control">
-          <Select placeholder={"Choose assignee"}
-                  name="form-field-name"
-                  className="assign-dropdown"
-                  disabled={false}
-                  value={currentAssignee}
-                  options={members}
-                  onChange={this.setAssignedTo}
-                  clearable={true} />
-        </div>
+        {actionControl}
       </div>
     )
   },

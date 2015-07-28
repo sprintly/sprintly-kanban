@@ -32,11 +32,11 @@ const STATUS_MAP = {
   40: 'accepted'
 }
 
-var TicketActivity = React.createClass({
+var ItemActivity = React.createClass({
 
   propTypes: {
     members: React.PropTypes.array,
-    activity: React.PropTypes.activity
+    activity: React.PropTypes.array
   },
 
   mixins: [State, ItemDetailMixin],
@@ -194,4 +194,4 @@ var TicketActivity = React.createClass({
   }
 });
 
-export default TicketActivity;
+export default ItemActivity;
