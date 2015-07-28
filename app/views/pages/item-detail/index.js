@@ -110,7 +110,23 @@ var ItemDetail = React.createClass({
     let subitems = this.state.item.sub_items || [];
 
     return (
-      <ItemSubitems subitems={subitems}/>
+      <ItemSubitems  members={this.props.members}
+                    subitems={subitems}/>
+    )
+  },
+
+  itemComments() {
+    return (
+      <ItemComments />
+    )
+  },
+
+  itemActivity() {
+    let activity = this.state.item.activity || [];
+
+    return (
+      <ItemActivity members={this.props.members}
+                    activity={activity} />
     )
   },
 
@@ -132,13 +148,8 @@ var ItemDetail = React.createClass({
     if (this.state.item.type == 'story' && this.state.item.sub_items) {
       subitems = this.subitems();
     }
-    // let itemComments = <ItemComments />
-    // let itemActivity = <ItemActivity />
-    // {itemDescription}
-    // {itemAttachments}
-    // {itemSubitems}
-    // {itemComments}
-    // {itemActivity}
+    let itemComments = this.itemComments()
+    let itemActivity = this.itemActivity()
 
     return (
       <div ref="itemDetail" className="container-fluid item-detail no-gutter">
@@ -152,6 +163,8 @@ var ItemDetail = React.createClass({
           {itemDescription}
           {itemAttachments}
           {subitems}
+          {itemComments}
+          {itemActivity}
         </div>
       </div>
     )
