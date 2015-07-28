@@ -94,13 +94,27 @@ var ItemDetail = React.createClass({
   },
 
   itemAttachments() {
+    let attachments = [];
+    let item = this.state.item;
+
+    if (item.activity && item.activity.activities) {
+      attachments = _.where(item.activity.activities, {'action':'attachment'});
+    }
+
     return (
-      <ItemAttachments attachments={this.state.attachments} />
+      <ItemAttachments attachments={attachments} />
+    )
+  },
+
+  subitems() {
+    let subitems = this.state.item.sub_items || [];
+
+    return (
+      <ItemSubitems subitems={subitems}/>
     )
   },
 
   render() {
-    let subitems;
     if (!this.state.item.number) {
       // Update to loading state where correct
       return <div/>;
@@ -110,15 +124,16 @@ var ItemDetail = React.createClass({
     let closeClass = `item-detail__close ${this.state.item.type}`;
     var stripeStyles = {height: `${this.state.itemDetailHeight}px`};
 
-    let itemSubitems;
     let itemDetails = this.itemDetails()
     let itemDescription = this.itemDescription();
     let itemAttachments = this.itemAttachments();
+
+    let subitems;
+    if (this.state.item.type == 'story' && this.state.item.sub_items) {
+      subitems = this.subitems();
+    }
     // let itemComments = <ItemComments />
     // let itemActivity = <ItemActivity />
-    // if (this.state.item.type == 'story') {
-    //   itemSubitems = <ItemSubitems />
-    // }
     // {itemDescription}
     // {itemAttachments}
     // {itemSubitems}
@@ -136,6 +151,7 @@ var ItemDetail = React.createClass({
           {itemDetails}
           {itemDescription}
           {itemAttachments}
+          {subitems}
         </div>
       </div>
     )
@@ -149,17 +165,17 @@ var ItemDetail = React.createClass({
       let extendedState = {};
       let subitemsLength = item.sub_items.length;
 
-      if (!this.state.subitems && subitemsLength) {
-        var subitemState = _.map(new Array(subitemsLength), () => { return false});
-        extendedState['subitems'] = subitemState
-      }
+      // if (!this.state.subitems && subitemsLength) {
+      //   var subitemState = _.map(new Array(subitemsLength), () => { return false});
+      //   extendedState['subitems'] = subitemState
+      // }
 
-      let attachments = {};
-      if (item.activity && item.activity.activities) {
-        extendedState['attachments'] = _.where(item.activity.activities, {'action':'attachment'});
-      } else {
-        extendedState['attachments'] = [];
-      }
+      // let attachments = {};
+      // if (item.activity && item.activity.activities) {
+      //   extendedState['attachments'] = _.where(item.activity.activities, {'action':'attachment'});
+      // } else {
+      //   extendedState['attachments'] = [];
+      // }
 
       this.setState(_.extend({item}, extendedState));
     }

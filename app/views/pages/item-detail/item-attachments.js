@@ -3,7 +3,6 @@ import _ from 'lodash';
 import helpers from '../../components/helpers';
 import ItemDetailMixin from './detail-mixin';
 import {State} from 'react-router'
-import ProductActions from '../../../actions/product-actions';
 
 const CarouselSettings = {
   dots: false,
