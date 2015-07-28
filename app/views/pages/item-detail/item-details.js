@@ -4,7 +4,7 @@ import helpers from '../../components/helpers';
 import ItemDetailMixin from './detail-mixin';
 import ProductActions from '../../../actions/product-actions';
 import Select from 'react-select';
-import {State} from 'react-router'
+import {State} from 'react-router';
 
 var ItemDetails = React.createClass({
 
@@ -13,6 +13,7 @@ var ItemDetails = React.createClass({
   propTypes: {
     members: React.PropTypes.array,
     type: React.PropTypes.string,
+    title: React.PropTypes.string,
     who: React.PropTypes.string,
     what: React.PropTypes.string,
     why: React.PropTypes.string,
@@ -85,7 +86,8 @@ var ItemDetails = React.createClass({
   },
 
   currentAssignee() {
-    let member = _.findWhere(this.props.members, {id: this.props.assignee.id})
+    let assigneeId = this.props.assignee ? this.props.assignee.id : '';
+    let member = _.findWhere(this.props.members, {id: assigneeId});
 
     return member ? `${member.first_name} ${member.last_name}` : null;
   },
@@ -93,7 +95,8 @@ var ItemDetails = React.createClass({
   actionsSection() {
     let members = helpers.formatSelectMembers(this.props.members);
     let itemStatus = this.itemStatus(this.props.status);
-    let assigneeGravatar = this.assigneeGravatar(this.props.assignee.email);
+    let email = this.props.assignee ? this.props.assignee.email: '';
+    let assigneeGravatar = this.assigneeGravatar(email);
     let itemSizeButton = this.itemScoreButton(this.props.type, this.props.score);
     let currentAssignee = this.currentAssignee();
 

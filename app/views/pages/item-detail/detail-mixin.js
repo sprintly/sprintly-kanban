@@ -3,8 +3,33 @@ import moment from 'moment';
 import helpers from '../../components/helpers';
 import Gravatar from '../../components/gravatar';
 import OwnerAvatar from '../../components/item-card/owner';
+import {MentionsInput, Mention} from '@sprintly/react-mentions';
 
 var DetailMixin = {
+  header(title) {
+    var titleCased = helpers.toTitleCase(title);
+
+    return (
+      <div className="header">
+        <div className="title">{titleCased}</div>
+        <div className="sep"></div>
+      </div>
+    )
+  },
+
+  mentionsComponent(value, placeholder, changeFn) {
+    let mentions = helpers.formatMentionMembers(this.props.members);
+
+    return (
+      <MentionsInput
+        value={value}
+        onChange={changeFn}
+        placeholder={placeholder}>
+          <Mention data={mentions} />
+      </MentionsInput>
+    )
+  },
+
   buildTags(tags) {
     if (tags) {
       var tagIcon = <li><span className="glyphicon glyphicon-tag"></span></li>
