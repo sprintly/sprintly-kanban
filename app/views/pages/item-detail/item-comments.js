@@ -14,8 +14,7 @@ var TicketComments = React.createClass({
   },
 
   saveComment(ev) {
-    let comment = ev.currentTarget.getElementsByTagName("textarea")[0].value
-
+    let comment = ev.currentTarget.getElementsByTagName("textarea")[0].value;
     ItemActions.createComment(this.getParams().id, this.getParams().number, comment)
     this.setState({comment: ''});
   },

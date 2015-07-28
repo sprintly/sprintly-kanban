@@ -61,7 +61,9 @@ var TicketDescription = React.createClass({
     let productId = this.getParams().id;
     let itemId = this.getParams().number;
 
-    ProductActions.updateItem(productId, itemId, { description: this.props.description });
+    if (this.props.description) {
+      ProductActions.updateItem(productId, itemId, { description: this.props.description });
+    }
   },
 
   descriptionMention() {
@@ -69,26 +71,34 @@ var TicketDescription = React.createClass({
 
     return ([
         mentionsComponent,
-        <div className="col-md-2 description__control collapse-right pull-right">
-          <button className="detail-button kanban-button-secondary" onClick={this.saveItem}>
-            Save
-          </button>
-        </div>
+        this.toggleButton(null, this.saveItem)
       ]
     )
   },
 
   descriptionMarkdown() {
-    let markdown = <Markdown source={this.props.description} />
+    let description = this.props.description
+    if (!description) {
+      description = `_${placeholder}_`
+    }
+    let markdown = <Markdown source={description} />
 
     return ([
         markdown,
-        <div className="col-md-2 description__control collapse-right pull-right">
-          <button className="detail-button kanban-button-secondary" onClick={this.toggleDescriptionEdit}>
-            Edit
-          </button>
-        </div>
+        this.toggleButton("min-button-alignment", this.toggleDescriptionEdit)
       ]
+    )
+  },
+
+  toggleButton(additionalClass, clickHandler) {
+    let classes = `col-md-2 description__control collapse-right pull-right ${additionalClass}`
+
+    return (
+      <div className={classes}>
+        <button className="detail-button kanban-button-secondary" onClick={clickHandler}>
+          Edit
+        </button>
+      </div>
     )
   },
 
