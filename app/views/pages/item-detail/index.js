@@ -14,22 +14,26 @@ import ItemActivity from './item-activity';
 // Libs
 import {State,Link} from 'react-router';
 
+let initialItemDetailHeight = function() {
+  let bodyHeight = document.body.getBoundingClientRect().height;
+  let headerHeight = document.getElementsByClassName('product__header-menu')[0].getBoundingClientRect().height;
+
+  return bodyHeight - headerHeight;
+}
+
 var ItemDetail = React.createClass({
 
   mixins: [State],
 
   getInitialState() {
-    let bodyHeight = document.body.getBoundingClientRect().height;
-    let headerHeight = document.getElementsByClassName('product__header-menu')[0].getBoundingClientRect().height;
-    let detailHeight = bodyHeight - headerHeight;
-
     return {
       item: {},
       attachmentsPanel: false,
-      itemDetailHeight: detailHeight,
+      itemDetailHeight: initialItemDetailHeight(),
       descriptionEditable: false,
     };
   },
+
   // Display some sort of loading state via the item store
   componentDidMount() {
     ProductStore.addChangeListener(this._onChange);
@@ -43,7 +47,18 @@ var ItemDetail = React.createClass({
     ProductStore.removeChangeListener(this._onChange);
   },
 
+  updateStripeHeight() {
+    let content = document.getElementsByClassName('item-detail__content')[0];
+    let height = content ? content.getBoundingClientRect().height : 0;
+
+    if (height != this.state.itemDetailHeight) {
+      this.setState({itemDetailHeight: height})
+    }
+  },
+
   componentWillReceiveProps: function(nextProps) {
+    this.updateStripeHeight();
+
     if (this.getParams().number != this.state.item.number) {
       ItemActions.fetchItem(this.getParams().id, this.props.number);
       ItemActions.fetchActivity(this.getParams().id, this.getParams().number);
@@ -158,7 +173,7 @@ var ItemDetail = React.createClass({
             <span aria-hidden="true" className="glyphicon glyphicon-menu-right"/>
           </Link>
         </div>
-        <div className="content">
+        <div className="item-detail__content">
           {itemDetails}
           {itemDescription}
           {itemAttachments}
@@ -174,23 +189,7 @@ var ItemDetail = React.createClass({
     let item = ProductStore.getItem(this.getParams().id, this.getParams().number);
 
     if (item) {
-
-      let extendedState = {};
-      let subitemsLength = item.sub_items.length;
-
-      // if (!this.state.subitems && subitemsLength) {
-      //   var subitemState = _.map(new Array(subitemsLength), () => { return false});
-      //   extendedState['subitems'] = subitemState
-      // }
-
-      // let attachments = {};
-      // if (item.activity && item.activity.activities) {
-      //   extendedState['attachments'] = _.where(item.activity.activities, {'action':'attachment'});
-      // } else {
-      //   extendedState['attachments'] = [];
-      // }
-
-      this.setState(_.extend({item}, extendedState));
+      this.setState({item});
     }
   }
 })
