@@ -90,13 +90,14 @@ var TicketDescription = React.createClass({
     )
   },
 
-  toggleButton(additionalClass, clickHandler) {
-    let classes = `col-md-2 description__control collapse-right pull-right ${additionalClass}`
+  toggleButton(alignmentClass, clickHandler) {
+    let classes = `col-md-2 description__control collapse-right pull-right ${alignmentClass}`
+    let buttonCopy = this.state.descriptionEditable ? 'Save' : 'Edit';
 
     return (
       <div className={classes}>
         <button className="detail-button kanban-button-secondary" onClick={clickHandler}>
-          Edit
+          {buttonCopy}
         </button>
       </div>
     )
