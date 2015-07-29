@@ -45,7 +45,12 @@ var ItemSubitems = React.createClass({
     );
   },
 
-  toggleActionControl(id, type) {
+  toggleActionControl(subitem, type) {
+    if (type === 'assignee' & !this.canBeReassigned(subitem.status)) {
+      // Update UI with message as to why cannot reassign
+    }
+
+    let id = subitem.number;
     let subitemsStates = _.cloneDeep(this.state.subitemsStates);
     subitemsStates[id].header = true;
     subitemsStates[id].controls = this.controlToggle(subitemsStates[id].controls, type);
@@ -63,11 +68,12 @@ var ItemSubitems = React.createClass({
 
     let title = subitem.title;
     let status = subitemState.hoverStatus || ctx.itemStatus(subitem.status);
-    let itemID = subitem.number;
+    let subitemId = subitem.number;
 
     let email = (subitem.assigned_to && subitem.assigned_to.email) ? subitem.assigned_to.email : '';
     let assigneeGravatar = ctx.assigneeGravatar(email);
     let itemScoreButton = ctx.itemScoreButton(subitem.type, subitem.score);
+
     let checked = subitem.status === 'completed' || subitem.status === 'accepted';
 
     return ([
@@ -76,29 +82,35 @@ var ItemSubitems = React.createClass({
           <span aria-hidden="true" className="glyphicon glyphicon-menu-right" />
         </a>
         <div className="sep-vertical"></div>
+        <div className="meta id">#{subitemId}</div>
         <div className="title">{title}</div>
         <div className="col-md-4 state collapse-right">
           <ul>
-            <li>
-              <div className="meta id">#{itemID}</div>
-            </li>
-            <li onClick={_.partial(ctx.toggleActionControl, itemID, 'status')}>
-              <div className="meta status">{helpers.toTitleCase(status)}</div>
-            </li>
-            <li onClick={_.partial(ctx.toggleActionControl, itemID, 'assignee')}>
-              <div className="meta">{assigneeGravatar}</div>
-            </li>
-            <li onClick={_.partial(ctx.toggleActionControl, itemID, 'score')}>
-              <div className="meta">{itemScoreButton}</div>
-            </li>
-            <li>
-              <div className="meta">
-                <div className="subitemCheck">
-                  <input name="subitemCheck" type="checkbox" checked={checked} onChange={_.partial(ctx.updateSubitem, subitem)} id={`subitem-${index}`} />
-                  <label htmlFor={`subitem-${index}`}></label>
+            <div className="col-md-3">
+              <li onClick={_.partial(ctx.toggleActionControl, subitem, 'status')}>
+                <div className="meta status">{helpers.toTitleCase(status)}</div>
+              </li>
+            </div>
+            <div className="col-md-3">
+              <li onClick={_.partial(ctx.toggleActionControl, subitem, 'assignee')}>
+                <div className="meta">{assigneeGravatar}</div>
+              </li>
+            </div>
+            <div className="col-md-3">
+              <li onClick={_.partial(ctx.toggleActionControl, subitem, 'score')}>
+                <div className="meta">{itemScoreButton}</div>
+              </li>
+            </div>
+            <div className="col-md-3">
+              <li>
+                <div className="meta">
+                  <div className="subitemCheck">
+                    <input name="subitemCheck" type="checkbox" checked={checked} onChange={_.partial(ctx.updateSubitem, subitem)} id={`subitem-${index}`} />
+                    <label htmlFor={`subitem-${index}`}></label>
+                  </div>
                 </div>
-              </div>
-            </li>
+              </li>
+            </div>
           </ul>
         </div>
       </div>
@@ -115,6 +127,7 @@ var ItemSubitems = React.createClass({
         'content': true,
         'open': headerOpenState
       });
+      let contentStyles = !headerOpenState ? {overflow: 'hidden'} : {};
 
       let descriptionClasses = React.addons.classSet({
         "col-md-8": true,
@@ -131,7 +144,7 @@ var ItemSubitems = React.createClass({
       return (
         <div key={i} className="subitem">
           {header}
-          <div className={contentClasses}>
+          <div className={contentClasses} style={contentStyles}>
             <div className="col-md-12">
               <div className="col-md-12 collapse-right">
                 <div className={descriptionClasses}>
@@ -204,24 +217,22 @@ var ItemSubitems = React.createClass({
     let controlsState = this.state.subitemsStates[subitem.number].controls;
 
     return (
-      <div className={subheaderClasses}>
-        <div className="col-md-8 state collapse-right pull-right">
-          <div className={ctx.componentVisible(controlsState, 'assignee')}>
-            <Select placeholder={"Choose assignee"}
-                  name="form-field-name"
-                  className="assign-dropdown"
-                  disabled={false}
-                  value={currentAssignee}
-                  options={members}
-                  onChange={ctx.setAssignedTo}
-                  clearable={true} />
-          </div>
-          <div className={ctx.componentVisible(controlsState, 'score')}>
-            {estimator}
-          </div>
-          <div className={ctx.componentVisible(controlsState, 'status')}>
-            {statusPicker}
-          </div>
+      <div className="col-md-8 state collapse-right pull-right">
+        <div className={ctx.componentVisible(controlsState, 'assignee')}>
+          <Select placeholder={"Choose assignee"}
+                name="form-field-name"
+                className="assign-dropdown"
+                disabled={false}
+                value={currentAssignee}
+                options={members}
+                onChange={_.partial(ctx.updateAttribute, subitem.number, 'assigned_to')}
+                clearable={true} />
+        </div>
+        <div className={ctx.componentVisible(controlsState, 'score')}>
+          {estimator}
+        </div>
+        <div className={ctx.componentVisible(controlsState, 'status')}>
+          {statusPicker}
         </div>
       </div>
     )
@@ -233,7 +244,7 @@ var ItemSubitems = React.createClass({
     let existingSubitems = _.keys(subitemsStates);
 
     _.each(newSubitems, function(item) {
-      if (!_.contains(existingSubitems, item.number)) {
+      if (!_.contains(existingSubitems, item.number.toString())) {
         requiresUpdate = true;
         subitemsStates[item.number] = {
           header: false,

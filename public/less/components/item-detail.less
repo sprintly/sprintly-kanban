@@ -417,7 +417,7 @@
 
 .item-detail .attachments .header .sep-vertical,
 .item-detail .subitem .header .sep-vertical {
-  margin-right: 20px;
+  margin-right: 10px;
   border-right: 1px @sprintly-black solid;
   transform: scaleY(0.5);
   -webkit-transform: scaleY(0.5);
@@ -435,12 +435,8 @@
     display: inline;
   }
 }
-/* here */
 .item-detail .subitem .header .state .meta {
-  width: 20%;
-  float: left;
-  text-align: right;
-  font-size: 16px;
+  cursor: pointer;
 
   button,
   img {
@@ -528,8 +524,13 @@
     height:19px;
   }
 }
-.item-detail .subitem .header .state .meta.status,
-.item-detail .subitem .header .state .meta.id {
+
+.item-detail .subitem .header .meta.id  {
+  margin-right: 10px;
+  width: 40px;
+  display: inline;
+}
+.item-detail .subitem .header .state .meta.status {
   line-height: 38px;
   font-size: 14px;
   font-style: italic
@@ -578,6 +579,9 @@
 .item-detail .attachments .content {
   border-radius: 5px;
 }
+.item-detail .attachments .content {
+  overflow: hidden;
+}
 .item-detail .attachments .content,
 .item-detail .subitem .content {
   border-color: @sprintly-grey;
@@ -588,7 +592,6 @@
   width: 100%;
   height: auto;
   margin-top: -25px;
-  overflow: hidden;
   cursor: pointer;
   -webkit-transition: max-height 0.4s ease-out;
   -moz-transition: max-height 0.4s ease-out;
