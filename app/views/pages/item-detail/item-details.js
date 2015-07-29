@@ -3,7 +3,6 @@ import _ from 'lodash';
 import helpers from '../../components/helpers';
 import ItemDetailMixin from './detail-mixin';
 import ProductActions from '../../../actions/product-actions';
-import Select from 'react-select';
 import {State} from 'react-router';
 import ScoreMap from '../../../lib/score-map';
 import STATUS_MAP from '../../../lib/statuses-map';
@@ -108,7 +107,6 @@ var ItemDetails = React.createClass({
 
   actionControl () {
     let members = helpers.formatSelectMembers(this.props.members);
-    let currentAssignee = this.currentAssignee(this.props.members, this.props.assignee);
     let productId = this.getParams().id;
     let itemId = this.getParams().number;
 
@@ -116,26 +114,13 @@ var ItemDetails = React.createClass({
       score: this.props.score,
       number: this.props.number,
       type: this.props.type,
-      status: this.props.status
+      status: this.props.status,
+      assigned_to: this.props.assignee.id
     }
 
     let estimator = this.estimator(itemParams);
     let statusPicker = this.statusPicker(itemParams, this.setHoverStatus, this.resetHoverStatus);
-
-    let reassigner;
-    if (!this.canBeReassigned(this.props.status)) {
-      let currentStatus = helpers.toTitleCase(this.props.status)
-      reassigner = <div>{`Cannot reassign tickets which are ${currentStatus}`}</div>
-    } else {
-      reassigner = <Select placeholder={"Choose assignee"}
-                                  name="form-field-name"
-                             className="assign-dropdown"
-                              disabled={false}
-                                 value={currentAssignee}
-                               options={members}
-                              onChange={_.partial(this.updateAttribute, this.props.number, 'assigned_to')}
-                             clearable={true} />
-    }
+    let reassigner = this.reassigner(itemParams, members);
 
     return (
       <div className="col-md-12 control">

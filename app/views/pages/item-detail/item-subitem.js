@@ -6,7 +6,6 @@ import SubitemHeader from './item-subitem-header';
 import {State, Link} from 'react-router';
 import ProductActions from '../../../actions/product-actions';
 import ItemActions from '../../../actions/item-actions';
-import Select from 'react-select';
 import STATUS_MAP from '../../../lib/statuses-map';
 
 var ItemSubitem = React.createClass({
@@ -48,21 +47,7 @@ var ItemSubitem = React.createClass({
 
     let estimator = this.estimator(this.props.subitem);
     let statusPicker = this.statusPicker(this.props.subitem, this.props.setHoverStatus, this.props.resetHoverStatus);
-
-    let reassigner;
-    if (!this.canBeReassigned(this.props.subitem.status)) {
-      let currentStatus = helpers.toTitleCase(this.props.subitem.status)
-      reassigner = <div>{`Cannot reassign tickets which are ${currentStatus}`}</div>
-    } else {
-      reassigner = <Select placeholder={"Choose assignee"}
-                                  name="form-field-name"
-                             className="assign-dropdown"
-                              disabled={false}
-                                 value={currentAssignee}
-                               options={members}
-                              onChange={_.partial(this.updateAttribute, this.props.subitem.number, 'assigned_to')}
-                             clearable={true} />
-    }
+    let reassigner = this.reassigner(this.props.subitem, members);
 
     return (
       <div className="col-md-8 state collapse-right pull-right">

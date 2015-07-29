@@ -3,6 +3,7 @@ import moment from 'moment';
 import helpers from '../../components/helpers';
 import Gravatar from '../../components/gravatar';
 import OwnerAvatar from '../../components/item-card/owner';
+import Select from 'react-select';
 import {MentionsInput, Mention} from '@sprintly/react-mentions';
 import ProductActions from '../../../actions/product-actions';
 import ScoreMap from '../../../lib/score-map';
@@ -138,6 +139,24 @@ var DetailMixin = {
     )
   },
 
+  reassigner(item, members) {
+    let currentAssignee = this.currentAssignee(members, item.assigned_to);
+
+    if (!this.canBeReassigned(item.status)) {
+      let currentStatus = helpers.toTitleCase(item.status)
+      return <div>{`Cannot reassign tickets which are ${currentStatus}`}</div>
+    } else {
+      return <Select placeholder={"Choose assignee"}
+                            name="form-field-name"
+                       className="assign-dropdown"
+                        disabled={false}
+                           value={currentAssignee}
+                         options={members}
+                        onChange={_.partial(this.updateAttribute, item.number, 'assigned_to')}
+                       clearable={true} />
+    }
+  },
+
   canBeReassigned(status) {
     return _.contains(['someday', 'backlog', 'in-progress'], status);
   },
@@ -159,8 +178,7 @@ var DetailMixin = {
     return state[type] ? 'visible' : 'hidden';
   },
 
-  currentAssignee(members, assignee) {
-    let assigneeId = assignee ? assignee.id : '';
+  currentAssignee(members, assigneeId) {
     let member = _.findWhere(members, {id: assigneeId});
 
     return member ? `${member.first_name} ${member.last_name}` : null;
