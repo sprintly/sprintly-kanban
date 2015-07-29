@@ -288,14 +288,16 @@
 .item-detail .ticket__detail .control {
   margin-top: 15px;
 
-  ul {
+  ul.estimator {
     padding: 0;
     list-style: none;
+    height: 34px;
+    margin-bottom: 0;
   }
 
   li.estimator-option {
     width: 20%;
-    pointer: cursor;
+    cursor: pointer;
     float: left;
     opacity: 0.6;
   }
@@ -304,11 +306,24 @@
     opacity: 1;
   }
 
+  li.estimator-option.selected,
   li.estimator-option:hover {
-    opacity: 1;
+    button.estimator__button.status {
+      border: 2px solid @sprintly-black;
+    }
+  }
+
+  button.estimator__button.status {
+    background-color: white;
+    color: @sprintly-black;
   }
 }
 
+.item-detail .ticket__detail .control .status__fullname {
+  text-align: center;
+  padding-top: 5px;
+  font-size: 14px;
+}
 .item-detail .detail-button {
   width: 100%;
   margin-top: 18px;

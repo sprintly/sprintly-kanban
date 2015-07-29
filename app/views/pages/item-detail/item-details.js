@@ -7,6 +7,15 @@ import Select from 'react-select';
 import {State} from 'react-router';
 import ScoreMap from '../../../lib/score-map';
 
+const STATUS_MAP = {
+  someday: 'someday',
+  backlog: 'backlog',
+  current: 'in-progress',
+  done: 'completed',
+  accepted: 'accepted'
+}
+const INVERTED_STATUS_MAP = _.zipObject(_.values(STATUS_MAP), _.keys(STATUS_MAP))
+
 var ItemDetails = React.createClass({
 
   mixins: [State, ItemDetailMixin],
@@ -18,7 +27,7 @@ var ItemDetails = React.createClass({
     who: React.PropTypes.string,
     what: React.PropTypes.string,
     why: React.PropTypes.string,
-    number: React.PropTypes.number,
+    number: React.PropTypes.string,
     tags: React.PropTypes.string,
     createdAt: React.PropTypes.string,
     createdBy: React.PropTypes.shape({
@@ -39,7 +48,8 @@ var ItemDetails = React.createClass({
         status: false,
         assignee: false,
         score: false
-      }
+      },
+      hoverStatus: INVERTED_STATUS_MAP[this.props.status]
     }
   },
 
@@ -122,11 +132,18 @@ var ItemDetails = React.createClass({
     return this.state.actionControls[type] ? 'visible' : 'hidden';
   },
 
-  changeScore(score) {
+  changeAttribute(attr, value) {
     let productId = this.getParams().id;
     let itemId = this.getParams().number;
 
-    ProductActions.updateItem(productId, itemId, { score: score });
+    if (attr === 'status') {
+      value = STATUS_MAP[value];
+    }
+
+    let newAttrs = {};
+    newAttrs[attr] = value;
+
+    ProductActions.updateItem(productId, itemId, newAttrs);
   },
 
   actionControl () {
@@ -134,7 +151,8 @@ var ItemDetails = React.createClass({
     let currentAssignee = this.currentAssignee();
     let productId = this.getParams().id;
     let itemId = this.getParams().number;
-    let estimator = this.estimator(this.props.type);
+    let estimator = this.estimator();
+    let statusPicker = this.statusPicker();
 
     return (
       <div className="col-md-12 control">
@@ -151,20 +169,64 @@ var ItemDetails = React.createClass({
         <div className={this.componentVisible('score')}>
           {estimator}
         </div>
+        <div className={this.componentVisible('status')}>
+          {statusPicker}
+        </div>
       </div>
     )
   },
 
-  estimator(type) {
-    var options = _.map(_.keys(ScoreMap), (key) => {
+  setHoverStatus(key, ev) {
+    //  current
+    this.setState({hoverStatus: key});
+  },
+
+  resetHoverStatus() {
+    // in-progress --> current
+    this.setState({hoverStatus: INVERTED_STATUS_MAP[this.props.status]});
+  },
+
+  statusPicker() {
+    var options = _.map(_.keys(STATUS_MAP), (key, i) => {
+      let estimatorClasses = React.addons.classSet({
+        "estimator-option": true,
+        "selected": STATUS_MAP[key] === this.props.status
+      });
+      let value = helpers.toTitleCase(key.charAt(0));
+
+      return (
+        <li key={`${i}-${key}`}
+            className={estimatorClasses}
+            onMouseEnter={_.partial(this.setHoverStatus, key)}
+            onClick={_.partial(this.changeAttribute, 'status', key)}>
+          {this.itemScoreButton('status', value)}
+        </li>
+      )
+    });
+
+    return ([
+        <ul onMouseLeave={this.resetHoverStatus} className="estimator">
+          {options}
+        </ul>,
+        <div className="col-md-12 status__fullname">
+          {helpers.toTitleCase(this.state.hoverStatus)}
+        </div>
+      ]
+    )
+  },
+
+  estimator() {
+    var options = _.map(_.keys(ScoreMap), (key, i) => {
       let estimatorClasses = React.addons.classSet({
         "estimator-option": true,
         "selected": key === this.props.score
       })
 
       return (
-        <li className={estimatorClasses} onClick={_.partial(this.changeScore, key)}>
-          {this.itemScoreButton(type, key)}
+        <li key={`${i}-${key}`}
+            className={estimatorClasses}
+            onClick={_.partial(this.changeAttribute, 'score', key)}>
+          {this.itemScoreButton(this.props.type, key)}
         </li>
       )
     })
