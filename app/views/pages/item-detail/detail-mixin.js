@@ -134,6 +134,10 @@ var DetailMixin = {
     )
   },
 
+  canBeReassigned(status) {
+    return _.contains(['someday', 'backlog', 'in-progress'], status);
+  },
+
   changeAttribute(attr, value) {
     let productId = this.getParams().id;
     let itemId = this.getParams().number;
