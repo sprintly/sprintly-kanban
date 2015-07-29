@@ -46,10 +46,6 @@ var ItemSubitems = React.createClass({
   },
 
   toggleActionControl(subitem, type) {
-    if (type === 'assignee' & !this.canBeReassigned(subitem.status)) {
-      // Update UI with message as to why cannot reassign
-    }
-
     let id = subitem.number;
     let subitemsStates = _.cloneDeep(this.state.subitemsStates);
     subitemsStates[id].header = true;
@@ -216,17 +212,24 @@ var ItemSubitems = React.createClass({
     let statusPicker = ctx.statusPicker(subitem.status, _.partial(ctx.setHoverStatus, subitem.number), _.partial(ctx.resetHoverStatus, subitem.number), _.partial(ctx.updateAttribute, subitem.number));
     let controlsState = this.state.subitemsStates[subitem.number].controls;
 
+    let reassigner;
+    if (!this.canBeReassigned(subitem.status)) {
+      reassigner = <div>{`Cannot reassign tickets which are ${helpers.toTitleCase(subitem.status)}`}</div>
+    } else {
+      reassigner = <Select placeholder={"Choose assignee"}
+                                  name="form-field-name"
+                             className="assign-dropdown"
+                              disabled={false}
+                                 value={currentAssignee}
+                               options={members}
+                              onChange={_.partial(ctx.updateAttribute, subitem.number, 'assigned_to')}
+                             clearable={true} />
+    }
+
     return (
       <div className="col-md-8 state collapse-right pull-right">
         <div className={ctx.componentVisible(controlsState, 'assignee')}>
-          <Select placeholder={"Choose assignee"}
-                name="form-field-name"
-                className="assign-dropdown"
-                disabled={false}
-                value={currentAssignee}
-                options={members}
-                onChange={_.partial(ctx.updateAttribute, subitem.number, 'assigned_to')}
-                clearable={true} />
+          {reassigner}
         </div>
         <div className={ctx.componentVisible(controlsState, 'score')}>
           {estimator}
