@@ -3,6 +3,7 @@ import { RouteHandler } from 'react-router';
 import Sidebars from './components/sidebars';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd/modules/backends/HTML5';
+import helpers from './pages/helpers.js';
 
 let Kanban = React.createClass({
 

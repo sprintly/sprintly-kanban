@@ -12,7 +12,6 @@ import OwnerAvatar from './owner';
 import Controls from './controls';
 import ItemCardDetails from './details';
 import Select from 'react-select';
-import onClickOutside from '@sprintly/react-onclickoutside';
 import {Link} from 'react-router';
 
 const REVERSE_SCORE_MAP = _.zipObject(_.values(ScoreMap), _.keys(ScoreMap))
