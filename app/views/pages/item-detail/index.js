@@ -111,7 +111,7 @@ var ItemDetail = React.createClass({
 
     return (
       <ItemSubitems  members={this.props.members}
-                    subitems={subitems}/>
+                    subitems={subitems} />
     )
   },
 

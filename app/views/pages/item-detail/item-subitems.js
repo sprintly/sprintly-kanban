@@ -5,35 +5,27 @@ import ItemDetailMixin from './detail-mixin';
 import {State, Link} from 'react-router';
 import ProductActions from '../../../actions/product-actions';
 import ItemActions from '../../../actions/item-actions';
+import Select from 'react-select';
 
 var ItemSubitems = React.createClass({
   mixins: [State, ItemDetailMixin],
 
   propTypes: {
+    members: React.PropTypes.array,
     subitems: React.PropTypes.array
   },
 
   getInitialState() {
     return {
-      headerStates: {},
-      contentStates: {}
+      subitemsStates: {}
     }
   },
 
-  // 123: {
-  //   header: open,
-  //   controls: {
-  //     status
-  //     score
-  //     assignee
-  //   }
-  // }
-
   toggleSubitem(id, ev) {
-    var headerStates = _.clone(this.state.headerStates);
-    headerStates[id] = !this.state.headerStates[id];
+    let subitemsStates = _.cloneDeep(this.state.subitemsStates);
+    subitemsStates[id].header = !subitemsStates[id].header;
 
-    this.setState({headerStates: headerStates})
+    this.setState({subitemsStates: subitemsStates})
   },
 
   updateSubitem(subitem, ev) {
@@ -52,10 +44,19 @@ var ItemSubitems = React.createClass({
     );
   },
 
+  toggleActionControl(id, type) {
+    let subitemsStates = _.cloneDeep(this.state.subitemsStates);
+    subitemsStates[id].header = true;
+    subitemsStates[id].controls = this.controlToggle(subitemsStates[id].controls, type);
+
+    // TODO: See if es6 single var works here
+    this.setState({subitemsStates: subitemsStates});
+  },
+
   subitemHeader(subitem, index, ctx) {
     let headerClasses = React.addons.classSet({
       'header': true,
-      'open': ctx.state.headerStates[subitem.number]
+      'open': ctx.state.subitemsStates[subitem.number]
     });
 
     let title = subitem.title;
@@ -76,10 +77,18 @@ var ItemSubitems = React.createClass({
         <div className="title">{title}</div>
         <div className="col-md-4 state collapse-right">
           <ul>
-            <li ><div className="meta id">#{itemID}</div></li>
-            <li><div className="meta status">{status}</div></li>
-            <li><div className="meta">{assigneeGravatar}</div></li>
-            <li><div className="meta">{itemScoreButton}</div></li>
+            <li>
+              <div className="meta id">#{itemID}</div>
+            </li>
+            <li onClick={_.partial(ctx.toggleActionControl, itemID, 'status')}>
+              <div className="meta status">{status}</div>
+            </li>
+            <li onClick={_.partial(ctx.toggleActionControl, itemID, 'assignee')}>
+              <div className="meta">{assigneeGravatar}</div>
+            </li>
+            <li onClick={_.partial(ctx.toggleActionControl, itemID, 'score')}>
+              <div className="meta">{itemScoreButton}</div>
+            </li>
             <li>
               <div className="meta">
                 <div className="subitemCheck">
@@ -97,11 +106,12 @@ var ItemSubitems = React.createClass({
   subitems() {
     return _.map(this.props.subitems, (subitem, i) => {
       let header = this.subitemHeader(subitem, i, this);
-      // let subitemActions = this.subitemActions(subitem, i, this);
-      // {subitemActions}
+      let subitemActions = this.subitemActions(subitem, i, this);
+
+      let headerOpenState = this.state.subitemsStates[subitem.number].header;
       let contentClasses = React.addons.classSet({
         'content': true,
-        'open': this.state.headerStates[subitem.number]
+        'open': headerOpenState
       });
 
       let descriptionClasses = React.addons.classSet({
@@ -125,7 +135,8 @@ var ItemSubitems = React.createClass({
                 <div className={descriptionClasses}>
                   {description}
                 </div>
-                <div className="col-md-4 collapse-right">
+                <div className="col-md-4 control collapse-right">
+                  {subitemActions}
                   <button className="detail-button kanban-button-secondary">
                     <Link to={viewTicketURL}>View Full Ticket</Link>
                   </button>
@@ -146,55 +157,66 @@ var ItemSubitems = React.createClass({
     });
   },
 
-  componentVisible(number) {
-    return this.state.subheaderStates[subitem.number] ? 'visible' : 'hidden';
-  },
-
   subheaderOpen(id) {
-    let subheaderStates = _.values(this.state.subheaderStates[subitem.number])
-    return _.contains(subheaderStates, true);
+    let subitemsStates = _.values(this.state.subitemsStates[id])
+    return _.contains(subitemsStates, true);
+
   },
 
   setHoverStatus(key, ev) {
-    let state = _.cloneDeep(this.state.subheaderStates)
-    state[subitem.number][hoverStatus] = key;
-
-    //  current
-    this.setState(state);
+    // let state = _.cloneDeep(this.state.subitemsStates)
+    // state[subitem.number][hoverStatus] = key;
+    //
+    // //  current
+    // this.setState(state);
   },
 
   resetHoverStatus() {
     // in-progress --> current
-    this.setState({hoverStatus: INVERTED_STATUS_MAP[this.props.status]});
+    // this.setState({hoverStatus: INVERTED_STATUS_MAP[this.props.status]});
+  },
+
+  updateAttribute(subitemId, attr, value) {
+    let productId = this.getParams().id;
+    // restart status map
+    if (attr === 'status') {
+      value = STATUS_MAP[value];
+    }
+
+    let newAttrs = {};
+    newAttrs[attr] = value;
+
+    ProductActions.updateItem(productId, subitemId, newAttrs);
   },
 
   subitemActions(subitem, index, ctx) {
     let subheaderClasses = React.addons.classSet({
       'subheader': true,
-      'open': ctx.subheaderOpen(subitem.number)
+      'open': ctx.state.subitemsStates[subitem.number].header
     });
-    let estimator = ctx.estimator(subitem.score, subitem.type, ctx.changeAttribute);
-    let statusPicker = ctx.statusPicker(subitem.status, ctx.setHoverStatus, ctx.resetHoverStatus, ctx.changeAttribute);
-
-    let subheaderState = this.state.subheaderStates[subitem.number];
+    let members = helpers.formatSelectMembers(this.props.members);
+    let currentAssignee = ctx.currentAssignee(ctx.props.members, subitem.assigned_to);
+    let estimator = ctx.estimator(subitem.score, subitem.type, _.partial(ctx.updateAttribute, subitem.number));
+    let statusPicker = ctx.statusPicker(subitem.status, ctx.setHoverStatus, ctx.resetHoverStatus, _.partial(ctx.updateAttribute, subitem.number));
+    let controlsState = this.state.subitemsStates[subitem.number].controls;
 
     return (
       <div className={subheaderClasses}>
-        <div className="col-md-4 state collapse-right">
-          <div className={this.componentVisible('assignee')}>
+        <div className="col-md-8 state collapse-right pull-right">
+          <div className={ctx.componentVisible(controlsState, 'assignee')}>
             <Select placeholder={"Choose assignee"}
                   name="form-field-name"
                   className="assign-dropdown"
                   disabled={false}
                   value={currentAssignee}
                   options={members}
-                  onChange={this.setAssignedTo}
+                  onChange={ctx.setAssignedTo}
                   clearable={true} />
           </div>
-          <div className={this.componentVisible('score')}>
+          <div className={ctx.componentVisible(controlsState, 'score')}>
             {estimator}
           </div>
-          <div className={this.componentVisible('status')}>
+          <div className={ctx.componentVisible(controlsState, 'status')}>
             {statusPicker}
           </div>
         </div>
@@ -202,20 +224,27 @@ var ItemSubitems = React.createClass({
     )
   },
 
-  addNewSubitemState(subitems) {
+  addNewSubitemState(newSubitems) {
     let requiresUpdate = false;
-    let headerStates = _.cloneDeep(this.state.headerStates);
-    let subitemIds = _.keys(headerStates);
+    let subitemsStates = _.cloneDeep(this.state.subitemsStates);
+    let existingSubitems = _.keys(subitemsStates);
 
-    _.each(subitems, function(sub) {
-      if (!_.contains(subitemIds, sub.id)) {
+    _.each(newSubitems, function(item) {
+      if (!_.contains(existingSubitems, item.number)) {
         requiresUpdate = true;
-        headerStates[sub.id] = false
+        subitemsStates[item.number] = {
+          header: false,
+          controls: {
+            status: false,
+            score: false,
+            assignee: false
+          }
+        }
       }
     })
 
     if (requiresUpdate) {
-      this.setState({headerStates: headerStates});
+      this.setState({subitemsStates: subitemsStates});
     }
   },
 
@@ -228,11 +257,12 @@ var ItemSubitems = React.createClass({
   },
 
   collapseSubitems() {
-    let headerStates = _.cloneDeep(this.state.headerStates);
-    _.each(headerStates, function(val, key) {
-      headerStates[key] = false;
+    let subitemsStates = _.cloneDeep(this.state.subitemsStates);
+    _.each(subitemsStates, function(val, key) {
+      subitemsStates[key].header = false;
     })
-    this.setState({headerStates: headerStates})
+
+    this.setState({subitemsStates: subitemsStates})
   },
 
   createSubitem(ev) {
@@ -253,7 +283,7 @@ var ItemSubitems = React.createClass({
 
   render: function() {
     let collapseAllLink = this.props.subitems ? <a className="collapse__subitems"onClick={this.collapseSubitems}>collapse all</a> : '';
-    let subitems = this.subitems();
+    let subitems = this.props.subitems ? this.subitems() : [];
 
     return (
       <div className="col-md-12 section subitems">

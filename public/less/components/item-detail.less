@@ -285,7 +285,23 @@
     outline: none;
   }
 }
-.item-detail .ticket__detail .control {
+.item-detail .subitems .content .control {
+  button.estimator__button {
+    width: 30px;
+    height: 30px;
+    border-radius: 16px;
+    font-size: 17px;
+    font-weight: 600;
+    margin-top: 4px;
+    line-height: 0;
+  }
+
+  button.estimator__button:focus {
+    outline: none;
+  }
+}
+.item-detail .ticket__detail .control,
+.item-detail .subitems .content .control {
   margin-top: 15px;
 
   ul.estimator {
@@ -319,11 +335,6 @@
   }
 }
 
-.item-detail .ticket__detail .control .status__fullname {
-  text-align: center;
-  padding-top: 5px;
-  font-size: 14px;
-}
 .item-detail .detail-button {
   width: 100%;
   margin-top: 18px;
@@ -424,6 +435,7 @@
     display: inline;
   }
 }
+/* here */
 .item-detail .subitem .header .state .meta {
   width: 20%;
   float: left;

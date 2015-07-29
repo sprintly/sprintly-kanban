@@ -48,16 +48,7 @@ var ItemDetails = React.createClass({
   },
 
   toggleActionControl(type, ev) {
-    let actionControls = _.reduce(this.state.actionControls, (memo, val, key) => {
-      if (key == type) {
-        memo[key] = true;
-      } else {
-        memo[key] = false;
-      }
-
-      return memo;
-    }, {});
-
+    let actionControls = this.controlToggle(this.state.actionControls, type);
 
     this.setState({actionControls: actionControls})
   },
@@ -115,20 +106,9 @@ var ItemDetails = React.createClass({
     )
   },
 
-  currentAssignee() {
-    let assigneeId = this.props.assignee ? this.props.assignee.id : '';
-    let member = _.findWhere(this.props.members, {id: assigneeId});
-
-    return member ? `${member.first_name} ${member.last_name}` : null;
-  },
-
-  componentVisible(type) {
-    return this.state.actionControls[type] ? 'visible' : 'hidden';
-  },
-
   actionControl () {
     let members = helpers.formatSelectMembers(this.props.members);
-    let currentAssignee = this.currentAssignee();
+    let currentAssignee = this.currentAssignee(this.props.members, this.props.assignee);
     let productId = this.getParams().id;
     let itemId = this.getParams().number;
     let estimator = this.estimator(this.props.score, this.props.type, this.changeAttribute);
@@ -136,20 +116,20 @@ var ItemDetails = React.createClass({
 
     return (
       <div className="col-md-12 control">
-        <div className={this.componentVisible('assignee')}>
+        <div className={this.componentVisible(this.state.actionControls, 'assignee')}>
           <Select placeholder={"Choose assignee"}
                 name="form-field-name"
                 className="assign-dropdown"
                 disabled={false}
                 value={currentAssignee}
                 options={members}
-                onChange={this.setAssignedTo}
+                onChange={_.partial(this.changeAttribute, 'assigned_to')}
                 clearable={true} />
         </div>
-        <div className={this.componentVisible('score')}>
+        <div className={this.componentVisible(this.state.actionControls, 'score')}>
           {estimator}
         </div>
-        <div className={this.componentVisible('status')}>
+        <div className={this.componentVisible(this.state.actionControls, 'status')}>
           {statusPicker}
         </div>
       </div>
@@ -205,13 +185,6 @@ var ItemDetails = React.createClass({
         {actionControl}
       </div>
     )
-  },
-
-  setAssignedTo(value) {
-    let productId = this.getParams().id;
-    let itemId = this.getParams().number;
-
-    ProductActions.updateItem(productId, itemId, { assigned_to: value });
   },
 
   render: function() {

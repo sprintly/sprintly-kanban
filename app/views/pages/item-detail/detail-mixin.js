@@ -146,6 +146,29 @@ var DetailMixin = {
     newAttrs[attr] = value;
 
     ProductActions.updateItem(productId, itemId, newAttrs);
+  },
+
+  componentVisible(state, type) {
+    return state[type] ? 'visible' : 'hidden';
+  },
+
+  currentAssignee(members, assignee) {
+    let assigneeId = assignee ? assignee.id : '';
+    let member = _.findWhere(members, {id: assigneeId});
+
+    return member ? `${member.first_name} ${member.last_name}` : null;
+  },
+
+  controlToggle(state, type) {
+    return _.reduce(state, (memo, val, key) => {
+      if (key == type) {
+        memo[key] = true;
+      } else {
+        memo[key] = false;
+      }
+
+      return memo;
+    }, {});
   }
 };
 
