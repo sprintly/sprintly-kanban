@@ -86,18 +86,20 @@ var DetailMixin = {
     )
   },
 
-  estimator(score, type, changeHandler) {
+  estimator(item) {
+    const SCORE_ATTR = 'score';
+
     var options = _.map(_.keys(ScoreMap), (key, i) => {
       let estimatorClasses = React.addons.classSet({
         "estimator-option": true,
-        "selected": key === score
+        "selected": key === item.score
       })
 
       return (
         <li key={`${i}-${key}`}
             className={estimatorClasses}
-            onClick={_.partial(changeHandler, 'score', key)}>
-          {this.itemScoreButton(type, key)}
+            onClick={_.partial(this.updateAttribute, item.number, SCORE_ATTR, key)}>
+          {this.itemScoreButton(item.type, key)}
         </li>
       )
     })
@@ -109,26 +111,28 @@ var DetailMixin = {
     )
   },
 
-  statusPicker(status, hoverHandler, hoverReset, changeHandler) {
+  statusPicker(item, hoverHandler, hoverReset) {
+    const STATUS_ATTR = 'status';
+
     var options = _.map(_.keys(STATUS_MAP), (key, i) => {
       let estimatorClasses = React.addons.classSet({
         "estimator-option": true,
-        "selected": STATUS_MAP[key] === status
+        "selected": STATUS_MAP[key] === item.status
       });
       let value = helpers.toTitleCase(key.charAt(0));
 
       return (
         <li key={`${i}-${key}`}
             className={estimatorClasses}
-            onMouseEnter={_.partial(hoverHandler, key)}
-            onClick={_.partial(changeHandler, 'status', key)}>
-          {this.itemScoreButton('status', value)}
+            onMouseEnter={_.partial(hoverHandler, item.number, key)}
+            onClick={_.partial(this.updateAttribute, item.number, STATUS_ATTR, key)}>
+          {this.itemScoreButton(STATUS_ATTR, value)}
         </li>
       )
     });
 
     return (
-      <ul onMouseLeave={hoverReset} className="estimator">
+      <ul onMouseLeave={_.partial(hoverReset, item.number)} className="estimator">
         {options}
       </ul>
     )
@@ -138,12 +142,8 @@ var DetailMixin = {
     return _.contains(['someday', 'backlog', 'in-progress'], status);
   },
 
-  /*
-    Need to compose to common interface
-  */
-  changeAttribute(attr, value) {
+  updateAttribute(itemId, attr, value) {
     let productId = this.getParams().id;
-    let itemId = this.getParams().number;
 
     if (attr === 'status') {
       value = STATUS_MAP[value];
@@ -153,19 +153,6 @@ var DetailMixin = {
     newAttrs[attr] = value;
 
     ProductActions.updateItem(productId, itemId, newAttrs);
-  },
-
-  updateAttribute(subitemId, attr, value) {
-    let productId = this.getParams().id;
-    // restart status map
-    if (attr === 'status') {
-      value = STATUS_MAP[value];
-    }
-
-    let newAttrs = {};
-    newAttrs[attr] = value;
-
-    ProductActions.updateItem(productId, subitemId, newAttrs);
   },
 
   componentVisible(state, type) {

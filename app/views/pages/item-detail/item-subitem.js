@@ -46,16 +46,9 @@ var ItemSubitem = React.createClass({
     let members = helpers.formatSelectMembers(this.props.members);
     let currentAssignee = this.currentAssignee(this.props.members, this.props.subitem.assigned_to);
 
-    let estimator = this.estimator( this.props.subitem.score,
-                                    this.props.subitem.type,
-                                    _.partial(this.updateAttribute, this.props.subitem.number)
-                                  );
+    let estimator = this.estimator(this.props.subitem);
+    let statusPicker = this.statusPicker(this.props.subitem, this.props.setHoverStatus, this.props.resetHoverStatus);
 
-    let statusPicker = this.statusPicker(this.props.subitem.status,
-                                        _.partial(this.props.setHoverStatus, this.props.subitem.number),
-                                        _.partial(this.props.resetHoverStatus, this.props.subitem.number),
-                                        _.partial(this.updateAttribute, this.props.subitem.number)
-                                      );
     let reassigner;
     if (!this.canBeReassigned(this.props.subitem.status)) {
       let currentStatus = helpers.toTitleCase(this.props.subitem.status)

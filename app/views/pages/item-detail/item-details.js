@@ -111,8 +111,16 @@ var ItemDetails = React.createClass({
     let currentAssignee = this.currentAssignee(this.props.members, this.props.assignee);
     let productId = this.getParams().id;
     let itemId = this.getParams().number;
-    let estimator = this.estimator(this.props.score, this.props.type, this.changeAttribute);
-    let statusPicker = this.statusPicker(this.props.status, this.setHoverStatus, this.resetHoverStatus, this.changeAttribute);
+
+    let itemParams = {
+      score: this.props.score,
+      number: this.props.number,
+      type: this.props.type,
+      status: this.props.status
+    }
+
+    let estimator = this.estimator(itemParams);
+    let statusPicker = this.statusPicker(itemParams, this.setHoverStatus, this.resetHoverStatus);
 
     let reassigner;
     if (!this.canBeReassigned(this.props.status)) {
@@ -125,7 +133,7 @@ var ItemDetails = React.createClass({
                               disabled={false}
                                  value={currentAssignee}
                                options={members}
-                              onChange={_.partial(this.changeAttribute, 'assigned_to')}
+                              onChange={_.partial(this.updateAttribute, this.props.number, 'assigned_to')}
                              clearable={true} />
     }
 
@@ -144,7 +152,7 @@ var ItemDetails = React.createClass({
     )
   },
 
-  setHoverStatus(key, ev) {
+  setHoverStatus(id, key, ev) {
     //  current
     this.setState({hoverStatus: key});
   },
