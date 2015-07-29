@@ -6,6 +6,7 @@ import {State, Link} from 'react-router';
 import ProductActions from '../../../actions/product-actions';
 import ItemActions from '../../../actions/item-actions';
 import Select from 'react-select';
+import STATUS_MAP from '../../../lib/statuses-map';
 
 var ItemSubitems = React.createClass({
   mixins: [State, ItemDetailMixin],
@@ -54,13 +55,14 @@ var ItemSubitems = React.createClass({
   },
 
   subitemHeader(subitem, index, ctx) {
+    let subitemState = ctx.state.subitemsStates[subitem.number];
     let headerClasses = React.addons.classSet({
       'header': true,
-      'open': ctx.state.subitemsStates[subitem.number]
+      'open': subitemState.header
     });
 
     let title = subitem.title;
-    let status = ctx.itemStatus(subitem.status);
+    let status = subitemState.hoverStatus || ctx.itemStatus(subitem.status);
     let itemID = subitem.number;
 
     let email = (subitem.assigned_to && subitem.assigned_to.email) ? subitem.assigned_to.email : '';
@@ -81,7 +83,7 @@ var ItemSubitems = React.createClass({
               <div className="meta id">#{itemID}</div>
             </li>
             <li onClick={_.partial(ctx.toggleActionControl, itemID, 'status')}>
-              <div className="meta status">{status}</div>
+              <div className="meta status">{helpers.toTitleCase(status)}</div>
             </li>
             <li onClick={_.partial(ctx.toggleActionControl, itemID, 'assignee')}>
               <div className="meta">{assigneeGravatar}</div>
@@ -160,20 +162,21 @@ var ItemSubitems = React.createClass({
   subheaderOpen(id) {
     let subitemsStates = _.values(this.state.subitemsStates[id])
     return _.contains(subitemsStates, true);
-
   },
 
-  setHoverStatus(key, ev) {
-    // let state = _.cloneDeep(this.state.subitemsStates)
-    // state[subitem.number][hoverStatus] = key;
-    //
-    // //  current
-    // this.setState(state);
+  setHoverStatus(subitemId, key, ev) {
+    let state = _.cloneDeep(this.state.subitemsStates)
+    state[subitemId].hoverStatus = key;
+
+    //  current
+    this.setState({subitemsStates: state});
   },
 
-  resetHoverStatus() {
+  resetHoverStatus(subitemId, ev) {
+    let state = _.cloneDeep(this.state.subitemsStates)
+    state[subitemId].hoverStatus = false;
     // in-progress --> current
-    // this.setState({hoverStatus: INVERTED_STATUS_MAP[this.props.status]});
+    this.setState({subitemsStates: state});
   },
 
   updateAttribute(subitemId, attr, value) {
@@ -197,7 +200,7 @@ var ItemSubitems = React.createClass({
     let members = helpers.formatSelectMembers(this.props.members);
     let currentAssignee = ctx.currentAssignee(ctx.props.members, subitem.assigned_to);
     let estimator = ctx.estimator(subitem.score, subitem.type, _.partial(ctx.updateAttribute, subitem.number));
-    let statusPicker = ctx.statusPicker(subitem.status, ctx.setHoverStatus, ctx.resetHoverStatus, _.partial(ctx.updateAttribute, subitem.number));
+    let statusPicker = ctx.statusPicker(subitem.status, _.partial(ctx.setHoverStatus, subitem.number), _.partial(ctx.resetHoverStatus, subitem.number), _.partial(ctx.updateAttribute, subitem.number));
     let controlsState = this.state.subitemsStates[subitem.number].controls;
 
     return (
@@ -234,6 +237,7 @@ var ItemSubitems = React.createClass({
         requiresUpdate = true;
         subitemsStates[item.number] = {
           header: false,
+          hoverStatus: false,
           controls: {
             status: false,
             score: false,
