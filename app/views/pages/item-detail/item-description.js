@@ -108,11 +108,14 @@ var TicketDescription = React.createClass({
   },
 
   render: function() {
-    let followers = this.buildFollowers();
+    /* TODO: Followers fetch
+      let followers = this.buildFollowers();
+      {followers}
+    */
     let descriptionEl = this.state.descriptionEditable ? this.descriptionMention() : this.descriptionMarkdown();
 
     let descriptionClasses = React.addons.classSet({
-      "col-md-9": true,
+      "col-md-12": true,
       "item__description": true,
       "collapse-left": this.state.descriptionEditable
     })
@@ -124,7 +127,6 @@ var TicketDescription = React.createClass({
           <div className={descriptionClasses}>
             {descriptionEl}
           </div>
-          {followers}
         </div>
       </div>
     )
