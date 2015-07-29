@@ -138,6 +138,9 @@ var DetailMixin = {
     return _.contains(['someday', 'backlog', 'in-progress'], status);
   },
 
+  /*
+    Need to compose to common interface
+  */
   changeAttribute(attr, value) {
     let productId = this.getParams().id;
     let itemId = this.getParams().number;
@@ -150,6 +153,19 @@ var DetailMixin = {
     newAttrs[attr] = value;
 
     ProductActions.updateItem(productId, itemId, newAttrs);
+  },
+
+  updateAttribute(subitemId, attr, value) {
+    let productId = this.getParams().id;
+    // restart status map
+    if (attr === 'status') {
+      value = STATUS_MAP[value];
+    }
+
+    let newAttrs = {};
+    newAttrs[attr] = value;
+
+    ProductActions.updateItem(productId, subitemId, newAttrs);
   },
 
   componentVisible(state, type) {

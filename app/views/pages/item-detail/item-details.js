@@ -114,17 +114,25 @@ var ItemDetails = React.createClass({
     let estimator = this.estimator(this.props.score, this.props.type, this.changeAttribute);
     let statusPicker = this.statusPicker(this.props.status, this.setHoverStatus, this.resetHoverStatus, this.changeAttribute);
 
+    let reassigner;
+    if (!this.canBeReassigned(this.props.status)) {
+      let currentStatus = helpers.toTitleCase(this.props.status)
+      reassigner = <div>{`Cannot reassign tickets which are ${currentStatus}`}</div>
+    } else {
+      reassigner = <Select placeholder={"Choose assignee"}
+                                  name="form-field-name"
+                             className="assign-dropdown"
+                              disabled={false}
+                                 value={currentAssignee}
+                               options={members}
+                              onChange={_.partial(this.changeAttribute, 'assigned_to')}
+                             clearable={true} />
+    }
+
     return (
       <div className="col-md-12 control">
         <div className={this.componentVisible(this.state.actionControls, 'assignee')}>
-          <Select placeholder={"Choose assignee"}
-                name="form-field-name"
-                className="assign-dropdown"
-                disabled={false}
-                value={currentAssignee}
-                options={members}
-                onChange={_.partial(this.changeAttribute, 'assigned_to')}
-                clearable={true} />
+          {reassigner}
         </div>
         <div className={this.componentVisible(this.state.actionControls, 'score')}>
           {estimator}

@@ -2,6 +2,7 @@ import React from 'react/addons';
 import _ from 'lodash';
 import helpers from '../../components/helpers';
 import ItemDetailMixin from './detail-mixin';
+import Subitem from './item-subitem';
 import {State, Link} from 'react-router';
 import ProductActions from '../../../actions/product-actions';
 import ItemActions from '../../../actions/item-actions';
@@ -55,115 +56,20 @@ var ItemSubitems = React.createClass({
     this.setState({subitemsStates: subitemsStates});
   },
 
-  subitemHeader(subitem, index, ctx) {
-    let subitemState = ctx.state.subitemsStates[subitem.number];
-    let headerClasses = React.addons.classSet({
-      'header': true,
-      'open': subitemState.header
-    });
-
-    let title = subitem.title;
-    let status = subitemState.hoverStatus || ctx.itemStatus(subitem.status);
-    let subitemId = subitem.number;
-
-    let email = (subitem.assigned_to && subitem.assigned_to.email) ? subitem.assigned_to.email : '';
-    let assigneeGravatar = ctx.assigneeGravatar(email);
-    let itemScoreButton = ctx.itemScoreButton(subitem.type, subitem.score);
-
-    let checked = subitem.status === 'completed' || subitem.status === 'accepted';
-
-    return ([
-      <div className={headerClasses}>
-        <a className="toggle" onClick={_.partial(ctx.toggleSubitem, subitem.number)}>
-          <span aria-hidden="true" className="glyphicon glyphicon-menu-right" />
-        </a>
-        <div className="sep-vertical"></div>
-        <div className="meta id">#{subitemId}</div>
-        <div className="title">{title}</div>
-        <div className="col-md-4 state collapse-right">
-          <ul>
-            <div className="col-md-3">
-              <li onClick={_.partial(ctx.toggleActionControl, subitem, 'status')}>
-                <div className="meta status">{helpers.toTitleCase(status)}</div>
-              </li>
-            </div>
-            <div className="col-md-3">
-              <li onClick={_.partial(ctx.toggleActionControl, subitem, 'assignee')}>
-                <div className="meta">{assigneeGravatar}</div>
-              </li>
-            </div>
-            <div className="col-md-3">
-              <li onClick={_.partial(ctx.toggleActionControl, subitem, 'score')}>
-                <div className="meta">{itemScoreButton}</div>
-              </li>
-            </div>
-            <div className="col-md-3">
-              <li>
-                <div className="meta">
-                  <div className="subitemCheck">
-                    <input name="subitemCheck" type="checkbox" checked={checked} onChange={_.partial(ctx.updateSubitem, subitem)} id={`subitem-${index}`} />
-                    <label htmlFor={`subitem-${index}`}></label>
-                  </div>
-                </div>
-              </li>
-            </div>
-          </ul>
-        </div>
-      </div>
-    ])
-  },
-
   subitems() {
-    return _.map(this.props.subitems, (subitem, i) => {
-      let header = this.subitemHeader(subitem, i, this);
-      let subitemActions = this.subitemActions(subitem, i, this);
-
-      let headerOpenState = this.state.subitemsStates[subitem.number].header;
-      let contentClasses = React.addons.classSet({
-        'content': true,
-        'open': headerOpenState
-      });
-      let contentStyles = !headerOpenState ? {overflow: 'hidden'} : {};
-
-      let descriptionClasses = React.addons.classSet({
-        "col-md-8": true,
-        "description": true,
-        'italicize': !subitem.description
-      })
-      let description = subitem.description || 'This subitem has no description yet...';
-
-      let tags = this.buildTags(subitem.tags);
-      let createdByTimestamp = this.createdByTimestamp(subitem.created_at, subitem.created_by);
-
-      let viewTicketURL = `/product/${this.getParams().id}/item/${subitem.number}`;
+    return _.map(this.props.subitems, (subitem, index) => {
+      let subitemState = this.state.subitemsStates[subitem.number]
 
       return (
-        <div key={i} className="subitem">
-          {header}
-          <div className={contentClasses} style={contentStyles}>
-            <div className="col-md-12">
-              <div className="col-md-12 collapse-right">
-                <div className={descriptionClasses}>
-                  {description}
-                </div>
-                <div className="col-md-4 control collapse-right">
-                  {subitemActions}
-                  <button className="detail-button kanban-button-secondary">
-                    <Link to={viewTicketURL}>View Full Ticket</Link>
-                  </button>
-                </div>
-              </div>
-              <div className="col-md-12 meta collapse-right">
-                <div className="col-md-6 tags no-gutter">
-                  {tags}
-                </div>
-                <div className="col-md-6 timestamp no-gutter">
-                  {createdByTimestamp}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <Subitem index={index}
+             subitem={subitem}
+             members={this.props.members}
+      setHoverStatus={this.setHoverStatus}
+      resetHoverStatus={this.resetHoverStatus}
+      toggleActionControl={this.toggleActionControl}
+       toggleSubitem={this.toggleSubitem}
+       updateSubitem={this.updateSubitem}
+            {...subitemState} />
       )
     });
   },
@@ -188,59 +94,6 @@ var ItemSubitems = React.createClass({
     this.setState({subitemsStates: state});
   },
 
-  updateAttribute(subitemId, attr, value) {
-    let productId = this.getParams().id;
-    // restart status map
-    if (attr === 'status') {
-      value = STATUS_MAP[value];
-    }
-
-    let newAttrs = {};
-    newAttrs[attr] = value;
-
-    ProductActions.updateItem(productId, subitemId, newAttrs);
-  },
-
-  subitemActions(subitem, index, ctx) {
-    let subheaderClasses = React.addons.classSet({
-      'subheader': true,
-      'open': ctx.state.subitemsStates[subitem.number].header
-    });
-    let members = helpers.formatSelectMembers(this.props.members);
-    let currentAssignee = ctx.currentAssignee(ctx.props.members, subitem.assigned_to);
-    let estimator = ctx.estimator(subitem.score, subitem.type, _.partial(ctx.updateAttribute, subitem.number));
-    let statusPicker = ctx.statusPicker(subitem.status, _.partial(ctx.setHoverStatus, subitem.number), _.partial(ctx.resetHoverStatus, subitem.number), _.partial(ctx.updateAttribute, subitem.number));
-    let controlsState = this.state.subitemsStates[subitem.number].controls;
-
-    let reassigner;
-    if (!this.canBeReassigned(subitem.status)) {
-      reassigner = <div>{`Cannot reassign tickets which are ${helpers.toTitleCase(subitem.status)}`}</div>
-    } else {
-      reassigner = <Select placeholder={"Choose assignee"}
-                                  name="form-field-name"
-                             className="assign-dropdown"
-                              disabled={false}
-                                 value={currentAssignee}
-                               options={members}
-                              onChange={_.partial(ctx.updateAttribute, subitem.number, 'assigned_to')}
-                             clearable={true} />
-    }
-
-    return (
-      <div className="col-md-8 state collapse-right pull-right">
-        <div className={ctx.componentVisible(controlsState, 'assignee')}>
-          {reassigner}
-        </div>
-        <div className={ctx.componentVisible(controlsState, 'score')}>
-          {estimator}
-        </div>
-        <div className={ctx.componentVisible(controlsState, 'status')}>
-          {statusPicker}
-        </div>
-      </div>
-    )
-  },
-
   addNewSubitemState(newSubitems) {
     let requiresUpdate = false;
     let subitemsStates = _.cloneDeep(this.state.subitemsStates);
@@ -251,11 +104,11 @@ var ItemSubitems = React.createClass({
         requiresUpdate = true;
         subitemsStates[item.number] = {
           header: false,
-          hoverStatus: false,
+          hoverStatus: '',
           controls: {
-            status: false,
-            score: false,
-            assignee: false
+            status: '',
+            score: '',
+            assignee: ''
           }
         }
       }
