@@ -4,6 +4,9 @@ import helpers from '../../components/helpers';
 import Gravatar from '../../components/gravatar';
 import OwnerAvatar from '../../components/item-card/owner';
 import {MentionsInput, Mention} from '@sprintly/react-mentions';
+import ProductActions from '../../../actions/product-actions';
+import ScoreMap from '../../../lib/score-map';
+import STATUS_MAP from '../../../lib/statuses-map';
 
 var DetailMixin = {
   header(title) {
@@ -81,6 +84,68 @@ var DetailMixin = {
     return (
       <button className={buttonClass}>{score}</button>
     )
+  },
+
+  estimator(score, type, changeHandler) {
+    var options = _.map(_.keys(ScoreMap), (key, i) => {
+      let estimatorClasses = React.addons.classSet({
+        "estimator-option": true,
+        "selected": key === score
+      })
+
+      return (
+        <li key={`${i}-${key}`}
+            className={estimatorClasses}
+            onClick={_.partial(changeHandler, 'score', key)}>
+          {this.itemScoreButton(type, key)}
+        </li>
+      )
+    })
+
+    return (
+      <ul className="estimator">
+        {options}
+      </ul>
+    )
+  },
+
+  statusPicker(status, hoverHandler, hoverReset, changeHandler) {
+    var options = _.map(_.keys(STATUS_MAP), (key, i) => {
+      let estimatorClasses = React.addons.classSet({
+        "estimator-option": true,
+        "selected": STATUS_MAP[key] === status
+      });
+      let value = helpers.toTitleCase(key.charAt(0));
+
+      return (
+        <li key={`${i}-${key}`}
+            className={estimatorClasses}
+            onMouseEnter={_.partial(hoverHandler, key)}
+            onClick={_.partial(changeHandler, 'status', key)}>
+          {this.itemScoreButton('status', value)}
+        </li>
+      )
+    });
+
+    return (
+      <ul onMouseLeave={hoverReset} className="estimator">
+        {options}
+      </ul>
+    )
+  },
+
+  changeAttribute(attr, value) {
+    let productId = this.getParams().id;
+    let itemId = this.getParams().number;
+
+    if (attr === 'status') {
+      value = STATUS_MAP[value];
+    }
+
+    let newAttrs = {};
+    newAttrs[attr] = value;
+
+    ProductActions.updateItem(productId, itemId, newAttrs);
   }
 };
 
