@@ -45,7 +45,7 @@ var ItemDetails = React.createClass({
       tagsEditable: false,
       actionControls: {
         status: false,
-        assignee: false,
+        assignee: true,
         score: false
       },
       hoverStatus: INVERTED_STATUS_MAP[this.props.status]

@@ -60,7 +60,7 @@ var ItemSubitem = React.createClass({
     let reassigner = this.reassigner(itemParams, members);
 
     return (
-      <div className="col-md-8 state collapse-right pull-right">
+      <div className="state">
         <div className={this.componentVisible(this.props.controls, 'assignee')}>
           {reassigner}
         </div>
@@ -91,6 +91,7 @@ var ItemSubitem = React.createClass({
     return (
       <ItemDescription itemId={this.props.subitem.number}
                   description={this.props.subitem.description}
+                      members={this.props.members}
                       setItem={_.partial(this.props.setSubitem, this.props.subitem.number)} />
     )
   },
@@ -105,7 +106,7 @@ var ItemSubitem = React.createClass({
     });
     let contentStyles = !this.props.header ? {overflow: 'hidden'} : {};
     let descriptionClasses = React.addons.classSet({
-      "col-md-8": true,
+      "col-md-9": true,
       "description": true,
       'italicize': !this.props.subitem.description
     })
@@ -123,7 +124,7 @@ var ItemSubitem = React.createClass({
               <div className={descriptionClasses}>
                 {description}
               </div>
-              <div className="col-md-4 control collapse-right">
+              <div className="col-md-3 control">
                 {subitemActions}
               </div>
             </div>

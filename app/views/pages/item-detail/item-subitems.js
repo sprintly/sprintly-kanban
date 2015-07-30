@@ -107,9 +107,10 @@ var ItemSubitems = React.createClass({
           header: false,
           hoverStatus: '',
           controls: {
-            status: '',
-            score: '',
-            assignee: ''
+            status: false,
+            assignee: true,
+            score: false
+            
           }
         }
       }
