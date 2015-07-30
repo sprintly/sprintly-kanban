@@ -109,13 +109,14 @@ var ItemDetails = React.createClass({
     let members = helpers.formatSelectMembers(this.props.members);
     let productId = this.getParams().id;
     let itemId = this.getParams().number;
+    let assigneeToId = (this.props.assignee && this.props.assignee.id) ? this.props.assignee.id : '';
 
     let itemParams = {
       score: this.props.score,
       number: this.props.number,
       type: this.props.type,
       status: this.props.status,
-      assigned_to: this.props.assignee.id
+      assigned_to: assigneeToId
     }
 
     let estimator = this.estimator(itemParams);
