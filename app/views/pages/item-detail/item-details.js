@@ -2,6 +2,7 @@ import React from 'react/addons';
 import _ from 'lodash';
 import helpers from '../../components/helpers';
 import ItemDetailMixin from './detail-mixin';
+import ItemTitle from './item-title';
 import ProductActions from '../../../actions/product-actions';
 import {State} from 'react-router';
 import ScoreMap from '../../../lib/score-map';
@@ -32,7 +33,8 @@ var ItemDetails = React.createClass({
     assignee: React.PropTypes.shape({
       email: React.PropTypes.string,
       id: React.PropTypes.number
-    })
+    }),
+    setItem: React.PropTypes.func
   },
 
   getInitialState() {
@@ -53,27 +55,20 @@ var ItemDetails = React.createClass({
   },
 
   buildTitle() {
-    if (this.props.type === 'story') {
-      var whoFirstWord = this.props.who.split(' ')[0];
-      var whoPre = helpers.vowelSound(whoFirstWord) ? 'As an ' : 'As a ' ;
-
-      return  [
-        <span className="italicize">{whoPre}</span>,
-        `${this.props.who}`,
-        <span className="italicize"> I want </span>,
-        `${this.props.what}`,
-        <span className="italicize"> so that </span>,
-        `${this.props.why}`
-      ]
-    } else {
-      return this.props.title
-    }
+    return (
+      <ItemTitle itemId={this.props.number}
+                 type={this.props.type}
+                 title={this.props.title}
+                 who={this.props.who}
+                 what={this.props.what}
+                 why={this.props.why}
+                 setItem={this.props.setItem} />
+    )
   },
 
   infoSection() {
     let type = helpers.toTitleCase(this.props.type);
     let ticketId = `#${this.props.number}`
-    let titleClass = `title ${this.props.type}`
     let title = this.buildTitle();
     let tags = this.buildTags(this.props.tags);
     let createdByTimestamp = this.createdByTimestamp(this.props.createdAt, this.props.createdBy);
@@ -89,9 +84,7 @@ var ItemDetails = React.createClass({
           </div>
         </div>
         <div className="ticket__description">
-          <div className={titleClass}>
-            {title}
-          </div>
+          {title}
           <div className="col-md-12 meta collapse-right">
             <div className="col-md-6 tags no-gutter">
               {tags}

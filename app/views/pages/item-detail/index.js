@@ -55,8 +55,10 @@ var ItemDetail = React.createClass({
   },
 
   setItem(key, ev, value) {
+    let newVal = _.isUndefined(value) ? ev.currentTarget.value : value;
+
     let item = _.cloneDeep(this.state.item);
-    item[key] = value;
+    item[key] = newVal;
 
     this.setState({item: item});
   },
@@ -90,7 +92,8 @@ var ItemDetail = React.createClass({
                   createdBy={this.state.item.created_by}
                      status={this.state.item.status}
                      score={this.state.item.score}
-                   assignee={this.state.item.assigned_to} />
+                   assignee={this.state.item.assigned_to}
+                   setItem={this.setItem} />
     )
   },
 

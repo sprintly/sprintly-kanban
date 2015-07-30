@@ -99,14 +99,34 @@
   }
 }
 
+.item-title__field,
 .add-item__field {
-  display: inline-block;
-  margin-bottom: 2em;
+  > span {
+    color: @sprintly-blue;
+  }
+}
 
+.add-item__field {
   > span {
     font-size: 1.4em;
-    color: #20718F;
   }
+}
+
+.item-title__field {
+  > span {
+    font-size: 20px;
+  }
+}
+
+.item-title__field {
+  margin-bottom: 1.8em;
+}
+.add-item__field {
+  margin-bottom: 2em;
+}
+.item-title__field,
+.add-item__field {
+  display: inline-block;
 
   .input-group {
     position: relative;
@@ -133,18 +153,48 @@
       border-bottom: 2px solid @defect-color;
     }
   }
+}
 
-  &.who input.form-control {
-    width: 220px;
-  }
+.add-item__field.who input.form-control {
+  width: 220px;
+}
+.add-item__field.what input.form-control {
+  width: 373px;
+}
+.add-item__field.why input.form-control {
+  width: 660px;
+}
 
-  &.what input.form-control {
-    width: 373px;
-  }
-
-  &.why input.form-control {
-    width: 660px;
-  }
+.item-title__field.who {
+  width: 35%;
+}
+.item-title__field.what {
+  width: 65%;
+}
+.item-title__field.default,
+.item-title__field.why {
+  width: 100%;
+  margin-bottom: 10px;
+}
+.item-title__field.who .input-group {
+  position: relative;
+  display: inline-block;
+  width: 68%
+}
+.item-title__field.what .input-group {
+  position: relative;
+  display: inline-block;
+  width: 82%;
+}
+.item-title__field.why .input-group {
+  position: relative;
+  display: inline-block;
+  width: 89%;
+}
+.item-title__field.default .input-group {
+  position: relative;
+  display: inline-block;
+  width: 100%;
 }
 
 

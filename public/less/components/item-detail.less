@@ -8,7 +8,10 @@
 .item-detail {
   position: fixed;
   height: 100%;
-  width: 60%;
+  /* need to set the width according to screen size  */
+  width: 41%;
+  /* width: 60%; */
+
   background: #fff;
   top: 54px;
   right: 0;
@@ -163,7 +166,21 @@
   width: 88%;
   float: right;
   display: inline-block;
+
+  input {
+    font-size: 16px;
+  }
 }
+
+.item-detail .ticket__detail .ticket__description .title__edit {
+  width: 50px;
+  float: right;
+
+  button {
+    margin-top: 10px;
+  }
+}
+
 .item-detail .ticket__detail .info .title {
   font-size: 21px;
   width: 97%;
