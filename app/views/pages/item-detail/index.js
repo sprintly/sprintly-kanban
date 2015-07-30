@@ -27,8 +27,11 @@ var ItemDetail = React.createClass({
   mixins: [State, ItemDetailMixin],
 
   getInitialState() {
+    let product = ProductStore.getProduct(this.getParams().id);
+
     return {
       item: {},
+      product: product,
       attachmentsPanel: false,
       itemDetailHeight: initialItemDetailHeight(),
       descriptionEditable: false,
@@ -93,7 +96,8 @@ var ItemDetail = React.createClass({
                      status={this.state.item.status}
                      score={this.state.item.score}
                    assignee={this.state.item.assigned_to}
-                   setItem={this.setItem} />
+                   setItem={this.setItem}
+                   productTags={this.state.product.tags} />
     )
   },
 
@@ -202,9 +206,13 @@ var ItemDetail = React.createClass({
 
   _onChange() {
     let item = ProductStore.getItem(this.getParams().id, this.getParams().number);
+    let product = ProductStore.getProduct(this.getParams().id);
 
     if (item) {
-      this.setState({item});
+      this.setState({
+        item,
+        product
+      });
     }
   }
 })

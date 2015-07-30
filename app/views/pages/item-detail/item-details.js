@@ -1,6 +1,7 @@
 import React from 'react/addons';
 import _ from 'lodash';
 import helpers from '../../components/helpers';
+import TagsInput from '../../components/tags-input';
 import ItemDetailMixin from './detail-mixin';
 import ItemTitle from './item-title';
 import ProductActions from '../../../actions/product-actions';
@@ -15,6 +16,7 @@ var ItemDetails = React.createClass({
   mixins: [State, ItemDetailMixin],
 
   propTypes: {
+    productTags: React.PropTypes.array,
     members: React.PropTypes.array,
     type: React.PropTypes.string,
     title: React.PropTypes.string,
@@ -39,6 +41,7 @@ var ItemDetails = React.createClass({
 
   getInitialState() {
     return {
+      tagsEditable: false,
       actionControls: {
         status: false,
         assignee: false,
@@ -66,12 +69,64 @@ var ItemDetails = React.createClass({
     )
   },
 
+  toggleTagsEdit() {
+    const TAGS_ATTR = 'tags';
+
+    if (this.state.tagsEditable) {
+      this.updateAttribute(this.props.number, TAGS_ATTR, this.props.tags)
+    }
+
+    this.setState({tagsEditable: !this.state.tagsEditable});
+  },
+
+  toggleButton() {
+    let buttonCopy = this.state.tagsEditable ? 'Save' : 'Add';
+
+    return (
+      <div className="title__edit">
+        <button className="detail-button kanban-button-secondary" onClick={this.toggleTagsEdit}>
+          {buttonCopy}
+        </button>
+      </div>
+    )
+  },
+
+  updateTags(value) {
+    let tags = value.join(',');
+
+    this.props.setItem('tags', null, tags)
+  },
+
+  editTagsInput() {
+    let tags = this.props.tags.split(',');
+    if (tags.length === 1 && !tags[0]) {
+      tags = ""
+    }
+
+    let tagOptions = _.pluck(this.props.productTags, 'tag');
+
+    return (
+      <div className="col-md-12">
+        <TagsInput tags={tagOptions} onChange={this.updateTags} value={tags}/>
+      </div>
+    )
+  },
+
+  tags() {
+    if (this.state.tagsEditable) {
+      return this.editTagsInput()
+    } else {
+      return this.buildTags(this.props.tags);
+    }
+  },
+
   infoSection() {
     let type = helpers.toTitleCase(this.props.type);
     let ticketId = `#${this.props.number}`
     let title = this.buildTitle();
-    let tags = this.buildTags(this.props.tags);
+    let tags = this.tags();
     let createdByTimestamp = this.createdByTimestamp(this.props.createdAt, this.props.createdBy);
+    let toggleButton = this.toggleButton();
 
     return (
       <div className="col-md-9 info">
@@ -88,6 +143,7 @@ var ItemDetails = React.createClass({
           <div className="col-md-12 meta collapse-right">
             <div className="col-md-6 tags no-gutter">
               {tags}
+              {toggleButton}
             </div>
             <div className="col-md-6 timestamp collapse-right">
               {createdByTimestamp}
