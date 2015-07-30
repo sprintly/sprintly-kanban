@@ -118,7 +118,7 @@ var ItemSubitem = React.createClass({
       <div key={this.props.index} className="subitem">
         {header}
         <div className={contentClasses} style={contentStyles}>
-          <div className="col-md-12">
+          <div className="col-md-12 collapse-right">
             <div className="col-md-12 collapse-right">
               <div className={descriptionClasses}>
                 {description}

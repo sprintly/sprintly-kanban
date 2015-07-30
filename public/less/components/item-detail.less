@@ -9,8 +9,14 @@
   position: fixed;
   height: 100%;
   /* need to set the width according to screen size  */
-  width: 41%;
-  /* width: 60%; */
+  width: 50%;
+
+  /* @media (max-width: @screen-lg-min) {
+  }
+  @media (min-width: @screen-lg-min) {;
+  }
+  width: 41%; */
+
 
   background: #fff;
   top: 54px;
@@ -198,6 +204,10 @@
 
 .ticket__description ul.tags__component .tags-input {
   font-size: 12px;
+  margin-right: 0px;
+}
+.ticket__description ul.tags__component .tags-input .list-group {
+  z-index: @zIndex-3;
 }
 
 .item-detail .ticket__detail .ticket__description .tags {
@@ -321,6 +331,12 @@
     border-radius: 34px;
   }
 }
+.item-detail .ticket__detail .control {
+  button {
+    margin-left: 20%;
+    margin-right: 20%;
+  }
+}
 .item-detail .ticket__detail .control,
 .item-detail .ticket__detail .ticket-state .value {
   button {
@@ -351,9 +367,14 @@
     outline: none;
   }
 }
+.item-detail .ticket__detail .control {
+  margin-top: 15px;
+}
+.item-detail .subitems .content .control {
+  margin-top: 8px;
+}
 .item-detail .ticket__detail .control,
 .item-detail .subitems .content .control {
-  margin-top: 15px;
 
   ul.estimator {
     padding: 0;
@@ -436,7 +457,7 @@
 .item-detail .subitem .header {
   height: 40px;
   background-color: @sprintly-light-grey;
-  border: 1px solid @sprintly-grey;
+  border: 1px solid @sprintly-black-light;
 
   > a.toggle {
     width: 25px;
@@ -477,10 +498,13 @@
 }
 
 .item-detail .subitem .header .state {
+  width: 220px;
   float:right;
   display: inline;
 
-  ul {
+  ul.action__list {
+    margin-bottom: 0;
+    padding: 0;
     list-style: none;
   }
 
@@ -488,6 +512,26 @@
     display: inline;
   }
 }
+
+.item-detail .subitem .header .state .status,
+.item-detail .subitem .header .state .assignee,
+.item-detail .subitem .header .state .score,
+.item-detail .subitem .header .state .subitem_checkbox {
+  display:inline-block;
+}
+.item-detail .subitem .header .state .status {
+  width: 65px;
+  margin-right: 15px;
+}
+.item-detail .subitem .header .state .assignee {
+  margin-right: 10px;
+}
+.item-detail .subitem .header .state .assignee,
+.item-detail .subitem .header .state .score,
+.item-detail .subitem .header .state .subitem_checkbox {
+  width: 40px;
+}
+
 .item-detail .subitem .header .state .meta {
   cursor: pointer;
 
@@ -498,7 +542,6 @@
     border-radius: 16px;
     font-size: 17px;
     font-weight: 600;
-    margin-top: 4px;
     line-height: 0;
   }
 }

@@ -59,24 +59,24 @@ var ItemSubitemHeader = React.createClass({
         <div className="sep-vertical"></div>
         <div className="meta id">#{subitemId}</div>
         <div className="title">{title}</div>
-        <div className="col-md-4 state collapse-right">
-          <ul>
-            <div className="col-md-3">
+        <div className="state collapse-right">
+          <ul className="action__list">
+            <div className="status">
               <li onClick={_.partial(this.props.toggleActionControl, this.props.subitem, 'status')}>
                 <div className="meta status">{helpers.toTitleCase(status)}</div>
               </li>
             </div>
-            <div className="col-md-3">
+            <div className="assignee">
               <li onClick={_.partial(this.props.toggleActionControl, this.props.subitem, 'assignee')}>
                 <div className="meta">{assigneeGravatar}</div>
               </li>
             </div>
-            <div className="col-md-3">
+            <div className="score">
               <li onClick={_.partial(this.props.toggleActionControl, this.props.subitem, 'score')}>
                 <div className="meta">{itemScoreButton}</div>
               </li>
             </div>
-            <div className="col-md-3">
+            <div className="subitem__checkbox">
               <li>
                 <div className="meta">
                   <div className="subitemCheck">
