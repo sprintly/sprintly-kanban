@@ -1,6 +1,7 @@
 import React from 'react/addons';
 import ItemActions from '../../../actions/item-actions';
 import ItemDetailMixin from './detail-mixin';
+import Markdown from 'react-markdown';
 import {State} from 'react-router';
 import _ from 'lodash';
 import Gravatar from '../../components/gravatar';
@@ -34,12 +35,18 @@ const STATUS_MAP = {
 
 var ItemActivity = React.createClass({
 
+  mixins: [State, ItemDetailMixin],
+
   propTypes: {
     members: React.PropTypes.array,
     activity: React.PropTypes.array
   },
 
-  mixins: [State, ItemDetailMixin],
+  getInitialState() {
+    return {
+      showAll: false
+    }
+  },
 
   abbreviatedName(model) {
     if (!model) {
@@ -122,7 +129,10 @@ var ItemActivity = React.createClass({
         description = ''
         break;
       case 'item changed':
-        description = this.itemChanged(meta);
+        let changed = this.itemChanged(meta)
+        let formatted = helpers.formatTextForMarkdown(changed);
+
+        description = <Markdown source={formatted} />
         break;
       case 'attachment':
         description = this.attachmentDescription(meta);
@@ -133,7 +143,9 @@ var ItemActivity = React.createClass({
       default:
         // This is a hack based on the api not returning an action for a comment
         if (model.cls === "Comment") {
-          description = model.body
+          let formatted = helpers.formatTextForMarkdown(model.meta.body);
+
+          description = <Markdown source={formatted} />
         } else {
           description = `DESCRIPTION CASE NOT HANDLED: cls:${model.cls}, label:${model.label}`
         }
@@ -142,14 +154,36 @@ var ItemActivity = React.createClass({
     return description;
   },
 
+  showAllToggle() {
+    this.setState({showAll: !this.state.showAll});
+  },
+
+  showAllActivityButton() {
+    let toggleActivityCopy = this.state.showAll ? 'Show Less Activity' : 'Show More Activity';
+
+    return <button className="load-more" onClick={this.showAllToggle}>{toggleActivityCopy}</button>;
+  },
+
   render: function() {
     let activityItems;
     let activity = this.props.activity;
     let totalActivityCount = activity.total_count || 0;
 
     if (activity.activities && this.props.members.length) {
+      // let displayList = activity.activities;
+      // if (!this.state.reversed) {
+      //   displayList = activity.activities.reverse();
+      //   this.state.reversed = true;
+      // }
 
-      activityItems = _.map(activity.activities, _.bind(function(model) {
+      /*
+        Default to show 20 activity objects to prevent slow rendering
+      */
+      if (!this.state.showAll) {
+        displayList = displayList.slice(0, 10)
+      }
+
+      activityItems = _.map(displayList, _.bind(function(model) {
         let creator = _.findWhere(this.props.members, {id: model.user});
         let creatorEmail = creator.email;
         let creatorName = this.abbreviatedName(creator);
@@ -164,7 +198,7 @@ var ItemActivity = React.createClass({
             </div>
             <div className="col-md-2 creator no-wrap-truncate">{creatorName}</div>
             <div className="col-md-1 activity-type no-gutter">{activityType}</div>
-            <div className="col-md-7 description collapse-right">
+            <div className="col-md-7 activity__description collapse-right">
               {description}
             </div>
             <div className="timestamp pull-right">
@@ -177,6 +211,8 @@ var ItemActivity = React.createClass({
       activityItems = <li className="comment">No Activity Yet</li>
     }
 
+    let showAllActivityButton = this.showAllActivityButton();
+
     return (
       <div className="col-md-12 section activity">
         <div className="col-md-12">
@@ -188,6 +224,7 @@ var ItemActivity = React.createClass({
           <ul>
             {activityItems}
           </ul>
+          {showAllActivityButton}
         </div>
       </div>
     )

@@ -50,5 +50,57 @@ module.exports = {
     }
 
     return ITEM_STATUS_MAP[status];
+  },
+
+  formatTextForMarkdown(description) {
+    let names = internals.parseNames(description);
+    let ids = internals.parseIds(description);
+
+    if (names && ids) {
+      let links = internals.buildLinks(ids, names);
+      var merged = _.map(_.zip(names,ids), function(pair) {return pair[0]+pair[1]});
+
+      _.each(merged, function(merge, i) {
+        description = description.replace(merge, links[i])
+      })
+
+      return description;
+    } else {
+      return description
+    }
+  }
+}
+
+var internals = {
+  parseNames(text) {
+    return text.match(/@\[(.*?)\]/g)
+  },
+
+  parseIds(text) {
+    return text.match(/\((.*?)\)/g);
+  },
+
+  buildLinks(ids, names) {
+    /*
+      Member link format: https://sprint.ly/product/24067/organizer/?members=19470
+    */
+    let strippedIds = internals.strippedIds(ids);
+    let strippedNames = internals.strippedNames(names);
+
+    return _.map(strippedIds, function(id, i) {
+      return `[${strippedNames[i]}](https://sprint.ly/product/24067/organizer/?members=${id})`;
+    })
+  },
+
+  strippedIds(ids) {
+    return _.map(ids, (id) => {
+      return id.match(/:(.+?)\)/)[1]
+    });
+  },
+
+  strippedNames(names) {
+    return _.map(names, (id) => {
+      return id.match(/@\[(.+?)\]/)[1]
+    });
   }
 }

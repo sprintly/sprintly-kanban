@@ -41,63 +41,13 @@ var ItemDescription = React.createClass({
     )
   },
 
-  formatDescriptionForMarkdown(description) {
-    let names = this.parseNames(description);
-    let ids = this.parseIds(description);
-
-    if (names && ids) {
-      let links = this.buildLinks(ids, names);
-      var merged = _.map(_.zip(names,ids), function(pair) {return pair[0]+pair[1]});
-
-      _.each(merged, function(merge, i) {
-        description = description.replace(merge, links[i])
-      })
-
-      return description;
-    } else {
-      return description
-    }
-  },
-
-  parseNames(text) {
-    return text.match(/@\[(.*?)\]/g)
-  },
-
-  parseIds(text) {
-    return text.match(/\((.*?)\)/g);
-  },
-
-  buildLinks(ids, names) {
-    /*
-      Link format: https://sprint.ly/product/24067/organizer/?members=19470
-    */
-    let strippedIds = this.strippedIds(ids);
-    let strippedNames = this.strippedNames(names);
-
-    return _.map(strippedIds, function(id, i) {
-      return `[${strippedNames[i]}](https://sprint.ly/product/24067/organizer/?members=${id})`;
-    })
-  },
-
-  strippedIds(ids) {
-    return _.map(ids, (id) => {
-      return id.match(/:(.+?)\)/)[1]
-    });
-  },
-
-  strippedNames(names) {
-    return _.map(names, (id) => {
-      return id.match(/@\[(.+?)\]/)[1]
-    });
-  },
-
   descriptionMarkdown() {
     let description = this.props.description;
 
     if (!description) {
       description = `_${placeholder}_`;
     } else {
-      description = this.formatDescriptionForMarkdown(description);
+      description = helpers.formatTextForMarkdown(description);
     }
     let markdown = <Markdown source={description} />
 
