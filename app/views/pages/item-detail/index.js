@@ -11,6 +11,7 @@ import ItemAttachments from './item-attachments';
 import ItemSubitems from './item-subitems';
 import ItemComments from './item-comments';
 import ItemActivity from './item-activity';
+import ItemDetailMixin from './detail-mixin';
 // Libs
 import {State,Link} from 'react-router';
 
@@ -23,7 +24,7 @@ let initialItemDetailHeight = function() {
 
 var ItemDetail = React.createClass({
 
-  mixins: [State],
+  mixins: [State, ItemDetailMixin],
 
   getInitialState() {
     return {
@@ -60,6 +61,14 @@ var ItemDetail = React.createClass({
     this.setState({item: item});
   },
 
+  setSubitem(subitemId, key, ev, value) {
+    let item = _.cloneDeep(this.state.item);
+    let subitem = _.findWhere(item.sub_items, {number: subitemId})
+    subitem[key] = value;
+
+    this.setState({item: item});
+  },
+
   updateItem() {
     let productId = this.getParams().id;
     let itemId = this.getParams().number;
@@ -87,9 +96,14 @@ var ItemDetail = React.createClass({
 
   itemDescription() {
     return (
-      <ItemDescription followers={[]}
-                     description={this.state.item.description}
-                         setItem={this.setItem} />
+      <div className="col-md-12 section description">
+        <div className="col-md-12">
+          {this.header('description')}
+          <ItemDescription    itemId={this.state.item.number}
+                         description={this.state.item.description}
+                            setItem={this.setItem} />
+        </div>
+      </div>
     )
   },
 
@@ -111,7 +125,8 @@ var ItemDetail = React.createClass({
 
     return (
       <ItemSubitems  members={this.props.members}
-                    subitems={subitems} />
+                    subitems={subitems}
+                    setSubitem={this.setSubitem} />
     )
   },
 

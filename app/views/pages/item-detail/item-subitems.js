@@ -14,7 +14,8 @@ var ItemSubitems = React.createClass({
 
   propTypes: {
     members: React.PropTypes.array,
-    subitems: React.PropTypes.array
+    subitems: React.PropTypes.array,
+    setSubitem: React.PropTypes.func
   },
 
   getInitialState() {
@@ -69,6 +70,7 @@ var ItemSubitems = React.createClass({
       toggleActionControl={this.toggleActionControl}
        toggleSubitem={this.toggleSubitem}
        updateSubitem={this.updateSubitem}
+       setSubitem={this.props.setSubitem}
             {...subitemState} />
       )
     });

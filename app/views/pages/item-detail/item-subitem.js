@@ -2,6 +2,7 @@ import React from 'react/addons';
 import _ from 'lodash';
 import helpers from '../../components/helpers';
 import ItemDetailMixin from './detail-mixin';
+import ItemDescription from './item-description';
 import SubitemHeader from './item-subitem-header';
 import {State, Link} from 'react-router';
 import ProductActions from '../../../actions/product-actions';
@@ -34,7 +35,8 @@ var ItemSubitem = React.createClass({
     resetHoverStatus: React.PropTypes.func,
     toggleActionControl: React.PropTypes.func,
     toggleSubitem: React.PropTypes.func,
-    updateSubitem: React.PropTypes.func
+    updateSubitem: React.PropTypes.func,
+    setSubitem: React.PropTypes.func
   },
 
   subitemActions() {
@@ -77,27 +79,32 @@ var ItemSubitem = React.createClass({
     )
   },
 
+  description() {
+    return (
+      <ItemDescription itemId={this.props.subitem.number}
+                  description={this.props.subitem.description}
+                      setItem={_.partial(this.props.setSubitem, this.props.subitem.number)} />
+    )
+  },
+
   render() {
     let header = this.subitemHeader();
+    let description = this.description();
     let subitemActions = this.subitemActions();
-
     let contentClasses = React.addons.classSet({
       'content': true,
       'open': this.props.header
     });
     let contentStyles = !this.props.header ? {overflow: 'hidden'} : {};
-
     let descriptionClasses = React.addons.classSet({
       "col-md-8": true,
       "description": true,
       'italicize': !this.props.subitem.description
     })
-    let description = this.props.subitem.description || 'This subitem has no description yet..';
-
     let tags = this.buildTags(this.props.subitem.tags);
     let createdByTimestamp = this.createdByTimestamp(this.props.subitem.created_at, this.props.subitem.created_by);
-
     let viewTicketURL = `/product/${this.getParams().id}/item/${this.props.subitem.number}`;
+
 
     return (
       <div key={this.props.index} className="subitem">

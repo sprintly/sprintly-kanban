@@ -8,12 +8,12 @@ import Markdown from 'react-markdown';
 
 const placeholder = "Use '@' to mention another Sprintly user.  Use #[item number] (e.g. #1234) to reference another Sprintly item.";
 
-var TicketDescription = React.createClass({
+var ItemDescription = React.createClass({
 
   mixins: [State, ItemDetailMixin],
 
   propTypes: {
-    followers: React.PropTypes.array,
+    itemId: React.PropTypes.number,
     description: React.PropTypes.string,
     setItem: React.PropTypes.func
   },
@@ -24,46 +24,10 @@ var TicketDescription = React.createClass({
     }
   },
 
-  buildFollowers() {
-    let followerNodes;
-    if (this.props.followers) {
-      followerNodes = _.map(this.props.followers, (follower, i) => {
-        return (
-          <div key={i} className="col-md-4">
-            <li><Gravatar email={follower.email} size={36} /></li>
-          </div>
-        )
-      })
-    } else {
-      followers = (
-        <div className="no-followers">No followers of this item yet</div>
-      )
-    }
-
-    return (
-      <div className="col-md-3 followers">
-        {this.header('followers')}
-        <ul>
-          {followerNodes}
-        </ul>
-        <button className="detail-button kanban-button-secondary" onClick={this.followItem}>Follow</button>
-      </div>
-    )
-  },
-
-  followItem() {
-    console.log('Follow the item');
-  },
-
-  saveItem(value) {
-    // Display some spinner action
+  saveItemDescription() {
+    const DESCRIPTION_ATTR = 'description';
     this.toggleDescriptionEdit();
-    let productId = this.getParams().id;
-    let itemId = this.getParams().number;
-
-    if (this.props.description) {
-      ProductActions.updateItem(productId, itemId, { description: this.props.description });
-    }
+    this.updateAttribute(this.props.itemId, DESCRIPTION_ATTR, this.props.description)
   },
 
   descriptionMention() {
@@ -71,7 +35,7 @@ var TicketDescription = React.createClass({
 
     return ([
         mentionsComponent,
-        this.toggleButton(null, this.saveItem)
+        this.toggleButton(null, this.saveItemDescription)
       ]
     )
   },
@@ -108,10 +72,6 @@ var TicketDescription = React.createClass({
   },
 
   render: function() {
-    /* TODO: Followers fetch
-      let followers = this.buildFollowers();
-      {followers}
-    */
     let descriptionEl = this.state.descriptionEditable ? this.descriptionMention() : this.descriptionMarkdown();
 
     let descriptionClasses = React.addons.classSet({
@@ -121,17 +81,12 @@ var TicketDescription = React.createClass({
     })
 
     return (
-      <div className="col-md-12 section description">
-        <div className="col-md-12">
-          {this.header('description')}
-          <div className={descriptionClasses}>
-            {descriptionEl}
-          </div>
-        </div>
+      <div className={descriptionClasses}>
+        {descriptionEl}
       </div>
     )
   }
 
 });
 
-export default TicketDescription;
+export default ItemDescription;
