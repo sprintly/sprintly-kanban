@@ -13,6 +13,10 @@ var TicketComments = React.createClass({
     }
   },
 
+  propsTypes: {
+    members: React.PropTypes.array
+  },
+
   saveComment(ev) {
     let comment = ev.currentTarget.getElementsByTagName("textarea")[0].value;
     ItemActions.createComment(this.getParams().id, this.getParams().number, comment)
@@ -24,7 +28,7 @@ var TicketComments = React.createClass({
   },
 
   render: function() {
-    let mentionsComponent = this.mentionsComponent(this.state.comment, placeholder, this.updateComment);
+    let mentionsComponent = this.mentionsComponent(this.state.comment, placeholder, this.props.members, this.updateComment);
 
     return (
       <div className="col-md-12 section comments">

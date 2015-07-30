@@ -108,7 +108,8 @@ var ItemDetail = React.createClass({
           {this.header('description')}
           <ItemDescription    itemId={this.state.item.number}
                          description={this.state.item.description}
-                            setItem={this.setItem} />
+                             members={this.props.members}
+                             setItem={this.setItem} />
         </div>
       </div>
     )
@@ -139,7 +140,7 @@ var ItemDetail = React.createClass({
 
   itemComments() {
     return (
-      <ItemComments />
+      <ItemComments members={this.props.members} />
     )
   },
 

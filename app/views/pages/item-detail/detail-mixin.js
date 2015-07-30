@@ -25,8 +25,8 @@ var DetailMixin = {
     return open ? 'down' : 'right';
   },
 
-  mentionsComponent(value, placeholder, changeFn) {
-    let mentions = helpers.formatMentionMembers(this.props.members);
+  mentionsComponent(value, placeholder, members, changeFn) {
+    let mentions = helpers.formatMentionMembers(members);
 
     return (
       <MentionsInput

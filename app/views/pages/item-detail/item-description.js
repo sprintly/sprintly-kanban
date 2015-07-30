@@ -15,6 +15,7 @@ var ItemDescription = React.createClass({
   propTypes: {
     itemId: React.PropTypes.number,
     description: React.PropTypes.string,
+    members: React.PropTypes.array,
     setItem: React.PropTypes.func
   },
 
@@ -31,7 +32,7 @@ var ItemDescription = React.createClass({
   },
 
   descriptionMention() {
-    let mentionsComponent = this.mentionsComponent(this.props.description, placeholder, _.partial(this.props.setItem, 'description'));
+    let mentionsComponent = this.mentionsComponent(this.props.description, placeholder, this.props.members, _.partial(this.props.setItem, 'description'));
 
     return ([
         mentionsComponent,

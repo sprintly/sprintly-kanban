@@ -236,7 +236,9 @@
     max-height: 72px;
   }
 }
-
+/* TODO: Need to compose mentions styling to another common sheet */
+.item__description .react-mentions,
+.comment__form .react-mentions,
 .add-item.modal .react-mentions {
   position: relative;
   overflow-y: visible;
@@ -289,7 +291,7 @@
 
   .suggestions {
     position: absolute;
-    z-index: 1;
+    z-index: @zIndex-2;
     max-height: 260px;
     overflow-y: hidden;
 
