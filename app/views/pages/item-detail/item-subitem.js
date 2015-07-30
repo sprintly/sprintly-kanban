@@ -45,11 +45,19 @@ var ItemSubitem = React.createClass({
       'open': this.props.header
     });
     let members = helpers.formatSelectMembers(this.props.members);
-    let currentAssignee = this.currentAssignee(this.props.members, this.props.subitem.assigned_to);
-
     let estimator = this.estimator(this.props.subitem);
     let statusPicker = this.statusPicker(this.props.subitem, this.props.setHoverStatus, this.props.resetHoverStatus);
-    let reassigner = this.reassigner(this.props.subitem, members);
+    let subitem = this.props.subitem;
+    let assigneeToId = (subitem.assigned_to && subitem.assigned_to.id) ? subitem.assigned_to.id : '';
+    let itemParams = {
+      score: subitem.score,
+      number: subitem.number,
+      type: subitem.type,
+      status: subitem.status,
+      assigned_to: assigneeToId
+    }
+
+    let reassigner = this.reassigner(itemParams, members);
 
     return (
       <div className="col-md-8 state collapse-right pull-right">

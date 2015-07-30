@@ -183,9 +183,9 @@ var DetailMixin = {
   },
 
   currentAssignee(members, assigneeId) {
-    let member = _.findWhere(members, {id: assigneeId});
+    let member = _.findWhere(members, {value: assigneeId});
 
-    return member ? `${member.first_name} ${member.last_name}` : null;
+    return member ? member.label : null;
   },
 
   controlToggle(state, type) {
