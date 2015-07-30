@@ -21,6 +21,10 @@ var DetailMixin = {
     )
   },
 
+  caretDirection(open) {
+    return open ? 'down' : 'right';
+  },
+
   mentionsComponent(value, placeholder, changeFn) {
     let mentions = helpers.formatMentionMembers(this.props.members);
 
@@ -175,7 +179,7 @@ var DetailMixin = {
   },
 
   componentVisible(state, type) {
-    return state[type] ? 'visible' : 'hidden';
+    return (state && state[type]) ? 'visible' : 'hidden';
   },
 
   currentAssignee(members, assigneeId) {

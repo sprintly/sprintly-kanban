@@ -110,18 +110,16 @@ var ItemSubitem = React.createClass({
               </div>
               <div className="col-md-4 control collapse-right">
                 {subitemActions}
-                <button className="detail-button kanban-button-secondary">
-                  <Link to={viewTicketURL}>View Full Ticket</Link>
-                </button>
               </div>
             </div>
-            <div className="col-md-12 meta collapse-right">
-              <div className="col-md-6 tags no-gutter">
-                {tags}
-              </div>
-              <div className="col-md-6 timestamp no-gutter">
-                {createdByTimestamp}
-              </div>
+          </div>
+          <div className="col-md-12 meta footer">
+            <div className="col-md-6 tags no-gutter">
+              <Link to={viewTicketURL}>View Full Ticket</Link>
+              {tags}
+            </div>
+            <div className="col-md-6 timestamp no-gutter">
+              {createdByTimestamp}
             </div>
           </div>
         </div>

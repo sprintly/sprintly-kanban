@@ -83,14 +83,13 @@ var ItemSubitems = React.createClass({
     let state = _.cloneDeep(this.state.subitemsStates)
     state[subitemId].hoverStatus = key;
 
-    //  current
     this.setState({subitemsStates: state});
   },
 
   resetHoverStatus(subitemId, ev) {
     let state = _.cloneDeep(this.state.subitemsStates)
     state[subitemId].hoverStatus = false;
-    // in-progress --> current
+
     this.setState({subitemsStates: state});
   },
 

@@ -49,11 +49,12 @@ var ItemSubitemHeader = React.createClass({
     let itemScoreButton = this.itemScoreButton(this.props.subitem.type, this.props.subitem.score);
 
     let checked = this.props.subitem.status === 'completed' || this.props.subitem.status === 'accepted';
+    let caretClass = `glyphicon glyphicon-menu-${this.caretDirection(this.props.header)}`;
 
     return (
       <div className={headerClasses}>
         <a className="toggle" onClick={_.partial(this.props.toggleSubitem, this.props.subitem.number)}>
-          <span aria-hidden="true" className="glyphicon glyphicon-menu-right" />
+          <span aria-hidden="true" className={caretClass} />
         </a>
         <div className="sep-vertical"></div>
         <div className="meta id">#{subitemId}</div>
