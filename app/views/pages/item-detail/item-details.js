@@ -8,6 +8,7 @@ import ProductActions from '../../../actions/product-actions';
 import {State} from 'react-router';
 import ScoreMap from '../../../lib/score-map';
 import STATUS_MAP from '../../../lib/statuses-map';
+import classNames from "classnames";
 
 const INVERTED_STATUS_MAP = _.zipObject(_.values(STATUS_MAP), _.keys(STATUS_MAP))
 
@@ -80,12 +81,11 @@ var ItemDetails = React.createClass({
   },
 
   toggleButton() {
-    let buttonCopy = this.state.tagsEditable ? 'Save' : 'Add';
+    let glyph = this.state.tagsEditable ? 'glyphicon-floppy-disk' : 'glyphicon-plus-sign';
 
     return (
-      <div className="title__edit">
-        <button className="detail-button kanban-button-secondary" onClick={this.toggleTagsEdit}>
-          {buttonCopy}
+      <div className="tags__edit">
+        <button className={`glyphicon ${glyph}`} onClick={this.toggleTagsEdit}>
         </button>
       </div>
     )
@@ -106,9 +106,7 @@ var ItemDetails = React.createClass({
     let tagOptions = _.pluck(this.props.productTags, 'tag');
 
     return (
-      <div className="col-md-12">
-        <TagsInput tags={tagOptions} onChange={this.updateTags} value={tags}/>
-      </div>
+      <TagsInput tags={tagOptions} onChange={this.updateTags} value={tags}/>
     )
   },
 
@@ -142,8 +140,10 @@ var ItemDetails = React.createClass({
           {title}
           <div className="col-md-12 meta collapse-right">
             <div className="col-md-6 tags no-gutter">
-              {tags}
-              {toggleButton}
+              <ul className="tags__component">
+                {toggleButton}
+                {tags}
+              </ul>
             </div>
             <div className="col-md-6 timestamp collapse-right">
               {createdByTimestamp}

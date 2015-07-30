@@ -181,6 +181,58 @@
   }
 }
 
+.item-detail .ticket__detail .ticket__description .tags__edit {
+  width: 40px;
+  float: left;
+
+  button {
+    border: none;
+    background-color: transparent;
+    font-size: 18px
+  }
+
+  button:focus {
+    outline: none;
+  }
+}
+
+.ticket__description ul.tags__component .tags-input {
+  font-size: 12px;
+}
+
+.item-detail .ticket__detail .ticket__description .tags {
+  font-size: 14px;
+  font-weight: @fontWeight-6;
+
+  ul.tags__component {
+    list-style-type: none;
+    padding: 0;
+
+    li {
+      display: inline;
+      margin-left: 10px;
+    }
+
+    li:nth-of-type(1) {
+      margin-left: 0px;
+    }
+  }
+
+  ul.tags__list {
+    list-style-type: none;
+    padding-top: 3px;
+
+    li {
+      display: inline;
+      margin-left: 10px;
+    }
+
+    li:nth-of-type(1) {
+      margin-left: 0px;
+    }
+  }
+}
+
 .item-detail .ticket__detail .info .title {
   font-size: 21px;
   width: 97%;
@@ -216,24 +268,6 @@
   font-style: italic;
 }
 
-.item-detail .ticket__detail .tags {
-  font-size: 14px;
-  font-weight: @fontWeight-6;
-
-  ul {
-    list-style-type: none;
-    padding: 0;
-  }
-
-  li {
-    display: inline;
-    margin-left: 10px;
-  }
-
-  li:nth-of-type(1) {
-    margin-left: 0px;
-  }
-}
 .item-detail .ticket__detail .meta {
   margin-top: 10px;
 }

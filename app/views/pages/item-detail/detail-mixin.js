@@ -49,7 +49,7 @@ var DetailMixin = {
       tags.unshift(tagIcon)
 
       return (
-        <ul>
+        <ul className="tags__list">
           {tags}
         </ul>
       )
