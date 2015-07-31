@@ -37,8 +37,9 @@ let ItemActions = {
     request
       .post(commentsEndpoint)
       .set('Authorization', `Bearer ${token}`)
+      .type('form')
       .send({body: comment})
-      .end(function(err, res) {
+      .end((err, res) => {
         if (err) {
           AppDispatcher.dispatch({
             actionType: 'ITEM_COMMENT_ERROR',
@@ -48,6 +49,11 @@ let ItemActions = {
         }
 
         if (res.body) {
+          /*
+            TODO: Should activity be its own BB collection?
+          */
+          this.fetchActivity(productId, itemId);
+
           AppDispatcher.dispatch({
             actionType: 'ITEM_COMMENTED',
             payload: res.body,

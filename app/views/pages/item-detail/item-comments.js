@@ -18,8 +18,7 @@ var TicketComments = React.createClass({
   },
 
   saveComment(ev) {
-    let comment = ev.currentTarget.getElementsByTagName("textarea")[0].value;
-    ItemActions.createComment(this.getParams().id, this.getParams().number, comment)
+    ItemActions.createComment(this.getParams().id, this.getParams().number, this.state.comment)
     this.setState({comment: ''});
   },
 
@@ -34,7 +33,7 @@ var TicketComments = React.createClass({
       <div className="col-md-12 section comments">
         <div className="col-md-12">
           {this.header('comment')}
-          <form className="comment__form" onSubmit={this.saveComment}>
+          <div className="comment__form">
             <div className="col-md-12 no-gutter">
               {mentionsComponent}
             </div>
@@ -44,10 +43,10 @@ var TicketComments = React.createClass({
                 <div className="syntax">Use <span className="blue">Markdown</span> & <span className="blue">Emoji</span></div>
               </div>
               <div className="col-md-3 collapse-right pull-right">
-                <button className="detail-button kanban-button-secondary">Comment</button>
+                <button className="detail-button kanban-button-secondary" onClick={this.saveComment}>Comment</button>
               </div>
             </div>
-          </form>
+          </div>
         </div>
       </div>
     )
