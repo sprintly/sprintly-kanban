@@ -38,19 +38,32 @@ var DetailMixin = {
     )
   },
 
+  parseTags(tags) {
+    return _.reject(tags.split(','), (text) => { return text === ','});
+  },
+
   buildTags(tags) {
     if (tags) {
-      var tagIcon = <li><span className="glyphicon glyphicon-tag"></span></li>
-      var tags = _.map(tags.split(','), function(tag, i) {
+      let tagIcon = <li><span className="glyphicon glyphicon-tag"></span></li>
+      let parsedTags = this.parseTags(tags);
+      let commas = _.map(_.times(parsedTags.length-1), function() {return ','});
+
+      let tagListEls = _.map(parsedTags, (tag, i) => {
         return (
           <li key={i}>{tag}</li>
         )
       })
-      tags.unshift(tagIcon)
+
+      let tagsList = _.chain([tagListEls,commas])
+                      .zip()
+                      .flatten()
+                      .compact()
+                      .value()
+      tagsList.unshift(tagIcon)
 
       return (
         <ul className="tags__list">
-          {tags}
+          {tagsList}
         </ul>
       )
     }

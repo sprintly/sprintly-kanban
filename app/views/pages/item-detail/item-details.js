@@ -81,11 +81,12 @@ var ItemDetails = React.createClass({
   },
 
   toggleButton() {
-    let glyph = this.state.tagsEditable ? 'glyphicon-floppy-disk' : 'glyphicon-plus-sign';
+    let buttonCopy = this.state.tagsEditable ? 'Save' : 'Add';
 
     return (
       <div className="tags__edit">
-        <button className={`glyphicon ${glyph}`} onClick={this.toggleTagsEdit}>
+        <button className={"detail-button kanban-button-secondary"} onClick={this.toggleTagsEdit}>
+          {buttonCopy}
         </button>
       </div>
     )

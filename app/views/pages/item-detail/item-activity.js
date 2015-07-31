@@ -170,7 +170,6 @@ var ItemActivity = React.createClass({
     let totalActivityCount = activity.total_count || 0;
 
     if (activity.activities && this.props.members.length) {
-      // let displayList = activity.activities;
       // if (!this.state.reversed) {
       //   displayList = activity.activities.reverse();
       //   this.state.reversed = true;
@@ -179,6 +178,7 @@ var ItemActivity = React.createClass({
       /*
         Default to show 20 activity objects to prevent slow rendering
       */
+      let displayList = activity.activities;
       if (!this.state.showAll) {
         displayList = displayList.slice(0, 10)
       }

@@ -188,13 +188,16 @@
 }
 
 .item-detail .ticket__detail .ticket__description .tags__edit {
-  width: 40px;
+  width: 50px;
   float: left;
+  display: inline-block;
 
   button {
-    border: none;
+    margin-top: 0;
     background-color: transparent;
-    font-size: 18px
+    height: 22px;
+    line-height: 0px;
+    font-size: 14px;
   }
 
   button:focus {
@@ -230,7 +233,11 @@
 
   ul.tags__list {
     list-style-type: none;
-    padding-top: 3px;
+    padding-top: 2px;
+    display: inline-block;
+    float: left;
+    margin-left: 11px;
+    width: auto;
 
     li {
       display: inline;
