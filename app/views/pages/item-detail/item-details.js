@@ -66,6 +66,8 @@ var ItemDetails = React.createClass({
                  who={this.props.who}
                  what={this.props.what}
                  why={this.props.why}
+                 createdAt={this.props.createdAt}
+                 createdBy={this.props.createdBy}
                  setItem={this.props.setItem} />
     )
   },
@@ -107,7 +109,9 @@ var ItemDetails = React.createClass({
     let tagOptions = _.pluck(this.props.productTags, 'tag');
 
     return (
-      <TagsInput tags={tagOptions} onChange={this.updateTags} value={tags}/>
+      <div className="tags__wrapper">
+        <TagsInput tags={tagOptions} onChange={this.updateTags} value={tags}/>
+      </div>
     )
   },
 
@@ -140,14 +144,11 @@ var ItemDetails = React.createClass({
         <div className="ticket__description">
           {title}
           <div className="col-md-12 meta collapse-right">
-            <div className="col-md-6 tags no-gutter">
+            <div className="tags">
               <ul className="tags__component">
                 {toggleButton}
                 {tags}
               </ul>
-            </div>
-            <div className="col-md-6 timestamp collapse-right">
-              {createdByTimestamp}
             </div>
           </div>
         </div>

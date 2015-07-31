@@ -33,6 +33,11 @@ var ItemTitle = React.createClass({
     who: React.PropTypes.string,
     what: React.PropTypes.string,
     why: React.PropTypes.string,
+    createdAt: React.PropTypes.string,
+    createdBy: React.PropTypes.shape({
+      first_name: React.PropTypes.string,
+      last_name: React.PropTypes.string
+    }),
     setItem: React.PropTypes.func
   },
 
@@ -146,11 +151,19 @@ var ItemTitle = React.createClass({
     let titleClass = `title ${this.props.type}`
     let title = this.state.titleEditable ? this.editTitle() : this.presentationTitle();
     let toggleButton = this.toggleButton();
+    let createdByTimestamp = this.createdByTimestamp(this.props.createdAt, this.props.createdBy);
 
     return (
       <div className={titleClass}>
-        {title}
-        {toggleButton}
+        <div className="col-md-12 no-gutter">
+          {title}
+        </div>
+        <div className="col-md-2 no-gutter">
+          {toggleButton}
+        </div>
+        <div className="col-md-10 timestamp collapse-right">
+          {createdByTimestamp}
+        </div>
       </div>
     )
   }

@@ -180,7 +180,7 @@
 
 .item-detail .ticket__detail .ticket__description .title__edit {
   width: 50px;
-  float: right;
+  float: left;
 
   button {
     margin-top: 10px;
@@ -204,10 +204,21 @@
     outline: none;
   }
 }
+.ticket__description ul.tags__component .tags__wrapper {
+  padding-left: 15px;
+  display: block;
+  box-sizing: border-box;
+  position: relative;
+  line-height: 20px;
+  display: block;
+  float: left;
+  width: 90%;
+}
 
 .ticket__description ul.tags__component .tags-input {
   font-size: 12px;
   margin-right: 0px;
+  margin-left: 3px;
 }
 .ticket__description ul.tags__component .tags-input .list-group {
   z-index: @zIndex-3;
@@ -254,7 +265,6 @@
   font-size: 21px;
   width: 97%;
   min-height: 50px;
-  margin-bottom: 15px;
   margin-left: 40px;
   border-radius: 5px;
   padding: 5px 15px 10px;
@@ -286,13 +296,14 @@
 }
 
 .item-detail .ticket__detail .meta {
-  margin-top: 10px;
+  margin-left: 19px;
 }
 
 .item-detail .ticket__detail .timestamp {
   font-size: 12px;
   font-style: italic;
   text-align: right;
+  margin-top: 23px;
 }
 
 .item-detail .section .followers {
