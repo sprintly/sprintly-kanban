@@ -3,6 +3,7 @@ import _ from 'lodash';
 import helpers from '../../components/helpers';
 import ItemDetailMixin from './detail-mixin';
 import {State} from 'react-router'
+import Slick from 'react-slick';
 
 const CarouselSettings = {
   dots: false,
@@ -47,7 +48,23 @@ var ItemAttachments = React.createClass({
   },
 
   propTypes() {
-    attachments: React.PropTypes.array
+    attachments: React.PropTypes.shape({
+      _href: React.PropTypes.string,
+      created_at: React.PropTypes.string,
+      created_by: React.PropsTypes.shape({
+        account: React.PropTypes.object,
+        created_at: React.PropTypes.string,
+        email: React.PropTypes.string,
+        first_name: React.PropTypes.string,
+        id: React.PropTypes.number,
+        last_login: React.PropTypes.string,
+        last_name: React.PropTypes.string
+      }),
+      href: React.PropTypes.string,
+      id: React.PropTypes.number,
+      item: React.PropTypes.object,
+      name: React.PropTypes.string
+    })
   },
 
   togglePanel() {
@@ -95,31 +112,52 @@ var ItemAttachments = React.createClass({
     )
   },
 
-  attachmentsViewer() {
-    if (this.props.attachments) {
-      var attachments = _.map(this.images(), (image, i) => {
-                          // Temp Greyscale before authed asset use
-                          var styles = {
-                            width: '33%',
-                            height: '170px',
-                            'background-color': `RGBA(69,69,69, ${parseFloat((Math.random() * (0.120 - 0.0200) + 0.0200))})`,
-                          }
-                          // background: `url(${image.meta.permalink}) no-repeat`
-
-                          return (
-                            <div className="attachment-slide" key={i} style={styles} onClick={this.showAttachment}></div>
-                          );
-                        });
-
-      return (
-        <Slick {...CarouselSettings}>
-          {attachments}
-        </Slick>
-      );
+  attachmentsViewer(images) {
+    if (images && images.length) {
+      return _.map(images, (image, i) => {
+        return (
+          <li key={i}>
+            {this.openNewTabLink(image.href, image.name)}
+          </li>
+        )
+      })
+    } else {
+      return (<li>No images attached</li>)
     }
+    /*
+      TODO: Use when have embedly
+      if (this.props.attachments) {
+        var attachments = _.map(this.props.attachments, (attachment, i) => {
+                            // Temp Greyscale before authed asset use
+                            var styles = {
+                              width: '33%',
+                              height: '170px',
+                            }
+                            //background: `url(${attachment.href}) no-repeat`
+                            // 'background-color': `RGBA(69,69,69, ${parseFloat((Math.random() * (0.120 - 0.0200) + 0.0200))})`,
+                            // Updaate with embedly
+                            return (
+                              <img src={attachment.href} className="attachment-slide" key={i} style={styles} onClick={_.partial(this.showAttachment, attachment.href)}>
+                                {this.openNewTabLink(attachment.href)}
+                              </img>
+                            );
+                          });
+        return (
+          <Slick {...CarouselSettings}>
+            {attachments}
+          </Slick>
+        );
+      }
+    */
+
   },
 
-  showAttachment() {
+  openNewTabLink(url, text) {
+    return <a className="attachment-link" href={url} target="_blank">{text}</a>
+  },
+
+  showAttachment(href, ev) {
+    window.open(href);
     console.log('Implement attachment viewer: ');
   },
 
@@ -128,23 +166,23 @@ var ItemAttachments = React.createClass({
   },
 
   fileList(files) {
-    if (files) {
-      return _.map(files, function(file, i) {
+    if (files && files.length) {
+      return _.map(files, (file, i) => {
         return (
           <li key={i}>
-            <a className="attachment-link">{file.meta.title}</a>
+            {this.openNewTabLink(file.href, file.name)}
           </li>
         )
       })
     } else {
-      return (<li><a className="attachment-link">No files attached</a></li>)
+      return (<li>No files attached</li>)
     }
   },
 
   images() {
     return _.chain(this.props.attachments)
                     .map((attachment) => {
-                      if (this.imageFileExt(attachment.meta.url)) {
+                      if (this.imageFileExt(attachment._href)) {
                         return attachment;
                       }
                     })
@@ -153,16 +191,12 @@ var ItemAttachments = React.createClass({
   },
 
   imageFileExt(url) {
-    return (/\.(gif|jpg|jpeg|tiff|png)$/i).test(url);
+    return (/\.(gif|jpg|jpeg|tiff|png)/i).test(url);
   },
 
   render: function() {
-    console.log('ATTACHMENTS');
-
-    // let attachmentViewer = this.attachmentsViewer();;
-    // {attachmentViewer}
-
     let images = this.images();
+    let attachmentViewer = this.attachmentsViewer(images);
     let files = _.difference(this.props.attachments, images);
     let fileList = this.fileList(files);
     let header = this.attachmentsHeader(images.length, files.length);
@@ -170,21 +204,28 @@ var ItemAttachments = React.createClass({
       'content': true,
       'open': this.state.panelOpen
     });
-
+    /* Use when embedly works
+      <div className="attachments-viewer">
+      </div>
+      <div className="attachments__links">
+      </div>
+    */
     return (
       <div className="col-md-12 section attachments">
         <div className="col-md-12">
           {header}
           <div className={contentClasses}>
             <div className="col-md-12 attachments__internals">
-              <div className="col-md-9">
+              <div className="col-md-6">
                 <div className="title">
                   Images: {images.length}
                 </div>
-                <div className="attachments-viewer">
-                </div>
+                <div className="sep"></div>
+                <ul className="links">
+                  {attachmentViewer}
+                </ul>
               </div>
-              <div className="attachments__links">
+              <div className="col-md-6">
                 <div className="title">
                   Files: {files.length}
                 </div>

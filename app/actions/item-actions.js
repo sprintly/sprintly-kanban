@@ -90,6 +90,32 @@ let ItemActions = {
       });
   },
 
+  fetchAttachments(productId, itemId) {
+    let attachmentsEndpoint = `${BASE_URL}/api/products/${productId}/items/${itemId}/attachments.json`;
+
+    request
+      .get(attachmentsEndpoint)
+      .set('Authorization', `Bearer ${token}`)
+      .end(function(err, res) {
+        if (err) {
+          AppDispatcher.dispatch({
+            actionType: 'ITEM_ATTACHMENTS_ERROR',
+            err
+          });
+          return;
+        }
+
+        if (res.body) {
+          AppDispatcher.dispatch({
+            actionType: 'ITEM_ATTACHMENTS',
+            payload: res.body,
+            productId,
+            itemId
+          });
+        }
+      });
+  },
+
   fetchItem(productId, number) {
     let product = products.get(productId);
 

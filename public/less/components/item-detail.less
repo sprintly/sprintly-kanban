@@ -351,8 +351,8 @@
 }
 .item-detail .ticket__detail .control {
   button {
-    margin-left: 20%;
-    margin-right: 20%;
+     margin-left: 20%;
+     margin-right: 20%;
   }
 }
 .item-detail .ticket__detail .control,
@@ -648,7 +648,7 @@
 .item-detail .subitem .header .state .meta.status {
   line-height: 38px;
   font-size: 14px;
-  font-style: italic
+  font-style: italicli
 }
 .item-detail .attachments {
   ul.attachments__info-list {
@@ -664,7 +664,8 @@
   }
 
   li {
-    display: inline;
+    /* TODO: Use for slick carousel: display: inline; */
+    margin-right: 10px;
   }
 }
 
@@ -719,7 +720,8 @@
   padding-bottom: 0px;
 
   &.open {
-    max-height: 255px;
+    max-height: 155px;
+    /* TODO: Use for embedly: max-height: 255px; */
   }
 }
 .item-detail .attachments .content .title {
@@ -769,11 +771,11 @@
   ul.links {
     padding: 0;
     list-style: none;
-    overflow: scroll;
+    overflow-y: auto;
     height: 170px;
   }
 
-  li {
+  a.attachment-link {
     font-weight: @fontWeight-6;
     color: @sprintly-blue;
     margin-top: 3px;

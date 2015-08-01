@@ -187,23 +187,25 @@ var internals = ProductStore.internals = {
       // Prevent "jumpy" items
       model.set(internals.getUpdatedTimestamps(model, status), { silent: true });
 
-      // let [activeFilterCount, matchingFilters] = internals.matchesFilter(model, config);
-      // if (activeFilterCount === 0 || activeFilterCount === matchingFilters.length) {
-        // Swap items between status collections.
-        let previousStatus = model.previous('status');
-        let previousCollection = product.getItemsByStatus(previousStatus);
-        if (previousCollection) {
-          let oldItem = previousCollection.remove(model.id);
-          if (oldItem === undefined) {
-            previousCollection.models = previousCollection.filter(function(m) {
-              return m.id !== model.id;
-            });
-          }
+      /*
+        let [activeFilterCount, matchingFilters] = internals.matchesFilter(model, config);
+        if (activeFilterCount === 0 || activeFilterCount === matchingFilters.length) {
+        Swap items between status collections.
+      */
+      let previousStatus = model.previous('status');
+      let previousCollection = product.getItemsByStatus(previousStatus);
+      if (previousCollection) {
+        let oldItem = previousCollection.remove(model.id);
+        if (oldItem === undefined) {
+          previousCollection.models = previousCollection.filter(function(m) {
+            return m.id !== model.id;
+          });
         }
-        if (collection) {
-          collection.add(model);
-        }
-        ProductStore.emitChange();
+      }
+      if (collection) {
+        collection.add(model);
+      }
+      ProductStore.emitChange();
       // }
     });
 
@@ -213,8 +215,10 @@ var internals = ProductStore.internals = {
   ingestItem(product, item_data) {
     var item = product.items.get(item_data.number);
     if (item) {
-      // Ignore stale timestamps. By using optimistic timestamps, items stay in
-      // the correct positions relative to one another.
+      /*
+        Ignore stale timestamps. By using optimistic timestamps, items stay in
+        the correct positions relative to one another.
+      */
       if (item_data.last_modified < item.get('last_modified')) {
         item_data.last_modified = item.get('last_modified');
       }
@@ -237,10 +241,12 @@ var internals = ProductStore.internals = {
   },
 
   getUpdatedTimestamps(model, status) {
-    // Set the timestamp affected by the status change. This is happening
-    // "noting this optimistically to the current timestamp makes
-    // items stay in the correct relative positions. This will get reset by
-    // any filter change that triggers a reset.
+    /*
+      Set the timestamp affected by the status change. This is happening
+      "noting this optimistically to the current timestamp makes
+      items stay in the correct relative positions. This will get reset by
+      any filter change that triggers a reset.
+    */
     let attrs = {
       last_modified: +new Date()
     };
@@ -379,11 +385,13 @@ var internals = ProductStore.internals = {
             .value()
   },
 
-  extendItemWithActivity(productId, itemId, activityPayload) {
+  extendItem(productId, itemId, key, payload) {
     let product = products.get(productId);
     let item = product.items.get(itemId);
+    let newAttr = {};
+    newAttr[key] = payload;
 
-    item.set({'activity': activityPayload}, { silent: true })
+    item.set(newAttr, { silent: true })
   }
 };
 
@@ -427,10 +435,20 @@ ProductStore.dispatchToken = AppDispatcher.register(function(action) {
       break;
 
     case 'ITEM_ACTIVITY':
-      internals.extendItemWithActivity(action.productId, action.itemId, action.payload);
+      internals.extendItem(action.productId, action.itemId, 'activity', action.payload);
 
       ProductStore.emitChange();
       break;
+    case 'ITEM_ATTACHMENTS':
+      internals.extendItem(action.productId, action.itemId, 'attachments', action.payload);
+
+      ProductStore.emitChange();
+
+      break;
+    case 'ITEM_ATTACHMENTS_ERROR':
+      console.log('ITEM_ATTACHMENTS_ERROR: ', action.err)
+      ProductStore.emitChange();
+      break
     case 'ITEM_ACTIVITY_ERROR':
       console.log('ITEM_ACTIVITY_ERROR: ', action.err)
       ProductStore.emitChange();

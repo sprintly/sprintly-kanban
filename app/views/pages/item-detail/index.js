@@ -119,8 +119,8 @@ var ItemDetail = React.createClass({
     let attachments = [];
     let item = this.state.item;
 
-    if (item.activity && item.activity.activities) {
-      attachments = _.where(item.activity.activities, {'action':'attachment'});
+    if (item.attachments && item.attachments.length) {
+      attachments = item.attachments;
     }
 
     return (
@@ -156,9 +156,10 @@ var ItemDetail = React.createClass({
   componentDidMount() {
     ProductStore.addChangeListener(this._onChange);
     ItemActions.fetchItem(this.getParams().id, this.getParams().number);
-    // TODO: Fetch the item followers on component did mount
 
+    // TODO: Fetch the item followers on component did mount
     ItemActions.fetchActivity(this.getParams().id, this.getParams().number);
+    ItemActions.fetchAttachments(this.getParams().id, this.getParams().number);
   },
 
   componentWillUnmount() {
