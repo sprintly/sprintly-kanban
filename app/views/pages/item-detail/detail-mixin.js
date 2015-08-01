@@ -161,7 +161,12 @@ var DetailMixin = {
 
     if (!this.canBeReassigned(item.status)) {
       let currentStatus = helpers.toTitleCase(item.status)
-      return <div>{`Cannot reassign tickets which are ${currentStatus}`}</div>
+      return (
+        <div className="action__restricted">
+          {`Cannot reassign tickets which are `}
+          <span className="status">{currentStatus}</span>
+        </div>
+      )
     } else {
       return <Select placeholder={"Choose assignee"}
                             name="form-field-name"

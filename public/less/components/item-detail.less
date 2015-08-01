@@ -349,6 +349,16 @@
     border-radius: 34px;
   }
 }
+.item-detail .ticket__detail .control .action__restricted,
+.item-detail .subitems .content .control .action__restricted {
+  font-style: italic;
+  font-size: 12px;
+  text-align: center;
+
+  span.status {
+    font-weight: @fontWeight-6;
+  }
+}
 .item-detail .ticket__detail .control {
   button {
      margin-left: 20%;
@@ -724,6 +734,13 @@
     /* TODO: Use for embedly: max-height: 255px; */
   }
 }
+.item-detail .attachments .content.open {
+  max-height: 155px;
+  /* TODO: Use for embedly: max-height: 255px; */
+}
+.item-detail .subitem .content.open {
+  max-height: 255px;
+}
 .item-detail .attachments .content .title {
   font-style: italic;
   font-size: 13px;
@@ -746,7 +763,7 @@
 }
 .item-detail .subitem .description {
   margin-top: 15px;
-  padding-left: 34px;
+  border-right: 1px @sprintly-black-light solid;
 }
 .item-detail .subitem .content .tags {
   li {
