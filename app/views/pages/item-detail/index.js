@@ -34,12 +34,12 @@ var ItemDetail = React.createClass({
       product: product,
       attachmentsPanel: false,
       itemDetailHeight: initialItemDetailHeight(),
-      descriptionEditable: false,
+      descriptionEditable: false
     };
   },
 
   updateStripeHeight() {
-    let content = document.getElementsByClassName('item-detail__content')[0];
+    let content = document.getElementsByClassName('content__wrapper')[0];
     let height = content ? content.getBoundingClientRect().height : 0;
 
     if (height > this.state.itemDetailHeight) {
@@ -103,13 +103,14 @@ var ItemDetail = React.createClass({
 
   itemDescription() {
     return (
-      <div className="col-md-12 section description">
+      <div className="col-md-9 section description">
         <div className="col-md-12">
           {this.header('description')}
           <ItemDescription    itemId={this.state.item.number}
                          description={this.state.item.description}
                              members={this.props.members}
-                             setItem={this.setItem} />
+                             setItem={this.setItem}
+                     alternateLayout={true} />
         </div>
       </div>
     )
@@ -134,7 +135,7 @@ var ItemDetail = React.createClass({
     return (
       <ItemSubitems  members={this.props.members}
                     subitems={subitems}
-                    setSubitem={this.setSubitem} />
+                  setSubitem={this.setSubitem} />
     )
   },
 
@@ -145,11 +146,18 @@ var ItemDetail = React.createClass({
   },
 
   itemActivity() {
-    let activity = this.state.item.activity || [];
+    let activityClone;
+    let activity = this.state.item.activity || {};
+
+    if (activity.activities && activity.activities.length) {
+      activityClone = _.cloneDeep(activity);
+      activityClone.activities.reverse();
+    }
 
     return (
       <ItemActivity members={this.props.members}
-                    activity={activity} />
+                   activity={activityClone}
+         updateStripeHeight={this.updateStripeHeight} />
     )
   },
 
@@ -194,7 +202,7 @@ var ItemDetail = React.createClass({
             <span aria-hidden="true" className="glyphicon glyphicon-menu-right"/>
           </Link>
         </div>
-        <div className="item-detail__content">
+        <div className="content__wrapper">
           {itemDetails}
           {itemDescription}
           {itemAttachments}

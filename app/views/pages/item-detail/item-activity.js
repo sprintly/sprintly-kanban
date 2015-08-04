@@ -39,7 +39,8 @@ var ItemActivity = React.createClass({
 
   propTypes: {
     members: React.PropTypes.array,
-    activity: React.PropTypes.array
+    activity: React.PropTypes.array,
+    updateStripeHeight: React.PropTypes.func
   },
 
   getInitialState() {
@@ -72,7 +73,11 @@ var ItemActivity = React.createClass({
     let valueMap = this.fieldToValueMap(meta)
     let field = helpers.toTitleCase(meta.field);
 
-    return `the ${field} from ${valueMap.oldVal} to ${valueMap.newVal}`;
+    /*
+      TODO: include this in a 'read more' sub-section
+      from ${valueMap.oldVal} to ${valueMap.newVal}`;
+    */
+    return `the ${field}`
   },
 
   fieldToValueMap(meta) {
@@ -164,24 +169,30 @@ var ItemActivity = React.createClass({
     return <button className="load-more" onClick={this.showAllToggle}>{toggleActivityCopy}</button>;
   },
 
+  componentWillReceiveProps() {
+    this.props.updateStripeHeight();
+  },
+
   render: function() {
+    const MIN_ACTIVITY_NUMBER = 15
     let activityItems;
+    let showAllActivityButton;
     let activity = this.props.activity;
     let totalActivityCount = activity.total_count || 0;
 
     if (activity.activities && this.props.members.length) {
-      // if (!this.state.reversed) {
-      //   displayList = activity.activities.reverse();
-      //   this.state.reversed = true;
-      // }
-
       /*
         Default to show 20 activity objects to prevent slow rendering
       */
+      if (activity.activities.length > MIN_ACTIVITY_NUMBER) {
+        showAllActivityButton = this.showAllActivityButton();
+      }
+
       let displayList = activity.activities;
       if (!this.state.showAll) {
-        displayList = displayList.slice(0, 10)
+        displayList = displayList.slice(0, MIN_ACTIVITY_NUMBER)
       }
+
 
       activityItems = _.map(displayList, _.bind(function(model) {
         let creator = _.findWhere(this.props.members, {id: model.user});
@@ -210,8 +221,6 @@ var ItemActivity = React.createClass({
     } else {
       activityItems = <li className="comment">No Activity Yet</li>
     }
-
-    let showAllActivityButton = this.showAllActivityButton();
 
     return (
       <div className="col-md-12 section activity">
