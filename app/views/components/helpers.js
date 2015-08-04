@@ -94,13 +94,19 @@ var internals = {
 
   strippedIds(ids) {
     return _.map(ids, (id) => {
-      return id.match(/:(.+?)\)/)[1]
+      let matches = id.match(/:(.+?)\)/);
+      if (matches) {
+        return matches[1]
+      }
     });
   },
 
   strippedNames(names) {
     return _.map(names, (id) => {
-      return id.match(/@\[(.+?)\]/)[1]
+      let matches =  id.match(/@\[(.+?)\]/);
+      if (matches) {
+        return matches[1]
+      }
     });
   }
 }

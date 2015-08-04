@@ -24,7 +24,7 @@ var ItemDetails = React.createClass({
     who: React.PropTypes.string,
     what: React.PropTypes.string,
     why: React.PropTypes.string,
-    number: React.PropTypes.string,
+    number: React.PropTypes.number,
     tags: React.PropTypes.string,
     createdAt: React.PropTypes.string,
     createdBy: React.PropTypes.shape({
@@ -83,7 +83,7 @@ var ItemDetails = React.createClass({
   },
 
   toggleButton() {
-    let buttonCopy = this.state.tagsEditable ? 'Save' : 'Add';
+    let buttonCopy = this.state.tagsEditable ? 'Save' : 'Add Tag';
 
     return (
       <div className="tags__edit">
@@ -190,12 +190,10 @@ var ItemDetails = React.createClass({
   },
 
   setHoverStatus(id, key, ev) {
-    //  current
     this.setState({hoverStatus: key});
   },
 
   resetHoverStatus() {
-    // in-progress --> current
     this.setState({hoverStatus: INVERTED_STATUS_MAP[this.props.status]});
   },
 
@@ -241,12 +239,11 @@ var ItemDetails = React.createClass({
   },
 
   render: function() {
-    console.log('render details');
     let infoSection = this.infoSection();
     let actionsSection = this.actionsSection();
 
     return (
-      <div className="col-md-12 section ticket__detail">
+      <div className="col-md-12 section item__details">
         {infoSection}
         {actionsSection}
       </div>

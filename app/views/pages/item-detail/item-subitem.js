@@ -25,7 +25,7 @@ var ItemSubitem = React.createClass({
       type: React.PropTypes.string
     }),
     header: React.PropTypes.bool,
-    hoverStatus: React.PropTypes.string,
+    hoverStatus: React.PropTypes.bool,
     controls: React.PropTypes.shape({
       status: React.PropTypes.string,
       score: React.PropTypes.string,
@@ -40,10 +40,6 @@ var ItemSubitem = React.createClass({
   },
 
   subitemActions() {
-    let subheaderClasses = React.addons.classSet({
-      'subheader': true,
-      'open': this.props.header
-    });
     let members = helpers.formatSelectMembers(this.props.members);
     let estimator = this.estimator(this.props.subitem);
     let statusPicker = this.statusPicker(this.props.subitem, this.props.setHoverStatus, this.props.resetHoverStatus);
@@ -92,7 +88,9 @@ var ItemSubitem = React.createClass({
       <ItemDescription itemId={this.props.subitem.number}
                   description={this.props.subitem.description}
                       members={this.props.members}
-                      setItem={_.partial(this.props.setSubitem, this.props.subitem.number)} />
+                      setItem={_.partial(this.props.setSubitem, this.props.subitem.number)}
+              alternateLayout={true}
+                     readOnly={true} />
     )
   },
 
@@ -101,12 +99,13 @@ var ItemSubitem = React.createClass({
     let description = this.description();
     let subitemActions = this.subitemActions();
     let contentClasses = React.addons.classSet({
-      'content': true,
+      'content-dark': true,
       'open': this.props.header
     });
-    let contentStyles = !this.props.header ? {overflow: 'hidden'} : {};
+    let contentStyles = !this.props.header ? {overflow: 'hidden', display: 'none'} : {};
     let descriptionClasses = React.addons.classSet({
       "col-md-9": true,
+      "collapse-left": true,
       "description": true,
       'italicize': !this.props.subitem.description
     })
@@ -114,20 +113,15 @@ var ItemSubitem = React.createClass({
     let createdByTimestamp = this.createdByTimestamp(this.props.subitem.created_at, this.props.subitem.created_by);
     let viewTicketURL = `/product/${this.getParams().id}/item/${this.props.subitem.number}`;
 
-
     return (
       <div key={this.props.index} className="subitem">
         {header}
         <div className={contentClasses} style={contentStyles}>
-          <div className="col-md-12 collapse-right">
-            <div className="col-md-12 collapse-right">
-              <div className={descriptionClasses}>
-                {description}
-              </div>
-              <div className="col-md-3 control">
-                {subitemActions}
-              </div>
-            </div>
+          <div className={descriptionClasses}>
+            {description}
+          </div>
+          <div className="col-md-3 control">
+            {subitemActions}
           </div>
           <div className="col-md-12 meta footer">
             <div className="col-md-6 tags no-gutter">

@@ -1,0 +1,197 @@
+.section.item__details .ticket__type {
+  margin-top: 0px;
+  float: left;
+  width: 10%;
+  text-align: center;
+}
+.section.item__details .ticket__description {
+  width: 88%;
+  float: right;
+  display: inline-block;
+
+  input {
+    font-size: 16px;
+  }
+}
+.section.item__details .ticket__description .title__edit {
+  width: 50px;
+  float: left;
+
+  button {
+    margin-top: 10px;
+  }
+}
+.section.item__details .ticket__description .tags__edit {
+  width: auto;
+  float: left;
+  display: inline-block;
+
+  button {
+    margin-top: 0;
+    background-color: transparent;
+    height: 22px;
+    line-height: 0px;
+    font-size: 14px;
+  }
+
+  button:focus {
+    outline: none;
+  }
+}
+.section.item__details .ticket__description .tags {
+  font-size: 14px;
+  font-weight: @fontWeight-6;
+
+  ul.tags__component {
+    list-style-type: none;
+    padding: 0;
+
+    li {
+      display: inline;
+      margin-left: 10px;
+    }
+
+    li:nth-of-type(1) {
+      margin-left: 0px;
+    }
+  }
+
+  ul.tags__list {
+    list-style-type: none;
+    padding-top: 2px;
+    display: inline-block;
+    float: left;
+    margin-left: 11px;
+    width: auto;
+
+    li {
+      display: inline;
+      margin-left: 10px;
+    }
+
+    li:nth-of-type(1) {
+      margin-left: 0px;
+    }
+  }
+}
+.section.item__details .info .title {
+  font-size: 21px;
+  width: 97%;
+  min-height: 50px;
+  margin-left: 40px;
+  border-radius: 5px;
+  padding: 5px 15px 10px;
+  display: inline-block;
+  margin-left: 20px;
+}
+.section.item__details .info .title.story {
+  background-color: @story-detail-color;
+}
+.section.item__details .info .title.defect {
+  background-color: @defect-detail-color;
+}
+.section.item__details .info .title.task {
+  background-color: @task-detail-color;
+}
+.section.item__details .info .title.test {
+  background-color: @test-detail-color;
+}
+.section.item__details .type,
+.section.item__details .id {
+  font-size: 22px;
+}
+.section.item__details .type {
+  font-weight: @fontWeight-6;
+}
+.section.item__details .id {
+  .italicize();
+}
+.section.item__details .meta {
+  margin-left: 19px;
+}
+.section.item__details .timestamp {
+  .italicize();
+  font-size: 12px;
+  text-align: right;
+  margin-top: 23px;
+}
+.section.item__details .ticket__description ul.tags__component .tags__wrapper {
+  padding-left: 15px;
+  display: block;
+  box-sizing: border-box;
+  position: relative;
+  line-height: 20px;
+  display: block;
+  float: left;
+  width: 90%;
+}
+.section.item__details .ticket__description ul.tags__component .tags-input {
+  font-size: 12px;
+  margin-right: 0px;
+  margin-left: 3px;
+}
+.section.item__details .ticket__description ul.tags__component .tags-input .list-group {
+  z-index: @zIndex-3;
+}
+.section.item__details .ticket-actions {
+  z-index: @zIndex-2;
+}
+.section.item__details .ticket-state {
+  text-align: center;
+}
+.section.item__details .ticket-state .action__toggle {
+  cursor: pointer;
+}
+.section.item__details .ticket-state .title,
+.section.item__details .ticket-state .value {
+  font-size: 14px;
+}
+.section.item__details .ticket-state .title {
+  font-weight: @fontWeight-6;
+}
+.section.item__details .ticket-state .value {
+  margin-top: 10px;
+
+  img {
+    border-radius: 34px;
+  }
+}
+.section.item__details .control {
+  button {
+     margin-left: 20%;
+     margin-right: 20%;
+  }
+}
+.section.item__details .control,
+.section.item__details .ticket-state .value {
+  button {
+    border-radius: 34px;
+    width: 34px;
+    height: 34px;
+    font-size: 16px;
+    font-weight: @fontWeight-6;
+    line-height: 0px;
+  }
+
+  button:focus {
+    outline: none;
+  }
+}
+.section.subitems .content .control {
+  button.estimator__button {
+    width: 30px;
+    height: 30px;
+    border-radius: 16px;
+    font-size: 17px;
+    font-weight: 600;
+    margin-top: 4px;
+    line-height: 0;
+  }
+
+  button.estimator__button:focus {
+    outline: none;
+  }
+}
+.section.item__details .control {
+  margin-top: 15px;
+}

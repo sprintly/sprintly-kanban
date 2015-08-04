@@ -5,8 +5,10 @@ import ItemDetailMixin from './detail-mixin';
 import {State} from 'react-router'
 import ProductActions from '../../../actions/product-actions';
 import Markdown from 'react-markdown';
+import classNames from 'classnames'
 
 const placeholder = "Use '@' to mention another Sprintly user.  Use #[item number] (e.g. #1234) to reference another Sprintly item.";
+const readOnlyPlaceholder = "View full ticket to edit it's description";
 
 var ItemDescription = React.createClass({
 
@@ -16,7 +18,9 @@ var ItemDescription = React.createClass({
     itemId: React.PropTypes.number,
     description: React.PropTypes.string,
     members: React.PropTypes.array,
-    setItem: React.PropTypes.func
+    setItem: React.PropTypes.func,
+    alternateLayout: React.PropTypes.bool,
+    readOnly: React.PropTypes.bool
   },
 
   getInitialState() {
@@ -45,21 +49,23 @@ var ItemDescription = React.createClass({
     let description = this.props.description;
 
     if (!description) {
-      description = `_${placeholder}_`;
+      description = this.props.readOnly ? `_${readOnlyPlaceholder}_` : `_${placeholder}_`;
     } else {
       description = helpers.formatTextForMarkdown(description);
     }
     let markdown = <Markdown source={description} />
+    let toggle = this.props.readOnly ? null : this.toggleButton("min-button-alignment", this.toggleDescriptionEdit);
 
     return ([
         markdown,
-        this.toggleButton("min-button-alignment", this.toggleDescriptionEdit)
+        toggle
       ]
     )
   },
 
   toggleButton(alignmentClass, clickHandler) {
-    let classes = `col-md-2 description__control collapse-right pull-right ${alignmentClass}`
+    let buttonSide = this.props.alternateLayout ? 'left': 'right';
+    let classes = `description__control pull-${buttonSide} ${alignmentClass}`;
     let buttonCopy = this.state.descriptionEditable ? 'Save' : 'Edit';
 
     return (
@@ -76,12 +82,17 @@ var ItemDescription = React.createClass({
   },
 
   render: function() {
-    let descriptionEl = this.state.descriptionEditable ? this.descriptionMention() : this.descriptionMarkdown();
+    let descriptionEl;
+    if (!this.props.readOnly && this.state.descriptionEditable) {
+      descriptionEl = this.descriptionMention();
+    } else {
+      descriptionEl = this.descriptionMarkdown();
+    }
 
     let descriptionClasses = React.addons.classSet({
       "col-md-12": true,
       "item__description": true,
-      "collapse-left": this.state.descriptionEditable
+      "collapse-left": !this.props.alternateLayout
     })
 
     return (

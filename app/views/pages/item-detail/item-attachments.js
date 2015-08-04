@@ -91,7 +91,7 @@ var ItemAttachments = React.createClass({
   attachmentsHeader(imagesCount, filesCount) {
     let counts = this.counts(imagesCount, filesCount);
     let headerClasses = React.addons.classSet({
-      'header': true,
+      'header-dark': true,
       'open': this.state.panelOpen
     });
     let toggleClasses = React.addons.classSet({
@@ -121,8 +121,6 @@ var ItemAttachments = React.createClass({
           </li>
         )
       })
-    } else {
-      return (<li>No images attached</li>)
     }
     /*
       TODO: Use when have embedly
@@ -174,8 +172,6 @@ var ItemAttachments = React.createClass({
           </li>
         )
       })
-    } else {
-      return (<li>No files attached</li>)
     }
   },
 
@@ -190,53 +186,51 @@ var ItemAttachments = React.createClass({
                     .value();
   },
 
+  attachmentsContent() {
+    if (this.props.attachments.length) {
+      let images = this.images();
+      let attachmentViewer = this.attachmentsViewer(images);
+      let files = _.difference(this.props.attachments, images);
+      let fileList = this.fileList(files);
+
+      return ([
+        <div className="col-md-12">
+          <ul className="links">
+            {attachmentViewer}
+          </ul>
+        </div>,
+        <div className="col-md-12">
+          <ul className="links">
+            {fileList}
+          </ul>
+        </div>
+      ])
+    } else {
+      return (
+        <div className="col-md-12 action__restricted">
+          No attachments
+        </div>
+      )
+    }
+  },
+
   imageFileExt(url) {
     return (/\.(gif|jpg|jpeg|tiff|png)/i).test(url);
   },
 
   render: function() {
-    let images = this.images();
-    let attachmentViewer = this.attachmentsViewer(images);
-    let files = _.difference(this.props.attachments, images);
-    let fileList = this.fileList(files);
-    let header = this.attachmentsHeader(images.length, files.length);
+    let content = this.attachmentsContent();
     let contentClasses = React.addons.classSet({
-      'content': true,
+      'content-dark': true,
       'open': this.state.panelOpen
     });
-    /* Use when embedly works
-      <div className="attachments-viewer">
-      </div>
-      <div className="attachments__links">
-      </div>
-    */
+
     return (
-      <div className="col-md-12 section attachments">
+      <div className="col-md-3 section attachments no-gutter">
         <div className="col-md-12">
-          {header}
-          <div className={contentClasses}>
-            <div className="col-md-12 attachments__internals">
-              <div className="col-md-6">
-                <div className="title">
-                  Images: {images.length}
-                </div>
-                <div className="sep"></div>
-                <ul className="links">
-                  {attachmentViewer}
-                </ul>
-              </div>
-              <div className="col-md-6">
-                <div className="title">
-                  Files: {files.length}
-                </div>
-                <div className="sep"></div>
-                <ul className="links">
-                  {fileList}
-                </ul>
-              </div>
-            </div>
-          </div>
+          {this.header('attachments')}
         </div>
+        {content}
       </div>
     )
   }
@@ -244,3 +238,36 @@ var ItemAttachments = React.createClass({
 });
 
 export default ItemAttachments;
+
+/* - Use when embedly works
+let header = this.attachmentsHeader(images.length, files.length);
+<div className="col-md-12">
+  {header}
+  <div className={contentClasses}>
+    <div className="attachments-viewer">
+    </div>
+    <div className="attachments__links">
+    </div>
+    <div className="col-md-12 attachments__internals">
+      <div className="col-md-6">
+        <div className="title">
+          Images: {images.length}
+        </div>
+        <div className="sep"></div>
+        <ul className="links">
+          {attachmentViewer}
+        </ul>
+      </div>
+      <div className="col-md-6">
+        <div className="title">
+          Files: {files.length}
+        </div>
+        <div className="sep"></div>
+        <ul className="links">
+          {fileList}
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+*/

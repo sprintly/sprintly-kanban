@@ -1,0 +1,77 @@
+.item-detail .section.comments {
+  div[contenteditable]{
+    .border-top-radius(5px);
+    border-color: @sprintly-grey;
+    border-style: solid;
+    border-width: 1px;
+    width: 100%;
+    padding: 0;
+    text-indent: 10px;
+    padding-top: 10px;
+    min-height: 60px;
+    outline: none;
+  }
+
+  button {
+    margin-top: 5px;
+  }
+}
+.item-detail .section.comments .instructions {
+  .border-bottom-radius(5px);
+  border-color: @sprintly-grey;
+  border-style: solid;
+  background-color: @sprintly-light-grey;
+  border-width: 1px 1px 1px 1px;
+  position: relative;
+  height: 30px;
+  line-height: 30px;
+  font-size: 13px;
+  margin-bottom: 5px;
+  margin-top: -5px;
+}
+.item-detail .section.comments .instructions .upload,
+.item-detail .section.comments .instructions .syntax {
+  display: inline-block;
+
+  span.blue,
+  span.blue__light {
+    color: @sprintly-blue;
+  }
+  span.blue {
+    font-weight: @fontWeight-6;
+  }
+  span.blue__light {
+    .italicize();
+  }
+}
+.item-detail .section.comments .instructions .upload {
+  float: left;
+  margin-left: 10px;
+}
+.item-detail .section.comments .instructions .syntax {
+  float: right;
+  margin-right: 10px;
+}
+.item-detail .section.comments .react-mentions {
+  display: block;
+  min-height: 39px;
+
+  textarea {
+    .border-top-radius(5px);
+    min-height: 40px;
+    display: block;
+    position: absolute;
+    top: 0;
+    box-sizing: border-box;
+    background: transparent;
+    width: 100%;
+    bottom: -10px;
+    overflow: hidden;
+    resize: none;
+    border-color: @sprintly-black-light;
+    border-width: 1px;
+    padding-left: 10px;
+    padding-right: 5px;
+    padding-top: 10px;
+  }
+}

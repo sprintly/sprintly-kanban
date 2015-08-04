@@ -22,7 +22,7 @@ var ItemSubitemHeader = React.createClass({
       type: React.PropTypes.string
     }),
     header: React.PropTypes.bool,
-    hoverStatus: React.PropTypes.string,
+    hoverStatus: React.PropTypes.bool,
     controls: React.PropTypes.shape({
       status: React.PropTypes.string,
       score: React.PropTypes.string,
@@ -36,7 +36,8 @@ var ItemSubitemHeader = React.createClass({
 
   render() {
     let headerClasses = React.addons.classSet({
-      'header': true,
+      'subitem__header': true,
+      'header-dark': true,
       'open': this.props.header
     });
 

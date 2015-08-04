@@ -39,8 +39,7 @@ var TicketComments = React.createClass({
             </div>
             <div className="col-md-12 no-gutter">
               <div className="instructions">
-                <div className="upload">Drag and drop or <span className="blue__light">click here</span> to attach files</div>
-                <div className="syntax">Use <span className="blue">Markdown</span> & <span className="blue">Emoji</span></div>
+                <div className="syntax">Supports <span className="blue">Markdown</span></div>
               </div>
               <div className="col-md-3 collapse-right pull-right">
                 <button className="detail-button kanban-button-secondary" onClick={this.saveComment}>Comment</button>
@@ -54,3 +53,8 @@ var TicketComments = React.createClass({
 });
 
 export default TicketComments;
+/*
+  When attachmetns are supported:
+  <div className="upload">Drag and drop or <span className="blue__light">click here</span> to attach files</div>
+   & <span className="blue">Emoji</span>
+*/
