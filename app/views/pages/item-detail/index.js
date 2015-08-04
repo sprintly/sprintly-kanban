@@ -47,7 +47,7 @@ var ItemDetail = React.createClass({
     }
   },
 
-  componentWillReceiveProps: function(nextProps) {
+  componentWillReceiveProps(nextProps) {
     this.updateStripeHeight();
 
     if (this.getParams().number != this.state.item.number) {
@@ -147,9 +147,10 @@ var ItemDetail = React.createClass({
 
   itemActivity() {
     let activityClone;
-    let activity = this.state.item.activity || {};
+    let activity = this.state.item.activity;
 
-    if (activity.activities && activity.activities.length) {
+    if (activity && activity.activities && activity.activities.length) {
+
       activityClone = _.cloneDeep(activity);
       activityClone.activities.reverse();
     }

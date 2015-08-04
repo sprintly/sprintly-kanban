@@ -7,6 +7,7 @@ import ProductActions from '../../../actions/product-actions';
 import ItemActions from '../../../actions/item-actions';
 import Select from 'react-select';
 import STATUS_MAP from '../../../lib/statuses-map';
+import classNames from "classnames";
 
 var ItemSubitemHeader = React.createClass({
   mixins: [State, ItemDetailMixin],
@@ -24,9 +25,18 @@ var ItemSubitemHeader = React.createClass({
     header: React.PropTypes.bool,
     hoverStatus: React.PropTypes.bool,
     controls: React.PropTypes.shape({
-      status: React.PropTypes.string,
-      score: React.PropTypes.string,
-      assignee: React.PropTypes.string
+      status: React.PropTypes.oneOfType([
+        React.PropTypes.string,
+        React.PropTypes.bool
+      ]),
+      score: React.PropTypes.oneOfType([
+        React.PropTypes.string,
+        React.PropTypes.bool
+      ]),
+      assignee: React.PropTypes.oneOfType([
+        React.PropTypes.string,
+        React.PropTypes.bool
+      ])
     }),
     toggleActionControl: React.PropTypes.func,
     toggleSubitem: React.PropTypes.func,
@@ -35,7 +45,7 @@ var ItemSubitemHeader = React.createClass({
   // TODO: Decouple header component from the subitem-content component if possible
 
   render() {
-    let headerClasses = React.addons.classSet({
+    let headerClasses = classNames({
       'subitem__header': true,
       'header-dark': true,
       'open': this.props.header

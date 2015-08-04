@@ -53,7 +53,6 @@ var ItemSubitems = React.createClass({
     subitemsStates[id].header = true;
     subitemsStates[id].controls = this.controlToggle(subitemsStates[id].controls, type);
 
-    // TODO: See if es6 single var works here
     this.setState({subitemsStates: subitemsStates});
   },
 
@@ -62,10 +61,10 @@ var ItemSubitems = React.createClass({
       let subitemState = this.state.subitemsStates[subitem.number]
 
       return (
-        <Subitem index={index}
-             subitem={subitem}
-             members={this.props.members}
-      setHoverStatus={this.setHoverStatus}
+        <Subitem key={index}
+               subitem={subitem}
+               members={this.props.members}
+        setHoverStatus={this.setHoverStatus}
       resetHoverStatus={this.resetHoverStatus}
       toggleActionControl={this.toggleActionControl}
        toggleSubitem={this.toggleSubitem}
@@ -105,12 +104,11 @@ var ItemSubitems = React.createClass({
         requiresUpdate = true;
         subitemsStates[item.number] = {
           header: false,
-          hoverStatus: '',
+          hoverStatus: false,
           controls: {
             status: false,
             assignee: true,
             score: false
-            
           }
         }
       }

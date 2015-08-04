@@ -8,7 +8,6 @@ import ProductActions from '../../../actions/product-actions';
 import {State} from 'react-router';
 import ScoreMap from '../../../lib/score-map';
 import STATUS_MAP from '../../../lib/statuses-map';
-import classNames from "classnames";
 
 const INVERTED_STATUS_MAP = _.zipObject(_.values(STATUS_MAP), _.keys(STATUS_MAP))
 
@@ -24,7 +23,10 @@ var ItemDetails = React.createClass({
     who: React.PropTypes.string,
     what: React.PropTypes.string,
     why: React.PropTypes.string,
-    number: React.PropTypes.number,
+    number: React.PropTypes.oneOfType([
+      React.PropTypes.string,
+      React.PropTypes.number
+    ]),
     tags: React.PropTypes.string,
     createdAt: React.PropTypes.string,
     createdBy: React.PropTypes.shape({

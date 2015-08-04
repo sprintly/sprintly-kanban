@@ -6,6 +6,7 @@ import {State} from 'react-router';
 import _ from 'lodash';
 import Gravatar from '../../components/gravatar';
 import helpers from '../../components/helpers';
+import classNames from "classnames";
 
 // TODO - Extract to some key:val ./app level map
 const ITEM_CLOSE_MAP = {
@@ -39,8 +40,20 @@ var ItemActivity = React.createClass({
 
   propTypes: {
     members: React.PropTypes.array,
-    activity: React.PropTypes.array,
+    activity: React.PropTypes.shape({
+      total_count: React.PropTypes.array,
+      activities: React.PropTypes.array,
+    }),
     updateStripeHeight: React.PropTypes.func
+  },
+
+  getDefaultProps() {
+    return {
+      activity: {
+        total_count: [],
+        activities: []
+      }
+    }
   },
 
   getInitialState() {
@@ -169,7 +182,7 @@ var ItemActivity = React.createClass({
     return <button className="load-more" onClick={this.showAllToggle}>{toggleActivityCopy}</button>;
   },
 
-  componentWillReceiveProps() {
+  componentDidUpdate() {
     this.props.updateStripeHeight();
   },
 
@@ -194,7 +207,7 @@ var ItemActivity = React.createClass({
       }
 
 
-      activityItems = _.map(displayList, _.bind(function(model) {
+      activityItems = _.map(displayList, _.bind(function(model , i) {
         let creator = _.findWhere(this.props.members, {id: model.user});
         let creatorEmail = creator.email;
         let creatorName = this.abbreviatedName(creator);
@@ -203,7 +216,7 @@ var ItemActivity = React.createClass({
         let timestamp = this.timeSinceNow(model.created);
 
         return (
-          <li className="comment">
+          <li key={i} className="comment">
             <div className="avatar no-gutter">
               <Gravatar email={creatorEmail} size={30} />
             </div>

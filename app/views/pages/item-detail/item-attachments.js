@@ -4,6 +4,7 @@ import helpers from '../../components/helpers';
 import ItemDetailMixin from './detail-mixin';
 import {State} from 'react-router'
 import Slick from 'react-slick';
+import classNames from "classnames";
 
 const CarouselSettings = {
   dots: false,
@@ -75,14 +76,14 @@ var ItemAttachments = React.createClass({
     let counts = [];
 
     if (!imageCount && !fileCount) {
-      counts.push(<li>No Attachments</li>)
+      counts.push(<li key="no-attachment">No Attachments</li>)
     }
 
     if (imageCount) {
-      counts.push(<li>Images: {imageCount}</li>)
+      counts.push(<li key="count__images">Images: {imageCount}</li>)
     }
     if (fileCount) {
-      counts.push(<li>Files: {fileCount}</li>);
+      counts.push(<li key="count__files">Files: {fileCount}</li>);
     }
 
     return counts;
@@ -90,11 +91,11 @@ var ItemAttachments = React.createClass({
 
   attachmentsHeader(imagesCount, filesCount) {
     let counts = this.counts(imagesCount, filesCount);
-    let headerClasses = React.addons.classSet({
+    let headerClasses = classNames({
       'header-dark': true,
       'open': this.state.panelOpen
     });
-    let toggleClasses = React.addons.classSet({
+    let toggleClasses = classNames({
       'toggle': true,
       'transparent': !this.props.attachments.length
     })
@@ -194,12 +195,12 @@ var ItemAttachments = React.createClass({
       let fileList = this.fileList(files);
 
       return ([
-        <div className="col-md-12">
+        <div key="attachments" className="col-md-12">
           <ul className="links">
             {attachmentViewer}
           </ul>
         </div>,
-        <div className="col-md-12">
+        <div key="images" className="col-md-12">
           <ul className="links">
             {fileList}
           </ul>
@@ -220,7 +221,7 @@ var ItemAttachments = React.createClass({
 
   render: function() {
     let content = this.attachmentsContent();
-    let contentClasses = React.addons.classSet({
+    let contentClasses = classNames({
       'content-dark': true,
       'open': this.state.panelOpen
     });

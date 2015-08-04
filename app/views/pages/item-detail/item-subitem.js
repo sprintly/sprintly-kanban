@@ -8,6 +8,7 @@ import {State, Link} from 'react-router';
 import ProductActions from '../../../actions/product-actions';
 import ItemActions from '../../../actions/item-actions';
 import STATUS_MAP from '../../../lib/statuses-map';
+import classNames from "classnames";
 
 var ItemSubitem = React.createClass({
   mixins: [State, ItemDetailMixin],
@@ -27,9 +28,18 @@ var ItemSubitem = React.createClass({
     header: React.PropTypes.bool,
     hoverStatus: React.PropTypes.bool,
     controls: React.PropTypes.shape({
-      status: React.PropTypes.string,
-      score: React.PropTypes.string,
-      assignee: React.PropTypes.string
+      status: React.PropTypes.oneOfType([
+        React.PropTypes.string,
+        React.PropTypes.bool
+      ]),
+      score: React.PropTypes.oneOfType([
+        React.PropTypes.string,
+        React.PropTypes.bool
+      ]),
+      assignee: React.PropTypes.oneOfType([
+        React.PropTypes.string,
+        React.PropTypes.bool
+      ])
     }),
     setHoverStatus: React.PropTypes.func,
     resetHoverStatus: React.PropTypes.func,
@@ -98,12 +108,12 @@ var ItemSubitem = React.createClass({
     let header = this.subitemHeader();
     let description = this.description();
     let subitemActions = this.subitemActions();
-    let contentClasses = React.addons.classSet({
+    let contentClasses = classNames({
       'content-dark': true,
       'open': this.props.header
     });
     let contentStyles = !this.props.header ? {overflow: 'hidden', display: 'none'} : {};
-    let descriptionClasses = React.addons.classSet({
+    let descriptionClasses = classNames({
       "col-md-9": true,
       "collapse-left": true,
       "description": true,
@@ -114,7 +124,7 @@ var ItemSubitem = React.createClass({
     let viewTicketURL = `/product/${this.getParams().id}/item/${this.props.subitem.number}`;
 
     return (
-      <div key={this.props.index} className="subitem">
+      <div className="subitem">
         {header}
         <div className={contentClasses} style={contentStyles}>
           <div className={descriptionClasses}>

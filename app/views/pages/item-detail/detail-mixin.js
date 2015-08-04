@@ -7,6 +7,7 @@ import Select from 'react-select';
 import {MentionsInput, Mention} from '@sprintly/react-mentions';
 import ProductActions from '../../../actions/product-actions';
 import ScoreMap from '../../../lib/score-map';
+import classNames from "classnames";
 import STATUS_MAP from '../../../lib/statuses-map';
 
 var DetailMixin = {
@@ -30,6 +31,7 @@ var DetailMixin = {
 
     return (
       <MentionsInput
+        key="mentions"
         value={value}
         onChange={changeFn}
         placeholder={placeholder}>
@@ -44,7 +46,7 @@ var DetailMixin = {
 
   buildTags(tags) {
     if (tags) {
-      let tagIcon = <li><span className="glyphicon glyphicon-tag"></span></li>
+      let tagIcon = <li key="tag"><span className="glyphicon glyphicon-tag"></span></li>
       let parsedTags = this.parseTags(tags);
       let commas = _.map(_.times(parsedTags.length-1), function() {return ','});
 
@@ -108,7 +110,7 @@ var DetailMixin = {
     const SCORE_ATTR = 'score';
 
     var options = _.map(_.keys(ScoreMap), (key, i) => {
-      let estimatorClasses = React.addons.classSet({
+      let estimatorClasses = classNames({
         "estimator-option": true,
         "selected": key === item.score
       })
@@ -133,7 +135,7 @@ var DetailMixin = {
     const STATUS_ATTR = 'status';
 
     var options = _.map(_.keys(STATUS_MAP), (key, i) => {
-      let estimatorClasses = React.addons.classSet({
+      let estimatorClasses = classNames({
         "estimator-option": true,
         "selected": STATUS_MAP[key] === item.status
       });
@@ -160,7 +162,7 @@ var DetailMixin = {
     let currentAssignee = this.currentAssignee(members, item.assigned_to);
 
     if (!this.canBeReassigned(item.status)) {
-      let currentStatus = helpers.toTitleCase(item.status)
+      let currentStatus = helpers.toTitleCase(item.status);
       return (
         <div className="action__restricted">
           {`Cannot reassign tickets which are `}

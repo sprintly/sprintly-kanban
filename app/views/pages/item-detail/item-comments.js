@@ -2,6 +2,7 @@ import React from 'react/addons';
 import ItemActions from '../../../actions/item-actions';
 import ItemDetailMixin from './detail-mixin';
 import {State} from 'react-router'
+
 const placeholder = "Use '@' to mention another Sprintly user.  Use #[item number] (e.g. #1234) to reference another Sprintly item.";
 
 var TicketComments = React.createClass({

@@ -27,7 +27,10 @@ var ItemTitle = React.createClass({
   mixins: [State, ItemDetailMixin],
 
   propTypes: {
-    itemId: React.PropTypes.number,
+    itemId: React.PropTypes.oneOfType([
+      React.PropTypes.string,
+      React.PropTypes.number
+    ]),
     type: React.PropTypes.string,
     title: React.PropTypes.string,
     who: React.PropTypes.string,
@@ -53,11 +56,11 @@ var ItemTitle = React.createClass({
       var whoPre = helpers.vowelSound(whoFirstWord) ? 'As an ' : 'As a ' ;
 
       return  [
-        <span className="italicize">{whoPre}</span>,
+        <span key="who" className="italicize">{whoPre}</span>,
         `${this.props.who}`,
-        <span className="italicize"> I want </span>,
+        <span key="what" className="italicize"> I want </span>,
         `${this.props.what}`,
-        <span className="italicize"> so that </span>,
+        <span key="why" className="italicize"> so that </span>,
         `${this.props.why}`
       ]
     } else {
@@ -73,7 +76,7 @@ var ItemTitle = React.createClass({
       });
 
       return (
-        <div className={`item-title__field ${attr}`} key={i}>
+        <div className={`item-title__field ${attr}`} key={i} >
           <span>{TITLE_ATTRS[attr].title}</span>
           <div className={`input-group ${attr}`}>
             <label>{helpers.toTitleCase(attr)}</label>
