@@ -11,6 +11,7 @@
 
   input {
     font-size: 16px;
+    font-weight: @fontWeight-1;
   }
 }
 .section.item__details .ticket__description .title__edit {
@@ -102,9 +103,16 @@
 }
 .section.item__details .type {
   font-weight: @fontWeight-6;
+
+  @media (max-width: @screen-lg-min) {
+    font-size: 17px;
+  }
 }
 .section.item__details .id {
   .italicize();
+  @media (max-width: @screen-lg-min) {
+    font-size: 19px;
+  }
 }
 .section.item__details .meta {
   margin-left: 19px;
@@ -145,6 +153,9 @@
 .section.item__details .ticket-state .title,
 .section.item__details .ticket-state .value {
   font-size: 14px;
+  @media (max-width: @screen-lg-min) {
+    font-size: 12px
+  }
 }
 .section.item__details .ticket-state .title {
   font-weight: @fontWeight-6;

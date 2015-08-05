@@ -1,11 +1,18 @@
 .item-detail {
   position: fixed;
   height: 100%;
-  /* need to set the width according to screen size  */
-  width: 50%;
 
-  @media (min-width: @screen-lg-min) {
-    width: 48%;
+  @media (max-width: @screen-lg-min) { // < 1200px
+    width: 66%;
+  }
+  @media (min-width: @screen-lg-min) and (max-width: @screen-xlg-min) { // 1200px < x > 1600px
+    width: 60%;
+  }
+  @media (min-width: @screen-xlg-min) { // < 1600px
+    width: 40%;
+  }
+  @media (max-width: @screen-xs) { // < 480px
+    width: 100%;
   }
 
   background: #fff;
@@ -48,7 +55,7 @@
   width: 100%;
 }
 .item-detail .stripe {
-  width: 30px;
+  width: 2.5%;
   float: left;
   display: inline-block;
 }
@@ -69,19 +76,19 @@
   z-index: @zIndex-1;
 }
 .item-detail .content__wrapper {
-  width: 96%;
+  width: 97.5%;
   display: inline-block;
 }
 .item-detail .item-detail__close {
+  width: 100%;
   display: inline-block;
   margin: 0px;
-  width: 30px;
   text-align: center;
   line-height: 52px;
   border-radius: 0px;
   color: white;
   font-weight: 600;
-  font-size: 20px;
+  font-size: 16px;
   padding-top: 12px;
   height: 75px
 }

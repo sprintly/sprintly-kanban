@@ -7,6 +7,9 @@
   li {
     height: 100%;
     min-height: 40px;
+    @media (max-width: @screen-lg-min) {
+      min-height: 25px;
+    }
     width: 100%;
     display: inline-block;
   }
@@ -31,6 +34,10 @@
 }
 .item-detail .section.activity .timestamp {
   font-size: 12px;
+
+  @media (max-width: @screen-lg-min) {
+    font-size: 11px;
+  }
 }
 .item-detail .section.activity .activity__description {
   font-size: 14px;

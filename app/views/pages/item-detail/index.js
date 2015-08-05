@@ -200,7 +200,7 @@ var ItemDetail = React.createClass({
       <div ref="itemDetail" className="container-fluid item-detail no-gutter">
         <div style={stripeStyles} className={stripeClass}>
           <Link to="product" params={{ id: this.getParams().id }} className={closeClass}>
-            <span aria-hidden="true" className="glyphicon glyphicon-menu-right"/>
+            <span aria-hidden="true" className="glyphicon glyphicon-remove"/>
           </Link>
         </div>
         <div className="content__wrapper">
