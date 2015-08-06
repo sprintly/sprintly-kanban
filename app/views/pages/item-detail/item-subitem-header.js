@@ -69,7 +69,6 @@ var ItemSubitemHeader = React.createClass({
         </a>
         <div className="sep-vertical"></div>
         <div className="meta id">#{subitemId}</div>
-        <div className="title">{title}</div>
         <div className="state collapse-right">
           <ul className="action__list">
             <div className="status">
@@ -99,6 +98,7 @@ var ItemSubitemHeader = React.createClass({
             </div>
           </ul>
         </div>
+        <div className="title">{title}</div>
       </div>
     )
   }

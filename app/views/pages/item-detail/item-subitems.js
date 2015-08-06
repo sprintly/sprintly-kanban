@@ -157,18 +157,18 @@ var ItemSubitems = React.createClass({
     let subitems = this.props.subitems ? this.subitems() : [];
 
     return (
-      <div className="col-md-12 section subitems">
-        <div className="col-md-12">
+      <div className="col-md-12 col-lg-12 section subitems">
+        <div className="col-lg-12">
           <div className="header">
             <div className="title">{helpers.toTitleCase('sub-items')}</div>
             {collapseAllLink}
             <div className="sep"></div>
           </div>
         </div>
-        <div className="col-md-12">
+        <div className="col-lg-12">
           {subitems}
         </div>
-        <div className="col-md-12 add-subitem">
+        <div className="col-lg-12 add-subitem">
           <form className="item-card__add-subitem" onSubmit={this.createSubitem}>
             <input ref="addItemInput" type="text" placeholder={"Add new sub-task"} className="form-control" />
             <button className="btn btn-default">+</button>

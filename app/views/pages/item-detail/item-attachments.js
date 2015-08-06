@@ -195,12 +195,12 @@ var ItemAttachments = React.createClass({
       let fileList = this.fileList(files);
 
       return ([
-        <div key="attachments" className="col-md-12">
+        <div key="attachments" className="col-lg-12">
           <ul className="links">
             {attachmentViewer}
           </ul>
         </div>,
-        <div key="images" className="col-md-12">
+        <div key="images" className="col-lg-12">
           <ul className="links">
             {fileList}
           </ul>
@@ -208,7 +208,7 @@ var ItemAttachments = React.createClass({
       ])
     } else {
       return (
-        <div className="col-md-12 action__restricted">
+        <div className="col-lg-12 action__restricted">
           No attachments
         </div>
       )
@@ -221,14 +221,15 @@ var ItemAttachments = React.createClass({
 
   render: function() {
     let content = this.attachmentsContent();
-    let contentClasses = classNames({
-      'content-dark': true,
-      'open': this.state.panelOpen
-    });
+    let containerClasses = classNames({
+      "section attachments no-gutter": true,
+      "col-lg-3 visible-lg-block": this.props.size === 'large',
+      "col-md-6 visible-md-block": this.props.size === 'medium'
+    })
 
     return (
-      <div className="col-md-3 section attachments no-gutter">
-        <div className="col-md-12">
+      <div className={containerClasses}>
+        <div className="col-lg-12">
           {this.header('attachments')}
         </div>
         {content}
@@ -242,15 +243,19 @@ export default ItemAttachments;
 
 /* - Use when embedly works
 let header = this.attachmentsHeader(images.length, files.length);
-<div className="col-md-12">
+let contentClasses = classNames({
+  'content-dark': true,
+  'open': this.state.panelOpen
+});
+<div className="col-lg-12">
   {header}
   <div className={contentClasses}>
     <div className="attachments-viewer">
     </div>
     <div className="attachments__links">
     </div>
-    <div className="col-md-12 attachments__internals">
-      <div className="col-md-6">
+    <div className="col-lg-12 attachments__internals">
+      <div className="col-lg-6">
         <div className="title">
           Images: {images.length}
         </div>
@@ -259,7 +264,7 @@ let header = this.attachmentsHeader(images.length, files.length);
           {attachmentViewer}
         </ul>
       </div>
-      <div className="col-md-6">
+      <div className="col-lg-6">
         <div className="title">
           Files: {files.length}
         </div>

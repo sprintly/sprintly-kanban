@@ -4,11 +4,11 @@ import helpers from '../../components/helpers';
 import TagsInput from '../../components/tags-input';
 import ItemDetailMixin from './detail-mixin';
 import ItemTitle from './item-title';
+import ItemAttachments from './item-attachments';
 import ProductActions from '../../../actions/product-actions';
 import {State} from 'react-router';
 import ScoreMap from '../../../lib/score-map';
 import STATUS_MAP from '../../../lib/statuses-map';
-
 const INVERTED_STATUS_MAP = _.zipObject(_.values(STATUS_MAP), _.keys(STATUS_MAP))
 
 var ItemDetails = React.createClass({
@@ -16,6 +16,7 @@ var ItemDetails = React.createClass({
   mixins: [State, ItemDetailMixin],
 
   propTypes: {
+    attachments: React.PropTypes.array,
     productTags: React.PropTypes.array,
     members: React.PropTypes.array,
     type: React.PropTypes.string,
@@ -134,18 +135,18 @@ var ItemDetails = React.createClass({
     let toggleButton = this.toggleButton();
 
     return (
-      <div className="col-md-9 info">
+      <div className="col-md-12 col-lg-9 info">
         <div className="ticket__type">
-          <div className="col-md-12 type">
+          <div className="col-md-12 col-lg-12 type">
             {type}
           </div>
-          <div className="col-md-12 id">
+          <div className="col-md-12 col-lg-12 id">
             {ticketId}
           </div>
         </div>
         <div className="ticket__description">
           {title}
-          <div className="col-md-12 meta collapse-right">
+          <div className="col-md-12 col-lg-12 meta collapse-right">
             <div className="tags">
               <ul className="tags__component">
                 {toggleButton}
@@ -160,6 +161,9 @@ var ItemDetails = React.createClass({
 
   actionControl () {
     let members = helpers.formatSelectMembers(this.props.members);
+    let scores = helpers.formatForSelect(ScoreMap);
+    let statuses = helpers.formatStatusesForSelect(INVERTED_STATUS_MAP);
+
     let productId = this.getParams().id;
     let itemId = this.getParams().number;
     let assigneeToId = (this.props.assignee && this.props.assignee.id) ? this.props.assignee.id : '';
@@ -172,17 +176,17 @@ var ItemDetails = React.createClass({
       assigned_to: assigneeToId
     }
 
-    let estimator = this.estimator(itemParams);
-    let statusPicker = this.statusPicker(itemParams, this.setHoverStatus, this.resetHoverStatus);
-    let reassigner = this.reassigner(itemParams, members);
+    let statusPicker = this.selector(itemParams, itemParams.status, statuses, 'status');
+    let scoreSelector = this.selector(itemParams, itemParams.score, scores, 'score');
+    let assigneeSelector = this.assigneeSelector(itemParams, members);
 
     return (
-      <div className="col-md-12 control">
+      <div className="col-md-12 col-lg-12 control">
         <div className={this.componentVisible(this.state.actionControls, 'assignee')}>
-          {reassigner}
+          {assigneeSelector}
         </div>
         <div className={this.componentVisible(this.state.actionControls, 'score')}>
-          {estimator}
+          {scoreSelector}
         </div>
         <div className={this.componentVisible(this.state.actionControls, 'status')}>
           {statusPicker}
@@ -208,29 +212,29 @@ var ItemDetails = React.createClass({
     let actionControl = this.actionControl()
 
     return (
-      <div className="col-md-3 ticket-actions collapse-gutters">
-        <div className="col-md-12 ticket-state">
-          <div className="col-md-4">
-            <div className="col-md-12 title">
+      <div className="col-md-6 col-lg-3 ticket-actions collapse-gutters">
+        <div className="col-md-12 col-lg-12 ticket-state">
+          <div className="col-md-4 col-lg-4">
+            <div className="col-lg-12 title">
               Progress
             </div>
-            <div className="col-md-12 value action__toggle" onClick={_.partial(this.toggleActionControl, 'status')}>
+            <div className="col-lg-12 value action__toggle" onClick={_.partial(this.toggleActionControl, 'status')}>
               {helpers.toTitleCase(itemStatus)}
             </div>
           </div>
-          <div className="col-md-5">
-            <div className="col-md-12 title">
+          <div className="col-md-4 col-lg-5">
+            <div className="col-lg-12 title">
               Owner
             </div>
-            <div className="col-md-12 value action__toggle" onClick={_.partial(this.toggleActionControl, 'assignee')}>
+            <div className="col-lg-12 value action__toggle" onClick={_.partial(this.toggleActionControl, 'assignee')}>
               {assigneeGravatar}
             </div>
           </div>
-          <div className="col-md-3">
-            <div className="col-md-12 title">
+          <div className="col-md-4 col-lg-3">
+            <div className="col-lg-12 title">
               Size
             </div>
-            <div className="col-md-12 value action__toggle" onClick={_.partial(this.toggleActionControl, 'score')}>
+            <div className="col-lg-12 value action__toggle" onClick={_.partial(this.toggleActionControl, 'score')}>
               {itemSizeButton}
             </div>
           </div>
@@ -240,13 +244,22 @@ var ItemDetails = React.createClass({
     )
   },
 
+  attachments() {
+
+  },
+
   render: function() {
     let infoSection = this.infoSection();
     let actionsSection = this.actionsSection();
 
+    let attachments = this.props.attachments || [];
+    let mobileAttachments = <ItemAttachments attachments={attachments}
+                                                  size={'medium'} />
+
     return (
-      <div className="col-md-12 section item__details">
+      <div className="col-md-12 col-lg-12 section item__details">
         {infoSection}
+        {mobileAttachments}
         {actionsSection}
       </div>
     )

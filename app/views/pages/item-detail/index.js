@@ -96,6 +96,7 @@ var ItemDetail = React.createClass({
                      status={this.state.item.status}
                      score={this.state.item.score}
                    assignee={this.state.item.assigned_to}
+                attachments={this.state.item.attachments}
                    setItem={this.setItem}
                    productTags={this.state.product.tags} />
     )
@@ -103,8 +104,8 @@ var ItemDetail = React.createClass({
 
   itemDescription() {
     return (
-      <div className="col-md-9 section description">
-        <div className="col-md-12">
+      <div className="col-md-12 col-lg-9 section description">
+        <div className="col-lg-12">
           {this.header('description')}
           <ItemDescription    itemId={this.state.item.number}
                          description={this.state.item.description}
@@ -113,19 +114,6 @@ var ItemDetail = React.createClass({
                      alternateLayout={true} />
         </div>
       </div>
-    )
-  },
-
-  itemAttachments() {
-    let attachments = [];
-    let item = this.state.item;
-
-    if (item.attachments && item.attachments.length) {
-      attachments = item.attachments;
-    }
-
-    return (
-      <ItemAttachments attachments={attachments} />
     )
   },
 
@@ -187,7 +175,14 @@ var ItemDetail = React.createClass({
 
     let itemDetails = this.itemDetails()
     let itemDescription = this.itemDescription();
-    let itemAttachments = this.itemAttachments();
+
+    let attachments = [];
+    let item = this.state.item;
+    if (item.attachments && item.attachments.length) {
+      attachments = item.attachments;
+    }
+    let itemAttachments = <ItemAttachments attachments={attachments}
+                                                  size={'large'} />
 
     let subitems;
     if (this.state.item.type == 'story' && this.state.item.sub_items) {

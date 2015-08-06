@@ -75,6 +75,9 @@
     }
   }
 }
+.section.item__details .info {
+  margin-bottom: 10px;
+}
 .section.item__details .info .title {
   font-size: 21px;
   width: 97%;
@@ -143,16 +146,24 @@
 }
 .section.item__details .ticket-actions {
   z-index: @zIndex-2;
+
+  @media (max-width: @screen-sm-min) {
+    margin-top: 30px;
+    margin-bottom: 30px;
+  }
 }
 .section.item__details .ticket-state {
   text-align: center;
+
+  @media (min-width: @screen-sm-min) {
+    margin-bottom: 10px;
+  }
 }
 .section.item__details .ticket-state .action__toggle {
   cursor: pointer;
 }
-.section.item__details .ticket-state .title,
-.section.item__details .ticket-state .value {
-  font-size: 14px;
+.section.item__details .ticket-state .title {
+  font-size: 13px;
   @media (max-width: @screen-lg-min) {
     font-size: 12px
   }
@@ -161,11 +172,16 @@
   font-weight: @fontWeight-6;
 }
 .section.item__details .ticket-state .value {
+  font-size: 12px;
   margin-top: 10px;
+  cursor: pointer;
 
   img {
     border-radius: 34px;
   }
+}
+.section.item__details .control {
+  margin-top: 15px;
 }
 .section.item__details .control {
   button {
@@ -187,22 +203,4 @@
   button:focus {
     outline: none;
   }
-}
-.section.subitems .content .control {
-  button.estimator__button {
-    width: 30px;
-    height: 30px;
-    border-radius: 16px;
-    font-size: 17px;
-    font-weight: 600;
-    margin-top: 4px;
-    line-height: 0;
-  }
-
-  button.estimator__button:focus {
-    outline: none;
-  }
-}
-.section.item__details .control {
-  margin-top: 15px;
 }

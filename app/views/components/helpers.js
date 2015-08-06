@@ -1,4 +1,4 @@
-var _ = require('lodash');
+import _ from 'lodash';
 
 module.exports = {
   formatMentionMembers(members) {
@@ -12,6 +12,20 @@ module.exports = {
   /*
     TODO: Add test coverage
   */
+  formatForSelect(options) {
+    var values = _.keys(options)
+
+    return _.map(values, (value) => {
+      return {label: this.toTitleCase(value), value: value}
+    })
+  },
+
+  formatStatusesForSelect(options) {
+    return _.map(options, (value, key) => {
+      return {label: this.toTitleCase(value), value: key}
+    })
+  },
+
   formatSelectMembers(members) {
     return _.chain(members)
             .map(function(member){

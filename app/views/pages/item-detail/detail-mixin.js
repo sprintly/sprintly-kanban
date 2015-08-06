@@ -10,6 +10,10 @@ import ScoreMap from '../../../lib/score-map';
 import classNames from "classnames";
 import STATUS_MAP from '../../../lib/statuses-map';
 
+const selectPlaceholderMap = {
+  'assigned_to': "Choose assignee"
+}
+
 var DetailMixin = {
   header(title) {
     var titleCased = helpers.toTitleCase(title);
@@ -158,27 +162,37 @@ var DetailMixin = {
     )
   },
 
-  reassigner(item, members) {
-    let currentAssignee = this.currentAssignee(members, item.assigned_to);
+  actionRestricted(status) {
+    let currentStatus = helpers.toTitleCase(status);
 
-    if (!this.canBeReassigned(item.status)) {
-      let currentStatus = helpers.toTitleCase(item.status);
-      return (
-        <div className="action__restricted">
-          {`Cannot reassign tickets which are `}
-          <span className="status">{currentStatus}</span>
-        </div>
-      )
+    return (
+      <div className="action__restricted">
+        {`Cannot reassign tickets which are `}
+        <span className="status">{currentStatus}</span>
+      </div>
+    )
+  },
+
+  assigneeSelector(item, members) {
+    if (this.canBeReassigned(item.status)) {
+      let currentAssignee = this.currentAssignee(members, item.assigned_to);
+      return this.selector(item, currentAssignee, members, 'assigned_to');
     } else {
-      return <Select placeholder={"Choose assignee"}
-                            name="form-field-name"
-                       className="assign-dropdown"
-                        disabled={false}
-                           value={currentAssignee}
-                         options={members}
-                        onChange={_.partial(this.updateAttribute, item.number, 'assigned_to')}
-                       clearable={true} />
+      return this.actionRestricted(item.status)
     }
+  },
+
+  selector(item, currentVal, options, attribute) {
+    let placeholder = selectPlaceholderMap.attribute
+
+    return <Select placeholder={placeholder}
+                          name="form-field-name"
+                     className="assign-dropdown"
+                      disabled={false}
+                         value={currentVal}
+                       options={options}
+                      onChange={_.partial(this.updateAttribute, item.number, attribute)}
+                     clearable={true} />
   },
 
   canBeReassigned(status) {
@@ -187,10 +201,6 @@ var DetailMixin = {
 
   updateAttribute(itemId, attr, value) {
     let productId = this.getParams().id;
-
-    if (attr === 'status') {
-      value = STATUS_MAP[value];
-    }
 
     let newAttrs = {};
     newAttrs[attr] = value;

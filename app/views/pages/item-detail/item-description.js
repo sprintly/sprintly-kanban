@@ -93,7 +93,7 @@ var ItemDescription = React.createClass({
     }
 
     let descriptionClasses = classNames({
-      "col-md-12": true,
+      "col-md-12 col-lg-12": true,
       "item__description": true,
       "collapse-left": !this.props.alternateLayout
     })

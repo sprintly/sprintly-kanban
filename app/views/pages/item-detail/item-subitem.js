@@ -7,8 +7,10 @@ import SubitemHeader from './item-subitem-header';
 import {State, Link} from 'react-router';
 import ProductActions from '../../../actions/product-actions';
 import ItemActions from '../../../actions/item-actions';
-import STATUS_MAP from '../../../lib/statuses-map';
 import classNames from "classnames";
+import ScoreMap from '../../../lib/score-map';
+import STATUS_MAP from '../../../lib/statuses-map';
+const INVERTED_STATUS_MAP = _.zipObject(_.values(STATUS_MAP), _.keys(STATUS_MAP))
 
 var ItemSubitem = React.createClass({
   mixins: [State, ItemDetailMixin],
@@ -51,8 +53,9 @@ var ItemSubitem = React.createClass({
 
   subitemActions() {
     let members = helpers.formatSelectMembers(this.props.members);
-    let estimator = this.estimator(this.props.subitem);
-    let statusPicker = this.statusPicker(this.props.subitem, this.props.setHoverStatus, this.props.resetHoverStatus);
+    let scores = helpers.formatForSelect(ScoreMap);
+    let statuses = helpers.formatStatusesForSelect(INVERTED_STATUS_MAP);
+
     let subitem = this.props.subitem;
     let assigneeToId = (subitem.assigned_to && subitem.assigned_to.id) ? subitem.assigned_to.id : '';
     let itemParams = {
@@ -63,15 +66,17 @@ var ItemSubitem = React.createClass({
       assigned_to: assigneeToId
     }
 
-    let reassigner = this.reassigner(itemParams, members);
+    let statusPicker = this.selector(itemParams, itemParams.status, statuses, 'status');
+    let scoreSelector = this.selector(itemParams, itemParams.score, scores, 'score');
+    let assigneeSelector = this.assigneeSelector(itemParams, members);
 
     return (
       <div className="state">
         <div className={this.componentVisible(this.props.controls, 'assignee')}>
-          {reassigner}
+          {assigneeSelector}
         </div>
         <div className={this.componentVisible(this.props.controls, 'score')}>
-          {estimator}
+          {scoreSelector}
         </div>
         <div className={this.componentVisible(this.props.controls, 'status')}>
           {statusPicker}
@@ -114,7 +119,7 @@ var ItemSubitem = React.createClass({
     });
     let contentStyles = !this.props.header ? {overflow: 'hidden', display: 'none'} : {};
     let descriptionClasses = classNames({
-      "col-md-9": true,
+      "col-md-8 col-lg-9": true,
       "collapse-left": true,
       "description": true,
       'italicize': !this.props.subitem.description
@@ -130,15 +135,15 @@ var ItemSubitem = React.createClass({
           <div className={descriptionClasses}>
             {description}
           </div>
-          <div className="col-md-3 control">
+          <div className="col-md-4 col-lg-3 control">
             {subitemActions}
           </div>
-          <div className="col-md-12 meta footer">
-            <div className="col-md-6 tags no-gutter">
+          <div className="col-md-12 col-lg-12 meta footer">
+            <div className="col-md-6 col-lg-6 tags no-gutter">
               <Link to={viewTicketURL}>View Full Ticket</Link>
               {tags}
             </div>
-            <div className="col-md-6 timestamp no-gutter">
+            <div className="col-md-6 col-lg-6 timestamp no-gutter">
               {createdByTimestamp}
             </div>
           </div>
