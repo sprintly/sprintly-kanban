@@ -3,6 +3,7 @@ import _ from 'lodash';
 import helpers from '../../components/helpers';
 import ItemDetailMixin from './detail-mixin';
 import Subitem from './item-subitem';
+import ShortSubitems from '../../components/item-card/subitems';
 import {State, Link} from 'react-router';
 import ProductActions from '../../../actions/product-actions';
 import ItemActions from '../../../actions/item-actions';
@@ -13,6 +14,8 @@ var ItemSubitems = React.createClass({
   mixins: [State, ItemDetailMixin],
 
   propTypes: {
+    item: React.PropTypes.object,
+    productId: React.PropTypes.string,
     members: React.PropTypes.array,
     subitems: React.PropTypes.array,
     setSubitem: React.PropTypes.func
@@ -73,6 +76,17 @@ var ItemSubitems = React.createClass({
             {...subitemState} />
       )
     });
+  },
+
+  shortSubitems() {
+    return (
+      <ShortSubitems
+        item={this.props.item}
+        subitems={this.props.subitems}
+        productId={this.props.productId}
+        parentId={this.props.productId}
+      />
+    )
   },
 
   subheaderOpen(id) {
@@ -153,26 +167,32 @@ var ItemSubitems = React.createClass({
   },
 
   render: function() {
-    let collapseAllLink = this.props.subitems ? <a className="collapse__subitems"onClick={this.collapseSubitems}>collapse all</a> : '';
+    let collapseAllLink = this.props.subitems ? <a className="collapse__subitems hidden-xs" onClick={this.collapseSubitems}>collapse all</a> : '';
     let subitems = this.props.subitems ? this.subitems() : [];
+    let shortSubitems = this.props.item && this.props.subitems ? this.shortSubitems() : [];
 
     return (
-      <div className="col-md-12 col-lg-12 section subitems">
-        <div className="col-lg-12">
+      <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12 section subitems">
+        <div className="col-xs-12 col-lg-12">
           <div className="header">
             <div className="title">{helpers.toTitleCase('sub-items')}</div>
             {collapseAllLink}
             <div className="sep"></div>
           </div>
         </div>
-        <div className="col-lg-12">
-          {subitems}
+        <div className="hidden-xs">
+          <div className="col-xs-12 col-lg-12">
+            {subitems}
+          </div>
+          <div className="col-xs-12 add-subitem">
+            <form className="item-card__add-subitem" onSubmit={this.createSubitem}>
+              <input ref="addItemInput" type="text" placeholder={"Add new sub-task"} className="form-control" />
+              <button className="btn btn-default">+</button>
+            </form>
+          </div>
         </div>
-        <div className="col-lg-12 add-subitem">
-          <form className="item-card__add-subitem" onSubmit={this.createSubitem}>
-            <input ref="addItemInput" type="text" placeholder={"Add new sub-task"} className="form-control" />
-            <button className="btn btn-default">+</button>
-          </form>
+        <div className="col-xs-12 col-lg-12 visible-xs">
+          {shortSubitems}
         </div>
       </div>
     )

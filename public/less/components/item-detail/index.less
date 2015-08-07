@@ -2,8 +2,11 @@
   position: fixed;
   height: 100%;
 
-  @media (max-width: @screen-xs) { // < 480px
+  @media (max-width: @screen-xs-min) {
     width: 100%;
+  }
+  @media (min-width: @screen-sm-min) {
+    width: 80%;
   }
   @media (min-width: @screen-md-min) { // < 992px
     width: 70%;
@@ -11,7 +14,7 @@
   @media (min-width: @screen-lg-min) and (max-width: @screen-xlg-min) { // 1200px < x > 1600px
     width: 60%;
   }
-  @media (max-width: @screen-lg-min) { // < 1200px
+  @media (min-width: @screen-lg-min) { // < 1200px
     width: 66%;
   }
   @media (min-width: @screen-xlg-min) { // < 1600px
@@ -61,6 +64,13 @@
   width: 2.5%;
   float: left;
   display: inline-block;
+
+  @media (min-width: @screen-sm-min) {
+    width: 4.5%;
+  }
+  @media (max-width: @screen-xs-min) {
+    width: 10%;
+  }
 }
 .item-detail .stripe.story {
   background-color: @story-bg;
@@ -81,6 +91,13 @@
 .item-detail .content__wrapper {
   width: 97.5%;
   display: inline-block;
+
+  @media (max-width: @screen-xs-min) {
+    width: 90%;
+  }
+  @media (min-width: @screen-sm-min) {
+    width: 95.5%;
+  }
 }
 .item-detail .item-detail__close {
   width: 100%;
@@ -93,7 +110,11 @@
   font-weight: 600;
   font-size: 16px;
   padding-top: 12px;
-  height: 75px
+  height: 75px;
+
+  @media (max-width: @screen-sm-min) {
+    font-size: 20px;
+  }
 }
 .item-detail .item-detail__close.story {
   background-color: @story-color;
@@ -129,6 +150,10 @@
 }
 .item-detail .section:nth-of-type(1) {
   margin-top: 30px;
+
+  @media (max-width: @screen-xs-min) {
+    margin-top: 10px;
+  }
 }
 /* HEADER COMMON */
 .item-detail .section .header .title {

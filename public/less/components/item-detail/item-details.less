@@ -1,3 +1,6 @@
+.section.item__details {
+  z-index: @zIndex-3;
+}
 .section.item__details .ticket__type {
   margin-top: 0px;
   float: left;
@@ -14,9 +17,20 @@
     font-weight: @fontWeight-1;
   }
 }
+.section.item__details .ticket__type,
+.section.item__details .ticket__description {
+  @media (max-width: @screen-xs-min) { // < 480px
+    width: 100%;
+  }
+}
 .section.item__details .ticket__description .title__edit {
   width: 50px;
   float: left;
+
+  @media (max-width: @screen-xs-min) {
+    margin-top: 15px;
+    width: 100%;
+  }
 
   button {
     margin-top: 10px;
@@ -38,6 +52,15 @@
   button:focus {
     outline: none;
   }
+
+  @media (max-width: @screen-xs-min) {
+    width: 100%;
+    margin-bottom: 5px;
+
+    button {
+      height: 30px;
+    }
+  }
 }
 .section.item__details .ticket__description .tags {
   font-size: 14px;
@@ -46,6 +69,11 @@
   ul.tags__component {
     list-style-type: none;
     padding: 0;
+
+    @media (max-width: @screen-xs-min) {
+      display: inline-block;
+      width: 100%;
+    }
 
     li {
       display: inline;
@@ -87,6 +115,12 @@
   padding: 5px 15px 10px;
   display: inline-block;
   margin-left: 20px;
+
+  @media (max-width: @screen-xs-min) {
+    width: 100%;
+    margin: 5px 0;
+    font-size: 15px;
+  }
 }
 .section.item__details .info .title.story {
   background-color: @story-detail-color;
@@ -103,6 +137,9 @@
 .section.item__details .type,
 .section.item__details .id {
   font-size: 22px;
+  @media (min-width: @screen-sm-min) { // < 480px
+    font-size: 20px;
+  }
 }
 .section.item__details .type {
   font-weight: @fontWeight-6;
@@ -119,12 +156,26 @@
 }
 .section.item__details .meta {
   margin-left: 19px;
+  height: 45px;
+
+  @media (max-width: @screen-xs-min) {
+    margin-left: 0;
+    margin-top: 10px;
+    padding: 0;
+    height: auto;
+  }
 }
 .section.item__details .timestamp {
   .italicize();
   font-size: 12px;
   text-align: right;
+  font-size: 12px;
   margin-top: 23px;
+
+  @media (max-width: @screen-xs-min) {
+    font-size: 10px;
+    margin-top: 12px;
+  }
 }
 .section.item__details .ticket__description ul.tags__component .tags__wrapper {
   padding-left: 15px;
@@ -134,12 +185,21 @@
   line-height: 20px;
   display: block;
   float: left;
-  width: 90%;
+  width: 89.5%;
+
+  @media (max-width: @screen-xs-min) {
+    width: 100%;
+    padding: 0;
+  }
 }
 .section.item__details .ticket__description ul.tags__component .tags-input {
   font-size: 12px;
   margin-right: 0px;
   margin-left: 3px;
+
+  @media (max-width: @screen-xs-min) {
+    margin-left: 0px;
+  }
 }
 .section.item__details .ticket__description ul.tags__component .tags-input .list-group {
   z-index: @zIndex-3;
@@ -147,9 +207,12 @@
 .section.item__details .ticket-actions {
   z-index: @zIndex-2;
 
-  @media (max-width: @screen-sm-min) {
-    margin-top: 30px;
-    margin-bottom: 30px;
+  @media (min-width: @screen-md-min) {
+    margin-top: 1px;
+  }
+
+  @media (max-width: @screen-xs-min) {
+    margin: 20px 0;
   }
 }
 .section.item__details .ticket-state {
@@ -164,8 +227,14 @@
 }
 .section.item__details .ticket-state .title {
   font-size: 13px;
-  @media (max-width: @screen-lg-min) {
+  @media (min-width: @screen-lg-min) {
     font-size: 12px
+  }
+  @media (min-width: @screen-md-min) {
+    font-size: 14px;
+  }
+  @media (max-width: @screen-xs-min) {
+    font-size: 14px;
   }
 }
 .section.item__details .ticket-state .title {
@@ -178,6 +247,12 @@
 
   img {
     border-radius: 34px;
+  }
+  @media (min-width: @screen-md-min) {
+    font-size: 14px;
+  }
+  @media (max-width: @screen-xs-min) {
+    font-size: 14px;
   }
 }
 .section.item__details .control {

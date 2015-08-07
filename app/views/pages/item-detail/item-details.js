@@ -135,18 +135,18 @@ var ItemDetails = React.createClass({
     let toggleButton = this.toggleButton();
 
     return (
-      <div className="col-md-12 col-lg-9 info">
+      <div className="col-xs-12 col-sm-12 col-md-12 col-lg-9 info">
         <div className="ticket__type">
-          <div className="col-md-12 col-lg-12 type">
+          <div className="col-xs-6 col-sm-12 col-md-12 col-lg-12 type">
             {type}
           </div>
-          <div className="col-md-12 col-lg-12 id">
+          <div className="col-xs-6 col-sm-12 col-md-12 col-lg-12 id">
             {ticketId}
           </div>
         </div>
         <div className="ticket__description">
           {title}
-          <div className="col-md-12 col-lg-12 meta collapse-right">
+          <div className="col-xs-12 col-md-12 col-lg-12 meta collapse-right">
             <div className="tags">
               <ul className="tags__component">
                 {toggleButton}
@@ -181,7 +181,7 @@ var ItemDetails = React.createClass({
     let assigneeSelector = this.assigneeSelector(itemParams, members);
 
     return (
-      <div className="col-md-12 col-lg-12 control">
+      <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12 control">
         <div className={this.componentVisible(this.state.actionControls, 'assignee')}>
           {assigneeSelector}
         </div>
@@ -208,13 +208,12 @@ var ItemDetails = React.createClass({
     let email = this.props.assignee ? this.props.assignee.email: '';
     let assigneeGravatar = this.assigneeGravatar(email);
     let itemSizeButton = this.itemScoreButton(this.props.type, this.props.score);
-
     let actionControl = this.actionControl()
 
     return (
-      <div className="col-md-6 col-lg-3 ticket-actions collapse-gutters">
-        <div className="col-md-12 col-lg-12 ticket-state">
-          <div className="col-md-4 col-lg-4">
+      <div className="col-xs-12 col-sm-6 col-md-6 col-lg-3 ticket-actions collapse-gutters">
+        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12 ticket-state">
+          <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4">
             <div className="col-lg-12 title">
               Progress
             </div>
@@ -222,7 +221,7 @@ var ItemDetails = React.createClass({
               {helpers.toTitleCase(itemStatus)}
             </div>
           </div>
-          <div className="col-md-4 col-lg-5">
+          <div className="col-xs-4 col-sm-4 col-md-4 col-lg-5">
             <div className="col-lg-12 title">
               Owner
             </div>
@@ -230,7 +229,7 @@ var ItemDetails = React.createClass({
               {assigneeGravatar}
             </div>
           </div>
-          <div className="col-md-4 col-lg-3">
+          <div className="col-xs-4 col-sm-4 col-md-4 col-lg-3">
             <div className="col-lg-12 title">
               Size
             </div>
@@ -257,7 +256,7 @@ var ItemDetails = React.createClass({
                                                   size={'medium'} />
 
     return (
-      <div className="col-md-12 col-lg-12 section item__details">
+      <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12 section item__details">
         {infoSection}
         {mobileAttachments}
         {actionsSection}

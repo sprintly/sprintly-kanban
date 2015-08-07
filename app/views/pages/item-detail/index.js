@@ -104,7 +104,7 @@ var ItemDetail = React.createClass({
 
   itemDescription() {
     return (
-      <div className="col-md-12 col-lg-9 section description">
+      <div className="col-xs-12 col-sm-12 col-md-12 col-lg-9 section description">
         <div className="col-lg-12">
           {this.header('description')}
           <ItemDescription    itemId={this.state.item.number}
@@ -121,9 +121,11 @@ var ItemDetail = React.createClass({
     let subitems = this.state.item.sub_items || [];
 
     return (
-      <ItemSubitems  members={this.props.members}
-                    subitems={subitems}
-                  setSubitem={this.setSubitem} />
+      <ItemSubitems    item={this.state.item}
+                    members={this.props.members}
+                  productId={this.state.product.id}
+                   subitems={subitems}
+                 setSubitem={this.setSubitem} />
     )
   },
 

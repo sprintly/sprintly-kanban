@@ -224,7 +224,7 @@ var ItemAttachments = React.createClass({
     let containerClasses = classNames({
       "section attachments no-gutter": true,
       "col-lg-3 visible-lg-block": this.props.size === 'large',
-      "col-md-6 visible-md-block": this.props.size === 'medium'
+      "col-xs-12 col-sm-6 col-md-6 visible-md-block visible-sm-block visible-xs-block": this.props.size === 'medium'
     })
 
     return (

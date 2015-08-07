@@ -1,9 +1,12 @@
 import _ from 'lodash';
 import React from 'react/addons';
+import {State} from 'react-router';
 import ProductActions from '../../../actions/product-actions';
 import ItemActions from '../../../actions/item-actions';
 
 var SubItem = React.createClass({
+
+  mixins: [State],
 
   propTypes: {
     subitems: React.PropTypes.array.isRequired,
