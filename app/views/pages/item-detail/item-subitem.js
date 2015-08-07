@@ -119,7 +119,7 @@ var ItemSubitem = React.createClass({
     });
     let contentStyles = !this.props.header ? {overflow: 'hidden', display: 'none'} : {};
     let descriptionClasses = classNames({
-      "col-sm-8 col-md-8 col-lg-9": true,
+      "col-xs-8 col-lg-9": true,
       "collapse-left": true,
       "description": true,
       'italicize': !this.props.subitem.description
@@ -135,15 +135,15 @@ var ItemSubitem = React.createClass({
           <div className={descriptionClasses}>
             {description}
           </div>
-          <div className="col-sm-4 col-md-4 col-lg-3 control">
+          <div className="col-xs-4 col-lg-3 control">
             {subitemActions}
           </div>
-          <div className="col-sm-12 col-md-12 col-lg-12 meta footer">
-            <div className="col-sm-6 col-md-6 col-lg-6 tags no-gutter">
+          <div className="col-xs-12 meta footer">
+            <div className="col-xs-6 tags no-gutter">
               <Link to={viewTicketURL}>View Full Ticket</Link>
               {tags}
             </div>
-            <div className="col-sm-6 col-md-6 col-lg-6 timestamp no-gutter">
+            <div className="col-xs-6 timestamp no-gutter">
               {createdByTimestamp}
             </div>
           </div>

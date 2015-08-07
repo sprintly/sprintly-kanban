@@ -220,9 +220,9 @@ var ItemActivity = React.createClass({
             <div className="avatar no-gutter">
               <Gravatar email={creatorEmail} size={30} />
             </div>
-            <div className="col-xs-6 col-sm-2 col-md-2 col-lg-2 creator no-wrap-truncate">{creatorName}</div>
-            <div className="col-xs-4 col-sm-1 col-md-1 col-lg-1 activity-type no-gutter no-wrap-truncate">{activityType}</div>
-            <div className="col-xs-10 col-sm-7 col-md-7 col-lg-7 activity__description collapse-right">
+            <div className="col-xs-6 col-sm-2 creator no-wrap-truncate">{creatorName}</div>
+            <div className="col-xs-4 col-sm-1 activity-type no-gutter no-wrap-truncate">{activityType}</div>
+            <div className="col-xs-10 col-sm-7 activity__description collapse-right">
               {description}
             </div>
             <div className="col-xs-12 timestamp pull-right">
@@ -236,8 +236,8 @@ var ItemActivity = React.createClass({
     }
 
     return (
-      <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12 section activity">
-        <div className="col-md-12 col-lg-12">
+      <div className="col-xs-12 section activity">
+        <div className="col-xs-12">
           <div className="header">
             <div className="title">{helpers.toTitleCase('activity')}</div>
             <div className="activity__counter">{totalActivityCount} items</div>

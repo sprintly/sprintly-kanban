@@ -31,14 +31,14 @@ var TicketComments = React.createClass({
     let mentionsComponent = this.mentionsComponent(this.state.comment, placeholder, this.props.members, this.updateComment);
 
     return (
-      <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12 section comments">
-        <div className="col-lg-12">
+      <div className="col-xs-12 section comments">
+        <div className="col-xs-12">
           {this.header('comments')}
           <div className="comment__form">
-            <div className="col-lg-12 no-gutter">
+            <div className="col-xs-12 no-gutter">
               {mentionsComponent}
             </div>
-            <div className="col-lg-12 no-gutter">
+            <div className="col-xs-12 no-gutter">
               <div className="instructions">
                 <div className="syntax">Supports <span className="blue">Markdown</span></div>
               </div>

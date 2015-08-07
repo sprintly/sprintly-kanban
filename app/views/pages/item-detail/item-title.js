@@ -158,13 +158,13 @@ var ItemTitle = React.createClass({
 
     return (
       <div className={titleClass}>
-        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12 no-gutter">
+        <div className="col-xs-12 no-gutter">
           {title}
         </div>
-        <div className="col-xs-12 col-sm-2 col-md-2 col-lg-2 no-gutter">
+        <div className="col-xs-12 col-sm-2 no-gutter">
           {toggleButton}
         </div>
-        <div className="col-xs-12 col-sm-10 col-md-10 col-lg-10 timestamp collapse-right">
+        <div className="col-xs-12 col-sm-10 timestamp collapse-right">
           {createdByTimestamp}
         </div>
       </div>

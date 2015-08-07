@@ -135,18 +135,18 @@ var ItemDetails = React.createClass({
     let toggleButton = this.toggleButton();
 
     return (
-      <div className="col-xs-12 col-sm-12 col-md-12 col-lg-9 info">
+      <div className="col-xs-12 col-lg-9 info">
         <div className="ticket__type">
-          <div className="col-xs-6 col-sm-12 col-md-12 col-lg-12 type">
+          <div className="col-xs-6 col-sm-12 type">
             {type}
           </div>
-          <div className="col-xs-6 col-sm-12 col-md-12 col-lg-12 id">
+          <div className="col-xs-6 col-sm-12 id">
             {ticketId}
           </div>
         </div>
         <div className="ticket__description">
           {title}
-          <div className="col-xs-12 col-md-12 col-lg-12 meta collapse-right">
+          <div className="col-xs-12 col-md-12 meta collapse-right">
             <div className="tags">
               <ul className="tags__component">
                 {toggleButton}
@@ -181,7 +181,7 @@ var ItemDetails = React.createClass({
     let assigneeSelector = this.assigneeSelector(itemParams, members);
 
     return (
-      <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12 control">
+      <div className="col-xs-12 control">
         <div className={this.componentVisible(this.state.actionControls, 'assignee')}>
           {assigneeSelector}
         </div>
@@ -211,29 +211,29 @@ var ItemDetails = React.createClass({
     let actionControl = this.actionControl()
 
     return (
-      <div className="col-xs-12 col-sm-6 col-md-6 col-lg-3 ticket-actions collapse-gutters">
-        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12 ticket-state">
-          <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-            <div className="col-lg-12 title">
+      <div className="col-xs-12 col-sm-6 col-lg-3 ticket-actions collapse-gutters">
+        <div className="col-xs-12 ticket-state">
+          <div className="col-xs-4">
+            <div className="col-xs-12 title">
               Progress
             </div>
-            <div className="col-lg-12 value action__toggle" onClick={_.partial(this.toggleActionControl, 'status')}>
+            <div className="col-xs-12 value action__toggle" onClick={_.partial(this.toggleActionControl, 'status')}>
               {helpers.toTitleCase(itemStatus)}
             </div>
           </div>
-          <div className="col-xs-4 col-sm-4 col-md-4 col-lg-5">
-            <div className="col-lg-12 title">
+          <div className="col-xs-4 col-lg-5">
+            <div className="col-xs-12 title">
               Owner
             </div>
-            <div className="col-lg-12 value action__toggle" onClick={_.partial(this.toggleActionControl, 'assignee')}>
+            <div className="col-xs-12 value action__toggle" onClick={_.partial(this.toggleActionControl, 'assignee')}>
               {assigneeGravatar}
             </div>
           </div>
-          <div className="col-xs-4 col-sm-4 col-md-4 col-lg-3">
-            <div className="col-lg-12 title">
+          <div className="col-xs-4 col-lg-3">
+            <div className="col-xs-12 title">
               Size
             </div>
-            <div className="col-lg-12 value action__toggle" onClick={_.partial(this.toggleActionControl, 'score')}>
+            <div className="col-xs-12 value action__toggle" onClick={_.partial(this.toggleActionControl, 'score')}>
               {itemSizeButton}
             </div>
           </div>
@@ -256,7 +256,7 @@ var ItemDetails = React.createClass({
                                                   size={'medium'} />
 
     return (
-      <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12 section item__details">
+      <div className="col-xs-12 section item__details">
         {infoSection}
         {mobileAttachments}
         {actionsSection}

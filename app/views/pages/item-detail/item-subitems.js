@@ -172,8 +172,8 @@ var ItemSubitems = React.createClass({
     let shortSubitems = this.props.item && this.props.subitems ? this.shortSubitems() : [];
 
     return (
-      <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12 section subitems">
-        <div className="col-xs-12 col-lg-12">
+      <div className="col-xs-12 section subitems">
+        <div className="col-xs-12">
           <div className="header">
             <div className="title">{helpers.toTitleCase('sub-items')}</div>
             {collapseAllLink}
@@ -181,7 +181,7 @@ var ItemSubitems = React.createClass({
           </div>
         </div>
         <div className="hidden-xs">
-          <div className="col-xs-12 col-lg-12">
+          <div className="col-xs-12">
             {subitems}
           </div>
           <div className="col-xs-12 add-subitem">
@@ -191,7 +191,7 @@ var ItemSubitems = React.createClass({
             </form>
           </div>
         </div>
-        <div className="col-xs-12 col-lg-12 visible-xs">
+        <div className="col-xs-12 visible-xs">
           {shortSubitems}
         </div>
       </div>

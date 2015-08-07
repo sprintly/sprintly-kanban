@@ -21,7 +21,7 @@ var ItemFollowers = React.createClass({
     if (this.props.followers) {
       return _.map(this.props.followers, (follower, i) => {
         return (
-          <div key={i} className="col-lg-4">
+          <div key={i} className="col-xs-4">
             <li><Gravatar email={follower.email} size={36} /></li>
           </div>
         )
@@ -35,7 +35,7 @@ var ItemFollowers = React.createClass({
     let followerNodes = this.followerNodes();
 
     return (
-      <div className="col-lg-3 followers">
+      <div className="col-xs-3 followers">
         {this.header('followers')}
         <ul>
           {followerNodes}

@@ -148,7 +148,6 @@ var ItemAttachments = React.createClass({
         );
       }
     */
-
   },
 
   openNewTabLink(url, text) {
@@ -195,12 +194,12 @@ var ItemAttachments = React.createClass({
       let fileList = this.fileList(files);
 
       return ([
-        <div key="attachments" className="col-lg-12">
+        <div key="attachments" className="col-xs-12">
           <ul className="links">
             {attachmentViewer}
           </ul>
         </div>,
-        <div key="images" className="col-lg-12">
+        <div key="images" className="col-xs-12">
           <ul className="links">
             {fileList}
           </ul>
@@ -208,7 +207,7 @@ var ItemAttachments = React.createClass({
       ])
     } else {
       return (
-        <div className="col-lg-12 action__restricted">
+        <div className="col-xs-12 action__restricted">
           No attachments
         </div>
       )
@@ -223,13 +222,13 @@ var ItemAttachments = React.createClass({
     let content = this.attachmentsContent();
     let containerClasses = classNames({
       "section attachments no-gutter": true,
-      "col-lg-3 visible-lg-block": this.props.size === 'large',
-      "col-xs-12 col-sm-6 col-md-6 visible-md-block visible-sm-block visible-xs-block": this.props.size === 'medium'
+      "col-xs-3 visible-lg-block": this.props.size === 'large',
+      "col-xs-12 col-sm-6 visible-md-block visible-sm-block visible-xs-block": this.props.size === 'medium'
     })
 
     return (
       <div className={containerClasses}>
-        <div className="col-lg-12">
+        <div className="col-xs-12">
           {this.header('attachments')}
         </div>
         {content}
