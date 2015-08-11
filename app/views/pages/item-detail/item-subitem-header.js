@@ -42,7 +42,6 @@ var ItemSubitemHeader = React.createClass({
     toggleSubitem: React.PropTypes.func,
     updateSubitem: React.PropTypes.func
   },
-  // TODO: Decouple header component from the subitem-content component if possible
 
   render() {
     let headerClasses = classNames({
@@ -79,11 +78,6 @@ var ItemSubitemHeader = React.createClass({
             <div className="assignee">
               <li onClick={_.partial(this.props.toggleActionControl, this.props.subitem, 'assignee')}>
                 <div className="meta">{assigneeGravatar}</div>
-              </li>
-            </div>
-            <div className="score">
-              <li onClick={_.partial(this.props.toggleActionControl, this.props.subitem, 'score')}>
-                <div className="meta">{itemScoreButton}</div>
               </li>
             </div>
             <div className="subitem__checkbox">
