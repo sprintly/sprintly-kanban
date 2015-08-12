@@ -123,7 +123,7 @@ var ItemDetail = React.createClass({
     return (
       <ItemSubitems    item={this.state.item}
                     members={this.props.members}
-                  productId={this.state.product.id}
+                  productId={this.props.product.id}
                    subitems={subitems}
                  setSubitem={this.setSubitem} />
     )

@@ -154,13 +154,11 @@ var ItemSubitems = React.createClass({
     ev.preventDefault()
     let node = this.refs.addItemInput.getDOMNode()
     let title = node.value
-    let productId = this.getParams().id
-    let ticketNumber = this.getParams().number
 
-    ItemActions.addItem(productId, {
+    ItemActions.addItem(this.props.productId, {
       title,
       type: 'task',
-      parent: ticketNumber
+      parent: this.props.item.number
     }).then(function() {
       node.value = '';
     })
