@@ -214,7 +214,7 @@ var ItemActivity = React.createClass({
         let timestamp = this.timeSinceNow(model.created);
 
         return (
-          <ActivityItem index={i}
+          <ActivityItem key={i}
                         creatorEmail={creatorEmail}
                          creatorName={creatorName}
                         activityType={activityType}

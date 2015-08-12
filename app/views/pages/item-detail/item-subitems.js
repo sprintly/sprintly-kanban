@@ -15,7 +15,7 @@ var ItemSubitems = React.createClass({
 
   propTypes: {
     item: React.PropTypes.object,
-    productId: React.PropTypes.string,
+    productId: React.PropTypes.number,
     members: React.PropTypes.array,
     subitems: React.PropTypes.array,
     setSubitem: React.PropTypes.func
@@ -59,6 +59,14 @@ var ItemSubitems = React.createClass({
     this.setState({subitemsStates: subitemsStates});
   },
 
+  maxId() {
+    let maxIdSubitem = _.max(this.props.subitems, (subitem) => {
+      return subitem.number;
+    });
+
+    return maxIdSubitem.number.toString().length;
+  },
+
   subitems() {
     return _.map(this.props.subitems, (subitem, index) => {
       let subitemState = this.state.subitemsStates[subitem.number]
@@ -69,10 +77,11 @@ var ItemSubitems = React.createClass({
                members={this.props.members}
         setHoverStatus={this.setHoverStatus}
       resetHoverStatus={this.resetHoverStatus}
-      toggleActionControl={this.toggleActionControl}
-       toggleSubitem={this.toggleSubitem}
-       updateSubitem={this.updateSubitem}
-       setSubitem={this.props.setSubitem}
+   toggleActionControl={this.toggleActionControl}
+         toggleSubitem={this.toggleSubitem}
+         updateSubitem={this.updateSubitem}
+            setSubitem={this.props.setSubitem}
+                 maxId={this.maxId()}
             {...subitemState} />
       )
     });

@@ -40,7 +40,17 @@ var ItemSubitemHeader = React.createClass({
     }),
     toggleActionControl: React.PropTypes.func,
     toggleSubitem: React.PropTypes.func,
-    updateSubitem: React.PropTypes.func
+    updateSubitem: React.PropTypes.func,
+    maxId: React.PropTypes.number
+  },
+
+  idStyles() {
+    /*
+      to keep title left-aligned across subitems
+      we use 10px per id char of the longest id
+      ids = [12,123] => #123 => 3chars => 30px
+    */
+    return {width: `${this.props.maxId}0px`}
   },
 
   render() {
@@ -67,7 +77,7 @@ var ItemSubitemHeader = React.createClass({
           <span aria-hidden="true" className={caretClass} />
         </a>
         <div className="sep-vertical"></div>
-        <div className="meta id">#{subitemId}</div>
+        <div className="meta id" style={this.idStyles()}>{`#${subitemId}`}</div>
         <div className="state collapse-right">
           <ul className="action__list">
             <div className="status">

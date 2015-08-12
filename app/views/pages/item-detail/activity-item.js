@@ -11,13 +11,16 @@ let ActivityItem = React.createClass({
     creatorEmail: React.PropTypes.string,
     creatorName: React.PropTypes.string,
     activityType: React.PropTypes.string,
-    description: React.PropTypes.string,
+    description: React.PropTypes.oneOfType([
+      React.PropTypes.string,
+      React.PropTypes.object,
+    ]),
     timestamp: React.PropTypes.string
   },
 
   render: function() {
     return (
-      <li key={this.props.index} className="activity__item">
+      <li className="activity__item">
         <div className="avatar no-gutter">
           <Gravatar email={this.props.creatorEmail} size={GRAVATAR_SIZE} />
         </div>

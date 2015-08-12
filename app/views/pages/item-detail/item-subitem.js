@@ -48,7 +48,8 @@ var ItemSubitem = React.createClass({
     toggleActionControl: React.PropTypes.func,
     toggleSubitem: React.PropTypes.func,
     updateSubitem: React.PropTypes.func,
-    setSubitem: React.PropTypes.func
+    setSubitem: React.PropTypes.func,
+    maxId: React.PropTypes.number
   },
 
   subitemActions() {
@@ -94,7 +95,8 @@ var ItemSubitem = React.createClass({
                     controls={this.props.controls}
          toggleActionControl={this.props.toggleActionControl}
                toggleSubitem={this.props.toggleSubitem}
-               updateSubitem={this.props.updateSubitem} />
+               updateSubitem={this.props.updateSubitem}
+                       maxId={this.props.maxId} />
     )
   },
 
