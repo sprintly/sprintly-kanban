@@ -5,6 +5,7 @@ import _ from 'lodash';
 import ProductStore from '../../../stores/product-store';
 import ItemActions from '../../../actions/item-actions';
 // Components
+import ItemHeader from './item-header';
 import ItemDetails from './item-details';
 import ItemDescription from './item-description';
 import ItemAttachments from './item-attachments';
@@ -106,7 +107,7 @@ var ItemDetail = React.createClass({
     return (
       <div className="col-xs-12 col-sm-12 col-md-12 col-lg-9 section description">
         <div className="col-lg-12">
-          {this.header('description')}
+          <ItemHeader title="description" />
           <ItemDescription    itemId={this.state.item.number}
                          description={this.state.item.description}
                              members={this.props.members}

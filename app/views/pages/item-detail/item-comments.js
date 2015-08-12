@@ -1,6 +1,7 @@
 import React from 'react/addons';
 import ItemActions from '../../../actions/item-actions';
 import ItemDetailMixin from './detail-mixin';
+import ItemHeader from './item-header';
 import {State} from 'react-router'
 
 const placeholder = "Use '@' to mention another Sprintly user.  Use #[item number] (e.g. #1234) to reference another Sprintly item.";
@@ -33,7 +34,7 @@ var TicketComments = React.createClass({
     return (
       <div className="col-xs-12 section comments">
         <div className="col-xs-12">
-          {this.header('comments')}
+          <ItemHeader title='comments' />
           <div className="comment__form">
             <div className="col-xs-12 no-gutter">
               {mentionsComponent}

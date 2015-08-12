@@ -2,6 +2,7 @@ import React from 'react/addons';
 import _ from 'lodash';
 import helpers from '../../components/helpers';
 import ItemDetailMixin from './detail-mixin';
+import ItemHeader from './item-header';
 import {State} from 'react-router'
 import Slick from 'react-slick';
 import classNames from "classnames";
@@ -229,13 +230,12 @@ var ItemAttachments = React.createClass({
     return (
       <div className={containerClasses}>
         <div className="col-xs-12">
-          {this.header('attachments')}
+          <ItemHeader title='attachments' />
+          {content}
         </div>
-        {content}
       </div>
     )
   }
-
 });
 
 export default ItemAttachments;

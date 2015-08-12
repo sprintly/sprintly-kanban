@@ -1,6 +1,7 @@
 import React from 'react/addons';
 import ItemActions from '../../../actions/item-actions';
 import ItemDetailMixin from './detail-mixin';
+import ItemHeader from './item-header';
 import Markdown from 'react-markdown';
 import {State} from 'react-router';
 import _ from 'lodash';
@@ -191,7 +192,7 @@ var ItemActivity = React.createClass({
     let activityItems;
     let showAllActivityButton;
     let activity = this.props.activity;
-    let totalActivityCount = activity.total_count || 0;
+    let totalActivityCount = `${activity.total_count} items`;
 
     if (activity.activities && this.props.members.length) {
       /*
@@ -238,11 +239,7 @@ var ItemActivity = React.createClass({
     return (
       <div className="col-xs-12 section activity">
         <div className="col-xs-12">
-          <div className="header">
-            <div className="title">{helpers.toTitleCase('activity')}</div>
-            <div className="activity__counter">{totalActivityCount} items</div>
-            <div className="sep"></div>
-          </div>
+          <ItemHeader title='activity' subheaderEl={totalActivityCount} />
           <ul>
             {activityItems}
           </ul>

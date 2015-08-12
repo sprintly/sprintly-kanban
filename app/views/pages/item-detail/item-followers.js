@@ -1,6 +1,7 @@
 import React from 'react/addons';
 import _ from 'lodash';
 import ItemDetailMixin from './detail-mixin';
+import ItemHeader from './item-header';
 import {State} from 'react-router'
 import ProductActions from '../../../actions/product-actions';
 
@@ -36,7 +37,7 @@ var ItemFollowers = React.createClass({
 
     return (
       <div className="col-xs-3 followers">
-        {this.header('followers')}
+        <ItemHeader title='followers' />
         <ul>
           {followerNodes}
         </ul>
