@@ -4,27 +4,30 @@ var React = require('react/addons');
 var TestUtils = React.addons.TestUtils;
 var sinon = require('sinon');
 var stubRouterContext = require('../../lib/stub-router-context');
-var AddItemModal = require('./add-item-modal');
-
-var Modal = require('react-bootstrap').Modal;
-var Nav = require('react-bootstrap').Nav;
-var NavItem = require('react-bootstrap').NavItem;
-
+var AddItem = require('./add-item');
 var MentionsInput = require('@sprintly/react-mentions').MentionsInput;
 var Mention = require('@sprintly/react-mentions').Mention;
 
-var Title = require('./add-item/title');
-var TagsInput = require('./tags-input');
+var Title = require('../components/add-item/title');
+var TagsInput = require('../components/tags-input');
 
-var StoryTitle = require('./add-item/story-title');
-var MembersDropdown = require('./add-item/members-dropdown');
+var StoryTitle = require('../components/add-item/story-title');
+var MembersDropdown = require('../components/add-item/members-dropdown');
 
 var ItemActions = require('../../actions/item-actions');
+var documentStub = {
+  body: {
+    getBoundingClientRect: function () {
+      return 0;
+    }
+  }
+}
+AddItem.__set__('document', documentStub);
 
-describe('Add Item Modal', function() {
+describe('Add Item', function() {
   beforeEach(function() {
     this.sinon = sinon.sandbox.create();
-    this.ItemActions = AddItemModal.__get__('ItemActions');
+    this.ItemActions = AddItem.__get__('ItemActions');
     this.addItemStub = this.sinon.stub(this.ItemActions, 'addItem').returns({then: function(){}});
     this.dismissSpy = sinon.spy();
     let props = {
@@ -54,7 +57,14 @@ describe('Add Item Modal', function() {
       onHide: this.dismissSpy
     }
 
-    let Component = stubRouterContext(AddItemModal, props);
+    let Component = stubRouterContext(AddItem, props, {
+      getCurrentParams: () => {
+        return { id: 1 }
+      },
+      getCurrentPathname: () => {
+        return '/product'
+      }
+    });
 
     this.component = TestUtils.renderIntoDocument(<Component />);
   });
@@ -64,11 +74,7 @@ describe('Add Item Modal', function() {
   });
 
   context('componentDidMount', function() {
-    it('renders the modal component', function () {
-      assert.isDefined(TestUtils.findRenderedComponentWithType(this.component, Modal));
-    });
-
-    it('renders a NavItem for the 4 issue types', function () {
+    it.only('renders a NavItem for the 4 issue types', function () {
       let NavItems = TestUtils.scryRenderedComponentsWithType(this.component, NavItem);
 
       assert.lengthOf(NavItems, 4);
@@ -201,7 +207,7 @@ describe('Add Item Modal', function() {
           }
         }
 
-        let Component = stubRouterContext(AddItemModal, props);
+        let Component = stubRouterContext(AddItem, props);
 
         let component = TestUtils.renderIntoDocument(<Component />);
 
@@ -223,7 +229,7 @@ describe('Add Item Modal', function() {
           }
         }
 
-        let Component = stubRouterContext(AddItemModal, props);
+        let Component = stubRouterContext(AddItem, props);
 
         let component = TestUtils.renderIntoDocument(<Component />);
 
@@ -312,15 +318,6 @@ describe('Add Item Modal', function() {
 
         assert.isTrue(this.addItemStub.calledWithExactly('1', nonStoryIssueProps));
       });
-    });
-  });
-
-  describe('dismiss modal', function () {
-    it('flushes modal state', function () {
-      let CloseModal = TestUtils.findRenderedDOMComponentWithClass(this.component, 'cancel-item');
-      TestUtils.Simulate.click(CloseModal);
-
-      assert.isTrue(this.dismissSpy.called);
     });
   });
 });

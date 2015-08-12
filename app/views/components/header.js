@@ -2,7 +2,9 @@ import _ from 'lodash';
 import React from 'react/addons';
 import classNames from "classnames";
 import Gravatar from './gravatar';
-import AddItemModal from './add-item-modal';
+
+// import AddItemModal from './add-item-modal';
+
 import FiltersMenu from './filters/filters-menu';
 import {ModalTrigger} from 'react-bootstrap';
 import {Link, Navigation, State} from 'react-router';
@@ -72,21 +74,11 @@ let KanbanHeader = React.createClass({
 
   renderAddItem() {
     if (this.props.members && this.props.tags) {
-      let modal = (
-        <AddItemModal
-          onHide={this.closeModal}
-          show={this.state.showModal}
-          product={this.props.product}
-          members={this.props.members}
-          tags={this.props.tags}
-        />
-      );
       return (
         <div style={{ float: 'right' }}>
-          <button className="btn btn-primary add-item" onClick={this.openModal}>
+          <Link className="btn btn-primary add-item" to={`/product/${this.getParams().id}/add-item`}>
             <span className="glyphicon glyphicon-plus-sign"/> Add Item
-          </button>
-          {modal}
+          </Link>
         </div>
       );
     }

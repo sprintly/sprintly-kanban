@@ -54,12 +54,12 @@ describe('Header', function() {
     })
   });
 
-  describe('click on \'Add Item\'', function () {
-    it('reveals an add item modal', function () {
+  describe('\'Add Item\'', function () {
+    it('links to the add-item route', function () {
       let addItemButton = TestUtils.findRenderedDOMComponentWithClass(this.component.refs.stub, 'add-item');
       TestUtils.Simulate.click(addItemButton);
 
-      assert.isTrue(document.body.classList.contains('modal-open'));
+      assert.equal(addItemButton.props.to, '/product/1/add-item');
     });
   });
 });

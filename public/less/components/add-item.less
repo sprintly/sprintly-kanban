@@ -1,0 +1,167 @@
+.add-item__form {
+  margin-top: 20px;
+}
+.add-item .btn-primary {
+  background: #84b431;
+  color: #fff;
+  border: none;
+}
+.add-item .selector {
+  margin-top: 1.4em;
+  min-height: 36px;
+
+  .selector__wrapper {
+    position: fixed;
+    max-height: 22em;
+    overflow: scroll;
+  }
+}
+.add-item__tabs {
+  position: relative;
+  border: none;
+
+  li {
+    a {
+      color: #fff;
+      padding: 5px 25px;
+      font-size: 1.2em;
+      border: none;
+    }
+
+    &.add-item__nav-story > a {
+      background-color: @story-color;
+
+      &:hover {
+        background-color: lighten(@story-color, 12%);
+      }
+    }
+
+    &.add-item__nav-task > a {
+      background-color: @task-color;
+
+      &:hover {
+        background-color: lighten(@task-color, 12%);
+      }
+    }
+
+    &.add-item__nav-defect > a {
+      background-color: @defect-color;
+
+      &:hover {
+        background-color: lighten(@defect-color, 12%);
+      }
+    }
+
+    &.add-item__nav-test > a {
+      background-color: @test-color;
+
+      &:hover {
+        background-color: lighten(@test-color, 12%);
+      }
+    }
+
+    &.active > a,
+    &.active > a:hover {
+      background: @sprintly-background;
+    }
+  }
+}
+
+.add-item__type-dropdown,
+.add-item__field {
+  span {
+    color: @sprintly-blue;
+    font-size: 1.4em;
+  }
+}
+.add-item__type-dropdown {
+  height: 40px;
+  margin-top: 30px;
+}
+.add-item__type-dropdown .Select-control {
+  height: 40px;
+}
+.add-item__field {
+  margin-bottom: 2em;
+}
+.add-item__field {
+  display: inline-block;
+
+  .input-group {
+    position: relative;
+    display: inline-block;
+  }
+
+  label {
+    position: absolute;
+    left: 38%;
+    bottom: -36px;
+    font-size: 11px;
+    font-weight: normal;
+  }
+
+  input.form-control {
+    border: none;
+    border-radius: 0;
+    display: inline-block;
+    margin: 0 8px -11px;
+    font-size: 1.2em;
+    border-bottom: 1px dashed #444;
+
+    &.invalid {
+      border-bottom: 2px solid @defect-color;
+    }
+  }
+}
+.add-item__field.who {
+  width: 30%;
+}
+.add-item__field.who .input-group {
+  position: relative;
+  display: inline-block;
+  width: 75%;
+}
+.add-item__field.what {
+  width: 68%;
+  float: right;
+}
+.add-item__field.what .input-group {
+  position: relative;
+  display: inline-block;
+  width: 88%;;
+}
+.add-item__field.why {
+  width: 100%
+}
+.add-item__field.why .input-group {
+  width: 91%;
+}
+.add-item__actions {
+  .btn {
+    margin-right: 5px;
+  }
+
+  .cancel-item,
+  .create-item,
+  .checkbox {
+    float: right;
+  }
+
+  .create-item {
+    border: 1px solid @story-color;
+  }
+
+  @media (min-width: 768px) {
+    .create-item {
+      margin-right: 10px;
+    }
+  }
+}
+.add-item__member-dropdown {
+  margin-top: 1em;
+
+  // Override react-select
+  .Select-menu {
+    max-height: 72px;
+  }
+}

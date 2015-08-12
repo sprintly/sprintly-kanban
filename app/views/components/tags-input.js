@@ -257,7 +257,7 @@ var TagsInput = React.createClass({
           onKeyDown={this.onKeyDown}
           onChange={this.filterTags}
           onFocus={this.handleInputFocus}
-          placeholder={this.props.placeholder || "Type to Search and Add Tags..."}
+          placeholder={this.props.placeholder || "Type to Search and Tab to Add Tags..."}
         />
         {this.renderMenu()}
       </div>
