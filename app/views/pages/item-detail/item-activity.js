@@ -1,11 +1,10 @@
 import React from 'react/addons';
 import ItemActions from '../../../actions/item-actions';
 import ItemDetailMixin from './detail-mixin';
-import ItemHeader from './item-header';
+import ActivityItem from './activity-item';
 import Markdown from 'react-markdown';
 import {State} from 'react-router';
 import _ from 'lodash';
-import Gravatar from '../../components/gravatar';
 import helpers from '../../components/helpers';
 import classNames from "classnames";
 
@@ -34,6 +33,8 @@ const STATUS_MAP = {
   30: 'complete',
   40: 'accepted'
 }
+
+const MIN_ACTIVITY_NUMBER = 15;
 
 var ItemActivity = React.createClass({
 
@@ -178,37 +179,33 @@ var ItemActivity = React.createClass({
   },
 
   showAllActivityButton() {
-    let toggleActivityCopy = this.state.showAll ? 'Show Less Activity' : 'Show More Activity';
+    if (this.props.activity.activities.length > MIN_ACTIVITY_NUMBER) {
+      let toggleActivityCopy = this.state.showAll ? 'Show Less Activity' : 'Show More Activity';
 
-    return <button className="load-more" onClick={this.showAllToggle}>{toggleActivityCopy}</button>;
+      return (
+        <button className="load-more" onClick={this.showAllToggle}>
+          {toggleActivityCopy}
+        </button>
+      )
+    }
   },
 
-  componentDidUpdate() {
-    this.props.updateStripeHeight();
+  itemsToShow() {
+    /*
+      Default to show 20 activity objects to prevent slow rendering
+    */
+    let itemsToShow = this.props.activity.activities;
+    if (!this.state.showAll) {
+      itemsToShow = itemsToShow.slice(0, MIN_ACTIVITY_NUMBER);
+    }
+
+    return itemsToShow;
   },
 
-  render: function() {
-    const MIN_ACTIVITY_NUMBER = 15
+  activityItems(activityCount) {
     let activityItems;
-    let showAllActivityButton;
-    let activity = this.props.activity;
-    let totalActivityCount = `${activity.total_count} items`;
-
-    if (activity.activities && this.props.members.length) {
-      /*
-        Default to show 20 activity objects to prevent slow rendering
-      */
-      if (activity.activities.length > MIN_ACTIVITY_NUMBER) {
-        showAllActivityButton = this.showAllActivityButton();
-      }
-
-      let displayList = activity.activities;
-      if (!this.state.showAll) {
-        displayList = displayList.slice(0, MIN_ACTIVITY_NUMBER)
-      }
-
-
-      activityItems = _.map(displayList, _.bind(function(model , i) {
+    if (this.props.activity.activities && this.props.members.length) {
+      activityItems = _.map(this.itemsToShow(), _.bind(function(model , i) {
         let creator = _.findWhere(this.props.members, {id: model.user});
         let creatorEmail = creator.email;
         let creatorName = this.abbreviatedName(creator);
@@ -217,33 +214,45 @@ var ItemActivity = React.createClass({
         let timestamp = this.timeSinceNow(model.created);
 
         return (
-          <li key={i} className="comment">
-            <div className="avatar no-gutter">
-              <Gravatar email={creatorEmail} size={30} />
-            </div>
-            <div className="col-xs-6 col-sm-2 creator no-wrap-truncate">{creatorName}</div>
-            <div className="col-xs-4 col-sm-1 activity-type no-gutter no-wrap-truncate">{activityType}</div>
-            <div className="col-xs-10 col-sm-7 activity__description collapse-right">
-              {description}
-            </div>
-            <div className="col-xs-12 timestamp pull-right">
-              {timestamp}
-            </div>
-          </li>
+          <ActivityItem index={i}
+                        creatorEmail={creatorEmail}
+                         creatorName={creatorName}
+                        activityType={activityType}
+                         description={description}
+                           timestamp={timestamp} />
         )
       },this))
     } else {
-      activityItems = <li className="comment">No Activity Yet</li>
+      let activityCopy = activityCount > 0 ? `Loading ${activityCount} Items` : 'No Activity To Display';
+
+      activityItems = <li className="activity__item_loading">{activityCopy}</li>
     }
+
+    return (
+      <ul>
+        {activityItems}
+      </ul>
+    )
+  },
+
+  componentDidUpdate() {
+    this.props.updateStripeHeight();
+  },
+
+  render: function() {
+    let totalActivityCount = this.props.activity.total_count || 0;
+    let activityItems = this.activityItems(totalActivityCount);
 
     return (
       <div className="col-xs-12 section activity">
         <div className="col-xs-12">
-          <ItemHeader title='activity' subheaderEl={totalActivityCount} />
-          <ul>
-            {activityItems}
-          </ul>
-          {showAllActivityButton}
+          <div className="header">
+            <div className="title">{helpers.toTitleCase('activity')}</div>
+            <div className="activity__counter">{totalActivityCount} items</div>
+            <div className="sep"></div>
+          </div>
+          {activityItems}
+          {this.showAllActivityButton()}
         </div>
       </div>
     )

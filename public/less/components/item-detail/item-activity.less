@@ -1,4 +1,6 @@
 .item-detail .section.activity {
+  margin-bottom: 40px;
+  
   ul {
     margin-top: 15px;
     list-style: none;
@@ -23,54 +25,6 @@
       padding-bottom: 5px;
       border-bottom: solid 1px @sprintly-black-lighter;
     }
-  }
-}
-.item-detail .section.activity .avatar {
-  float: left;
-  padding-left: 12px;
-
-  @media (max-width: @screen-xs-min) {
-    padding-left: 0px;
-  }
-}
-.item-detail .section.activity .creator {
-  font-weight: @fontWeight-6;
-  font-size: 14px;
-  text-align: center;
-
-  @media (max-width: @screen-xs-min) {
-    text-align: left;
-  }
-}
-.item-detail .section.activity .activity-type {
-  font-size: 12px;
-  color: @sprintly-blue;
-  text-align: right;
-  line-height: 23px;
-}
-.item-detail .section.activity .activity__description {
-  font-size: 14px;
-  margin-bottom: 10px;
-  word-wrap: break-word;
-
-  @media (max-width: @screen-xs-min) {
-    margin-bottom: 0px;
-    font-size: 12px;
-  }
-}
-.item-detail .section.activity .timestamp {
-  .italicize();
-  width: 12%;
-  text-align: right;
-  font-size: 12px;
-
-  @media (max-width: @screen-lg-min) {
-    font-size: 11px;
-  }
-
-  @media (max-width: @screen-xs-min) {
-    font-size: 10px;
-    width: 100%;
   }
 }
 .item-detail .section.activity .load-more {
