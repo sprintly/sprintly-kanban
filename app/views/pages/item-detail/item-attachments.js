@@ -10,33 +10,7 @@ import classNames from "classnames";
 const CarouselSettings = {
   dots: false,
   draggable: false,
-  infinite: true,
-  slidesToShow: 3,
-  speed: 500,
-  slidesToScroll: 1,
-  responsive: [
-    {
-      breakpoint: 1024,
-      settings: {
-        slidesToShow: 3,
-        slidesToScroll: 3
-      }
-    },
-    {
-      breakpoint: 600,
-      settings: {
-        slidesToShow: 2,
-        slidesToScroll: 2
-      }
-    },
-    {
-      breakpoint: 480,
-      settings: {
-        slidesToShow: 1,
-        slidesToScroll: 1
-      }
-    }
-  ]
+  speed: 750
 };
 
 let ItemAttachments = React.createClass({
@@ -106,23 +80,24 @@ let ItemAttachments = React.createClass({
     )
   },
 
-  attachmentsViewer(images) {
+  imageViewer(images) {
     let images = this.images();
     if (images && images.length) {
       let styles = { 'height': '170px' };
-      let attachments = _.map(this.props.attachments, (attachment, i) => {
+      let imageSlides = _.map(images, (image, i) => {
                           // Carousel didnt function correctly with a ReactSubcomponent
+
                           return (
                             <div key={i} className="attachment__slide">
-                              <img className="image" style={styles} src={attachment.href}></img>
-                              <button onClick={_.partial(this.showAttachment,attachment.href)} className="btn btn-primary preview">{`View Image ${i+1}`}</button>
+                              <img className="image" style={styles} src={image.href}></img>
+                              <button onClick={_.partial(this.showAttachment,image.href)} className="btn btn-primary preview">{`View Image ${i+1}`}</button>
                             </div>
                           )
                         });
 
       return (
         <Slick className="attachments__carousel" {...CarouselSettings}>
-          {attachments}
+          {imageSlides}
         </Slick>
       );
     }
@@ -147,6 +122,8 @@ let ItemAttachments = React.createClass({
           </li>
         )
       })
+    } else {
+      return <li className="action__restricted">{`No files attached`}</li>
     }
   },
 
@@ -167,14 +144,17 @@ let ItemAttachments = React.createClass({
 
   attachmentsContent() {
     if (this.props.attachments.length) {
-      let attachmentViewer = this.attachmentsViewer();
+      let imageViewer = this.imageViewer();
       let fileList = this.fileList();
+      let fileCount = fileList.length || 0;
 
       return ([
         <div key="attachments" className="col-xs-9">
-          {attachmentViewer}
+          {imageViewer}
         </div>,
         <div key="files" className="col-xs-3">
+          <div className="title">Files: {fileCount}</div>
+          <div className="sep"></div>
           <ul className="links">
             {fileList}
           </ul>
