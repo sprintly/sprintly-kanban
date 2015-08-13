@@ -219,18 +219,22 @@ var AddItemPage = React.createClass({
   },
 
   itemActions() {
-    return ([
-        <div className="col-xs-12 add-item__actions no-gutter">
-          <input type="submit" className="btn btn-primary btn-lg create-item" value="Create Item"/>
-          <button className="btn btn-default btn-lg cancel-item" onClick={this.dismiss}>Cancel</button>
-        </div>,
+    return (
+      <div className="col-xs-12 add-item__actions no-gutter">
+        <input type="submit" className="btn btn-primary btn-lg create-item" value="Create Item"/>
+        <button className="btn btn-default btn-lg cancel-item" onClick={this.dismiss}>Cancel</button>
         <div className="checkbox pull-right">
           <label>
             <input className="backlog-checkbox" type="checkbox" name="backlog" checkedLink={this.linkState('sendToBacklog')}/>
-            Automatically send to backlog.
+            <div className="attachments__info">Automatically send to backlog.</div>
+          </label>
+          <label className="attachments__beta">
+            <span>BETA:</span>
+            <div className="attachments__info">Attachments functionality coming soon. To add attachments the old way</div>
+             <a href={`https://sprint.ly/product/${this.getParams().id}`} target="_blank">Click Here</a>
           </label>
         </div>
-      ]
+      </div>
     )
   },
 

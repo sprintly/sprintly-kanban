@@ -136,25 +136,44 @@
 .add-item__field.why .input-group {
   width: 91%;
 }
-.add-item__actions {
-  .btn {
+.add-item__actions .btn {
+  margin-right: 5px;
+}
+.add-item__actions .cancel-item,
+.add-item__actions .create-item,
+.add-item__actions .checkbox {
+  float: right;
+}
+.add-item__actions .checkbox {
+  text-align: right;
+
+  label.attachments__beta,
+  span {
+    font-size: 12px;
+  }
+  label {
+    width: 100%;
+  }
+  label.attachments__beta {
+    .italicize()
+  }
+  a {
+    margin-left: 5px;
+  }
+  span {
     margin-right: 5px;
+    color: @sprintly-blue;
+    font-weight: @fontWeight-6;
   }
-
-  .cancel-item,
-  .create-item,
-  .checkbox {
-    float: right;
-  }
-
-  .create-item {
-    border: 1px solid @story-color;
-  }
+}
+.add-item__actions .checkbox .attachments__info {
+  display: inline-block;
+}
+.add-item__actions .create-item {
+  border: 1px solid @story-color;
 
   @media (min-width: 768px) {
-    .create-item {
-      margin-right: 10px;
-    }
+    margin-right: 10px;
   }
 }
 .add-item__member-dropdown {
