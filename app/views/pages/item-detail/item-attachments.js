@@ -116,9 +116,10 @@ let ItemAttachments = React.createClass({
 
     if (files && files.length) {
       return _.map(files, (file, i) => {
+        // onClick={_.partial(this.showAttachment,file.href)}
         return (
           <li key={i}>
-            {this.openNewTabLink(file.href, file.name)}
+            <a href={file.href} target="_blank" >{file.name}</a>
           </li>
         )
       })

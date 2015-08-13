@@ -81,6 +81,8 @@ to deploy.
 Deploys to staging should be managed with the "Deploy" button in Wercker or
 with the Wercker CLI tool. You can deploy to staging from any branch.
 
+[Staging URL](https://sprintly-manifold.herokuapp.com/product/1)
+
 #### Production
 
 Production deploys can also be managed with Wercker in the same fashion as

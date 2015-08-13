@@ -68,7 +68,7 @@ let ItemsViewController = React.createClass({
   },
 
   componentWillReceiveProps: function(nextProps) {
-    if (this.getParams().id != this.state.product.id) {
+    if (this.state.product && this.getParams().id != this.state.product.id) {
       ProductActions.init(this.getParams().id);
       VelocityActions.getVelocity(this.getParams().id);
     }
