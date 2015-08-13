@@ -9,6 +9,7 @@ import classNames from "classnames";
 
 const CarouselSettings = {
   dots: false,
+  draggable: false,
   infinite: true,
   slidesToShow: 3,
   speed: 500,
@@ -18,8 +19,7 @@ const CarouselSettings = {
       breakpoint: 1024,
       settings: {
         slidesToShow: 3,
-        slidesToScroll: 3,
-        infinite: true
+        slidesToScroll: 3
       }
     },
     {
@@ -39,7 +39,7 @@ const CarouselSettings = {
   ]
 };
 
-var ItemAttachments = React.createClass({
+let ItemAttachments = React.createClass({
 
   mixins: [State, ItemDetailMixin],
 
@@ -73,8 +73,10 @@ var ItemAttachments = React.createClass({
     this.setState({panelOpen: !this.state.panelOpen});
   },
 
-  counts(imageCount, fileCount) {
+  counts() {
     let counts = [];
+    let imageCount = this.images().length;
+    let fileCount = this.files().length;
 
     if (!imageCount && !fileCount) {
       counts.push(<li key="no-attachment">No Attachments</li>)
@@ -90,8 +92,8 @@ var ItemAttachments = React.createClass({
     return counts;
   },
 
-  attachmentsHeader(imagesCount, filesCount) {
-    let counts = this.counts(imagesCount, filesCount);
+  attachmentsHeader() {
+    let counts = this.counts();
     let headerClasses = classNames({
       'header-dark': true,
       'open': this.state.panelOpen
@@ -115,56 +117,38 @@ var ItemAttachments = React.createClass({
   },
 
   attachmentsViewer(images) {
+    let images = this.images();
     if (images && images.length) {
-      return _.map(images, (image, i) => {
-        return (
-          <li key={i}>
-            {this.openNewTabLink(image.href, image.name)}
-          </li>
-        )
-      })
+      let styles = { 'height': '170px' };
+      let attachments = _.map(this.props.attachments, (attachment, i) => {
+                          // Carousel didnt function correctly with a ReactSubcomponent
+                          return (
+                            <div key={i} className="attachment__slide">
+                              <img className="image" style={styles} src={attachment.href}></img>
+                              <button onClick={_.partial(this.showAttachment,attachment.href)} className="btn btn-primary preview">{`View Image ${i+1}`}</button>
+                            </div>
+                          )
+                        });
+
+      return (
+        <Slick className="attachments__carousel" {...CarouselSettings}>
+          {attachments}
+        </Slick>
+      );
     }
-    /*
-      TODO: Use when have embedly
-      if (this.props.attachments) {
-        var attachments = _.map(this.props.attachments, (attachment, i) => {
-                            // Temp Greyscale before authed asset use
-                            var styles = {
-                              width: '33%',
-                              height: '170px',
-                            }
-                            //background: `url(${attachment.href}) no-repeat`
-                            // 'background-color': `RGBA(69,69,69, ${parseFloat((Math.random() * (0.120 - 0.0200) + 0.0200))})`,
-                            // Updaate with embedly
-                            return (
-                              <img src={attachment.href} className="attachment-slide" key={i} style={styles} onClick={_.partial(this.showAttachment, attachment.href)}>
-                                {this.openNewTabLink(attachment.href)}
-                              </img>
-                            );
-                          });
-        return (
-          <Slick {...CarouselSettings}>
-            {attachments}
-          </Slick>
-        );
-      }
-    */
   },
 
-  openNewTabLink(url, text) {
-    return <a className="attachment-link" href={url} target="_blank">{text}</a>
-  },
-
-  showAttachment(href, ev) {
-    window.open(href);
-    console.log('Implement attachment viewer: ');
+  showAttachment(src, ev) {
+    window.open(src);
   },
 
   caretState() {
     return this.state.panelOpen ? 'down' : 'right'
   },
 
-  fileList(files) {
+  fileList() {
+    let files = this.files();
+
     if (files && files.length) {
       return _.map(files, (file, i) => {
         return (
@@ -187,31 +171,25 @@ var ItemAttachments = React.createClass({
                     .value();
   },
 
+  files() {
+    return _.difference(this.props.attachments, this.images());
+  },
+
   attachmentsContent() {
     if (this.props.attachments.length) {
-      let images = this.images();
-      let attachmentViewer = this.attachmentsViewer(images);
-      let files = _.difference(this.props.attachments, images);
-      let fileList = this.fileList(files);
+      let attachmentViewer = this.attachmentsViewer();
+      let fileList = this.fileList();
 
       return ([
-        <div key="attachments" className="col-xs-12">
-          <ul className="links">
-            {attachmentViewer}
-          </ul>
+        <div key="attachments" className="col-xs-9">
+          {attachmentViewer}
         </div>,
-        <div key="images" className="col-xs-12">
+        <div key="files" className="col-xs-3">
           <ul className="links">
             {fileList}
           </ul>
         </div>
       ])
-    } else {
-      return (
-        <div className="col-xs-12 action__restricted">
-          No attachments
-        </div>
-      )
     }
   },
 
@@ -223,15 +201,25 @@ var ItemAttachments = React.createClass({
     let content = this.attachmentsContent();
     let containerClasses = classNames({
       "section attachments no-gutter": true,
-      "col-xs-3 visible-lg-block": this.props.size === 'large',
+      "col-xs-12 visible-lg-block": this.props.size === 'large',
       "col-xs-12 col-sm-6 visible-md-block visible-sm-block visible-xs-block": this.props.size === 'medium'
     })
+    let contentClasses = classNames({
+      'content-dark': true,
+      'open': this.state.panelOpen
+    });
 
     return (
       <div className={containerClasses}>
         <div className="col-xs-12">
-          <ItemHeader title='attachments' />
-          {content}
+          {this.attachmentsHeader()}
+          <div className={contentClasses}>
+            <div className="attachments__viewer">
+              {content}
+            </div>
+            <div className="attachments__links">
+            </div>
+          </div>
         </div>
       </div>
     )
@@ -239,40 +227,3 @@ var ItemAttachments = React.createClass({
 });
 
 export default ItemAttachments;
-
-/* - Use when embedly works
-let header = this.attachmentsHeader(images.length, files.length);
-let contentClasses = classNames({
-  'content-dark': true,
-  'open': this.state.panelOpen
-});
-<div className="col-lg-12">
-  {header}
-  <div className={contentClasses}>
-    <div className="attachments-viewer">
-    </div>
-    <div className="attachments__links">
-    </div>
-    <div className="col-lg-12 attachments__internals">
-      <div className="col-lg-6">
-        <div className="title">
-          Images: {images.length}
-        </div>
-        <div className="sep"></div>
-        <ul className="links">
-          {attachmentViewer}
-        </ul>
-      </div>
-      <div className="col-lg-6">
-        <div className="title">
-          Files: {files.length}
-        </div>
-        <div className="sep"></div>
-        <ul className="links">
-          {fileList}
-        </ul>
-      </div>
-    </div>
-  </div>
-</div>
-*/

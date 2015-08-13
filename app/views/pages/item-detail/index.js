@@ -105,8 +105,8 @@ var ItemDetail = React.createClass({
 
   itemDescription() {
     return (
-      <div className="col-xs-12 col-sm-12 col-md-12 col-lg-9 section description">
-        <div className="col-lg-12">
+      <div className="col-xs-12 section description">
+        <div className="col-xs-12">
           <ItemHeader title="description" />
           <ItemDescription    itemId={this.state.item.number}
                          description={this.state.item.description}
