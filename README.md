@@ -61,6 +61,12 @@ upgrading without out explicit permission.
 
 For further reading, please refer to the shrinkwrap documentation: `npm help shrinkwrap`.
 
+Troubleshoot:
+Error: Extraneous Modules?:
+* Delete `node modules` dir locally
+* `$ npm install`
+* `$ make shrinkwrap`
+
 ## Deploys
 
 Kanban is built to be deployed on Heroku with a minimum amount of fuss. Because
