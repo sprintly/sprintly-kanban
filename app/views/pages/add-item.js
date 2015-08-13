@@ -10,6 +10,7 @@ import DrawerStripe from '../components/drawer-stripe';
 import StoryTitle from '../components/add-item/story-title';
 import MembersDropdown from '../components/add-item/members-dropdown';
 import IssueTemplates from '../components/add-item/issue-templates';
+import AddItemActions from '../components/add-item/item-actions';
 import Select from 'react-select';
 
 import ItemActions from '../../actions/item-actions';
@@ -218,26 +219,6 @@ var AddItemPage = React.createClass({
     )
   },
 
-  itemActions() {
-    return (
-      <div className="col-xs-12 add-item__actions no-gutter">
-        <input type="submit" className="btn btn-primary btn-lg create-item" value="Create Item"/>
-        <button className="btn btn-default btn-lg cancel-item" onClick={this.dismiss}>Cancel</button>
-        <div className="checkbox pull-right">
-          <label>
-            <input className="backlog-checkbox" type="checkbox" name="backlog" checkedLink={this.linkState('sendToBacklog')}/>
-            <div className="attachments__info">Automatically send to backlog.</div>
-          </label>
-          <label className="attachments__beta">
-            <span>BETA:</span>
-            <div className="attachments__info">Attachments functionality coming soon. To add attachments the old way</div>
-             <a href={`https://sprint.ly/product/${this.getParams().id}`} target="_blank">Click Here</a>
-          </label>
-        </div>
-      </div>
-    )
-  },
-
   itemTitle() {
     if (this.state.type === 'story') {
       return (
@@ -281,7 +262,9 @@ var AddItemPage = React.createClass({
               {this.itemDescription()}
               {this.itemTags()}
               {this.membersSelect()}
-              {this.itemActions()}
+              <AddItemActions dismiss={this.dismiss}
+                           productId={this.getParams().id}
+                           checked={this.linkState('sendToBacklog')} />
             </form>
           </div>
         </div>
