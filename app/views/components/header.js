@@ -262,7 +262,8 @@ let KanbanHeader = React.createClass({
 
     return (
       <header className={headerClasses}>
-        {this.sprintlyFlask()}
+        <div className="sprintly__logo">
+        </div>
         <div className="product__header-menu">
           {products}
           {this.renderAddItem()}

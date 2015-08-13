@@ -1,9 +1,12 @@
 import _ from 'lodash';
 import React from 'react/addons';
+import {State} from 'react-router';
 import ProductActions from '../../../actions/product-actions';
 import ItemActions from '../../../actions/item-actions';
 
 var SubItem = React.createClass({
+
+  mixins: [State],
 
   propTypes: {
     subitems: React.PropTypes.array.isRequired,
@@ -32,6 +35,7 @@ var SubItem = React.createClass({
     ev.preventDefault();
     let node = this.refs.addItemInput.getDOMNode();
     let title = node.value;
+
     ItemActions.addItem(this.props.productId, {
       title,
       type: 'task',
@@ -80,4 +84,3 @@ var SubItem = React.createClass({
 });
 
 export default SubItem;
-

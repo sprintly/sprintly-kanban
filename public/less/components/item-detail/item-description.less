@@ -1,0 +1,32 @@
+.item-detail .section.description {
+  display: inline-block;
+
+  @media (max-width: @screen-xs-min) {
+    margin-bottom: 30px;
+  }
+}
+.item-detail .section.description .item__description {
+  z-index: @zIndex-2;
+  padding-left: 0;
+  padding-right: 0;
+  margin-bottom: 45px;
+
+  @media (max-width: @screen-xs-min) {
+    padding: 0;
+  }
+}
+/* TODO: Placeholder style no good */
+/* .item-detail .section.description .item__description .highlighter {
+  display: none;
+} */
+.item-detail .section.description .description__control {
+  position: absolute;
+
+  @media (max-width: @screen-xs-min) {
+    width: 100%;
+  }
+
+  button {
+    margin-top: 10px;
+  }
+}

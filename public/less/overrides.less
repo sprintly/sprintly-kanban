@@ -4,6 +4,12 @@
 @brand-warning:         #f0ad4e;
 @brand-danger:          #d9534f;
 
+/*
+  Column size overrides
+*/
+@screen-xlg:                  1600px;
+@screen-xlg-min:              @screen-xlg;
+
 /**
  * React Select Overrides - src in public/less/react-select
 */
@@ -18,4 +24,17 @@
   padding: 0;
   margin: 0 10px;
   line-height: 30px;
+}
+
+.no-gutter,
+.collapse-gutters [class*="col-"] {
+  padding-right:0;
+  padding-left:0;
+}
+
+.collapse-right {
+  padding-right:0;
+}
+.collapse-left {
+  padding-left:0;
 }

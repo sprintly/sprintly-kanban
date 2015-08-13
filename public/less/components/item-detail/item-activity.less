@@ -1,0 +1,41 @@
+.item-detail .section.activity {
+  margin-bottom: 40px;
+  
+  ul {
+    margin-top: 15px;
+    list-style: none;
+    padding-left: 0px;
+  }
+  li {
+    height: 100%;
+    min-height: 40px;
+    @media (max-width: @screen-lg-min) {
+      min-height: 25px;
+    }
+    width: 100%;
+    display: inline-block;
+  }
+  img {
+    border-radius: 15px;
+  }
+
+  @media (max-width: @screen-xs-min) {
+    li {
+      margin-bottom: 5px;
+      padding-bottom: 5px;
+      border-bottom: solid 1px @sprintly-black-lighter;
+    }
+  }
+}
+.item-detail .section.activity .load-more {
+  margin-bottom: 60px;
+}
+.item-detail .section.activity .header .activity__counter {
+  .italicize();
+  display: inline-block;
+  text-align: left;
+  color: @sprintly-black;
+  font-weight: @fontWeight-6;
+  line-height: 28px;
+  font-size: 13px;
+}

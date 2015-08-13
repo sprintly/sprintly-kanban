@@ -147,17 +147,6 @@ let AddItemModal = React.createClass({
     this.setState({validation: validationState});
   },
 
-  prepareMembersForSelect() {
-    return _.chain(this.props.members)
-            .map(function(member){
-              if (!member.revoked) {
-                return {label: `${member.first_name} ${member.last_name}`, value: member.id}
-              }
-            })
-            .compact()
-            .value()
-  },
-
   notAssignable() {
     return !this.props.members.length;
   },
@@ -174,7 +163,7 @@ let AddItemModal = React.createClass({
     let mentions = helpers.formatMentionMembers(this.props.members);
 
     let tags = _.pluck(this.props.tags, 'tag');
-    let members = this.prepareMembersForSelect();
+    let members = helpers.formatSelectMembers(this.props.members);
 
     let title;
     if (this.state.type === 'story') {
