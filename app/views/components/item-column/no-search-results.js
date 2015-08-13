@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react/addons';
 import FilterActions from '../../../actions/filter-actions';
 import ProductStore from '../../../stores/product-store';
 

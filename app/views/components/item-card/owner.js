@@ -1,5 +1,5 @@
-var React = require('react');
-var Gravatar = require('../gravatar');
+import React from 'react/addons';
+import Gravatar from '../gravatar';
 
 var Owner = React.createClass({
 
@@ -21,7 +21,7 @@ var Owner = React.createClass({
         return <Gravatar email={this.props.person.email} size={this.props.size} />;
       }
     } else {
-      return<span className="item-card__owner-unassigned">+</span>
+      return <span className="item-card__owner-unassigned">+</span>
     }
   },
 

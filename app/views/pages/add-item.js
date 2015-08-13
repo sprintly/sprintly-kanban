@@ -1,5 +1,4 @@
 import React from 'react/addons';
-// import AddItem from '../components/add-item/index.js';
 import _ from 'lodash';
 import {State,Link} from 'react-router';
 import {Modal, Nav, NavItem} from 'react-bootstrap';
@@ -7,6 +6,7 @@ import {Modal, Nav, NavItem} from 'react-bootstrap';
 import {MentionsInput, Mention} from '@sprintly/react-mentions';
 import Title from '../components/add-item/title';
 import TagsInput from '../components/tags-input';
+import DrawerStripe from '../components/drawer-stripe';
 import StoryTitle from '../components/add-item/story-title';
 import MembersDropdown from '../components/add-item/members-dropdown';
 import IssueTemplates from '../components/add-item/issue-templates';
@@ -15,16 +15,10 @@ import Select from 'react-select';
 import ItemActions from '../../actions/item-actions';
 import ProductStore from '../../stores/product-store';
 import helpers from '../components/helpers';
+import pagesHelpers from '../pages/helpers';
 
 const ITEM_TYPES = ['story', 'task', 'defect', 'test'];
 const STORY_ATTRS = ['who', 'what', 'why'];
-
-let stripeHeight = function() {
-  let bodyHeight = document.body.getBoundingClientRect().height;
-  let headerHeight = document.getElementsByClassName('product__header-menu')[0].getBoundingClientRect().height;
-
-  return bodyHeight - headerHeight;
-}
 
 var AddItemPage = React.createClass({
   mixins: [React.addons.LinkedStateMixin, State],
@@ -40,7 +34,7 @@ var AddItemPage = React.createClass({
 
     return {
       product: product,
-      stripeHeight: stripeHeight(),
+      stripeHeight: pagesHelpers.stripeHeight(),
       type: 'story',
       title: '',
       who: '',
@@ -160,20 +154,6 @@ var AddItemPage = React.createClass({
     return this.state.assigneeName ? this.state.assigneeName : null;
   },
 
-  drawerStripe() {
-    let stripeClass = `stripe ${this.state.type}`;
-    let closeClass = `drawer__close ${this.state.type}`;
-    let stripeStyles = {height: `${this.state.stripeHeight}px`};
-
-    return (
-      <div style={stripeStyles} className={stripeClass}>
-        <Link to="product" params={{ id: this.getParams().id }} className={closeClass}>
-          <span aria-hidden="true" className="glyphicon glyphicon-remove"/>
-        </Link>
-      </div>
-    )
-  },
-
   typeSelector() {
     let options = _.map(ITEM_TYPES, (option) => {
       return {label: helpers.toTitleCase(option), value: option}
@@ -287,7 +267,8 @@ var AddItemPage = React.createClass({
   render() {
     return (
       <div className="container-fluid add-item no-gutter drawer">
-        {this.drawerStripe()}
+        <DrawerStripe type={this.state.type}
+                      height={this.state.stripeHeight} />
         <div className="drawer__content">
           <div className="col-xs-12">
             {this.typeSelector()}

@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react/addons';
 import Router, { Route, DefaultRoute } from 'react-router';
 
 import App from './views/app';
