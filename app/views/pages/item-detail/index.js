@@ -33,9 +33,9 @@ var ItemDetail = React.createClass({
     return {
       item: {},
       product: product,
-      attachmentsPanel: false,
       itemDetailHeight: initialItemDetailHeight(),
-      descriptionEditable: false
+      descriptionEditable: false,
+      attachmentsOpen: false
     };
   },
 
@@ -48,14 +48,8 @@ var ItemDetail = React.createClass({
     }
   },
 
-  componentWillReceiveProps(nextProps) {
-    this.updateStripeHeight();
-
-    if (this.getParams().number != this.state.item.number) {
-      ItemActions.fetchItem(this.getParams().id, this.props.number);
-      ItemActions.fetchActivity(this.getParams().id, this.getParams().number);
-      this._onChange();
-    }
+  toggleAttachments() {
+    this.setState({attachmentsOpen: !this.state.attachmentsOpen});
   },
 
   setItem(key, ev, value) {
@@ -153,13 +147,21 @@ var ItemDetail = React.createClass({
     )
   },
 
+  componentWillReceiveProps(nextProps) {
+    this.updateStripeHeight();
+
+    if (this.props.number != nextProps.number) {
+      this._fetchItemData();
+      this.setState({
+        attachmentsOpen: false
+      })
+      this._onChange();
+    }
+  },
+
   componentDidMount() {
     ProductStore.addChangeListener(this._onChange);
-    ItemActions.fetchItem(this.getParams().id, this.getParams().number);
-
-    // TODO: Fetch the item followers on component did mount
-    ItemActions.fetchActivity(this.getParams().id, this.getParams().number);
-    ItemActions.fetchAttachments(this.getParams().id, this.getParams().number);
+    this._fetchItemData();
   },
 
   componentWillUnmount() {
@@ -185,7 +187,8 @@ var ItemDetail = React.createClass({
       attachments = item.attachments;
     }
     let itemAttachments = <ItemAttachments attachments={attachments}
-                                                  size={'large'} />
+                                                  open={this.state.attachmentsOpen}
+                                                toggle={this.toggleAttachments} />
 
     let subitems;
     if (this.state.item.type == 'story' && this.state.item.sub_items) {
@@ -223,6 +226,12 @@ var ItemDetail = React.createClass({
         product
       });
     }
+  },
+
+  _fetchItemData() {
+    ItemActions.fetchItem(this.getParams().id, this.getParams().number);
+    ItemActions.fetchActivity(this.getParams().id, this.getParams().number);
+    ItemActions.fetchAttachments(this.getParams().id, this.getParams().number);
   }
 })
 

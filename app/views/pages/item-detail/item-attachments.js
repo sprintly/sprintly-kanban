@@ -43,12 +43,6 @@ let ItemAttachments = React.createClass({
 
   mixins: [State, ItemDetailMixin],
 
-  getInitialState() {
-    return {
-      panelOpen: false
-    }
-  },
-
   propTypes() {
     attachments: React.PropTypes.shape({
       _href: React.PropTypes.string,
@@ -67,10 +61,6 @@ let ItemAttachments = React.createClass({
       item: React.PropTypes.object,
       name: React.PropTypes.string
     })
-  },
-
-  togglePanel() {
-    this.setState({panelOpen: !this.state.panelOpen});
   },
 
   counts() {
@@ -96,7 +86,7 @@ let ItemAttachments = React.createClass({
     let counts = this.counts();
     let headerClasses = classNames({
       'header-dark': true,
-      'open': this.state.panelOpen
+      'open': this.props.open
     });
     let toggleClasses = classNames({
       'toggle': true,
@@ -106,7 +96,7 @@ let ItemAttachments = React.createClass({
 
     return (
       <div className={headerClasses}>
-        <a className={toggleClasses} onClick={this.togglePanel}>
+        <a className={toggleClasses} onClick={this.props.toggle}>
           <span aria-hidden="true" className={caretClasses}/>
         </a>
         <div className="sep-vertical"></div>
@@ -143,7 +133,7 @@ let ItemAttachments = React.createClass({
   },
 
   caretState() {
-    return this.state.panelOpen ? 'down' : 'right'
+    return this.props.open ? 'down' : 'right';
   },
 
   fileList() {
@@ -206,7 +196,7 @@ let ItemAttachments = React.createClass({
     })
     let contentClasses = classNames({
       'content-dark': true,
-      'open': this.state.panelOpen
+      'open': this.props.open
     });
 
     return (
