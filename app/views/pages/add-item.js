@@ -166,8 +166,9 @@ var AddItemPage = React.createClass({
           <span>Create a new</span>
         </div>
         <div className="col-xs-10 no-gutter">
-          <Select name="form-field-name"
-                  className="type-dropdown"
+          <Select ref="type-select"
+                  name="form-field-name"
+                  className="type-select"
                   value={this.state.type}
                   options={options}
                   onChange={this.changeType}

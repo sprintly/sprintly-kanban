@@ -15,20 +15,25 @@ var StoryTitle = require('../components/add-item/story-title');
 var MembersDropdown = require('../components/add-item/members-dropdown');
 
 var ItemActions = require('../../actions/item-actions');
-var documentStub = {
-  body: {
-    getBoundingClientRect: function () {
-      return 0;
-    }
+
+var pagesHelpers = {
+  stripeHeight: function() {
+    return 0;
   }
 }
-AddItem.__set__('document', documentStub);
+AddItem.__set__('pagesHelpers', pagesHelpers);
 
-describe('Add Item', function() {
+describe.only('Add Item', function() {
   beforeEach(function() {
     this.sinon = sinon.sandbox.create();
     this.ItemActions = AddItem.__get__('ItemActions');
     this.addItemStub = this.sinon.stub(this.ItemActions, 'addItem').returns({then: function(){}});
+    this.ProductStore = AddItem.__get__('ProductStore');
+    var mockProduct = {
+      tags: [{value: 'a'}]
+    }
+    this.sinon.stub(this.ProductStore, 'getProduct').returns(mockProduct);
+
     this.dismissSpy = sinon.spy();
     let props = {
       members: [
@@ -74,20 +79,12 @@ describe('Add Item', function() {
   });
 
   context('componentDidMount', function() {
-    it.only('renders a NavItem for the 4 issue types', function () {
-      let NavItems = TestUtils.scryRenderedComponentsWithType(this.component, NavItem);
-
-      assert.lengthOf(NavItems, 4);
-    });
-
-    it('makes the \'type\' in state, the active NavItem', function () {
-      this.component.refs.stub.setState({
-        type: 'story'
+    context('type selector', function() {
+      it('renders a type selector', function () {
+        var typeSelect = React.findDOMNode(this.component.refs.stub.refs['type-select']);
+        assert.isDefined(typeSelect);
       });
-      let IssueTab = TestUtils.findRenderedDOMComponentWithClass(this.component, 'add-item__nav-story').getDOMNode();
-
-      assert.isTrue(IssueTab.classList.contains('active'));
-    });
+    })
 
     it('renders a \'Mentions\' description component', function () {
       let MentionsComponent = TestUtils.findRenderedDOMComponentWithClass(this.component, 'react-mentions');
@@ -152,14 +149,6 @@ describe('Add Item', function() {
     });
   });
 
-  it('choosing an issue type updates state', function () {
-    let taskLink = TestUtils.findRenderedDOMComponentWithClass(this.component, 'add-item__nav-task').getDOMNode().children[0];
-    TestUtils.Simulate.click(taskLink);
-
-    let type = this.component.refs.stub.state.type;
-    assert.equal(type, 'task');
-  });
-
   it('describing a ticket updates state', function () {
     let description = 'new feature to build';
     this.component.refs.stub.setDescription(null,'new feature to build');
@@ -185,55 +174,9 @@ describe('Add Item', function() {
       assert(this.component.refs.stub.state.assigneeName, 'Sarah Morrow');
     });
 
-    describe('#preparesMembersForSelect', function () {
-      xit('includes only members whom are not revoked', function () {
-        let targetStructure = [
-          {label: 'Sarah Morrow', value: 123}
-        ];
-
-        let preparedTags = this.component.refs.stub.prepareMembersForSelect();
-
-        assert.deepEqual(preparedTags, targetStructure);
-      });
-    });
-
-    describe('#notAssignable', function () {
-      it('is true when there are no members', function () {
-        let props = {
-          members: [],
-          tags: [{ tag: 'a' },{ tag: 'b' }],
-          product: {
-            id: '1'
-          }
-        }
-
-        let Component = stubRouterContext(AddItem, props);
-
-        let component = TestUtils.renderIntoDocument(<Component />);
-
-        assert.ok(component.refs.stub.notAssignable());
-      });
-    })
-
     describe('#assignPlaceholder', function () {
       it('\'Unassigned\' when there are members', function () {
         assert.equal(this.component.refs.stub.assignPlaceholder(), 'Unassigned');
-      });
-
-      it('\'Nobody to assign to\' when there are no members', function () {
-        let props = {
-          members: [],
-          tags: [{ tag: 'a' },{ tag: 'b' }],
-          product: {
-            id: '1'
-          }
-        }
-
-        let Component = stubRouterContext(AddItem, props);
-
-        let component = TestUtils.renderIntoDocument(<Component />);
-
-        assert.equal(component.refs.stub.assignPlaceholder(), 'Nobody to assign to');
       });
     })
 
