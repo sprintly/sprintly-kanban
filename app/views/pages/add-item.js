@@ -4,9 +4,10 @@ import {State,Link} from 'react-router';
 import {Modal, Nav, NavItem} from 'react-bootstrap';
 // Components
 import {MentionsInput, Mention} from '@sprintly/react-mentions';
-import Title from '../components/add-item/title';
 import TagsInput from '../components/tags-input';
 import DrawerStripe from '../components/drawer-stripe';
+import Subitems from '../components/subitems';
+import Title from '../components/add-item/title';
 import StoryTitle from '../components/add-item/story-title';
 import MembersDropdown from '../components/add-item/members-dropdown';
 import IssueTemplates from '../components/add-item/issue-templates';
@@ -43,6 +44,7 @@ var AddItemPage = React.createClass({
       why: '',
       description: '',
       tags: [],
+      subitems: [],
       assigned_to: null,
       assigneeName: '',
       sendToBacklog: true,
@@ -126,7 +128,6 @@ var AddItemPage = React.createClass({
       let resetState = _.extend({}, this.getInitialState(), { type: this.state.type });
       this.setState(resetState);
       this.setFocus(this.state.type);
-
     }, (err) => {
       this.updateValidation(err);
     });
@@ -191,6 +192,43 @@ var AddItemPage = React.createClass({
         </MentionsInput>
       </div>
     )
+  },
+
+  addSubitemTitle(title) {
+    let subitems = _.cloneDeep(this.state.subitems);
+    let sameTitleItem = _.find(subitems, (item) => {
+      return item.title == title
+    })
+
+    if (!sameTitleItem) {
+      subitems.push({title})
+      this.setState({
+        subitems
+      })
+    }
+  },
+
+  deleteSubitem(subitem) {
+    let subitems = _.cloneDeep(this.state.subitems);
+    subitems = _.reject(subitems, (item) => {
+      return item.title === subitem.title
+    })
+    this.setState({
+      subitems
+    })
+  },
+
+  itemSubitems () {
+    if (this.state.type === 'story') {
+      return (
+        <div className="form-group add-item__subitems">
+          <Subitems subitems={this.state.subitems}
+                  createItem={this.addSubitemTitle}
+                  deleteItem={this.deleteSubitem}
+                  updateItem={false} />
+        </div>
+      )
+    }
   },
 
   itemTags() {
@@ -258,26 +296,36 @@ var AddItemPage = React.createClass({
         <div className="drawer__content">
           <div className="col-xs-12">
             {this.typeSelector()}
-            <form className="col-xs-12 add-item__form" onSubmit={this.createItem} onKeyDown={this.onKeyDown}>
+            <div className="col-xs-12 add-item__form" onKeyDown={this.onKeyDown}>
               {this.itemTitle()}
               {this.itemDescription()}
               {this.itemTags()}
               {this.membersSelect()}
+              {this.itemSubitems()}
               <AddItemActions dismiss={this.dismiss}
-                           productId={this.getParams().id}
-                           checked={this.linkState('sendToBacklog')} />
-            </form>
+                            productId={this.getParams().id}
+                              addItem={this.createItem}
+                              checked={this.linkState('sendToBacklog')} />
+            </div>
           </div>
         </div>
       </div>
     )
   },
 
-  _onChange() {
-    let product = ProductStore.getProduct(this.getParams().id);
+  _onChange(type, record) {
+    if (type === 'afterCreate') {
+      if (record.type === 'story' && this.state.subitems.length) {
+        ItemActions.bulkAdd('subitems', this.props.product.id, record, this.state.subitems);
+      } else if (this.state.attachments) {
+        console.log('IMPLEMENT ATTACHMENTS');
+      }
+    } else {
+      let product = ProductStore.getProduct(this.getParams().id);
 
-    if (product) {
-      this.setState({product});
+      if (product) {
+        this.setState({product});
+      }
     }
   }
 });

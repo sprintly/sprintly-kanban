@@ -3,6 +3,7 @@ import React from 'react/addons';
 let AddItemActions = React.createClass({
 
   propTypes: {
+    addItem: React.PropTypes.func.isRequired,
     dismiss: React.PropTypes.func,
     productId: React.PropTypes.string,
     checked: React.PropTypes.oneOfType([
@@ -14,7 +15,7 @@ let AddItemActions = React.createClass({
   render: function() {
     return (
       <div className="col-xs-12 add-item__actions no-gutter">
-        <input type="submit" className="btn btn-primary btn-lg create-item" value="Create Item"/>
+        <input type="submit" className="btn btn-primary btn-lg create-item" value="Create Item" onClick={this.props.addItem} />
         <button className="btn btn-default btn-lg cancel-item" onClick={this.props.dismiss}>Cancel</button>
         <div className="checkbox pull-right">
           <label>

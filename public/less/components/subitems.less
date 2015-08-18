@@ -1,0 +1,70 @@
+.subitems {
+  padding: 1rem 0 0;
+
+  ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0 1rem;
+  }
+
+  // TODO: Compose to common stylesheet
+  li.subitem {
+    &.story a {
+      background-color: @story-bg;
+      color: @story-color;
+    }
+    &.defect a {
+      background-color: @defect-bg;
+      color: @defect-color;
+    }
+    &.task a {
+      background-color: @task-bg;
+      color: @task-color;
+    }
+    &.test a {
+      background-color: @test-bg;
+      color: @test-color;
+    }
+
+    a {
+      padding: 2px 6px;
+      border-radius: 2px;
+    }
+
+    label {
+      word-wrap: break-word;
+    }
+  }
+
+  span.subitem__title {
+    font-size: 12px;
+    margin-left: 5px;
+  }
+
+  @media (max-width: @screen-xs-min) {
+    padding-top: 0;
+  }
+}
+.subitems .subitems__add-subitem {
+  width:100%;
+  display: -webkit-flex;
+  display: flex;
+  flex-wrap: wrap;
+
+  input[type=text] {
+    flex: 1;
+    width: 100%;
+    border-radius: 4px 0 0 4px;
+  }
+
+  button {
+    align-self: flex-end;
+    border-radius: 0 4px 4px 0;
+    border-left: none;
+  }
+}
+.subitems .subitems__add-subitem {
+  button.delete {
+    padding: 5px 5px 2px 5px;
+  }
+}
