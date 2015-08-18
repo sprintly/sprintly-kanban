@@ -27,7 +27,7 @@ let Subitem = React.createClass({
 
     if (subitemURL) {
       return (
-        <a href={subitemURL} target="_BLANK" className="small">
+        <a key={this.props.subitem.number} href={subitemURL} target="_BLANK" className="small">
           #{this.props.subitem.number}
         </a>
       )
@@ -58,7 +58,7 @@ let Subitem = React.createClass({
 
   render: function() {
     return (
-      <li className="subitem task">
+      <li key={this.props.subitem.number} className="subitem task">
         <div className="checkbox">
           <label className="subitem__id">
             {this.checkbox()}

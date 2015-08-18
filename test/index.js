@@ -15,6 +15,7 @@ require("../app/views/components/item-column/no-search-results-test.js");
 require("../app/views/components/item-column/sprint-group-test.js");
 require("../app/views/components/sidebars/filters-test.js");
 require("../app/views/components/sidebars/index-test.js");
+require("../app/views/components/subitems-test.js");
 require("../app/views/components/tags-input-test.js");
 require("../app/views/pages/add-item-test.js");
 require("../app/views/pages/helpers-test.js");

@@ -23,7 +23,7 @@ var pagesHelpers = {
 }
 AddItem.__set__('pagesHelpers', pagesHelpers);
 
-describe.only('Add Item', function() {
+describe('Add Item', function() {
   beforeEach(function() {
     this.sinon = sinon.sandbox.create();
     this.ItemActions = AddItem.__get__('ItemActions');
@@ -218,14 +218,14 @@ describe.only('Add Item', function() {
 
     describe('valid params', function () {
       it('calls add item with form', function () {
-        let CreateItemForm = TestUtils.findRenderedDOMComponentWithTag(this.component, 'form');
-        TestUtils.Simulate.submit(CreateItemForm);
+        let CreateItemButton = TestUtils.findRenderedDOMComponentWithClass(this.component, 'create-item');
+        TestUtils.Simulate.click(CreateItemButton);
 
         sinon.assert.called(this.addItemStub);
       });
 
       it('creates story issue with state', function () {
-        let storyIssueProps = {
+        let targetAttrs = {
           status: 'backlog',
           type: 'story',
           description: 'build user login',
@@ -238,14 +238,14 @@ describe.only('Add Item', function() {
 
         this.component.refs.stub.setState({type: 'story'});
 
-        let CreateItemForm = TestUtils.findRenderedDOMComponentWithTag(this.component, 'form');
-        TestUtils.Simulate.submit(CreateItemForm);
+        let CreateItemButton = TestUtils.findRenderedDOMComponentWithClass(this.component, 'create-item');
+        TestUtils.Simulate.click(CreateItemButton);
 
-        assert.isTrue(this.addItemStub.calledWithExactly('1', storyIssueProps));
+        assert.isTrue(this.addItemStub.calledWith('1', targetAttrs));
       });
 
       it('creates non-story issue with state', function () {
-        let nonStoryIssueProps = {
+        let targetAttrs = {
           title: 'title',
           status: 'backlog',
           type: 'task',
@@ -256,10 +256,10 @@ describe.only('Add Item', function() {
 
         this.component.refs.stub.setState({type: 'task'});
 
-        let CreateItemForm = TestUtils.findRenderedDOMComponentWithTag(this.component, 'form');
-        TestUtils.Simulate.submit(CreateItemForm);
+        let CreateItemButton = TestUtils.findRenderedDOMComponentWithClass(this.component, 'create-item');
+        TestUtils.Simulate.click(CreateItemButton);
 
-        assert.isTrue(this.addItemStub.calledWithExactly('1', nonStoryIssueProps));
+        assert.isTrue(this.addItemStub.calledWithExactly('1', targetAttrs));
       });
     });
   });

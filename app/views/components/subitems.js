@@ -1,13 +1,10 @@
 import React from 'react/addons';
 import _ from 'lodash';
-import {State} from 'react-router';
 import Subitem from './subitem';
 import ProductActions from '../../actions/product-actions';
 import ItemActions from '../../actions/item-actions';
 
 var Subitems = React.createClass({
-
-  mixins: [State],
 
   propTypes: {
     subitems: React.PropTypes.array.isRequired,
@@ -66,8 +63,8 @@ var Subitems = React.createClass({
   newSubitemInput() {
     return (
       <form className="subitems__add-subitem" onSubmit={this.extractValue}>
-        <input ref="addItemInput" type="text" placeholder={this.addItemText()} className="form-control" />
-        <button className="btn btn-default">+</button>
+        <input key="addItemInput" ref="addItemInput" type="text" placeholder={this.addItemText()} className="form-control" />
+        <button type="submit" ref="createSubitem" className="btn btn-default">+</button>
       </form>
     )
   },
