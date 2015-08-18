@@ -28,7 +28,6 @@ var ItemSubitem = React.createClass({
       type: React.PropTypes.string
     }),
     header: React.PropTypes.bool,
-    hoverStatus: React.PropTypes.bool,
     controls: React.PropTypes.shape({
       status: React.PropTypes.oneOfType([
         React.PropTypes.string,
@@ -43,8 +42,6 @@ var ItemSubitem = React.createClass({
         React.PropTypes.bool
       ])
     }),
-    setHoverStatus: React.PropTypes.func,
-    resetHoverStatus: React.PropTypes.func,
     toggleActionControl: React.PropTypes.func,
     toggleSubitem: React.PropTypes.func,
     updateSubitem: React.PropTypes.func,
@@ -91,7 +88,6 @@ var ItemSubitem = React.createClass({
       <SubitemHeader subitem={this.props.subitem}
                        index={this.props.index}
                       header={this.props.header}
-                 hoverStatus={this.props.hoverStatus}
                     controls={this.props.controls}
          toggleActionControl={this.props.toggleActionControl}
                toggleSubitem={this.props.toggleSubitem}

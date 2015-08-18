@@ -71,12 +71,14 @@ var ItemSubitems = React.createClass({
     return _.map(this.props.subitems, (subitem, index) => {
       let subitemState = this.state.subitemsStates[subitem.number]
 
+      /*
+        Note: Index prop is important for checkbox and label key in subitem header
+      */
       return (
-        <Subitem key={index}
+        <Subitem   key={index}
+                 index={index}
                subitem={subitem}
                members={this.props.members}
-        setHoverStatus={this.setHoverStatus}
-      resetHoverStatus={this.resetHoverStatus}
    toggleActionControl={this.toggleActionControl}
          toggleSubitem={this.toggleSubitem}
          updateSubitem={this.updateSubitem}
@@ -103,20 +105,6 @@ var ItemSubitems = React.createClass({
     return _.contains(subitemsStates, true);
   },
 
-  setHoverStatus(subitemId, key, ev) {
-    let state = _.cloneDeep(this.state.subitemsStates)
-    state[subitemId].hoverStatus = key;
-
-    this.setState({subitemsStates: state});
-  },
-
-  resetHoverStatus(subitemId, ev) {
-    let state = _.cloneDeep(this.state.subitemsStates)
-    state[subitemId].hoverStatus = false;
-
-    this.setState({subitemsStates: state});
-  },
-
   addNewSubitemState(newSubitems) {
     let requiresUpdate = false;
     let subitemsStates = _.cloneDeep(this.state.subitemsStates);
@@ -127,7 +115,6 @@ var ItemSubitems = React.createClass({
         requiresUpdate = true;
         subitemsStates[item.number] = {
           header: false,
-          hoverStatus: false,
           controls: {
             status: false,
             assignee: true,

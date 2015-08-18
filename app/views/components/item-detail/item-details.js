@@ -50,8 +50,7 @@ var ItemDetails = React.createClass({
         status: false,
         assignee: true,
         score: false
-      },
-      hoverStatus: INVERTED_STATUS_MAP[this.props.status]
+      }
     }
   },
 
@@ -195,16 +194,8 @@ var ItemDetails = React.createClass({
     )
   },
 
-  setHoverStatus(id, key, ev) {
-    this.setState({hoverStatus: key});
-  },
-
-  resetHoverStatus() {
-    this.setState({hoverStatus: INVERTED_STATUS_MAP[this.props.status]});
-  },
-
   actionsSection() {
-    let itemStatus = this.state.hoverStatus || this.itemStatus(this.props.status);
+    let itemStatus = this.itemStatus(this.props.status);
     let email = this.props.assignee ? this.props.assignee.email: '';
     let assigneeGravatar = this.assigneeGravatar(email);
     let itemSizeButton = this.itemScoreButton(this.props.type, this.props.score);
