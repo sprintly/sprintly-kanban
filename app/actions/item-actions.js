@@ -55,13 +55,11 @@ let ItemActions = {
 
       return item;
     }).then(function(items) {
-      _.each(items, (item) => {
-        AppDispatcher.dispatch({
-          actionType: 'ADD_ITEM',
-          product,
-          item
-        });
-      })
+      AppDispatcher.dispatch({
+        actionType: 'ADD_ITEMS',
+        product,
+        items
+      });
     }).catch( (e) => {
        return Promise.reject();
     });

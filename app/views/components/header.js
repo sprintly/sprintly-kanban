@@ -2,9 +2,6 @@ import _ from 'lodash';
 import React from 'react/addons';
 import classNames from "classnames";
 import Gravatar from './gravatar';
-
-// import AddItemModal from './add-item-modal';
-
 import FiltersMenu from './filters/filters-menu';
 import {ModalTrigger} from 'react-bootstrap';
 import {Link, Navigation, State} from 'react-router';

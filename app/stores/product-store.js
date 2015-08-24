@@ -379,6 +379,18 @@ var internals = ProductStore.internals = {
     return item;
   },
 
+  addItems(productId, items) {
+    let product = products.get(productId);
+
+    _.each(items, (item) => {
+      let col = product.getItemsByStatus(item.status);
+
+      if (col) {
+        col.add(item)
+      }
+    });
+  },
+
   itemsForProduct(productId) {
     return _.chain(ITEM_STATUSES)
             .map((status) => {
@@ -417,6 +429,11 @@ ProductStore.dispatchToken = AppDispatcher.register(function(action) {
     case 'ADD_ITEM':
       let item = internals.addItem(action.product.id, action.item);
       ProductStore.emitChange('afterCreate', item);
+
+      break;
+    case 'ADD_ITEMS':
+      internals.addItems(action.product.id, action.items);
+      ProductStore.emitChange();
 
       break;
 

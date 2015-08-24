@@ -46,16 +46,12 @@ var Subitems = React.createClass({
     return this.props.subitems.length ? 'Add another task' : 'Add a task';
   },
 
-  clearInput() {
-    let node = this.refs.addItemInput.getDOMNode();
-    node.value = '';
-  },
-
   extractValue(ev) {
     ev.preventDefault();
     let node = this.refs.addItemInput.getDOMNode();
     if (node.value) {
-      this.props.createItem(node.value, this.clearInput);
+      this.props.createItem(node.value);
+      node.value = '';
     }
     node.focus();
   },
@@ -72,8 +68,8 @@ var Subitems = React.createClass({
   render() {
     return (
       <div className="col-xs-12 subitems">
-        {this.subitemsList()}
         {this.newSubitemInput()}
+        {this.subitemsList()}
       </div>
     );
   }

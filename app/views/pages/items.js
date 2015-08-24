@@ -10,6 +10,7 @@ import ob from 'oblique-strategies';
 
 // Flux
 import FiltersStore from '../../stores/filters-store';
+
 import ProductStore from '../../stores/product-store';
 import ProductActions from '../../actions/product-actions';
 import VelocityActions from '../../actions/velocity-actions';
@@ -182,7 +183,7 @@ let ItemsViewController = React.createClass({
           members={this.state.members}
           tags={this.state.tags}
         />
-        <FiltersToolbar
+      <FiltersToolbar
           user={this.props.user}
           allFilters={this.state.allFilters}
           activeFilters={this.state.activeFilters}
