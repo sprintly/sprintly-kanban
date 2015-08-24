@@ -114,7 +114,7 @@ var ItemCardDetails = React.createClass({
     ItemActions.addItem(this.props.productId, {
       title,
       type: 'task',
-      parent: this.props.parentId
+      parent: this.props.item.number
     }).then(function() {
       clearInput();
     })
@@ -122,11 +122,9 @@ var ItemCardDetails = React.createClass({
 
   itemSubitems() {
     if (this.props.item.type === 'story') {
-      let subitems = this.props.item.sub_items || [];
-
       return (
         <div className="form-group add-item__subitems">
-          <Subitems subitems={subitems}
+          <Subitems subitems={this.props.item.sub_items}
                   createItem={this.createSubitem}
                   deleteItem={false}
                   updateItem={this.updateSubitem} />
