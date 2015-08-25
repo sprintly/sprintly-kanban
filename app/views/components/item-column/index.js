@@ -66,6 +66,7 @@ let ItemColumn = React.createClass({
 
   getInitialState() {
     return {
+      condensed: false,
       hideLoadMore: false
     };
   },
@@ -194,6 +195,10 @@ let ItemColumn = React.createClass({
     }
   },
 
+  toggleCondensed() {
+    this.setState({ condensed: !this.state.condensed });
+  },
+
   render() {
     let reverseSort = (ev) => {
       let direction = this.props.sortDirection === 'desc' ? 'asc' : 'desc';
@@ -202,6 +207,7 @@ let ItemColumn = React.createClass({
 
     let classes = classNames({
       column: true,
+      condensed: this.state.condensed,
       [this.props.status]: true,
       'dropzone-active': this.props.canDrop && this.props.isOverCurrent
     });
@@ -213,6 +219,8 @@ let ItemColumn = React.createClass({
           setSortCriteria={this.setSortCriteria}
           sortDirection={this.props.sortDirection}
           sortField={this.props.sortField}
+          condensed={this.state.condensed}
+          toggleCondensed={this.toggleCondensed}
         />
         {this.columnContent()}
         {this.renderLoadMore()}

@@ -196,7 +196,7 @@ let ItemCard = React.createClass({
               <Link to={`/product/${this.props.productId}/item/${this.props.item.number}`}>{title}</Link>
             </h2>
             <button className="item-card__show-details" onClick={this.toggleDetails}>
-              <span className="glyphicon glyphicon-option-horizontal" />
+              <span className="glyphicon" />
             </button>
           </div>
         </div>

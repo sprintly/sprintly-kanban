@@ -14,8 +14,7 @@
             "unix"
         ],
         "semi": [
-            2,
-            "always"
+            0
         ],
         "no-underscore-dangle": [
             0

@@ -27,12 +27,22 @@ let ColumnHeader = React.createClass({
     }
   },
 
+  onCondensedClick() {
+    this.props.toggleCondensed()
+  },
+
   render: function() {
     let directionClasses = {
       'glyphicon': true,
       'glyphicon-sort-by-attributes': this.props.sortDirection === 'desc',
       'glyphicon-sort-by-attributes-alt': this.props.sortDirection === 'asc',
     };
+
+    let condensedClasses = {
+      'glyphicon': true,
+      'glyphicon-list': !this.props.condensed,
+      'glyphicon-th-list': this.props.condensed
+    }
 
     return (
       <header>
@@ -46,6 +56,9 @@ let ColumnHeader = React.createClass({
           </SplitButton>
           <button className="reverse-sort" disabled={this.props.sortField === 'priority'} type="button" onClick={this.onReverseClick} aria-label="Change sort direction">
             <span aria-hidden="true" className={classNames(directionClasses)}/>
+          </button>
+          <button className="toggle-condensed" type="button" onClick={this.onCondensedClick}>
+            <span aria-hidden="true" className={classNames(condensedClasses)}/>
           </button>
         </div>
 
