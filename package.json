@@ -82,15 +82,16 @@
     "good-console": "^5.0.2",
     "hapi": "^8.6.1",
     "hapi-auth-cookie": "^3.0.1",
-    "moment": "http://registry.npmjs.org/moment/-/moment-2.10.3.tgz",
-    "react-dnd": "^1.1.4",
+    "hapi-cache-buster": "^0.4.0",
     "marked": "^0.3.3",
+    "moment": "~2.10.3",
+    "react-dnd": "^1.1.4",
     "sprintly-data": "^2.0.5",
     "superagent": "^1.2.0",
     "swig": "^1.4.2"
   },
   "engines": {
-    "node": "0.10.x",
+    "node": "0.12.x",
     "npm": "2.7.x"
   },
   "description": "Oauth2 Client App w/ Hapi, React, Flux, and Sprinlty-Data",
