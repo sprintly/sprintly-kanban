@@ -1,27 +1,21 @@
 import React from 'react/addons';
 import _ from 'lodash';
-
+import helpers from './helpers';
 // Stores
-import ProductStore from '../../../stores/product-store';
-import ItemActions from '../../../actions/item-actions';
+import ProductStore from '../../stores/product-store';
+import ItemActions from '../../actions/item-actions';
 // Components
-import ItemHeader from './item-header';
-import ItemDetails from './item-details';
-import ItemDescription from './item-description';
-import ItemAttachments from './item-attachments';
-import ItemSubitems from './item-subitems';
-import ItemComments from './item-comments';
-import ItemActivity from './item-activity';
-import ItemDetailMixin from './detail-mixin';
+import ItemHeader from '../components/item-detail/item-header';
+import DrawerStripe from '../components/drawer-stripe';
+import ItemDetails from '../components/item-detail/item-details';
+import ItemDescription from '../components/item-detail/item-description';
+import ItemAttachments from '../components/item-detail/item-attachments';
+import ItemSubitems from '../components/item-detail/item-subitems';
+import ItemComments from '../components/item-detail/item-comments';
+import ItemActivity from '../components/item-detail/item-activity';
+import ItemDetailMixin from '../components/item-detail/detail-mixin';
 // Libs
 import {State,Link} from 'react-router';
-
-let initialItemDetailHeight = function() {
-  let bodyHeight = document.body.getBoundingClientRect().height;
-  let headerHeight = document.getElementsByClassName('product__header-menu')[0].getBoundingClientRect().height;
-
-  return bodyHeight - headerHeight;
-}
 
 var ItemDetail = React.createClass({
 
@@ -33,18 +27,18 @@ var ItemDetail = React.createClass({
     return {
       item: {},
       product: product,
-      itemDetailHeight: initialItemDetailHeight(),
-      descriptionEditable: false,
-      attachmentsOpen: false
+      attachmentsPanel: false,
+      stripeHeight: helpers.stripeHeight(),
+      descriptionEditable: false
     };
   },
 
   updateStripeHeight() {
-    let content = document.getElementsByClassName('content__wrapper')[0];
+    let content = document.getElementsByClassName('drawer__content')[0];
     let height = content ? content.getBoundingClientRect().height : 0;
 
-    if (height > this.state.itemDetailHeight) {
-      this.setState({itemDetailHeight: height})
+    if (height > this.state.stripeHeight) {
+      this.setState({stripeHeight: height})
     }
   },
 
@@ -112,16 +106,18 @@ var ItemDetail = React.createClass({
     )
   },
 
-  subitems() {
-    let subitems = this.state.item.sub_items || [];
+  itemSubitems() {
+    if (this.state.item.type == 'story' && this.state.item.sub_items) {
+      let subitems = this.state.item.sub_items || [];
 
-    return (
-      <ItemSubitems    item={this.state.item}
-                    members={this.props.members}
-                  productId={this.props.product.id}
-                   subitems={subitems}
-                 setSubitem={this.setSubitem} />
-    )
+      return (
+        <ItemSubitems    item={this.state.item}
+                      members={this.props.members}
+                    productId={this.props.product.id}
+                     subitems={subitems}
+                   setSubitem={this.setSubitem} />
+      )
+    }
   },
 
   itemComments() {
@@ -144,6 +140,19 @@ var ItemDetail = React.createClass({
       <ItemActivity members={this.props.members}
                    activity={activityClone}
          updateStripeHeight={this.updateStripeHeight} />
+    )
+  },
+
+  itemAttachments() {
+    let attachments = [];
+    let item = this.state.item;
+    if (item.attachments && item.attachments.length) {
+      attachments = item.attachments;
+    }
+    return (
+      <ItemAttachments attachments={attachments}
+                              open={this.state.attachmentsOpen}
+                            toggle={this.toggleAttachments} />
     )
   },
 
@@ -174,43 +183,17 @@ var ItemDetail = React.createClass({
       return <div/>;
     }
 
-    let stripeClass = `stripe ${this.state.item.type}`;
-    let closeClass = `item-detail__close ${this.state.item.type}`;
-    var stripeStyles = {height: `${this.state.itemDetailHeight}px`};
-
-    let itemDetails = this.itemDetails()
-    let itemDescription = this.itemDescription();
-
-    let attachments = [];
-    let item = this.state.item;
-    if (item.attachments && item.attachments.length) {
-      attachments = item.attachments;
-    }
-    let itemAttachments = <ItemAttachments attachments={attachments}
-                                                  open={this.state.attachmentsOpen}
-                                                toggle={this.toggleAttachments} />
-
-    let subitems;
-    if (this.state.item.type == 'story' && this.state.item.sub_items) {
-      subitems = this.subitems();
-    }
-    let itemComments = this.itemComments()
-    let itemActivity = this.itemActivity()
-
     return (
-      <div ref="itemDetail" className="container-fluid item-detail no-gutter">
-        <div style={stripeStyles} className={stripeClass}>
-          <Link to="product" params={{ id: this.getParams().id }} className={closeClass}>
-            <span aria-hidden="true" className="glyphicon glyphicon-remove"/>
-          </Link>
-        </div>
-        <div className="content__wrapper">
-          {itemDetails}
-          {itemDescription}
-          {itemAttachments}
-          {subitems}
-          {itemComments}
-          {itemActivity}
+      <div ref="itemDetail" className="container-fluid item-detail no-gutter drawer">
+        <DrawerStripe type={this.state.item.type}
+                      height={this.state.stripeHeight} />
+        <div className="drawer__content">
+          {this.itemDetails()}
+          {this.itemDescription()}
+          {this.itemAttachments()}
+          {this.itemSubitems()}
+          {this.itemComments()}
+          {this.itemActivity()}
         </div>
       </div>
     )

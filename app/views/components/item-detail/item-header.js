@@ -1,4 +1,4 @@
-var React = require('react');
+import React from 'react/addons';
 import helpers from '../../components/helpers';
 
 var ItemHeader = React.createClass({
@@ -28,7 +28,6 @@ var ItemHeader = React.createClass({
       </div>
     )
   }
-
 });
 
 module.exports = ItemHeader;

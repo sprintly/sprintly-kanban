@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import React from 'react';
+import React from 'react/addons';
 import OwnerAvatar from '../item-card/owner';
 
 // Flux

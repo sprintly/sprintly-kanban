@@ -31,5 +31,13 @@ module.exports = {
     object[`-o-${attr}`] = value;
 
     return object;
+  },
+
+  stripeHeight() {
+    const PRODUCT_HEADER_CLASS = 'product__header-menu';
+    let bodyHeight = document.body.getBoundingClientRect().height;
+    let headerHeight = document.getElementsByClassName(PRODUCT_HEADER_CLASS)[0].getBoundingClientRect().height;
+
+    return bodyHeight - headerHeight;
   }
 }

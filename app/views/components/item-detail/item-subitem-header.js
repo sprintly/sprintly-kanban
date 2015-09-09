@@ -23,7 +23,6 @@ var ItemSubitemHeader = React.createClass({
       type: React.PropTypes.string
     }),
     header: React.PropTypes.bool,
-    hoverStatus: React.PropTypes.bool,
     controls: React.PropTypes.shape({
       status: React.PropTypes.oneOfType([
         React.PropTypes.string,
@@ -61,7 +60,7 @@ var ItemSubitemHeader = React.createClass({
     });
 
     let title = this.props.subitem.title;
-    let status = this.props.hoverStatus || this.itemStatus(this.props.subitem.status);
+    let status = this.itemStatus(this.props.subitem.status);
     let subitemId = this.props.subitem.number;
 
     let email = (this.props.subitem.assigned_to && this.props.subitem.assigned_to.email) ? this.props.subitem.assigned_to.email : '';

@@ -2,9 +2,12 @@ import AppDispatcher from '../dispatchers/app-dispatcher';
 import {products} from '../lib/sprintly-client';
 import request from 'superagent';
 import Promise from 'bluebird';
+import _ from 'lodash';
 import {BASE_URL} from '../config';
 
 const token = window.__token;
+const SUBITEMS = 'subitems';
+const ATTACHMENTS = 'attachments';
 
 let ItemActions = {
   addItem(productId, data) {
@@ -19,16 +22,47 @@ let ItemActions = {
     let saved = item.save();
 
     if (saved) {
-      return saved.then(function() {
+      return saved.then(function(item) {
         AppDispatcher.dispatch({
           actionType: 'ADD_ITEM',
           product,
           item
-        });
+        })
       });
     } else {
       return Promise.reject(item);
     }
+  },
+
+  itemForType(type, data, parentId) {
+    if (type === SUBITEMS) {
+      return {
+        title: data.title,
+        type: 'task',
+        parent: parentId
+      }
+    }
+  },
+
+  bulkAdd(type, productId, parent, data) {
+    let product = products.get(productId);
+
+    Promise.map(data, (newItem) => {
+      let newItemData = this.itemForType(type, newItem, parent.number);
+      let item = product.createItem(newItemData, { silent: true });
+
+      item.save();
+
+      return item;
+    }).then(function(items) {
+      AppDispatcher.dispatch({
+        actionType: 'ADD_ITEMS',
+        product,
+        items
+      });
+    }).catch( (e) => {
+       return Promise.reject();
+    });
   },
 
   createComment(productId, itemId, comment) {

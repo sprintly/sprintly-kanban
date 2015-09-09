@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react/addons';
 import { RouteHandler } from 'react-router';
 import Sidebars from './components/sidebars';
 import { DragDropContext } from 'react-dnd';

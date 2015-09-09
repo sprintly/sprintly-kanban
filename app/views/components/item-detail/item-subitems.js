@@ -3,7 +3,7 @@ import _ from 'lodash';
 import helpers from '../../components/helpers';
 import ItemDetailMixin from './detail-mixin';
 import Subitem from './item-subitem';
-import ShortSubitems from '../../components/item-card/subitems';
+import ShortSubitems from '../../components/subitems';
 import {State, Link} from 'react-router';
 import ProductActions from '../../../actions/product-actions';
 import ItemActions from '../../../actions/item-actions';
@@ -71,12 +71,14 @@ var ItemSubitems = React.createClass({
     return _.map(this.props.subitems, (subitem, index) => {
       let subitemState = this.state.subitemsStates[subitem.number]
 
+      /*
+        Note: Index prop is important for checkbox and label key in subitem header
+      */
       return (
-        <Subitem key={index}
+        <Subitem   key={index}
+                 index={index}
                subitem={subitem}
                members={this.props.members}
-        setHoverStatus={this.setHoverStatus}
-      resetHoverStatus={this.resetHoverStatus}
    toggleActionControl={this.toggleActionControl}
          toggleSubitem={this.toggleSubitem}
          updateSubitem={this.updateSubitem}
@@ -103,20 +105,6 @@ var ItemSubitems = React.createClass({
     return _.contains(subitemsStates, true);
   },
 
-  setHoverStatus(subitemId, key, ev) {
-    let state = _.cloneDeep(this.state.subitemsStates)
-    state[subitemId].hoverStatus = key;
-
-    this.setState({subitemsStates: state});
-  },
-
-  resetHoverStatus(subitemId, ev) {
-    let state = _.cloneDeep(this.state.subitemsStates)
-    state[subitemId].hoverStatus = false;
-
-    this.setState({subitemsStates: state});
-  },
-
   addNewSubitemState(newSubitems) {
     let requiresUpdate = false;
     let subitemsStates = _.cloneDeep(this.state.subitemsStates);
@@ -127,7 +115,6 @@ var ItemSubitems = React.createClass({
         requiresUpdate = true;
         subitemsStates[item.number] = {
           header: false,
-          hoverStatus: false,
           controls: {
             status: false,
             assignee: true,
@@ -192,7 +179,7 @@ var ItemSubitems = React.createClass({
             {subitems}
           </div>
           <div className="col-xs-12 add-subitem">
-            <form className="item-card__add-subitem" onSubmit={this.createSubitem}>
+            <form className="subitems__add-subitem" onSubmit={this.createSubitem}>
               <input ref="addItemInput" type="text" placeholder={"Add new sub-task"} className="form-control" />
               <button className="btn btn-default">+</button>
             </form>

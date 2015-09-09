@@ -6,7 +6,7 @@ import FilterActions from '../../../actions/filter-actions';
 import ProductActions from '../../../actions/product-actions';
 import ItemActions from '../../../actions/item-actions';
 
-import SubItems from './subitems'
+import Subitems from '../subitems'
 import {TagEditor, Tags} from 'sprintly-ui';
 import {DropdownButton, MenuItem, OverlayTrigger, Tooltip, Button, Input} from 'react-bootstrap';
 
@@ -94,6 +94,45 @@ var ItemCardDetails = React.createClass({
     );
   },
 
+  updateSubitem(subitem, ev) {
+    var status;
+    if (_.contains(['someday', 'backlog', 'in-progress'], subitem.status)) {
+      status = 'accepted';
+    } else if (_.contains(['completed', 'accepted'], subitem.status)) {
+      status = 'in-progress';
+    }
+
+    ProductActions.updateItem(
+      subitem.product.id,
+      subitem.number,
+      _.assign({}, subitem, { status }),
+      { wait: false }
+    );
+  },
+
+  createSubitem(title, clearInput) {
+    ItemActions.addItem(this.props.productId, {
+      title,
+      type: 'task',
+      parent: this.props.item.number
+    }).then(function() {
+      clearInput();
+    })
+  },
+
+  itemSubitems() {
+    if (this.props.item.type === 'story') {
+      return (
+        <div className="form-group add-item__subitems">
+          <Subitems subitems={this.props.item.sub_items}
+                  createItem={this.createSubitem}
+                  deleteItem={false}
+                  updateItem={this.updateSubitem} />
+        </div>
+      )
+    }
+  },
+
   renderMenuItems() {
     let statusOptions = _.omit(STATUSES, this.props.item.status);
     let menuItems = _.map(statusOptions, function(label, status) {
@@ -109,7 +148,6 @@ var ItemCardDetails = React.createClass({
     let hasTags = _.isString(item.tags) && !_.isEmpty(item.tags);
     let tags = hasTags ? item.tags.split(',') : item.tags || [];
     let statusOptions = _.omit(STATUSES, item.status);
-    let subitems = this.props.item.sub_items || [];
 
     return (
       <div className="item-card__details">
@@ -122,12 +160,7 @@ var ItemCardDetails = React.createClass({
             {this.renderMenuItems()}
           </DropdownButton>
         </div>
-        <SubItems
-          item={this.props.item}
-          subitems={subitems}
-          productId={this.props.productId}
-          parentId={this.props.item.number}
-        />
+        {this.itemSubitems()}
         <div className="item-card__tags col-sm-12">
           <TagEditor
             modelId={[item.product.id, item.number]}

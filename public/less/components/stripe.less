@@ -1,0 +1,24 @@
+.stripe {
+  width: 2.5%;
+  float: left;
+  display: inline-block;
+
+  @media (min-width: @screen-sm-min) {
+    width: 3.5%;
+  }
+  @media (max-width: @screen-xs-min) {
+    width: 10%;
+  }
+}
+.stripe.story {
+  background-color: @story-bg;
+}
+.stripe.defect {
+  background-color: @defect-bg;
+}
+.stripe.task {
+  background-color: @task-bg;
+}
+.stripe.test {
+  background-color: @test-bg;
+}

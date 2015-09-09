@@ -23,8 +23,8 @@ let columnsLoading = {
 };
 
 var ProductStore = module.exports = _.assign({}, EventEmitter.prototype, {
-  emitChange() {
-    this.emit('change');
+  emitChange(type, record) {
+    this.emit('change', type, record);
   },
 
   addChangeListener(callback) {
@@ -371,9 +371,24 @@ var internals = ProductStore.internals = {
   addItem(productId, item) {
     let product = products.get(productId);
     let col = product.getItemsByStatus(item.status);
+
     if (col) {
       col.add(item);
     }
+
+    return item;
+  },
+
+  addItems(productId, items) {
+    let product = products.get(productId);
+
+    _.each(items, (item) => {
+      let col = product.getItemsByStatus(item.status);
+
+      if (col) {
+        col.add(item)
+      }
+    });
   },
 
   itemsForProduct(productId) {
@@ -412,8 +427,14 @@ ProductStore.dispatchToken = AppDispatcher.register(function(action) {
       break;
 
     case 'ADD_ITEM':
-      internals.addItem(action.product.id, action.item);
+      let item = internals.addItem(action.product.id, action.item);
+      ProductStore.emitChange('afterCreate', item);
+
+      break;
+    case 'ADD_ITEMS':
+      internals.addItems(action.product.id, action.items);
       ProductStore.emitChange();
+
       break;
 
     case 'DELETE_ITEM':

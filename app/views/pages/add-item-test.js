@@ -4,28 +4,36 @@ var React = require('react/addons');
 var TestUtils = React.addons.TestUtils;
 var sinon = require('sinon');
 var stubRouterContext = require('../../lib/stub-router-context');
-var AddItemModal = require('./add-item-modal');
-
-var Modal = require('react-bootstrap').Modal;
-var Nav = require('react-bootstrap').Nav;
-var NavItem = require('react-bootstrap').NavItem;
-
+var AddItem = require('./add-item');
 var MentionsInput = require('@sprintly/react-mentions').MentionsInput;
 var Mention = require('@sprintly/react-mentions').Mention;
 
-var Title = require('./add-item/title');
-var TagsInput = require('./tags-input');
+var Title = require('../components/add-item/title');
+var TagsInput = require('../components/tags-input');
 
-var StoryTitle = require('./add-item/story-title');
-var MembersDropdown = require('./add-item/members-dropdown');
+var StoryTitle = require('../components/add-item/story-title');
+var MembersDropdown = require('../components/add-item/members-dropdown');
 
 var ItemActions = require('../../actions/item-actions');
 
-describe('Add Item Modal', function() {
+var pagesHelpers = {
+  stripeHeight: function() {
+    return 0;
+  }
+}
+AddItem.__set__('pagesHelpers', pagesHelpers);
+
+describe('Add Item', function() {
   beforeEach(function() {
     this.sinon = sinon.sandbox.create();
-    this.ItemActions = AddItemModal.__get__('ItemActions');
+    this.ItemActions = AddItem.__get__('ItemActions');
     this.addItemStub = this.sinon.stub(this.ItemActions, 'addItem').returns({then: function(){}});
+    this.ProductStore = AddItem.__get__('ProductStore');
+    var mockProduct = {
+      tags: [{value: 'a'}]
+    }
+    this.sinon.stub(this.ProductStore, 'getProduct').returns(mockProduct);
+
     this.dismissSpy = sinon.spy();
     let props = {
       members: [
@@ -54,7 +62,14 @@ describe('Add Item Modal', function() {
       onHide: this.dismissSpy
     }
 
-    let Component = stubRouterContext(AddItemModal, props);
+    let Component = stubRouterContext(AddItem, props, {
+      getCurrentParams: () => {
+        return { id: 1 }
+      },
+      getCurrentPathname: () => {
+        return '/product'
+      }
+    });
 
     this.component = TestUtils.renderIntoDocument(<Component />);
   });
@@ -64,24 +79,12 @@ describe('Add Item Modal', function() {
   });
 
   context('componentDidMount', function() {
-    it('renders the modal component', function () {
-      assert.isDefined(TestUtils.findRenderedComponentWithType(this.component, Modal));
-    });
-
-    it('renders a NavItem for the 4 issue types', function () {
-      let NavItems = TestUtils.scryRenderedComponentsWithType(this.component, NavItem);
-
-      assert.lengthOf(NavItems, 4);
-    });
-
-    it('makes the \'type\' in state, the active NavItem', function () {
-      this.component.refs.stub.setState({
-        type: 'story'
+    context('type selector', function() {
+      it('renders a type selector', function () {
+        var typeSelect = React.findDOMNode(this.component.refs.stub.refs['type-select']);
+        assert.isDefined(typeSelect);
       });
-      let IssueTab = TestUtils.findRenderedDOMComponentWithClass(this.component, 'add-item__nav-story').getDOMNode();
-
-      assert.isTrue(IssueTab.classList.contains('active'));
-    });
+    })
 
     it('renders a \'Mentions\' description component', function () {
       let MentionsComponent = TestUtils.findRenderedDOMComponentWithClass(this.component, 'react-mentions');
@@ -146,14 +149,6 @@ describe('Add Item Modal', function() {
     });
   });
 
-  it('choosing an issue type updates state', function () {
-    let taskLink = TestUtils.findRenderedDOMComponentWithClass(this.component, 'add-item__nav-task').getDOMNode().children[0];
-    TestUtils.Simulate.click(taskLink);
-
-    let type = this.component.refs.stub.state.type;
-    assert.equal(type, 'task');
-  });
-
   it('describing a ticket updates state', function () {
     let description = 'new feature to build';
     this.component.refs.stub.setDescription(null,'new feature to build');
@@ -179,55 +174,9 @@ describe('Add Item Modal', function() {
       assert(this.component.refs.stub.state.assigneeName, 'Sarah Morrow');
     });
 
-    describe('#preparesMembersForSelect', function () {
-      xit('includes only members whom are not revoked', function () {
-        let targetStructure = [
-          {label: 'Sarah Morrow', value: 123}
-        ];
-
-        let preparedTags = this.component.refs.stub.prepareMembersForSelect();
-
-        assert.deepEqual(preparedTags, targetStructure);
-      });
-    });
-
-    describe('#notAssignable', function () {
-      it('is true when there are no members', function () {
-        let props = {
-          members: [],
-          tags: [{ tag: 'a' },{ tag: 'b' }],
-          product: {
-            id: '1'
-          }
-        }
-
-        let Component = stubRouterContext(AddItemModal, props);
-
-        let component = TestUtils.renderIntoDocument(<Component />);
-
-        assert.ok(component.refs.stub.notAssignable());
-      });
-    })
-
     describe('#assignPlaceholder', function () {
       it('\'Unassigned\' when there are members', function () {
         assert.equal(this.component.refs.stub.assignPlaceholder(), 'Unassigned');
-      });
-
-      it('\'Nobody to assign to\' when there are no members', function () {
-        let props = {
-          members: [],
-          tags: [{ tag: 'a' },{ tag: 'b' }],
-          product: {
-            id: '1'
-          }
-        }
-
-        let Component = stubRouterContext(AddItemModal, props);
-
-        let component = TestUtils.renderIntoDocument(<Component />);
-
-        assert.equal(component.refs.stub.assignPlaceholder(), 'Nobody to assign to');
       });
     })
 
@@ -269,14 +218,14 @@ describe('Add Item Modal', function() {
 
     describe('valid params', function () {
       it('calls add item with form', function () {
-        let CreateItemForm = TestUtils.findRenderedDOMComponentWithTag(this.component, 'form');
-        TestUtils.Simulate.submit(CreateItemForm);
+        let CreateItemButton = TestUtils.findRenderedDOMComponentWithClass(this.component, 'create-item');
+        TestUtils.Simulate.click(CreateItemButton);
 
         sinon.assert.called(this.addItemStub);
       });
 
       it('creates story issue with state', function () {
-        let storyIssueProps = {
+        let targetAttrs = {
           status: 'backlog',
           type: 'story',
           description: 'build user login',
@@ -289,14 +238,14 @@ describe('Add Item Modal', function() {
 
         this.component.refs.stub.setState({type: 'story'});
 
-        let CreateItemForm = TestUtils.findRenderedDOMComponentWithTag(this.component, 'form');
-        TestUtils.Simulate.submit(CreateItemForm);
+        let CreateItemButton = TestUtils.findRenderedDOMComponentWithClass(this.component, 'create-item');
+        TestUtils.Simulate.click(CreateItemButton);
 
-        assert.isTrue(this.addItemStub.calledWithExactly('1', storyIssueProps));
+        assert.isTrue(this.addItemStub.calledWith('1', targetAttrs));
       });
 
       it('creates non-story issue with state', function () {
-        let nonStoryIssueProps = {
+        let targetAttrs = {
           title: 'title',
           status: 'backlog',
           type: 'task',
@@ -307,20 +256,11 @@ describe('Add Item Modal', function() {
 
         this.component.refs.stub.setState({type: 'task'});
 
-        let CreateItemForm = TestUtils.findRenderedDOMComponentWithTag(this.component, 'form');
-        TestUtils.Simulate.submit(CreateItemForm);
+        let CreateItemButton = TestUtils.findRenderedDOMComponentWithClass(this.component, 'create-item');
+        TestUtils.Simulate.click(CreateItemButton);
 
-        assert.isTrue(this.addItemStub.calledWithExactly('1', nonStoryIssueProps));
+        assert.isTrue(this.addItemStub.calledWithExactly('1', targetAttrs));
       });
-    });
-  });
-
-  describe('dismiss modal', function () {
-    it('flushes modal state', function () {
-      let CloseModal = TestUtils.findRenderedDOMComponentWithClass(this.component, 'cancel-item');
-      TestUtils.Simulate.click(CloseModal);
-
-      assert.isTrue(this.dismissSpy.called);
     });
   });
 });
