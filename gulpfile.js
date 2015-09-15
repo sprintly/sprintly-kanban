@@ -4,6 +4,7 @@ var exec = require('child_process').exec;
 var sourcemaps = require('gulp-sourcemaps');
 var csso = require('gulp-csso');
 var rename = require('gulp-rename');
+var mochaPhantomjs = require('gulp-mocha-phantomjs');
 
 function run(command) {
   var child = exec(command);
@@ -17,8 +18,13 @@ function run(command) {
   });
 }
 
+gulp.task('test', function() {
+  return gulp.src('test/index.html')
+    .pipe(mochaPhantomjs({ reporter: 'dot' }))
+})
+
 gulp.task('less', function() {
-  gulp.src('public/less/main.less')
+  return gulp.src('public/less/main.less')
     .pipe(sourcemaps.init())
     .pipe(less())
     .pipe(sourcemaps.write('.'))
@@ -26,7 +32,7 @@ gulp.task('less', function() {
 });
 
 gulp.task('cssmin', function() {
-  gulp.src('public/css/main.css')
+  return gulp.src('public/css/main.css')
     .pipe(csso())
     .pipe(rename({
       suffix: '.min'
