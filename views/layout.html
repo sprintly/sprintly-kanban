@@ -23,7 +23,15 @@
     <div id="manifold" class="row-offcanvas row-offcanvas-left"></div>
 
     <script>
-      var __token = '{{token}}';
+      {% autoescape false %}
+      var __token = {{ token | json }};
+      var __sprintly_data_config = {{ { BASE_URL: config.sprintly_api_root + "/api" } | json }};
+      var __manifold_config = {{ {
+        BASE_URL: config.sprintly_api_root,
+        PUSHER_KEY: config.pusher_key,
+        CHANNEL_PREFIX: config.channel_prefix
+      } | json }};
+      {% endautoescape %}
     </script>
 
     <script src="//js.pusher.com/2.2/pusher.min.js"></script>
