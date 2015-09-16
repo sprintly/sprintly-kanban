@@ -81,7 +81,9 @@ let ItemAttachments = React.createClass({
   },
 
   imageViewer(images) {
-    let images = this.images();
+
+    var images = this.images();
+
     if (images && images.length) {
       let styles = { 'height': '170px' };
       let imageSlides = _.map(images, (image, i) => {

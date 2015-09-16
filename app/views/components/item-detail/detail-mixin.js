@@ -89,7 +89,7 @@ var DetailMixin = {
   },
 
   itemStatus(status) {
-    let status = helpers.itemStatusMap(status);
+    var status = helpers.itemStatusMap(status);
 
     return helpers.toTitleCase(status);
   },

@@ -21,7 +21,7 @@ const dropSpec = {
     }
 
     let item = monitor.getItem();
-    let { props } = component;
+    var { props } = component;
 
     if (item.status !== props.status) {
       ProductActions.updateItem(
