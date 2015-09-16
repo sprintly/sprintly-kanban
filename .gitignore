@@ -16,3 +16,6 @@ test/test-bundle.js
 public/js/manifold.js.map
 test/test-bundle.js.map
 config/local.js
+_builds
+_projects
+_steps
