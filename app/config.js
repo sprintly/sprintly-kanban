@@ -1,7 +1,8 @@
 /*eslint-env node */
 
 if (typeof __manifold_config !== "object") {
-  throw new Error("__manifold_config is missing!");
+  console.warn("__manifold_config is missing!");
+  var __manifold_config = {};
 }
 
 export default __manifold_config;
