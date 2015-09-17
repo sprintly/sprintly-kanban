@@ -86,6 +86,12 @@ var ProductStore = module.exports = _.assign({}, EventEmitter.prototype, {
       }
     }
 
+    let [sortField, sortDirection] = ProductStore.getSortCriteria(items);
+
+    if (sortField === 'priority') {
+      items.comparator = 'sort'
+    }
+
     let itemsJSON = _.compact(_.map(items.sort().toJSON(), function(model) {
       if (model.parent) {
         return;
@@ -94,7 +100,6 @@ var ProductStore = module.exports = _.assign({}, EventEmitter.prototype, {
       }
     }));
 
-    let [sortField, sortDirection] = ProductStore.getSortCriteria(items);
 
     return {
       items: itemsJSON,
