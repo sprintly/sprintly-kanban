@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import React from 'react/addons';
+import classNames from "classnames";
 import {SplitButton, ButtonGroup, MenuItem} from 'react-bootstrap';
 
 const SORT_OPTIONS = {
@@ -8,7 +9,7 @@ const SORT_OPTIONS = {
   last_modified: 'Recent'
 };
 
-var Header = React.createClass({
+let ColumnHeader = React.createClass({
 
   getDefaultProps: function() {
     return {
@@ -28,9 +29,15 @@ var Header = React.createClass({
 
   getItemCount: function(status) {
     let counts = this.props.itemCounts;
+    debugger;
     return (
-      counts && counts[status] ? counts[status] : { items: 0, points: 0 }
+      counts && counts[status] ? { items: counts[status], points: counts.points[counts[status]] } :
+        { items: 0, points: 0 }
     );
+  },
+
+  onCondensedClick() {
+    this.props.toggleCondensed()
   },
 
   render: function() {
@@ -40,6 +47,12 @@ var Header = React.createClass({
       'glyphicon-sort-by-attributes-alt': this.props.sortDirection === 'asc',
     };
     let itemCounts = this.getItemCount(this.props.status);
+
+    let condensedClasses = {
+      'glyphicon': true,
+      'glyphicon-list': !this.props.condensed,
+      'glyphicon-th-list': this.props.condensed
+    }
 
     return (
       <header>
@@ -52,7 +65,10 @@ var Header = React.createClass({
             }, this)}
           </SplitButton>
           <button className="reverse-sort" disabled={this.props.sortField === 'priority'} type="button" onClick={this.onReverseClick} aria-label="Change sort direction">
-            <span aria-hidden="true" className={React.addons.classSet(directionClasses)}/>
+            <span aria-hidden="true" className={classNames(directionClasses)}/>
+          </button>
+          <button className="toggle-condensed" type="button" onClick={this.onCondensedClick}>
+            <span aria-hidden="true" className={classNames(condensedClasses)}/>
           </button>
         </div>
 
@@ -71,4 +87,4 @@ var Header = React.createClass({
   }
 })
 
-module.exports = Header
+export default ColumnHeader

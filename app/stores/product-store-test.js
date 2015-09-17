@@ -1,4 +1,3 @@
-var $ = require('jquery');
 var _ = require('lodash');
 var ProductStore = require('./product-store');
 var Backbone = require('backdash');
@@ -19,8 +18,13 @@ describe('ProductStore', function() {
     beforeEach(function() {
       this.products = ProductStore.__get__('products');
       this.user = ProductStore.__get__('user');
-      this.FiltersAction = ProductStore.__get__('FiltersAction');
+      this.FilterActions = ProductStore.__get__('FilterActions');
       this.productsTriggerStub = sinon.stub();
+      this.filtersInitStub = sinon.stub();
+      ProductStore.__set__('FilterActions', {
+        init: this.filtersInitStub
+      });
+      // {products, user} from sprintly-client mocking
       ProductStore.__set__('products', {
         fetch: () => true,
         trigger: this.productsTriggerStub,
@@ -29,16 +33,12 @@ describe('ProductStore', function() {
       ProductStore.__set__('user', {
         fetch: () => true
       });
-      this.filtersInitStub = sinon.stub();
-      ProductStore.__set__('FiltersAction', {
-        init: this.filtersInitStub
-      });
     });
 
     afterEach(function() {
       ProductStore.__set__('products', this.products);
       ProductStore.__set__('user', this.user);
-      ProductStore.__set__('FiltersAction', this.FiltersAction);
+      ProductStore.__set__('FilterActions', this.FilterActions);
     });
 
     it('creates subscriptions on items collection', function() {
@@ -103,6 +103,56 @@ describe('ProductStore', function() {
       products.reset([]);
     });
   });
+
+  describe('#hasItems', function(){
+    it('returns false when the product has no items', function() {
+      let mockProduct  = {
+        get: function(id) {
+          return {items: []}
+        }
+      }
+      ProductStore.__set__('products', mockProduct);
+      let result = ProductStore.hasItems();
+
+      assert.isFalse(result)
+    })
+    
+    it('returns true when the product has items', function() {
+      let mockProduct  = {
+        get: function(id) {
+          return {items: [1,2,3]}
+        }
+      }
+      ProductStore.__set__('products', mockProduct);
+      let result = ProductStore.hasItems();
+
+      assert.isTrue(result)
+    })
+  })
+
+  describe('#hasItemsToRender', function() {
+    describe('returns true', function() {
+      it('when product collection has items', function() {
+        let mockCollection = {items: [1,2,3]};
+        this.sinon.stub(ProductStore.internals, 'itemsForProduct').returns([mockCollection]);
+
+        let result = ProductStore.hasItemsToRender(1);
+        assert.isTrue(result);
+      })
+    })
+
+    describe('returns false', function() {
+      it('when product collection has no items', function() {
+        it('when product collection has items', function() {
+          let mockCollection = {items: []};
+          this.sinon.stub(ProductStore.internals, 'itemsForProduct').returns([mockCollection]);
+
+          let result = ProductStore.hasItemsToRender(1);
+          assert.isFalse(result);
+        })
+      })
+    })
+  })
 
   xdescribe('getItemsForProduct', function() {
     it('returns an items collection', function() {

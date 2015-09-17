@@ -5,7 +5,7 @@ export default [
     active: false,
     alwaysVisible: true,
     field: 'type',
-    criteria: [],
+    criteria: ['story', 'task', 'defect', 'test'],
     criteriaOptions: [
       { field: 'story', label: 'Story', default: true },
       { field: 'task', label: 'Task', default: true },

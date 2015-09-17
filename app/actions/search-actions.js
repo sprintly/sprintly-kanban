@@ -1,5 +1,6 @@
 import client from 'sprintly-search';
 import AppDispatcher from '../dispatchers/app-dispatcher';
+import {BASE_URL} from '../config';
 
 var SearchActions = {
 
@@ -10,12 +11,12 @@ var SearchActions = {
     });
 
     let options = client.getOptions(query, {
-      baseUrl: process.env.NODE_ENV === 'production' ? 'https://sprint.ly' : 'https://local.sprint.ly:9000',
+      baseUrl: BASE_URL,
       token: window.__token
     });
 
     if (sort) {
-      options.qs.sort = sort
+      options.qs.sort = sort;
     }
 
     if (order) {
@@ -27,7 +28,7 @@ var SearchActions = {
         AppDispatcher.dispatch({
           actionType: 'SEARCH_SUCCESS',
           payload: results
-        })
+        });
       })
       .catch(function() {
         AppDispatcher.dispatch({

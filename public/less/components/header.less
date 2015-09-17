@@ -1,7 +1,3 @@
-@header: #333333;
-@header-title: #EFEFEF;
-@labs-flask: #21718D;
-
 .labs-flask {
   float: left;
   margin: 8px;
@@ -26,7 +22,9 @@
   background: @header;
   position: fixed;
   top: 0;
-  width: 100%;
+
+  width: 100%; //WIP
+  /* width: 375px; */ //WIP
   z-index: 300;
 
   h1 {
@@ -35,6 +33,24 @@
     margin: 0;
     font-size: 14px;
   }
+}
+
+.product__header .sprintly__logo {
+  .backgroundImage('../../img/sprintly_logo_white.png');
+  height: 40px;
+  width: 110px;
+  float: left;
+  margin: 6px;
+}
+
+.product__header .mobile-search {
+  margin-right: 2%;
+  float: right;
+}
+
+// Prevents mobile zoom on input
+.product__header .mobile-search input.form-control {
+  font-size: 16px;
 }
 
 .product__account {
@@ -72,3 +88,326 @@
   margin-top: 10px;
   margin-left: 15px;
 }
+
+.product__header button.filter-icon {
+  &.btn:focus,
+  &.btn:active {
+    outline: none;
+  }
+  span {
+    color: white;
+  }
+
+  background-color: transparent;
+  width: 40px;
+  height: 30px;
+  float: right;
+  margin-top: 7px;
+  margin-right: 10px;
+  cursor: pointer;
+  font-size: 22px;
+}
+
+@media (min-width: @screen-sm-min) {
+  .product__header-menu-button {
+    display: none;
+  }
+}
+
+@media (max-width: @screen-xs-max) {
+  .product__header {
+    padding-right: 0;
+    height: 54px;
+  }
+}
+
+.product__header .small-menu {
+  height: 54px;
+  width: 50px;
+  margin: 0;
+  display: inline-block;
+  position: absolute;
+  background: transparent;
+}
+
+.product__header .menu-list-item {
+  height: 100%;
+}
+
+.product__header .small-screen-menu {
+  line-height: 4.5rem;
+  padding-left: 15px;
+  color: white;
+  font-size: 25px;
+}
+
+/*
+ * Style tweaks
+ * --------------------------------------------------
+ */
+html,
+body {
+  overflow-x: hidden; /* Prevent scroll on narrow devices */
+}
+footer {
+  padding: 30px 0;
+}
+
+/*
+ * Off Canvas
+ * --------------------------------------------------
+ */
+ .row-offcanvas {
+   height: 100%;
+ }
+
+@media screen and (max-width: 767px) {
+  .row-offcanvas {
+    position: relative;
+    -webkit-transition: all .25s ease-out;
+         -o-transition: all .25s ease-out;
+            transition: all .25s ease-out;
+  }
+
+  .row-offcanvas-right {
+    right: 0;
+  }
+
+  .row-offcanvas-left {
+    left: 0;
+  }
+
+  .row-offcanvas-right .sidebar-offcanvas {
+    -webkit-transform: translateX(-100%);
+    -moz-transform: translateX(100%);
+    -o-transform: translateX(100%);
+
+  }
+
+  .row-offcanvas-left .sidebar-offcanvas {
+    -webkit-transform: translateX(100%);
+    -moz-transform: translateX(100%);
+    -o-transform: translateX(100%);
+  }
+
+  .row-offcanvas-right.active {
+    -webkit-transform: translateX(-65%);
+    -moz-transform: translateX(-65%);
+    -o-transform: translateX(-65%);
+  }
+
+  .row-offcanvas-left.active {
+    -webkit-transform: translateX(65%);
+    -moz-transform: translateX(65%);
+    -o-transform: translateX(65%);
+  }
+
+  .row-offcanvas-right.active .right-off-canvas-menu {
+    -webkit-transform: translateX(165%);
+  }
+
+  .row-offcanvas-left.active .left-off-canvas-menu {
+    -webkit-transform: translateX(-130%);
+  }
+
+  .sidebar-offcanvas {
+    .drop-shadow (@x: 5px, @y: 0, @blur: 5px, @spread: 0, @alpha: 0.25);
+
+    padding: 0;
+    position: absolute;
+    top: 0;
+    width: 65%; /* 6 columns */
+    background-color: @sprintly-black;
+    overflow-y: scroll;
+  }
+}
+
+/* Menu to X button animation
+ **********************/
+
+.burger-button {
+  display: inline-block;
+  padding: 19px 0 11px;
+
+  ._burger {
+    width: 25px;
+    height: 20px;
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+    -webkit-transition: all 0.5s ease-in-out;
+    -moz-transition: all 0.5s ease-in-out;
+    -o-transition: all 0.5s ease-in-out;
+    transition: all 0.5s ease-in-out;
+    color: white;
+    position: absolute;
+    right: 20px;
+    top: 17px;
+    cursor: pointer;
+  }
+  ._burger span {
+    opacity: 1;
+    left: 0;
+    cursor: pointer;
+    border-radius: 3px;
+    height: 3px;
+    width: 100%;
+    background-color: white;
+    position: absolute;
+    display: block;
+    content: '';
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+    -webkit-transition: all 0.25s ease-in-out;
+    -moz-transition: all 0.25s ease-in-out;
+    -o-transition: all 0.25s ease-in-out;
+    transition: all 0.25s ease-in-out;
+  }
+  ._burger span:nth-child(1) {
+    top: 0px;
+  }
+  ._burger span:nth-child(2) {
+    top: 7px;
+  }
+  ._burger span:nth-child(3) {
+    top: 14px;
+  }
+  ._burger.open span:nth-child(1) {
+    top: 7px;
+    -webkit-transform: rotate(-45deg);
+    -moz-transform: rotate(-45deg);
+    -o-transform: rotate(-45deg);
+    transform: rotate(-45deg);
+  }
+  ._burger.open span:nth-child(2) {
+    opacity: 0;
+    right: -30px;
+  }
+  ._burger.open span:nth-child(3) {
+    top: 7px;
+    -webkit-transform: rotate(45deg);
+    -moz-transform: rotate(45deg);
+    -o-transform: rotate(45deg);
+    transform: rotate(45deg);
+  }
+}
+
+
+/* Off-canvas Menu
+ **********************/
+
+.left-off-canvas-menu .logos__sprintly {
+  .backgroundImage('../../img/sprintly-labs-logo-full_360.png');
+  margin: 20px auto 0;
+  height: 60px;
+  width: 70%;
+  text-align: center;
+}
+
+ul.off-canvas-list {
+  padding: 0px 20px;
+  list-style: none;
+}
+
+ul.off-canvas-list li {
+  margin-bottom: 15px;
+}
+
+ul.off-canvas-list li a {
+  .no-wrap-truncate();
+  text-transform: uppercase;
+  border-bottom: 0;
+  color: @light-grey;
+  font-size: 15px;
+  font-weight: bold;
+
+  &:hover {
+    background: transparent;
+  }
+}
+
+ul.off-canvas-list li.drawer-header,
+ul.off-canvas-list li a.drawer-header {
+  .no-wrap-truncate();
+
+  font-weight: @fontWeight-9;
+  text-transform: uppercase;
+  color: white;
+}
+
+.left-off-canvas-menu li a.drawer-header {
+  font-size: 17px;
+}
+
+ul.off-canvas-list li.drawer-header {
+  border-bottom: 1px solid white;
+}
+
+ul.off-canvas-list li a.drawer-subheader {
+  font-size: 14px;
+  padding-left: 10px;
+  font-weight: 100;
+
+  &:hover {
+    color: white;
+  }
+}
+
+ul.off-canvas-list li.logout {
+  margin: 30px auto;
+
+  a {
+    margin-top: 20px;
+    height: 40px;
+    color: white;
+    line-height: 39px;
+    font-size: 16px;
+    font-weight: @fontWeight-9;
+  }
+}
+
+ul.off-canvas-list li.logout .profile {
+  height: 40px;
+}
+
+ul.off-canvas-list li.logout .gravatar {
+  float: left;
+  width: 20%;
+}
+
+ul.off-canvas-list li.logout .username {
+  .no-wrap-truncate();
+  float: left;
+  width: 80%;
+  color: white;
+  font-size: 16px;
+  line-height: 35px;
+  padding-left: 15px;
+}
+
+ul.off-canvas-list li.clear-button a {
+  height: 40px;
+  background-color: @medium-grey;
+  color: white;
+  width: 100%;
+  border: 1px solid @medium-grey;
+  font-weight: @fontWeight-9;
+  line-height: 40px;
+  margin-top: 10px;
+}
+
+
+
+/* ul.off-canvas-list li a.drawer-subheader span.Select-clear {
+  width: 30px;
+  height: 40px;
+  background-color: red;
+  padding: 0;
+  margin: 0 10px;
+}
+ *//* ul.off-canvas-list .Select-clear {
+}
+ */

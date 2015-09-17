@@ -13,8 +13,8 @@ var FiltersToolbar = React.createClass({
   },
 
   propTypes: {
-    members: React.PropTypes.array.isRequired,
     user: React.PropTypes.object.isRequired,
+    members: React.PropTypes.array.isRequired,
     allFilters: React.PropTypes.array.isRequired,
     activeFilters: React.PropTypes.array.isRequired
   },
@@ -27,33 +27,42 @@ var FiltersToolbar = React.createClass({
     this.setState({ showFiltersMenu: !!this.state.showFiltersMenu });
   },
 
+  buildFilters() {
+    return _.map(this.props.activeFilters, (filter, i) => {
+      return (
+        <Filter
+          key={i}
+          user={this.props.user}
+          members={this.props.members}
+          updateFilters={this.updateFilters}
+          {...filter}
+        />
+      );
+    });
+  },
+
   render() {
+    let filters = this.buildFilters();
+
     return (
-      <div>
+      <div className="hidden-xs">
         <div className="filters__toolbar container-fluid">
           <div className="col-sm-10">
-            <VelocityComponent productId={this.props.productId} velocity={this.props.velocity} />
-            {_.map(this.props.activeFilters, function(filter, i) {
-              return (
-                <Filter
-                  key={i}
-                  user={this.props.user}
-                  members={this.props.members}
-                  updateFilters={this.updateFilters}
-                  {...filter}
-                />
-                )
-            }, this)}
+            <VelocityComponent
+              productId={this.props.productId}
+              velocity={this.props.velocity}
+            />
+            {filters}
           </div>
           <FiltersMenu
             user={this.props.user}
-            updateFilters={this.updateFilters}
             allFilters={this.props.allFilters}
+            activeFilters={this.props.activeFilters}
             members={this.props.members}
           />
         </div>
       </div>
-    )
+    );
   }
 });
 

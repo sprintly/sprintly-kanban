@@ -1,15 +1,13 @@
 import _ from 'lodash';
-import {Model, Collection} from 'backdash';
+import {Collection} from 'backdash';
 import AppDispatcher from '../dispatchers/app-dispatcher';
 import FiltersConstants from '../constants/filters-constants';
-import Promise from 'bluebird';
 import filtersData from './filters-data';
-import ProductStore from '../stores/product-store';
-import {products, user} from '../lib/sprintly-client';
+import {user} from '../lib/sprintly-client';
 import {EventEmitter} from 'events';
 
 // TODO this needs it's own file eventually
-var FiltersCollection = Collection.extend({
+let FiltersCollection = Collection.extend({
   active: function() {
     return this.where({ active: true });
   },
@@ -20,9 +18,9 @@ var FiltersCollection = Collection.extend({
   }
 });
 
-var filters = new FiltersCollection(filtersData);
+let filters = new FiltersCollection(filtersData);
 
-var FiltersStore = module.exports = _.assign({}, EventEmitter.prototype, {
+let FiltersStore = _.assign({}, EventEmitter.prototype, {
   emitChange() {
     this.emit('change');
   },
@@ -47,30 +45,23 @@ var FiltersStore = module.exports = _.assign({}, EventEmitter.prototype, {
 
   all: function() {
     return filters.toJSON();
-  },
+  }
 });
 
-var internals = FiltersStore.internals = {
-  init: function(product) {
-    product = products.get(product);
+let internals = FiltersStore.internals = {
+  init(members, tags) {
     filters.reset(filtersData, { silent: true });
-    let members = product.members;
-    let tags = product.tags;
-    return Promise.all([
-      members.fetch(),
-      tags.fetch()
-    ])
-    .then(function() {
-      internals.decorateMembers(members);
-      internals.decorateTags(tags);
-      FiltersStore.emitChange();
-    });
+    internals.decorateMembers(members);
+    internals.decorateTags(tags);
+    FiltersStore.emitChange();
   },
 
-  decorateMembers: function(members) {
+  decorateMembers(members) {
+    filters.members = members;
     let needsMembers = filters.where({ type: 'members' });
     if (needsMembers.length > 0) {
-      let activeMembers = _.invoke(members.where({ revoked: false }), 'toJSON');
+      let activeMembers = internals.membersWithAccess(members);
+
       _.each(needsMembers, function(filter) {
         let options = _.clone(filter.get('criteriaOptions'));
         let prevMembers = _.findWhere(options, function(opt) {
@@ -94,10 +85,24 @@ var internals = FiltersStore.internals = {
     }
   },
 
+  membersWithAccess: function(members) {
+    let access = {revoked: false};
+
+    if(_.isArray(members)) {
+      return _.where(members, access);
+    } else {
+      return _.invoke(members.where(access), 'toJSON');
+    }
+  },
+
   decorateTags: function(tags) {
+    filters.tags = tags;
     let needsTags = filters.findWhere({ type: 'tags' });
     if (needsTags) {
-      needsTags.set('criteriaOptions', tags.toJSON());
+      if(!_.isArray(tags)) {
+        tags = tags.toJSON();
+      }
+      needsTags.set('criteriaOptions', tags);
     }
   },
 
@@ -107,23 +112,23 @@ var internals = FiltersStore.internals = {
       filter.set({ active: unset !== true, criteria });
       FiltersStore.emitChange();
     }
-  },
+  }
 };
 
 AppDispatcher.register(function(action) {
   switch(action.actionType) {
-    case 'INIT_PRODUCTS':
-      if (action.product) {
-        internals.init(action.product);
-      }
-      break;
     case FiltersConstants.INIT_FILTERS:
-      internals.init(action.product);
+      internals.init(action.members, action.tags);
       break;
     case FiltersConstants.UPDATE_FILTER:
       internals.update(action.field, action.criteria, action.unset);
+      break;
+    case FiltersConstants.CLEAR_FILTERS:
+      internals.init(filters.members, filters.tags);
       break;
     default:
       break;
   }
 });
+
+export default FiltersStore;

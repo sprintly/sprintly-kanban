@@ -1,4 +1,4 @@
-var assert = require('chai').assert;
+/*eslint-env node, mocha */
 var sinon = require('sinon');
 var VelocityActions = require('./velocity-actions');
 

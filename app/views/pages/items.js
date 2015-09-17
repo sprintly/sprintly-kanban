@@ -1,9 +1,8 @@
 import _ from "lodash";
 import React from "react/addons";
-import {State,Link} from 'react-router';
+import {RouteHandler, State,Link} from 'react-router';
 
 // Components
-import Loading from "react-loading"
 import ItemColumn from "../components/item-column";
 import FiltersToolbar from '../components/filters/filters-toolbar';
 import Header from '../components/header';
@@ -11,19 +10,15 @@ import ob from 'oblique-strategies';
 
 // Flux
 import FiltersStore from '../../stores/filters-store';
+
 import ProductStore from '../../stores/product-store';
 import ProductActions from '../../actions/product-actions';
 import VelocityActions from '../../actions/velocity-actions';
 
-const ITEM_STATUSES = {
-  someday: 'Someday',
-  backlog: 'Backlog',
-  'in-progress': 'Current',
-  completed: 'Done',
-  accepted: 'Accepted'
-};
+import helpers from './helpers';
+import ITEM_STATUSES from '../../lib/status-map';
 
-module.exports = React.createClass({
+let ItemsViewController = React.createClass({
 
   mixins: [State],
 
@@ -35,109 +30,155 @@ module.exports = React.createClass({
       filtersObject: FiltersStore.getFlatObject(),
       allProducts: ProductStore.getAll(),
       activeItem: false,
-      showAccepted: false,
-      showSomeday: false,
-      showMenu: false
+      showMenu: false,
+      translation: {
+        position: 0,
+        value: '0px'
+      }
     }, product);
   },
 
-  _onChange: function() {
+  _onProductChange() {
     var product = ProductStore.getProduct(this.getParams().id) || {};
     this.setState(_.assign({
-      allFilters: FiltersStore.all(),
-      activeFilters: FiltersStore.getActiveOrDefault(),
-      filtersObject: FiltersStore.getFlatObject(),
       allProducts: ProductStore.getAll(),
+      itemsByStatus: ProductStore.getItemsByStatus(this.getParams().id)
     }, product));
   },
 
+  _onFilterChange() {
+    this.setState({
+      allFilters: FiltersStore.all(),
+      activeFilters: FiltersStore.getActiveOrDefault(),
+      filtersObject: FiltersStore.getFlatObject(),
+    })
+  },
+
   componentDidMount: function() {
-    FiltersStore.addChangeListener(this._onChange);
-    ProductStore.addChangeListener(this._onChange);
+    FiltersStore.addChangeListener(this._onFilterChange);
+    ProductStore.addChangeListener(this._onProductChange);
     ProductActions.init(this.getParams().id);
     VelocityActions.getVelocity(this.getParams().id);
     VelocityActions.getItemCounts(this.getParams().id);
-  },
 
-  componentWillUnmount: function() {
-    FiltersStore.removeChangeListener(this._onChange);
-    ProductStore.removeChangeListener(this._onChange);
-  },
-
-  selectItem: function(activeItem, event) {
-    this.setState({ activeItem });
-  },
-
-  showHiddenColumn: function(status) {
-    let someday = status === 'someday';
-    let accepted = status === 'accepted';
-    this.setState({
-      showSomeday: someday,
-      showAccepted: accepted
-    });
-  },
-
-  renderColumn: function(label, status) {
-    var props = {
-      status,
-      product: this.state.product,
-      members: this.state.members,
-      filters: this.state.filtersObject,
-      key: `col-${this.state.product.id}-${status}`,
-      velocity: this.state.velocity,
-      itemCounts: this.state.itemCounts
-    };
-
-    if (_.contains(['someday', 'accepted'], status)) {
-      props.onMouseEnter = _.partial(this.showHiddenColumn, status);
-      props.onMouseLeave = () => this.setState({
-        showAccepted: false,
-        showSomeday: false
+    if (helpers.isMobile(window)) {
+      this.setState({
+        trayWidth: {'width': `${window.innerWidth * this.colCount()}px`},
+        colWidth: {'width': `${window.innerWidth}px`}
       })
     }
-    return <ItemColumn {...props}/>;
   },
 
   componentWillReceiveProps: function(nextProps) {
-    if (this.getParams().id !== this.state.product.id) {
+    if (this.state.product && this.getParams().id != this.state.product.id) {
       ProductActions.init(this.getParams().id);
       VelocityActions.getVelocity(this.getParams().id);
       VelocityActions.getItemCounts(this.getParams().id);
     }
   },
 
-  render: function() {
-    var product = this.state.product;
+  componentWillUnmount: function() {
+    FiltersStore.removeChangeListener(this._onFilterChange);
+    ProductStore.removeChangeListener(this._onProductChange);
+  },
 
-    if (product === undefined) {
-      return (
-        <div className="container-tray">
-          <Header
-            allProducts={this.state.allProducts}
-            user={this.props.user}
-          />
-          <div className="loading">
-            <Loading type="spin" color="#ccc" />
-            <br/>
-            <small><i>{ob.draw()}</i></small>
-          </div>
-        </div>
-      );
+  selectItem: function(activeItem, event) {
+    this.setState({ activeItem });
+  },
+
+  renderColumn: function(label, status) {
+    // If we don't have items or velocity yet, there's nothing to do
+    if (!this.state.itemsByStatus || !this.state.velocity) {
+      return '';
     }
+    let items = this.state.itemsByStatus[status];
+    let props = _.assign({
+      status,
+      product: this.state.product,
+      members: this.state.members,
+      filters: this.state.filtersObject,
+      key: `col-${this.state.product.id}-${status}`,
+      velocity: this.state.velocity,
+      itemCounts: this.state.itemCounts,
+      colWidth: this.state.colWidth
+    }, items);
 
-    var cols = _.map(ITEM_STATUSES, this.renderColumn);
+    return <ItemColumn {...props}/>;
+  },
 
-    var trayClasses = {
-      tray: true,
-      'show-accepted': this.state.showAccepted,
-      'show-someday': this.state.showSomeday
-    };
+  translateColumns(direction) {
+    var increment = direction === 'next';
+    var newTranslation = helpers.generateTranslation(this.state.translation, this.colCount(), window.innerWidth, increment);
+    this.setState({translation: newTranslation});
+  },
+
+  colCount() {
+    return _.keys(ITEM_STATUSES).length;
+  },
+
+  colHeaders() {
+    return _.map(ITEM_STATUSES, function(label, status) {
+      let index = _.keys(ITEM_STATUSES).indexOf(status)
+
+      let prevClasses = '';
+      let nextClasses = '';
+      if (index === 0) {
+        prevClasses = ' inactive';
+      } else if (index === this.colCount()-1) {
+        nextClasses = ' inactive';
+      }
+
+      return (
+          <nav style={this.state.colWidth} key={`header-nav-${status}`}>
+            <button type="button" onClick={_.partial(this.translateColumns, 'previous')} className={`visible-xs btn previous${prevClasses}`}>
+              <span className="glyphicon glyphicon-chevron-left"></span>
+            </button>
+            <h3>{label}</h3>
+            <button type="button" onClick={_.partial(this.translateColumns, 'next')} className={`visible-xs btn previous${nextClasses}`}>
+              <span className="glyphicon glyphicon-chevron-right"></span>
+            </button>
+          </nav>
+      );
+    }, this)
+  },
+
+  loadingColumn: function() {
+    return (
+      <div className="container-tray">
+        <Header
+          allProducts={this.state.allProducts}
+          user={this.props.user}
+        />
+        <div className="loading">
+          <small><i>{ob.draw()}</i></small>
+        </div>
+      </div>
+    );
+  },
+
+  trayStyles() {
+    var transform = helpers.browserPrefix('transform', `translateX(${this.state.translation.value})`)
+    return _.merge(this.state.trayWidth, transform);
+  },
+
+  render: function() {
+    if (_.isUndefined(this.state.product)) {
+      return this.loadingColumn();
+    }
 
     var velocity =  this.state.velocity && this.state.velocity.average ?
       this.state.velocity.average : '~';
 
+    var colHeaders = this.colHeaders();
+    var trayStyles = this.trayStyles();
+
     return (
       <div className="container-tray">
+        <RouteHandler
+          members={this.state.members}
+          product={this.state.product}
+          number={this.getParams().number}
+        />
         <Header
           product={this.state.product}
           allProducts={this.state.allProducts}
@@ -145,7 +186,7 @@ module.exports = React.createClass({
           members={this.state.members}
           tags={this.state.tags}
         />
-        <FiltersToolbar
+      <FiltersToolbar
           user={this.props.user}
           allFilters={this.state.allFilters}
           activeFilters={this.state.activeFilters}
@@ -153,7 +194,7 @@ module.exports = React.createClass({
           velocity={velocity}
           productId={this.state.product.id}
         />
-        <div className={React.addons.classSet(trayClasses)}>
+        <div style={trayStyles} className="tray">
           <div className="column__nav">
             {_.map(ITEM_STATUSES, function(label, status) {
               return (
@@ -162,11 +203,13 @@ module.exports = React.createClass({
                 </nav>
               );
             }, this)}
+            {colHeaders}
           </div>
-          {cols}
+          {_.map(ITEM_STATUSES, this.renderColumn)}
         </div>
       </div>
     );
   }
-
 });
+
+export default ItemsViewController;

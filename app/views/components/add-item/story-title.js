@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import React from 'react/addons';
+import classNames from "classnames";
 
 const TITLE_ATTRS = {
   who: {
@@ -30,21 +31,26 @@ let AddItemStoryTitle = React.createClass({
     validation: React.PropTypes.object.isRequired
   },
 
+  componentDidMount() {
+    React.findDOMNode(this.refs.whoInput).focus();
+  },
+
   titleNodes() {
-    return _.map(STORY_ATTRS, (attr) => {
-      var classes = React.addons.classSet({
+    return _.map(STORY_ATTRS, (attr, i) => {
+      var classes = classNames({
         "form-control": true,
         'invalid': !this.props.validation.value[attr]
       });
 
       return (
-        <div className={`add-item__field ${attr}`}>
+        <div className={`add-item__field ${attr}`} key={i}>
           <span>{TITLE_ATTRS[attr].title}</span>
           <div className="input-group">
             <label>{toTitleCase(attr)}</label>
             <input className={classes}
                         type="text"
                         name={attr}
+                        ref={attr + 'Input'}
                  placeholder={attr.placeholder}
                  valueLink={this.props[attr]} />
           </div>

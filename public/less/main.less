@@ -1,12 +1,57 @@
+// Vendor
 @import "bootstrap/bootstrap.less";
 @import "react-select/select.less";
 @import "../../node_modules/sprintly-ui/src/less/sprintly-ui";
 
+// Utils
+@import "utils/colors";
+@import "utils/font-weights";
+@import "utils/mixins";
+@import "utils/typography";
+@import "utils/z-index";
+
+// Components
+@import "components/header";
+@import "components/drawer";
+@import "components/stripe";
+@import "components/columns";
+@import "components/buttons";
+@import "components/item-detail/index";
+@import "components/item-detail/item-activity";
+@import "components/item-detail/activity-item";
+@import "components/item-detail/item-attachments";
+@import "components/item-detail/item-comments";
+@import "components/item-detail/item-description";
+@import "components/item-detail/item-details";
+@import "components/item-detail/item-followers";
+@import "components/item-detail/item-subitem-header";
+@import "components/item-detail/item-subitem";
+@import "components/item-detail/item-subitems";
+@import "components/item-detail/item-title";
+@import "components/subitems";
+@import "components/subitem";
+@import "components/item-card";
+@import "components/item-summary";
+@import "components/sprint";
+@import "components/product-selector";
+@import "components/filters-toolbar";
+@import "components/product-dropdown";
+@import "components/search";
+@import "components/add-item";
+@import "components/tags-input";
+@import "components/sidebars/sidebar-filters";
+@import "overrides";
+
 html, body {
   height: 100%;
-  color: #323232;
+  color: @sprintly-black;
   font-family: "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
   -webkit-font-smoothing: antialiased;
+  background-color: @sprintly-black;
+}
+
+.app-view {
+  background-color: @sprintly-background;
 }
 
 .loading {
@@ -20,17 +65,3 @@ html, body {
     display: block;
   }
 }
-
-@import "colors";
-@import "components/header";
-@import "components/columns";
-@import "components/item-card";
-@import "components/item-summary";
-@import "components/sprint";
-@import "components/product-selector";
-@import "components/filters-toolbar";
-@import "components/product-dropdown";
-@import "components/search";
-@import "components/add-item-modal";
-@import "components/tags-input";
-@import "overrides";

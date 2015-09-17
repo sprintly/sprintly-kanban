@@ -5,33 +5,61 @@ var TestUtils = React.addons.TestUtils;
 var sinon = require('sinon');
 var Header = require('./header');
 var stubRouterContext = require('../../lib/stub-router-context');
+var user = {
+  user: { get: function() {} }
+}
 
 describe('Header', function() {
   beforeEach(function() {
-    var HeaderStub = stubRouterContext(Header);
+    let props = _.assign(user, {
+      members: ['memberA'],
+      tags: ['tagA']
+    })
 
-    let props = {
-      members: [],
-      tags: [],
-      user: {
-        get: function() {}
+    var HeaderStub = stubRouterContext(Header, props, {
+      getCurrentParams: () => {
+        return { id: 1 }
+      },
+      getCurrentPathname: () => {
+        return '/product'
       }
-    }
-    this.component = TestUtils.renderIntoDocument(<Header {...props} />);
+    });
+
+    this.component = TestUtils.renderIntoDocument(<HeaderStub />);
   });
 
   context('componentDidMount', function() {
     it('renders the header component', function () {
-      assert.isTrue(TestUtils.isCompositeComponentWithType(this.component, Header));
+      assert.isTrue(TestUtils.isCompositeComponentWithType(this.component.refs.stub, Header));
     });
+
+    describe('header bar components', function() {
+      beforeEach(function() {
+        this.headers = TestUtils.scryRenderedDOMComponentsWithTag(this.component.refs.stub, 'header');
+      })
+
+      it('renders two', function() {
+        assert.lengthOf(this.headers, 2)
+      })
+
+      it('one header is visible for small screens', function() {
+        let mobileHeader = this.headers[0].getDOMNode();
+        assert.isTrue(mobileHeader.classList.contains('visible-xs'));
+      })
+
+      it('one header is visible for larger screens', function() {
+        let mobileHeader = this.headers[1].getDOMNode()
+        assert.isTrue(mobileHeader.classList.contains('hidden-xs'));
+      })
+    })
   });
 
-  describe('click on \'Add Item\'', function () {
-    it('reveals an add item modal', function () {
-      let addItemButton = TestUtils.findRenderedDOMComponentWithClass(this.component, 'add-item');
+  describe('\'Add Item\'', function () {
+    it('links to the add-item route', function () {
+      let addItemButton = TestUtils.findRenderedDOMComponentWithClass(this.component.refs.stub, 'add-item');
       TestUtils.Simulate.click(addItemButton);
 
-      assert.isTrue(document.body.classList.contains('modal-open'));
+      assert.equal(addItemButton.props.to, '/product/1/add-item');
     });
   });
 });

@@ -29,7 +29,7 @@ module.exports = function(config) {
     preprocessors: {
       'app/**/*.js': [
         'browserify',
-        'coverage'
+        // 'coverage'
       ]
     },
 
@@ -55,7 +55,7 @@ module.exports = function(config) {
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
     reporters: [
       'dots',
-      'coverage'
+      // 'coverage'
     ],
 
 

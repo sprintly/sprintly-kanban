@@ -2,7 +2,8 @@
 
 > Oauth2 Client App w/ Hapi, React, Flux, and Sprinlty-Data
 
-[![wercker status](https://app.wercker.com/status/01a6dce093261e014308a7e7af9fd5c7/m/master "wercker status")](https://app.wercker.com/project/bykey/01a6dce093261e014308a7e7af9fd5c7)
+[![wercker status](https://app.wercker.com/status/43e50b14b2bd09d40a96c8bb04b095c8/m/master "wercker status")](https://app.wercker.com/project/bykey/43e50b14b2bd09d40a96c8bb04b095c8)
+[![Gitter chat](https://badges.gitter.im/inkling/Subliminal.png)](https://gitter.im/sprintly/sprintly-kanban)
 
 * [Production - https://kanban.sprint.ly](https://kanban.sprint.ly)
 * [Staging - https://sprintly-manifold.herokuapp.com](https://sprintly-manifold.herokuapp.com)
@@ -48,6 +49,7 @@ Run tests to run in a browser:
 
 ```bash
 $ make test-server
+$ npm run watchify-test
 ```
 
 #### npm shrinkwrap
@@ -58,6 +60,12 @@ upgrading without out explicit permission.
 **Any time you install or upgrade an npm package, please run `make shrinkwrap`**.
 
 For further reading, please refer to the shrinkwrap documentation: `npm help shrinkwrap`.
+
+Troubleshoot:
+Error: Extraneous Modules?:
+* Delete `node modules` dir locally
+* `$ npm install`
+* `$ make shrinkwrap`
 
 ## Deploys
 
@@ -72,6 +80,8 @@ to deploy.
 
 Deploys to staging should be managed with the "Deploy" button in Wercker or
 with the Wercker CLI tool. You can deploy to staging from any branch.
+
+[Staging URL](https://sprintly-manifold.herokuapp.com/product/1)
 
 #### Production
 

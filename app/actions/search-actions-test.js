@@ -1,3 +1,5 @@
+/*eslint semi: 0 */
+/*eslint-env node, mocha */
 var assert = require('chai').assert;
 var sinon = require('sinon');
 var SearchActions = require('./search-actions');

@@ -3,7 +3,7 @@ var React = require('react/addons');
 var TestUtils = React.addons.TestUtils;
 var sinon = require('sinon');
 var MembersFilter = require('./members-filter');
-var SelectorMenu = require('sprintly-ui').SelectorMenu;
+var Select = require('react-select');
 
 const FILTER = {
   type: 'members',
@@ -22,7 +22,7 @@ const FILTER = {
 describe('MembersFilter component', function() {
   it('renders a list of members in a sprintly ui selector menu', function() {
     var filter = TestUtils.renderIntoDocument(<MembersFilter options={FILTER.criteriaOptions} criteria="" />);
-    var selector = TestUtils.findRenderedComponentWithType(filter, SelectorMenu);
+    var selector = TestUtils.findRenderedComponentWithType(filter, Select);
     assert.isDefined(selector);
   });
 

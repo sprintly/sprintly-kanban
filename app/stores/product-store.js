@@ -1,19 +1,31 @@
 import _ from 'lodash';
 import Promise from 'bluebird';
-import AppDispatcher from '../dispatchers/app-dispatcher';
-import ProductConstants from '../constants/product-constants';
 import { products, user } from '../lib/sprintly-client';
-import FiltersAction from '../actions/filter-actions';
 import {PUSHER_KEY, CHANNEL_PREFIX} from '../config';
 import {EventEmitter} from 'events';
 
+// Flux
+import AppDispatcher from '../dispatchers/app-dispatcher';
+import ProductConstants from '../constants/product-constants';
+import FilterActions from '../actions/filter-actions';
+
+import STATUSES from '../lib/status-map';
+const ITEM_STATUSES = _.keys(STATUSES);
+
+let productVelocity = {};
 let columnCollections = {};
 let itemCounts = {}
-let productVelocity = {};
+let columnsLoading = {
+  'someday': true,
+  'backlog': true,
+  'in-progress': true,
+  'completed': true,
+  'accepted': true
+};
 
 var ProductStore = module.exports = _.assign({}, EventEmitter.prototype, {
-  emitChange() {
-    this.emit('change');
+  emitChange(type, record) {
+    this.emit('change', type, record);
   },
 
   addChangeListener(callback) {
@@ -43,10 +55,43 @@ var ProductStore = module.exports = _.assign({}, EventEmitter.prototype, {
     };
   },
 
+  getItemsByStatus(productId) {
+    return _.transform(ITEM_STATUSES, (result, status) => {
+      result[status] = this.getItems(productId, status);
+    });
+  },
+
+  getItem(productId, number) {
+    let product = products.get(productId);
+    if (!product) {
+      return;
+    }
+
+    let item = product.items.get(number);
+    if (!item) {
+      return;
+    }
+
+    return item.toJSON();
+  },
+
   getItems(productId, status) {
     let items = ProductStore.getItemsCollection(productId, status);
     if (!items) {
-      return;
+      return {
+        items: [],
+        limit: 0,
+        offset: 0,
+        sortDirection: 'desc',
+        sortField: 'last_modified',
+        loading: columnsLoading[status]
+      }
+    }
+
+    let [sortField, sortDirection] = ProductStore.getSortCriteria(items);
+
+    if (sortField === 'priority') {
+      items.comparator = 'sort'
     }
 
     let itemsJSON = _.compact(_.map(items.sort().toJSON(), function(model) {
@@ -57,15 +102,36 @@ var ProductStore = module.exports = _.assign({}, EventEmitter.prototype, {
       }
     }));
 
-    let [sortField, sortDirection] = ProductStore.getSortCriteria(items);
 
     return {
       items: itemsJSON,
       limit: items.config.get('limit'),
       offset: items.config.get('offset'),
+      loading: columnsLoading[status],
       sortDirection,
       sortField
     };
+  },
+
+  hasItems(productId) {
+    return products.get(productId).items.length > 0
+  },
+
+  hasItemsToRender(productId) {
+    let collections = internals.itemsForProduct(productId)
+    if (collections.length > 0) {
+      let hasItems = false;
+
+      _.each(collections, (col) => {
+        if(col.items.length > 0) {
+          hasItems = true;
+        }
+      })
+
+      return hasItems;
+    } else {
+      return false;
+    }
   },
 
   getItemsCollection(productId, status) {
@@ -117,6 +183,10 @@ var ProductStore = module.exports = _.assign({}, EventEmitter.prototype, {
 
 var internals = ProductStore.internals = {
   initProduct(product) {
+    _.each(columnsLoading, function(val, status) {
+      columnsLoading[status] = true;
+    });
+    FilterActions.init(product);
     product.items.on('change:status', function(model) {
       let status = model.get('status');
       let collection = product.getItemsByStatus(status);
@@ -124,25 +194,27 @@ var internals = ProductStore.internals = {
       // Prevent "jumpy" items
       model.set(internals.getUpdatedTimestamps(model, status), { silent: true });
 
-      // let [activeFilterCount, matchingFilters] = internals.matchesFilter(model, config);
-      // if (activeFilterCount === 0 || activeFilterCount === matchingFilters.length) {
-        // Swap items between status collections.
-        let previousStatus = model.previous('status');
-        let previousCollection = product.getItemsByStatus(previousStatus);
-        if (previousCollection) {
-          let oldItem = previousCollection.remove(model.id);
-          if (oldItem === undefined) {
-            previousCollection.models = previousCollection.filter(function(m) {
-              return m.id !== model.id;
-            });
-          }
+      /*
+        let [activeFilterCount, matchingFilters] = internals.matchesFilter(model, config);
+        if (activeFilterCount === 0 || activeFilterCount === matchingFilters.length) {
+        Swap items between status collections.
+      */
+      let previousStatus = model.previous('status');
+      let previousCollection = product.getItemsByStatus(previousStatus);
+      if (previousCollection) {
+        let oldItem = previousCollection.remove(model.id);
+        if (oldItem === undefined) {
+          previousCollection.models = previousCollection.filter(function(m) {
+            return m.id !== model.id;
+          });
         }
+
         if (collection) {
           collection.add(model);
         }
         internals.updateCounts(product.id, status, previousStatus);
         ProductStore.emitChange();
-      // }
+      }
     });
 
     internals.createSubscription(product);
@@ -151,8 +223,10 @@ var internals = ProductStore.internals = {
   ingestItem(product, item_data) {
     var item = product.items.get(item_data.number);
     if (item) {
-      // Ignore stale timestamps. By using optimistic timestamps, items stay in
-      // the correct positions relative to one another.
+      /*
+        Ignore stale timestamps. By using optimistic timestamps, items stay in
+        the correct positions relative to one another.
+      */
       if (item_data.last_modified < item.get('last_modified')) {
         item_data.last_modified = item.get('last_modified');
       }
@@ -175,10 +249,12 @@ var internals = ProductStore.internals = {
   },
 
   getUpdatedTimestamps(model, status) {
-    // Set the timestamp affected by the status change. This is happening
-    // "noting this optimistically to the current timestamp makes
-    // items stay in the correct relative positions. This will get reset by
-    // any filter change that triggers a reset.
+    /*
+      Set the timestamp affected by the status change. This is happening
+      "noting this optimistically to the current timestamp makes
+      items stay in the correct relative positions. This will get reset by
+      any filter change that triggers a reset.
+    */
     let attrs = {
       last_modified: +new Date()
     };
@@ -309,9 +385,42 @@ var internals = ProductStore.internals = {
   addItem(productId, item) {
     let product = products.get(productId);
     let col = product.getItemsByStatus(item.status);
+
     if (col) {
       col.add(item);
     }
+
+    return item;
+  },
+
+  addItems(productId, items) {
+    let product = products.get(productId);
+
+    _.each(items, (item) => {
+      let col = product.getItemsByStatus(item.status);
+
+      if (col) {
+        col.add(item)
+      }
+    });
+  },
+
+  itemsForProduct(productId) {
+    return _.chain(ITEM_STATUSES)
+            .map((status) => {
+              return ProductStore.getItems(productId, status);
+            })
+            .compact()
+            .value()
+  },
+
+  extendItem(productId, itemId, key, payload) {
+    let product = products.get(productId);
+    let item = product.items.get(itemId);
+    let newAttr = {};
+    newAttr[key] = payload;
+
+    item.set(newAttr, { silent: true })
   }
 };
 
@@ -327,11 +436,23 @@ ProductStore.dispatchToken = AppDispatcher.register(function(action) {
 
     case ProductConstants.GET_ITEMS:
       columnCollections[`${action.product.id}-${action.status}`] = action.itemsCollection;
+      columnsLoading[action.status] = false;
       ProductStore.emitChange();
       break;
 
     case 'ADD_ITEM':
-      internals.addItem(action.product.id, action.item);
+      let item = internals.addItem(action.product.id, action.item);
+      ProductStore.emitChange('afterCreate', item);
+
+      break;
+    case 'ADD_ITEMS':
+      internals.addItems(action.product.id, action.items);
+      ProductStore.emitChange();
+
+      break;
+
+    case 'DELETE_ITEM':
+      internals.deleteItem(action.product, action.itemData);
       ProductStore.emitChange();
       break;
 
@@ -339,6 +460,7 @@ ProductStore.dispatchToken = AppDispatcher.register(function(action) {
     case ProductConstants.UPDATE_ITEM_PRIORITY:
     case ProductConstants.CHANGE_SORT_CRITERIA:
     case ProductConstants.LOAD_MORE:
+    case 'ITEM_UPDATED':
       ProductStore.emitChange();
       break;
 
@@ -351,6 +473,32 @@ ProductStore.dispatchToken = AppDispatcher.register(function(action) {
       itemCounts[action.productId] = action.payload;
       ProductStore.emitChange();
       break;
+
+    case 'ITEM_ACTIVITY':
+      internals.extendItem(action.productId, action.itemId, 'activity', action.payload);
+      ProductStore.emitChange();
+      break;
+
+    case 'ITEM_ATTACHMENTS':
+      internals.extendItem(action.productId, action.itemId, 'attachments', action.payload);
+      ProductStore.emitChange();
+      break;
+
+    case 'ITEM_ATTACHMENTS_ERROR':
+      console.log('ITEM_ATTACHMENTS_ERROR: ', action.err)
+      ProductStore.emitChange();
+      break
+    case 'ITEM_ACTIVITY_ERROR':
+      console.log('ITEM_ACTIVITY_ERROR: ', action.err)
+      ProductStore.emitChange();
+      break;
+    case 'ITEM_COMMENT_ERROR':
+      console.log('ITEM_ACTIVITY_ERROR: ', action.err)
+      ProductStore.emitChange();
+      break
+    case 'ITEM_COMMENTED':
+      ProductStore.emitChange();
+      break
 
     default:
       break;

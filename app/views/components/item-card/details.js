@@ -4,18 +4,13 @@ import moment from 'moment';
 
 import FilterActions from '../../../actions/filter-actions';
 import ProductActions from '../../../actions/product-actions';
+import ItemActions from '../../../actions/item-actions';
 
-import SubItems from './subitems'
+import Subitems from '../subitems'
 import {TagEditor, Tags} from 'sprintly-ui';
 import {DropdownButton, MenuItem, OverlayTrigger, Tooltip, Button, Input} from 'react-bootstrap';
 
-const STATUSES = {
-  'someday': 'Someday',
-  'backlog': 'Backlog',
-  'in-progress': 'Current',
-  'completed': 'Complete',
-  'accepted': 'Accepted'
-};
+import STATUSES from '../../../lib/status-map';
 
 var ItemCardDetails = React.createClass({
 
@@ -30,6 +25,21 @@ var ItemCardDetails = React.createClass({
       this.props.item.number,
       direction
     )
+  },
+
+  handleMenuSelection(status) {
+    if (status === "destroy") {
+      return this.deleteItem();
+    } else {
+      return this.updateStatus(status);
+    }
+  },
+
+  deleteItem() {
+    ItemActions.deleteItem(
+      this.props.productId,
+      this.props.item.number
+    );
   },
 
   updateStatus(status) {
@@ -84,14 +94,53 @@ var ItemCardDetails = React.createClass({
     );
   },
 
-  renderSubItems() {
-    if (this.props.item.sub_items && this.props.item.sub_items.length > 0) {
-      return (
-        <SubItems subitems={this.props.item.sub_items} />
-      );
-    } else {
-      return ''
+  updateSubitem(subitem, ev) {
+    var status;
+    if (_.contains(['someday', 'backlog', 'in-progress'], subitem.status)) {
+      status = 'accepted';
+    } else if (_.contains(['completed', 'accepted'], subitem.status)) {
+      status = 'in-progress';
     }
+
+    ProductActions.updateItem(
+      subitem.product.id,
+      subitem.number,
+      _.assign({}, subitem, { status }),
+      { wait: false }
+    );
+  },
+
+  createSubitem(title, clearInput) {
+    ItemActions.addItem(this.props.productId, {
+      title,
+      type: 'task',
+      parent: this.props.item.number
+    }).then(function() {
+      clearInput();
+    })
+  },
+
+  itemSubitems() {
+    if (this.props.item.type === 'story') {
+      return (
+        <div className="form-group add-item__subitems">
+          <Subitems subitems={this.props.item.sub_items}
+                  createItem={this.createSubitem}
+                  deleteItem={false}
+                  updateItem={this.updateSubitem} />
+        </div>
+      )
+    }
+  },
+
+  renderMenuItems() {
+    let statusOptions = _.omit(STATUSES, this.props.item.status);
+    let menuItems = _.map(statusOptions, function(label, status) {
+      return <MenuItem eventKey={status} key={status}>Move to {label}</MenuItem>
+    });
+    let deleteItem = <MenuItem eventKey="destroy" key="destroy">Delete</MenuItem>
+    menuItems.push(deleteItem);
+    return menuItems;
   },
 
   render() {
@@ -107,13 +156,11 @@ var ItemCardDetails = React.createClass({
         </div>
         <div className="col-sm-6 item-card__extra-controls">
           {this.renderMoveControls()}
-          <DropdownButton onSelect={this.updateStatus} bsStyle="default" bsSize="small" title={<span className="glyphicon glyphicon-cog"/>} noCaret>
-            {_.map(statusOptions, function(label, status) {
-              return <MenuItem eventKey={status} key={status}>Move to {label}</MenuItem>
-            })}
+          <DropdownButton onSelect={this.handleMenuSelection} bsStyle="default" bsSize="small" title={<span className="glyphicon glyphicon-cog"/>} noCaret>
+            {this.renderMenuItems()}
           </DropdownButton>
         </div>
-        {this.renderSubItems()}
+        {this.itemSubitems()}
         <div className="item-card__tags col-sm-12">
           <TagEditor
             modelId={[item.product.id, item.number]}

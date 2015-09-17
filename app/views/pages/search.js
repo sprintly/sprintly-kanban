@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import React from "react";
+import classNames from "classnames";
 
 import {State, Navigation} from "react-router";
 import {ProgressBar, ButtonGroup, DropdownButton, MenuItem} from 'react-bootstrap';
@@ -24,7 +25,7 @@ function getSearchSelectorState() {
   };
 }
 
-var Search = React.createClass({
+let Search = React.createClass({
 
   mixins: [State, Navigation],
 
@@ -112,7 +113,7 @@ var Search = React.createClass({
   searchBar() {
     return (
       <div className="row">
-        <form onSubmit={this.onSubmit}>
+        <form className="desktop__search-form" onSubmit={this.onSubmit}>
           <div className="col-xs-10 col-sm-6 search__query-bar">
             <input
               name="q"
@@ -150,7 +151,7 @@ var Search = React.createClass({
       let typeClass = {}
       typeClass[type] = true;
 
-      var classes = React.addons.classSet(_.extend({
+      var classes = classNames(_.extend({
         "btn btn-default issue-control": true,
         "active": this.state.issueControls[type]
       }, typeClass));
@@ -164,7 +165,7 @@ var Search = React.createClass({
       let productClass = {}
       productClass[`product-${product.id}`] = true;
 
-      var classes = React.addons.classSet(_.extend({
+      var classes = classNames(_.extend({
         "btn btn-default product-control": true,
         "active": this.state.productControls[product.id]
       }, productClass));
@@ -374,7 +375,7 @@ var Search = React.createClass({
 
   render() {
     return (
-      <div>
+      <div className="container-tray">
         <Header
           searchBar={false}
           user={this.props.user}
@@ -411,4 +412,4 @@ var Search = React.createClass({
   }
 });
 
-module.exports = Search;
+export default Search;

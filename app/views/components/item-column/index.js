@@ -1,59 +1,82 @@
 import _ from 'lodash';
-import React from 'react/addons';
+import React, { PropTypes } from 'react/addons';
+import classNames from 'classnames';
+import STATUS_MAP from '../../../lib/status-map';
+// Components
 import ItemCard from '../item-card';
+import PlaceholderCards from './placeholder-cards';
 import SprintGroup from './sprint-group';
-import ColumnSummary from './summary';
 import ColumnHeader from './header';
-import Loading from 'react-loading';
+import NoSearchResults from './no-search-results';
+// Flux
 import ProductStore from '../../../stores/product-store';
 import ProductActions from '../../../actions/product-actions';
-import FilterActions from '../../../actions/filter-actions';
-import ScoreMap from '../../../lib/score-map';
 
-function getColumnState(items=[], previousState={}) {
-  return _.extend({
-    items,
-    isLoading: false,
-    hideLoadMore: false,
-    sortField: 'last_modified',
-    sortDirection: 'desc',
-    offset: 0,
-    limit: 0
-  }, previousState);
-}
+import { DropTarget } from 'react-dnd';
 
-var ItemColumn = React.createClass({
-  propTypes: {
-    status: React.PropTypes.string.isRequired,
-    product: React.PropTypes.object.isRequired
-  },
-
-  getInitialState() {
-    let previousState = {};
-    let previousSortField = window.localStorage.getItem(`itemColumn-${this.props.status}-sortField`);
-    if (previousSortField) {
-      previousState.sortField = previousSortField;
-    }
-    return getColumnState([], previousState);
-  },
-
-  _onChange() {
-    let state = ProductStore.getItems(this.props.product.id, this.props.status);
-    if (!state) {
+const dropSpec = {
+  drop(props, monitor, component) {
+    if (monitor.didDrop()) {
       return;
     }
 
-    state.isLoading = false;
-    this.setState(state);
+    let item = monitor.getItem();
+    let { props } = component;
+
+    if (item.status !== props.status) {
+      ProductActions.updateItem(
+        props.product.id,
+        item.number,
+        { status: props.status },
+        { wait: false }
+      );
+    }
+
+    return { moved: true };
+  }
+};
+
+function collect(connect, monitor) {
+  return {
+    connectDropTarget: connect.dropTarget(),
+    isOver: monitor.isOver(),
+    isOverCurrent: monitor.isOver({ shallow: true }),
+    canDrop: monitor.canDrop(),
+    itemType: monitor.getItemType()
+  };
+}
+
+let ItemColumn = React.createClass({
+  propTypes: {
+    status: PropTypes.string.isRequired,
+    product: PropTypes.object.isRequired,
+    members: PropTypes.array.isRequired,
+    filters: PropTypes.object.isRequired,
+    velocity: PropTypes.object.isRequired,
+    colWidth: PropTypes.object,
+    sortField: PropTypes.string.isRequired,
+    sortDirection: PropTypes.string.isRequired,
+    limit: PropTypes.number.isRequired,
+    items: PropTypes.array.isRequired,
+    // DnD
+    connectDropTarget: PropTypes.func.isRequired,
+    isOver: PropTypes.bool.isRequired,
+    canDrop: PropTypes.bool.isRequired
   },
 
-  setSortCriteria(field=this.state.sortField, direction=this.state.sortDirection, status=this.props.status) {
+  getInitialState() {
+    return {
+      condensed: false,
+      hideLoadMore: false
+    };
+  },
+
+  setSortCriteria(field=this.props.sortField, direction=this.props.sortDirection, status=this.props.status) {
     let items = ProductStore.getItemsCollection(this.props.product.id, status);
     if (!items) {
       return;
     }
 
-    this.setState({ isLoading: true });
     let options = {
       field,
       direction,
@@ -63,13 +86,12 @@ var ItemColumn = React.createClass({
   },
 
   getItems(product, options={ hideLoader: false }) {
-    this.setState({ isLoading: !options.hideLoader });
-    ProductActions.getItemsForProduct(product, {
+    ProductActions.getItemsForStatus(product, {
       filters: options.filters || this.props.filters,
       status: this.props.status,
-      sortField: this.state.sortField,
-      sortDirection: this.state.sortDirection
-    })
+      sortField: this.props.sortField,
+      sortDirection: this.props.sortDirection
+    });
   },
 
   loadMoreItems() {
@@ -80,13 +102,79 @@ var ItemColumn = React.createClass({
     ProductActions.loadMoreItems(items);
   },
 
-  componentDidMount() {
-    ProductStore.addChangeListener(this._onChange);
-    this.getItems(this.props.product);
+  renderLoadMore() {
+    var loadMore = <button className="load-more" onClick={this.loadMoreItems}>Load More</button>;
+
+    if (this.state.hideLoadMore || _.isEmpty(this.props.items) || this.props.items.length < this.props.limit) {
+      return '';
+    }
+
+    return loadMore;
   },
 
-  componentWillUnmount() {
-    ProductStore.removeChangeListener(this._onChange);
+  renderItemCard(item, index) {
+    return (
+      <ItemCard
+        item={item}
+        members={this.props.members}
+        sortField={this.props.sortField}
+        productId={this.props.product.id}
+        key={`item-${this.props.product.id}${item.number}`}
+      />
+    )
+  },
+
+  productHasItems() {
+    return ProductStore.hasItems(this.props.product.id)
+  },
+
+  productHasItemsToRender() {
+    return ProductStore.hasItemsToRender(this.props.product.id);
+  },
+
+  renderItemCards() {
+    if (this.props.loading) {
+      return <div className="loading">...</div>;
+    }
+
+    if (this.productHasItems()) {
+      if (this.productHasItemsToRender()) {
+        let itemCards = _.map(this.props.items, this.renderItemCard)
+
+        return <div>{itemCards}</div>
+      } else if (this.props.status === 'in-progress') {
+        return <NoSearchResults product={this.props.product} />;
+      } else {
+        return '';
+      }
+    } else {
+      return <PlaceholderCards status={this.props.status} />
+    }
+  },
+
+  renderSprintGroup() {
+    return <SprintGroup
+      items={this.props.items}
+      members={this.props.members}
+      velocity={this.props.velocity}
+      sortField={this.props.sortField}
+      productId={this.props.product.id}
+    />;
+  },
+
+  columnContent() {
+    let showSprints = this.props.status === 'backlog' && this.props.sortField === 'priority';
+    if (showSprints) {
+      return this.renderSprintGroup()
+    } else {
+      return this.renderItemCards();
+    }
+  },
+
+  // React functions
+
+  componentDidMount() {
+    this.getItems(this.props.product);
   },
 
   componentWillReceiveProps(nextProps) {
@@ -101,81 +189,47 @@ var ItemColumn = React.createClass({
     }
 
     if (reload) {
-      this.setState({ isLoading: true });
       this.getItems(nextProps.product, {
         filters: nextProps.filters
       });
     }
   },
 
-  renderLoadMore() {
-    var loadMore = <button className="load-more" onClick={this.loadMoreItems}>Load More</button>;
-
-    if (this.state.isLoading || this.state.hideLoadMore || this.state.items.length < this.state.limit) {
-      return '';
-    }
-
-    return loadMore;
-  },
-
-  renderItemCard(item, index) {
-    let card = (
-      <ItemCard
-        item={item}
-        members={this.props.members}
-        sortField={this.state.sortField}
-        productId={this.props.product.id}
-        key={`item-${this.props.product.id}${item.number}`}
-      />
-    );
-    return card;
-  },
-
-  renderItemCards() {
-    let itemCards = _.map(this.state.items, this.renderItemCard);
-    return (<div>{itemCards}</div>);
-  },
-
-  renderSprintGroup() {
-    return <SprintGroup
-      items={this.state.items}
-      velocity={this.props.velocity}
-      sortField={this.state.sortField}
-      productId={this.props.product.id}
-    />;
+  toggleCondensed() {
+    this.setState({ condensed: !this.state.condensed });
   },
 
   render() {
-    let classes = {
-      column: true,
-      [this.props.status]: true
-    };
-
     let reverseSort = (ev) => {
-      let direction = this.state.sortDirection === 'desc' ? 'asc' : 'desc';
-      this.setSortCriteria(this.state.sortField, direction);
+      let direction = this.props.sortDirection === 'desc' ? 'asc' : 'desc';
+      this.setSortCriteria(this.props.sortField, direction);
     };
 
-    let showSprints = this.props.status === 'backlog' && this.state.sortField === 'priority';
-    let renderCardsOrSprints = showSprints ? this.renderSprintGroup : this.renderItemCards;
+    let classes = classNames({
+      column: true,
+      condensed: this.state.condensed,
+      [this.props.status]: true,
+      'dropzone-active': this.props.canDrop && this.props.isOverCurrent
+    });
 
-    return (
-      <div className={React.addons.classSet(classes)} {...this.props}>
+    return this.props.connectDropTarget(
+      <div style={this.props.colWidth} className={classes} {...this.props}>
         <ColumnHeader {...this.props}
           reverse={reverseSort}
           setSortCriteria={this.setSortCriteria}
-          sortDirection={this.state.sortDirection}
-          sortField={this.state.sortField}
+          sortDirection={this.props.sortDirection}
+          sortField={this.props.sortField}
+          condensed={this.state.condensed}
+          toggleCondensed={this.toggleCondensed}
         />
-        {this.state.isLoading ?
-          <div className="loading"><Loading type="bubbles" color="#ccc"/></div> :
-          renderCardsOrSprints()
-        }
+        {this.columnContent()}
         {this.renderLoadMore()}
+        <div className="column__dropzone">
+          <h3>Move to {STATUS_MAP[this.props.status]}</h3>
+        </div>
       </div>
     );
   }
 });
 
-module.exports = ItemColumn
-
+export default DropTarget('ITEM_CARD', dropSpec, collect)(ItemColumn);

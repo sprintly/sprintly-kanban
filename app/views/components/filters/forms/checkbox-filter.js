@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import React from 'react/addons';
+import classNames from "classnames";
 import {Input} from 'react-bootstrap';
 
 var CheckboxFilter = React.createClass({
@@ -50,7 +51,7 @@ var CheckboxFilter = React.createClass({
   },
 
   render: function() {
-    var classes = React.addons.classSet({
+    var classes = classNames({
       'form-horizontal': true,
       'filter__criteria-selector': true,
       visible: this.props.visible

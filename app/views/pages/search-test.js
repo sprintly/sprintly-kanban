@@ -30,11 +30,20 @@ const PRODUCTS = [
   }
 ]
 
+import { DragDropContext } from 'react-dnd'
+import TestBackend from 'react-dnd/modules/backends/Test'
+
+function renderComponent(props) {
+  let Component = DragDropContext(TestBackend)(stubRouterContext(Search, props));
+  return TestUtils.renderIntoDocument(<Component {...props} />);
+}
+
 describe('Search ViewController', function() {
   beforeEach(function() {
     this.sinon = sinon.sandbox.create();
     this.ProductActions = Search.__get__('ProductActions');
     this.ProductStore = Search.__get__('ProductStore');
+    this.sinon.stub(this.ProductStore, 'getAll');
     this.SearchActions = Search.__get__('SearchActions');
     this.SearchStore = Search.__get__('SearchStore');
 
@@ -114,10 +123,9 @@ describe('Search ViewController', function() {
 
   context('query returned results', function () {
     beforeEach(function () {
-      let Component = stubRouterContext(Search, user, {});
-      this.component = TestUtils.renderIntoDocument(<Component/>);
+      this.component = renderComponent(user);
 
-      this.component.refs.stub.setState({
+      this.component.refs.child.refs.stub.setState({
         loading: false,
         showProgress: false,
         results: {
@@ -138,7 +146,7 @@ describe('Search ViewController', function() {
 
     context('filtering results', function () {
       it('does not render progressBar', function () {
-        this.component.refs.stub.setState({
+        this.component.refs.child.refs.stub.setState({
           loading: true,
           showProgress: false
         });
@@ -307,7 +315,7 @@ describe('Search ViewController', function() {
       this.searchBar.value = 'type:story type:defect product:1';
       TestUtils.Simulate.change(this.searchBar);
 
-      this.form = TestUtils.findRenderedDOMComponentWithTag(this.component, 'form').getDOMNode();
+      this.form = TestUtils.findRenderedDOMComponentWithClass(this.component, 'desktop__search-form').getDOMNode();
       TestUtils.Simulate.submit(this.form);
     });
 

@@ -1,4 +1,5 @@
 import React from 'react/addons';
+import classNames from "classnames";
 
 let AddItemTitle = React.createClass({
   propTypes: {
@@ -6,15 +7,23 @@ let AddItemTitle = React.createClass({
     validation: React.PropTypes.object.isRequired
   },
 
+  componentDidMount() {
+    React.findDOMNode(this.refs.titleInput).focus();
+  },
+
   render() {
-    var classes = React.addons.classSet({
+    var classes = classNames({
       "form-group": true,
       'has-error': !this.props.validation.value['title']
     });
 
     return (
       <div className={classes}>
-        <input className="form-control" placeholder="What is it?" name="title" valueLink={this.props.title}/>
+        <input className="form-control"
+          placeholder="What is it?"
+          name="title"
+          ref="titleInput"
+          valueLink={this.props.title} />
       </div>
     );
   }

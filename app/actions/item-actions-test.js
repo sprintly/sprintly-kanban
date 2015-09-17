@@ -1,7 +1,7 @@
+/*eslint-env node, mocha */
 var assert = require('chai').assert;
 var sinon = require('sinon');
 var ItemActions = require('./item-actions');
-var Promise = require('bluebird');
 var products = require('../lib/sprintly-client').products;
 
 describe('ItemActions', function() {
@@ -21,4 +21,4 @@ describe('ItemActions', function() {
       assert.throws(() => ItemActions.addItem(1, {}), /Missing product: %s/);
     });
   });
-})
+});

@@ -1,0 +1,176 @@
+.drawer-subheader .tags-input {
+  position: relative;
+  display: -webkit-flex;
+  display: flex;
+  flex-wrap: wrap;
+  background: #fff;
+  min-height: 40px;
+  border: 1px solid #cccccc;
+  border-radius: 4px;
+  padding: 6px 12px;
+
+  .label {
+    flex: none;
+    margin: 3px 6px 3px 0;
+    display: inline-block;
+    font-size: 90%;
+  }
+
+  .label button {
+    color: #fff;
+    margin-left: 4px;
+    line-height: 10px;
+    font-size: 14px;
+    .opacity(0.4);
+
+    &:hover {
+      .opacity(0.8);
+    }
+  }
+
+  .label span {
+    line-height: 12px;
+  }
+
+  input {
+    flex: 1;
+    border: none;
+    outline: none;
+    width: 100%;
+  }
+
+  .list-group {
+    left: 0;
+    position: absolute;
+    top: 33px;
+    width: 100.3%;
+    font-size: 11px;
+    z-index: 1;
+    overflow-y: auto;
+    max-height: 109px;
+    margin-top: -1px;
+    margin-left: -1px;
+    margin-right: -1px;
+    border-bottom-right-radius: 4px;
+    border-bottom-left-radius: 4px;
+    background-color: white;
+    border: 1px solid #cccccc;
+    border-top-color: #e6e6e6;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
+    box-sizing: border-box;
+  }
+
+  .list-group-item:first-child {
+    border-radius: none;
+  }
+
+  .list-group-item {
+    padding: 7px 15px;
+    font-size: 15px;
+  }
+}
+
+ul.off-canvas-list li:first-of-type {
+  margin-top: 10%;
+  margin-bottom: 12%;
+}
+
+ul.off-canvas-list li .issue-control {
+  width: 25%;
+  color: @medium-grey;
+  float: left;
+  text-align: center;
+}
+
+ul.off-canvas-list li a {
+  padding: 0;
+  font-weight: @fontWeight-3;
+  color: @medium-grey;
+  font-size: 12px;
+
+  &:hover {
+    text-decoration: none;
+  }
+}
+
+ul.off-canvas-list li a.active {
+  font-weight: @fontWeight-9;
+  color: white;
+  text-decoration: none;
+}
+
+.right-off-canvas-menu .type-color-indicator {
+  height: 10px;
+  margin-top: 5px;
+  background-color: @medium-grey;
+}
+.right-off-canvas-menu .type-color-indicator.story.active {
+  background-color: @story-color;
+}
+.right-off-canvas-menu .type-color-indicator.defect.active {
+  background-color: @defect-color;
+}
+.right-off-canvas-menu .type-color-indicator.task.active {
+  background-color: @task-color;
+}
+.right-off-canvas-menu .type-color-indicator.test.active {
+  background-color: @test-color;
+}
+
+.right-off-canvas-menu li a.drawer-header {
+  font-size: 15px;
+}
+
+ul.off-canvas-list .issue-types-control {
+  height: 40px;
+}
+
+ul.off-canvas-list .all-types-control {
+  text-align: center;
+  margin-top: 10px;
+}
+ul.off-canvas-list .all-types-control a {
+  font-size: 16px;
+}
+
+
+// Create an active mixin
+ul.off-canvas-list .all-types-control a.active {
+  font-weight: @fontWeight-9;
+  color: white;
+  text-decoration: none;
+}
+
+ul.off-canvas-list .mine-button {
+  height: 40px;
+  background-color: transparent;
+  color: @medium-grey;
+  width: 100%;
+  border: 1px solid @medium-grey;
+  line-height: 40px;
+  margin-top: 20px;
+}
+
+ul.off-canvas-list .mine-button.active {
+  border: none;
+  background-color: white;
+  color: @sprintly-black;
+  font-weight: @fontWeight-9;
+}
+
+ul.off-canvas-list .velocity__form input {
+  // other style is poorly scoped
+  max-width: 300px;
+  margin: 0;
+  float:left;
+  width: 60%;
+}
+
+ul.off-canvas-list .velocity__form button {
+  width: 40%;
+}
+
+// Member forms
+ul.off-canvas-list .filters-menu__list form {
+  display: block;
+}
