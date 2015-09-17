@@ -1,13 +1,9 @@
-import React from 'react/addons';
-import _ from 'lodash';
-import helpers from '../../components/helpers';
-import ItemDetailMixin from './detail-mixin';
-import {State, Link} from 'react-router';
-import ProductActions from '../../../actions/product-actions';
-import ItemActions from '../../../actions/item-actions';
-import Select from 'react-select';
-import STATUS_MAP from '../../../lib/statuses-map';
-import classNames from "classnames";
+import React from 'react/addons'
+import _ from 'lodash'
+import helpers from '../../components/helpers'
+import ItemDetailMixin from './detail-mixin'
+import {State} from 'react-router'
+import classNames from 'classnames'
 
 var ItemSubitemHeader = React.createClass({
   mixins: [State, ItemDetailMixin],
@@ -57,18 +53,17 @@ var ItemSubitemHeader = React.createClass({
       'subitem__header': true,
       'header-dark': true,
       'open': this.props.header
-    });
+    })
 
-    let title = this.props.subitem.title;
-    let status = this.itemStatus(this.props.subitem.status);
-    let subitemId = this.props.subitem.number;
+    let title = this.props.subitem.title
+    let status = this.itemStatus(this.props.subitem.status)
+    let subitemId = this.props.subitem.number
 
-    let email = (this.props.subitem.assigned_to && this.props.subitem.assigned_to.email) ? this.props.subitem.assigned_to.email : '';
-    let assigneeGravatar = this.assigneeGravatar(email);
-    let itemScoreButton = this.itemScoreButton(this.props.subitem.type, this.props.subitem.score);
+    let email = (this.props.subitem.assigned_to && this.props.subitem.assigned_to.email) ? this.props.subitem.assigned_to.email : ''
+    let assigneeGravatar = this.assigneeGravatar(email)
 
-    let checked = this.props.subitem.status === 'completed' || this.props.subitem.status === 'accepted';
-    let caretClass = `glyphicon glyphicon-menu-${this.caretDirection(this.props.header)}`;
+    let checked = this.props.subitem.status === 'completed' || this.props.subitem.status === 'accepted'
+    let caretClass = `glyphicon glyphicon-menu-${this.caretDirection(this.props.header)}`
 
     return (
       <div className={headerClasses}>

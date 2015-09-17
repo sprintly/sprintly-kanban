@@ -1,26 +1,24 @@
-import React from 'react/addons';
-import _ from 'lodash';
-import {State,Link} from 'react-router';
-import {Modal, Nav, NavItem} from 'react-bootstrap';
+import React from 'react/addons'
+import _ from 'lodash'
+import {State} from 'react-router'
 // Components
-import {MentionsInput, Mention} from '@sprintly/react-mentions';
-import TagsInput from '../components/tags-input';
-import DrawerStripe from '../components/drawer-stripe';
-import Subitems from '../components/subitems';
-import Title from '../components/add-item/title';
-import StoryTitle from '../components/add-item/story-title';
-import MembersDropdown from '../components/add-item/members-dropdown';
-import IssueTemplates from '../components/add-item/issue-templates';
-import AddItemActions from '../components/add-item/item-actions';
-import Select from 'react-select';
+import {MentionsInput, Mention} from '@sprintly/react-mentions'
+import TagsInput from '../components/tags-input'
+import DrawerStripe from '../components/drawer-stripe'
+import Subitems from '../components/subitems'
+import Title from '../components/add-item/title'
+import StoryTitle from '../components/add-item/story-title'
+import IssueTemplates from '../components/add-item/issue-templates'
+import AddItemActions from '../components/add-item/item-actions'
+import Select from 'react-select'
 
-import ItemActions from '../../actions/item-actions';
-import ProductStore from '../../stores/product-store';
-import helpers from '../components/helpers';
-import pagesHelpers from '../pages/helpers';
+import ItemActions from '../../actions/item-actions'
+import ProductStore from '../../stores/product-store'
+import helpers from '../components/helpers'
+import pagesHelpers from '../pages/helpers'
 
-const ITEM_TYPES = ['story', 'task', 'defect', 'test'];
-const STORY_ATTRS = ['who', 'what', 'why'];
+const ITEM_TYPES = ['story', 'task', 'defect', 'test']
+const STORY_ATTRS = ['who', 'what', 'why']
 
 var AddItemPage = React.createClass({
   mixins: [React.addons.LinkedStateMixin, State],
@@ -32,7 +30,7 @@ var AddItemPage = React.createClass({
   },
 
   getInitialState() {
-    let product = ProductStore.getProduct(this.getParams().id);
+    let product = ProductStore.getProduct(this.getParams().id)
 
     return {
       product: product,
@@ -64,7 +62,7 @@ var AddItemPage = React.createClass({
   },
 
   setDescription(ev, value) {
-    this.setState({ description: value });
+    this.setState({ description: value })
   },
 
   setAssignedTo(value, member) {
@@ -77,83 +75,83 @@ var AddItemPage = React.createClass({
   },
 
   updateTags(tags) {
-    this.setState({ tags });
+    this.setState({ tags })
   },
 
   changeType(type) {
-    var descriptionTemplate = (type === 'defect') ? IssueTemplates.defect : '';
-    this.setDescription(null, descriptionTemplate);
+    var descriptionTemplate = (type === 'defect') ? IssueTemplates.defect : ''
+    this.setDescription(null, descriptionTemplate)
 
     this.setState({ type: type }, () => {
       // ensure focus follows tabbing through types
-      this.setFocus(type);
-    });
+      this.setFocus(type)
+    })
   },
 
   setFocus(itemType) {
     let ref = itemType === 'story' ? this.refs.title.refs.whoInput :
-        this.refs.title.refs.titleInput;
-      React.findDOMNode(ref).focus();
+      this.refs.title.refs.titleInput
+    React.findDOMNode(ref).focus()
   },
 
   dismiss(ev) {
-    ev.preventDefault();
-    this.props.onHide();
+    ev.preventDefault()
+    this.props.onHide()
   },
 
   onKeyDown(ev) {
-    let charCode = (typeof ev.which === "number") ? ev.which : ev.keyCode;
+    let charCode = (typeof ev.which === 'number') ? ev.which : ev.keyCode
     if ((ev.metaKey || ev.ctrlKey) && (charCode === 13 || charCode === 10)) {
-      this.createItem(ev, false);
+      this.createItem(ev, false)
     }
-    return;
+    return
   },
 
   createItem(ev) {
-    ev.preventDefault();
+    ev.preventDefault()
 
-    let item = _.pick(this.state, ['type', 'description', 'tags', 'assigned_to']);
+    let item = _.pick(this.state, ['type', 'description', 'tags', 'assigned_to'])
 
     if (this.state.type === 'story') {
-      _.assign(item, _.pick(this.state, STORY_ATTRS));
+      _.assign(item, _.pick(this.state, STORY_ATTRS))
     } else {
-      item.title = this.state.title;
+      item.title = this.state.title
     }
 
     if (this.state.sendToBacklog) {
-      item.status = 'backlog';
+      item.status = 'backlog'
     }
 
     ItemActions.addItem(this.props.product.id, item).then( () => {
-      let resetState = _.extend({}, this.getInitialState(), { type: this.state.type });
-      this.setState(resetState);
-      this.setFocus(this.state.type);
+      let resetState = _.extend({}, this.getInitialState(), { type: this.state.type })
+      this.setState(resetState)
+      this.setFocus(this.state.type)
     }, (err) => {
-      this.updateValidation(err);
-    });
+      this.updateValidation(err)
+    })
   },
 
   updateValidation(err) {
-    let validationState = this.state.validation;
-    let errors = err.validationError.split(':')[1].replace(/\s+/g, '').split(',');
+    let validationState = this.state.validation
+    let errors = err.validationError.split(':')[1].replace(/\s+/g, '').split(',')
 
     _.each(errors, (attr) => {
-      validationState[attr] = false;
-    });
+      validationState[attr] = false
+    })
 
-    this.setState({validation: validationState});
+    this.setState({validation: validationState})
   },
 
   notAssignable() {
-    return !this.props.members.length;
+    return !this.props.members.length
   },
 
   assignPlaceholder() {
-    return this.notAssignable() ? 'Nobody to assign to': 'Unassigned';
+    return this.notAssignable() ? 'Nobody to assign to': 'Unassigned'
   },
 
   assigneeName() {
-    return this.state.assigneeName ? this.state.assigneeName : null;
+    return this.state.assigneeName ? this.state.assigneeName : null
   },
 
   typeSelector() {
@@ -180,7 +178,7 @@ var AddItemPage = React.createClass({
   },
 
   itemDescription() {
-    let mentions = helpers.formatMentionMembers(this.props.members);
+    let mentions = helpers.formatMentionMembers(this.props.members)
 
     return (
       <div className="form-group">
@@ -195,7 +193,7 @@ var AddItemPage = React.createClass({
   },
 
   addSubitemTitle(title) {
-    let subitems = _.cloneDeep(this.state.subitems);
+    let subitems = _.cloneDeep(this.state.subitems)
     let sameTitleItem = _.find(subitems, (item) => {
       return item.title == title
     })
@@ -209,7 +207,7 @@ var AddItemPage = React.createClass({
   },
 
   deleteSubitem(subitem) {
-    let subitems = _.cloneDeep(this.state.subitems);
+    let subitems = _.cloneDeep(this.state.subitems)
     subitems = _.reject(subitems, (item) => {
       return item.title === subitem.title
     })
@@ -232,7 +230,7 @@ var AddItemPage = React.createClass({
   },
 
   itemTags() {
-    let tags = _.pluck(this.state.product.tags, 'tag');
+    let tags = _.pluck(this.state.product.tags, 'tag')
 
     return (
       <div className="form-group">
@@ -242,7 +240,7 @@ var AddItemPage = React.createClass({
   },
 
   membersSelect() {
-    let members = helpers.formatSelectMembers(this.props.members);
+    let members = helpers.formatSelectMembers(this.props.members)
 
     return (
       <div className="form-group add-item__member-dropdown">
@@ -268,7 +266,7 @@ var AddItemPage = React.createClass({
           why={this.linkState('why')}
           validation={this.linkState('validation')}
         />
-      );
+      )
     } else {
       return (
         <Title
@@ -281,11 +279,11 @@ var AddItemPage = React.createClass({
   },
 
   componentDidMount() {
-    ProductStore.addChangeListener(this._onChange);
+    ProductStore.addChangeListener(this._onChange)
   },
 
   componentWillUnmount() {
-    ProductStore.removeChangeListener(this._onChange);
+    ProductStore.removeChangeListener(this._onChange)
   },
 
   render() {
@@ -316,18 +314,18 @@ var AddItemPage = React.createClass({
   _onChange(type, record) {
     if (type === 'afterCreate') {
       if (record.type === 'story' && this.state.subitems.length) {
-        ItemActions.bulkAdd('subitems', this.props.product.id, record, this.state.subitems);
+        ItemActions.bulkAdd('subitems', this.props.product.id, record, this.state.subitems)
       } else if (this.state.attachments) {
-        console.log('IMPLEMENT ATTACHMENTS');
+        console.log('IMPLEMENT ATTACHMENTS') // eslint-disable-line no-console
       }
     } else {
-      let product = ProductStore.getProduct(this.getParams().id);
+      let product = ProductStore.getProduct(this.getParams().id)
 
       if (product) {
-        this.setState({product});
+        this.setState({product})
       }
     }
   }
-});
+})
 
-export default AddItemPage;
+export default AddItemPage

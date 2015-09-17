@@ -1,8 +1,7 @@
-import React from 'react/addons';
-import _ from 'lodash';
-import Gravatar from '../../components/gravatar';
+import React from 'react/addons'
+import Gravatar from '../../components/gravatar'
 
-const GRAVATAR_SIZE = 30;
+const GRAVATAR_SIZE = 30
 
 let ActivityItem = React.createClass({
 
@@ -13,7 +12,7 @@ let ActivityItem = React.createClass({
     activityType: React.PropTypes.string,
     description: React.PropTypes.oneOfType([
       React.PropTypes.string,
-      React.PropTypes.object,
+      React.PropTypes.object
     ]),
     timestamp: React.PropTypes.string
   },
@@ -39,6 +38,6 @@ let ActivityItem = React.createClass({
       </li>
     )
   }
-});
+})
 
-module.exports = ActivityItem;
+export default ActivityItem

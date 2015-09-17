@@ -1,5 +1,5 @@
-import React from 'react/addons';
-import helpers from '../../components/helpers';
+import React from 'react/addons'
+import helpers from '../../components/helpers'
 
 var ItemHeader = React.createClass({
   propTypes: {
@@ -16,9 +16,9 @@ var ItemHeader = React.createClass({
   },
 
   render: function() {
-    let titleCased = helpers.toTitleCase(this.props.title);
-    let headerClasses =  this.props.headerClasses ? `header-${this.props.headerClasses}` : "header";
-    let sep = this.props.sep ? <div className="sep"></div> : null;
+    let titleCased = helpers.toTitleCase(this.props.title)
+    let headerClasses =  this.props.headerClasses ? `header-${this.props.headerClasses}` : 'header'
+    let sep = this.props.sep ? <div className="sep"></div> : null
 
     return (
       <div className={headerClasses}>
@@ -28,6 +28,6 @@ var ItemHeader = React.createClass({
       </div>
     )
   }
-});
+})
 
-module.exports = ItemHeader;
+export default ItemHeader

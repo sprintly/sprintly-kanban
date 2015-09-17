@@ -357,6 +357,11 @@
       "from": "babel-plugin-remove-debugger@>=1.0.1 <2.0.0",
       "resolved": "http://registry.npmjs.org/babel-plugin-remove-debugger/-/babel-plugin-remove-debugger-1.0.1.tgz"
     },
+    "babel-plugin-rewire": {
+      "version": "0.1.22",
+      "from": "babel-plugin-rewire@*",
+      "resolved": "https://registry.npmjs.org/babel-plugin-rewire/-/babel-plugin-rewire-0.1.22.tgz"
+    },
     "babel-plugin-runtime": {
       "version": "1.0.7",
       "from": "babel-plugin-runtime@>=1.0.7 <2.0.0",
@@ -4219,16 +4224,6 @@
       "version": "2.3.1",
       "from": "response-time@>=2.3.1 <2.4.0",
       "resolved": "http://registry.npmjs.org/response-time/-/response-time-2.3.1.tgz"
-    },
-    "rewire": {
-      "version": "2.3.4",
-      "from": "rewire@>=2.3.3 <3.0.0",
-      "resolved": "http://registry.npmjs.org/rewire/-/rewire-2.3.4.tgz"
-    },
-    "rewireify": {
-      "version": "0.2.4",
-      "from": "rewireify@>=0.2.1 <0.3.0",
-      "resolved": "https://registry.npmjs.org/rewireify/-/rewireify-0.2.4.tgz"
     },
     "rimraf": {
       "version": "2.4.3",

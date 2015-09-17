@@ -1,29 +1,29 @@
-import request from 'superagent';
-import AppDispatcher from '../dispatchers/app-dispatcher';
-import {BASE_URL} from '../config';
+import request from 'superagent'
+import AppDispatcher from '../dispatchers/app-dispatcher'
+import {BASE_URL} from '../config'
 
-const token = window.__token;
-const DEFAULT_VELOCITY = 10;
-const DEFAULT_ITERATION_LENGTH = 7;
+const token = window.__token
+const DEFAULT_VELOCITY = 10
+const DEFAULT_ITERATION_LENGTH = 7
 
 var internals = {
   request(id, metric, cb) {
     request
       .get(`${BASE_URL}/api/products/${id}/aggregate/${metric}.json`)
       .set('Authorization', `Bearer ${token}`)
-      .end(cb);
+      .end(cb)
   },
 
   calculateAverageVelocity(velocity={}) {
-    velocity.average = Math.round(velocity.average * DEFAULT_ITERATION_LENGTH);
+    velocity.average = Math.round(velocity.average * DEFAULT_ITERATION_LENGTH)
 
     if (velocity.average < 1) {
-      velocity.average = DEFAULT_VELOCITY;
+      velocity.average = DEFAULT_VELOCITY
     }
 
-    return velocity;
+    return velocity
   }
-};
+}
 
 var VelocityActions = {
   getVelocity(productId) {
@@ -31,19 +31,19 @@ var VelocityActions = {
       if (err) {
         AppDispatcher.dispatch({
           actionType: 'PRODUCT_VELOCITY_ERROR'
-        });
-        return;
+        })
+        return
       }
 
       if (res.body) {
-        let velocity = internals.calculateAverageVelocity(res.body);
+        let velocity = internals.calculateAverageVelocity(res.body)
         AppDispatcher.dispatch({
           actionType: 'PRODUCT_VELOCITY',
           payload: velocity,
           productId
-        });
+        })
       }
-    });
+    })
   },
 
   setVelocity: function(productId, velocity) {
@@ -53,8 +53,8 @@ var VelocityActions = {
         average: velocity
       },
       productId
-    });
+    })
   }
-};
+}
 
-export default VelocityActions;
+export default VelocityActions

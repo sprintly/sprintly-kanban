@@ -1,6 +1,6 @@
-import _ from 'lodash';
+import _ from 'lodash'
 
-module.exports = {
+export default {
   formatMentionMembers(members) {
     return _.map(members, function(member) {
       return {
@@ -40,16 +40,16 @@ module.exports = {
   toTitleCase(str) {
     if (str) {
       return str.replace(/\w\S*/g, function(text){
-        return text.charAt(0).toUpperCase() + text.substr(1).toLowerCase();
-      });
+        return text.charAt(0).toUpperCase() + text.substr(1).toLowerCase()
+      })
     } else {
-      return '';
+      return ''
     }
   },
 
   vowelSound(word) {
-    let firstLetter = word.charAt(0).toLowerCase();
-    let vowelSounds = ['a','e','i','o'];
+    let firstLetter = word.charAt(0).toLowerCase()
+    let vowelSounds = ['a','e','i','o']
 
     return _.contains(vowelSounds, firstLetter)
   },
@@ -63,22 +63,22 @@ module.exports = {
       'accepted': 'accepted'
     }
 
-    return ITEM_STATUS_MAP[status];
+    return ITEM_STATUS_MAP[status]
   },
 
   formatTextForMarkdown(description) {
-    let names = internals.parseNames(description);
-    let ids = internals.parseIds(description);
+    let names = internals.parseNames(description)
+    let ids = internals.parseIds(description)
 
     if (names && ids) {
-      let links = internals.buildLinks(ids, names);
-      var merged = _.map(_.zip(names,ids), function(pair) {return pair[0]+pair[1]});
+      let links = internals.buildLinks(ids, names)
+      var merged = _.map(_.zip(names,ids), function(pair) {return pair[0]+pair[1]})
 
       _.each(merged, function(merge, i) {
         description = description.replace(merge, links[i])
       })
 
-      return description;
+      return description
     } else {
       return description
     }
@@ -91,36 +91,36 @@ var internals = {
   },
 
   parseIds(text) {
-    return text.match(/\((.*?)\)/g);
+    return text.match(/\((.*?)\)/g)
   },
 
   buildLinks(ids, names) {
     /*
       Member link format: https://sprint.ly/product/24067/organizer/?members=19470
     */
-    let strippedIds = internals.strippedIds(ids);
-    let strippedNames = internals.strippedNames(names);
+    let strippedIds = internals.strippedIds(ids)
+    let strippedNames = internals.strippedNames(names)
 
     return _.map(strippedIds, function(id, i) {
-      return `[${strippedNames[i]}](https://sprint.ly/product/24067/organizer/?members=${id})`;
+      return `[${strippedNames[i]}](https://sprint.ly/product/24067/organizer/?members=${id})`
     })
   },
 
   strippedIds(ids) {
     return _.map(ids, (id) => {
-      let matches = id.match(/:(.+?)\)/);
+      let matches = id.match(/:(.+?)\)/)
       if (matches) {
         return matches[1]
       }
-    });
+    })
   },
 
   strippedNames(names) {
     return _.map(names, (id) => {
-      let matches =  id.match(/@\[(.+?)\]/);
+      let matches =  id.match(/@\[(.+?)\]/)
       if (matches) {
         return matches[1]
       }
-    });
+    })
   }
 }

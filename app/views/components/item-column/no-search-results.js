@@ -1,6 +1,6 @@
-import React from 'react/addons';
-import FilterActions from '../../../actions/filter-actions';
-import ProductStore from '../../../stores/product-store';
+import React from 'react/addons'
+import FilterActions from '../../../actions/filter-actions'
+import ProductStore from '../../../stores/product-store'
 
 var NoSearchResults = React.createClass({
 
@@ -9,14 +9,14 @@ var NoSearchResults = React.createClass({
   },
 
   clearFilters() {
-    let product = ProductStore.getProduct(this.props.product.id);
+    let product = ProductStore.getProduct(this.props.product.id)
 
-    FilterActions.clear(product.members, product.tags);
+    FilterActions.clear(product.members, product.tags)
   },
 
   render() {
     return (
-      <div className='no-search-results'>
+      <div className="no-search-results">
         <div className="content">
           <div className="row">
             <div className="col-sm-12">
@@ -24,7 +24,7 @@ var NoSearchResults = React.createClass({
               <h5>Try filtering again or reset your filters.</h5>
             </div>
             <div className="item-card__title col-sm-12">
-              <button style={ {width: "100%"} } className="btn btn-primary clear-filters" onClick={this.clearFilters}>Clear Filters</button>
+              <button style={ {width: '100%'} } className="btn btn-primary clear-filters" onClick={this.clearFilters}>Clear Filters</button>
             </div>
           </div>
         </div>
@@ -33,4 +33,4 @@ var NoSearchResults = React.createClass({
   }
 })
 
-module.exports = NoSearchResults;
+export default NoSearchResults

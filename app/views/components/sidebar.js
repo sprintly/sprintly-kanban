@@ -1,14 +1,14 @@
-import _ from 'lodash';
+import _ from 'lodash'
 import React from 'react/addons'
-import classNames from "classnames";
-import {State,Link} from 'react-router';
+import classNames from 'classnames'
+import {State,Link} from 'react-router'
 
 import SidebarConstants from '../../constants/sidebar-constants'
-import ProductStore from '../../stores/product-store';
+import ProductStore from '../../stores/product-store'
 
 const ACCOUNT_SETTINGS = [
   'Profile', 'Plan', 'Billing', 'Invoices', 'Products', 'Members', 'Notifications', 'Services'
-];
+]
 
 let Sidebar = React.createClass({
 
@@ -32,39 +32,39 @@ let Sidebar = React.createClass({
   },
 
   componentDidMount() {
-    ProductStore.addChangeListener(this._onChange);
+    ProductStore.addChangeListener(this._onChange)
   },
 
   componentWillUnmount() {
-    ProductStore.removeChangeListener(this._onChange);
+    ProductStore.removeChangeListener(this._onChange)
   },
 
   buildContentforType() {
-    var content;
+    var content
 
     switch (this.props.type) {
       case SidebarConstants.CORE:
-        content = this.coreSidebar();
-        break;
+        content = this.coreSidebar()
+        break
       case SidebarConstants.FILTERS:
         content = this.filtersSidebar()
-        break;
+        break
       default:
-        content = '';
-        console.log('SIDEBARD CONTENT TYPE NOT HANDLED: ', this.props.type)
+        content = ''
+        console.log('SIDEBARD CONTENT TYPE NOT HANDLED: ', this.props.type) // eslint-disable-line no-console
     }
 
-    return content;
+    return content
   },
 
   coreSidebar() {
     let sidebarClasses = classNames({
       'left-off-canvas-menu': true,
       'hidden': this.props.open
-    });
+    })
 
-    let productLinks = this.productLinks();
-    let settingsLinks = this.settingsLinks();
+    let productLinks = this.productLinks()
+    let settingsLinks = this.settingsLinks()
 
     return (
       <div className={sidebarClasses}>
@@ -79,37 +79,34 @@ let Sidebar = React.createClass({
 
   settingsLinks() {
     let settingsLinks = _.map(ACCOUNT_SETTINGS, function(setting, i) {
-      let subheaderKey = `drawer-subheader-${i} ${setting}`;
+      let subheaderKey = `drawer-subheader-${i} ${setting}`
       let settingsURI = `https://sprint.ly/account/settings/${setting.toLowerCase()}`
 
       return (
         <li key={subheaderKey}>
-          <a className='drawer-subheader' href={settingsURI}>{setting}</a>
+          <a className="drawer-subheader" href={settingsURI}>{setting}</a>
         </li>
       )
     })
 
     return ([
-        <li className="drawer-header" key="drawer-header">
-          <a className='drawer-header' href="#">Settings</a>
-        </li>
-      ].concat(settingsLinks).concat([
-        <li className="logout" key="logout">
-          <a href="/logout" className="btn btn-danger btn-sm btn-block">Logout</a>
-        </li>
-      ])
-    )
-
+      <li className="drawer-header" key="drawer-header">
+        <a className="drawer-header" href="#">Settings</a>
+      </li>
+    ].concat(settingsLinks).concat([
+      <li className="logout" key="logout">
+        <a href="/logout" className="btn btn-danger btn-sm btn-block">Logout</a>
+      </li>
+    ]))
   },
 
   productLinks() {
     let productLinks = _.map(this.state.allProducts, (product, i) => {
-      let subheaderKey = `drawer-subheader-${i} product-${product.id}`;
-      let productURI = `/${product.id}`;
+      let subheaderKey = `drawer-subheader-${i} product-${product.id}`
 
       return (
         <li key={subheaderKey}>
-          <Link className='drawer-subheader' to="product" params={{ id: product.id }}>{product.name}</Link>
+          <Link className="drawer-subheader" to="product" params={{ id: product.id }}>{product.name}</Link>
         </li>
       )
     })
@@ -135,7 +132,7 @@ let Sidebar = React.createClass({
       'visible-xs': true
     })
 
-    var sidebar = this.buildContentforType();
+    var sidebar = this.buildContentforType()
 
     return (
       <div className={classes}>

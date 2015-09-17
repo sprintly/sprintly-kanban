@@ -4,4 +4,4 @@ export default {
   current: 'in-progress',
   done: 'completed',
   accepted: 'accepted'
-};
+}

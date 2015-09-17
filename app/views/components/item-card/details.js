@@ -1,16 +1,16 @@
-import _ from 'lodash';
-import React from 'react/addons';
-import moment from 'moment';
+import _ from 'lodash'
+import React from 'react/addons'
+import moment from 'moment'
 
-import FilterActions from '../../../actions/filter-actions';
-import ProductActions from '../../../actions/product-actions';
-import ItemActions from '../../../actions/item-actions';
+import FilterActions from '../../../actions/filter-actions'
+import ProductActions from '../../../actions/product-actions'
+import ItemActions from '../../../actions/item-actions'
 
 import Subitems from '../subitems'
-import {TagEditor, Tags} from 'sprintly-ui';
-import {DropdownButton, MenuItem, OverlayTrigger, Tooltip, Button, Input} from 'react-bootstrap';
+import {TagEditor, Tags} from 'sprintly-ui'
+import {DropdownButton, MenuItem, OverlayTrigger, Tooltip, Button} from 'react-bootstrap'
 
-import STATUSES from '../../../lib/status-map';
+import STATUSES from '../../../lib/status-map'
 
 var ItemCardDetails = React.createClass({
 
@@ -28,10 +28,10 @@ var ItemCardDetails = React.createClass({
   },
 
   handleMenuSelection(status) {
-    if (status === "destroy") {
-      return this.deleteItem();
+    if (status === 'destroy') {
+      return this.deleteItem()
     } else {
-      return this.updateStatus(status);
+      return this.updateStatus(status)
     }
   },
 
@@ -39,7 +39,7 @@ var ItemCardDetails = React.createClass({
     ItemActions.deleteItem(
       this.props.productId,
       this.props.item.number
-    );
+    )
   },
 
   updateStatus(status) {
@@ -47,27 +47,27 @@ var ItemCardDetails = React.createClass({
       this.props.productId,
       this.props.item.number,
       { status }
-    );
+    )
   },
 
   filterByTag(tag) {
-    FilterActions.update('tags', [tag]);
+    FilterActions.update('tags', [tag])
   },
 
   filterByMember(ev) {
-    FilterActions.update('created_by', this.props.item.created_by.id);
+    FilterActions.update('created_by', this.props.item.created_by.id)
   },
 
   editTags(modelIds, tags, tag, action) {
-    let [productId, itemNumber] = modelIds;
+    let [productId, itemNumber] = modelIds
     if (action == 'add') {
-      tags.push(tag);
+      tags.push(tag)
     }
     if (action == 'remove') {
-      _.pull(tags, tag);
+      _.pull(tags, tag)
     }
     tags = _.compact(tags).join(',')
-    ProductActions.updateItem(productId, itemNumber, {tags});
+    ProductActions.updateItem(productId, itemNumber, {tags})
     this.refs.tagEditor.setState({ showMenu: false })
   },
 
@@ -81,8 +81,8 @@ var ItemCardDetails = React.createClass({
 
   renderMoveControls() {
     return this.props.sortField !== 'priority' ? (
-      <OverlayTrigger placement='top' overlay={<Tooltip>Sort by <strong>Priority</strong> to reorder.</Tooltip>}>
-        <Button bsStyle='default' bsSize="small">Reorder</Button>
+      <OverlayTrigger placement="top" overlay={<Tooltip>Sort by <strong>Priority</strong> to reorder.</Tooltip>}>
+        <Button bsStyle="default" bsSize="small">Reorder</Button>
       </OverlayTrigger>
     ) : (
       <DropdownButton onSelect={this.updatePriority} bsStyle="default" bsSize="small" title="Reorder" disabled={this.props.sortField !== 'priority'}>
@@ -91,15 +91,15 @@ var ItemCardDetails = React.createClass({
         <MenuItem eventKey="top" key="top">Move to Top</MenuItem>
         <MenuItem eventKey="bottom" key="bottom">Move to Bottom</MenuItem>
       </DropdownButton>
-    );
+    )
   },
 
   updateSubitem(subitem, ev) {
-    var status;
+    var status
     if (_.contains(['someday', 'backlog', 'in-progress'], subitem.status)) {
-      status = 'accepted';
+      status = 'accepted'
     } else if (_.contains(['completed', 'accepted'], subitem.status)) {
-      status = 'in-progress';
+      status = 'in-progress'
     }
 
     ProductActions.updateItem(
@@ -107,7 +107,7 @@ var ItemCardDetails = React.createClass({
       subitem.number,
       _.assign({}, subitem, { status }),
       { wait: false }
-    );
+    )
   },
 
   createSubitem(title, clearInput) {
@@ -116,7 +116,7 @@ var ItemCardDetails = React.createClass({
       type: 'task',
       parent: this.props.item.number
     }).then(function() {
-      clearInput();
+      clearInput()
     })
   },
 
@@ -134,20 +134,19 @@ var ItemCardDetails = React.createClass({
   },
 
   renderMenuItems() {
-    let statusOptions = _.omit(STATUSES, this.props.item.status);
+    let statusOptions = _.omit(STATUSES, this.props.item.status)
     let menuItems = _.map(statusOptions, function(label, status) {
       return <MenuItem eventKey={status} key={status}>Move to {label}</MenuItem>
-    });
+    })
     let deleteItem = <MenuItem eventKey="destroy" key="destroy">Delete</MenuItem>
-    menuItems.push(deleteItem);
-    return menuItems;
+    menuItems.push(deleteItem)
+    return menuItems
   },
 
   render() {
-    let item = this.props.item;
-    let hasTags = _.isString(item.tags) && !_.isEmpty(item.tags);
-    let tags = hasTags ? item.tags.split(',') : item.tags || [];
-    let statusOptions = _.omit(STATUSES, item.status);
+    let item = this.props.item
+    let hasTags = _.isString(item.tags) && !_.isEmpty(item.tags)
+    let tags = hasTags ? item.tags.split(',') : item.tags || []
 
     return (
       <div className="item-card__details">
@@ -166,7 +165,7 @@ var ItemCardDetails = React.createClass({
             modelId={[item.product.id, item.number]}
             tags={tags}
             tagChanger={{addOrRemove: this.editTags}}
-            ref='tagEditor'
+            ref="tagEditor"
           />
           <Tags
             tags={tags}
@@ -174,9 +173,9 @@ var ItemCardDetails = React.createClass({
           />
         </div>
       </div>
-    );
+    )
   }
 
-});
+})
 
-export default ItemCardDetails;
+export default ItemCardDetails

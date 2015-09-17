@@ -1,17 +1,17 @@
-import _ from 'lodash';
-import React from "react";
+import _ from 'lodash'
+import React from 'react'
 
-import {Link} from "react-router";
-import {Well} from 'react-bootstrap';
-import Header from '../components/header';
+import {Link} from 'react-router'
+import {Well} from 'react-bootstrap'
+import Header from '../components/header'
 
-import ProductActions from '../../actions/product-actions';
-import ProductStore from '../../stores/product-store';
+import ProductActions from '../../actions/product-actions'
+import ProductStore from '../../stores/product-store'
 
 function getProductSelectorState() {
   return {
     products: ProductStore.getAll()
-  };
+  }
 }
 
 export default React.createClass({
@@ -21,16 +21,16 @@ export default React.createClass({
   },
 
   _onChange: function() {
-    this.setState(getProductSelectorState());
+    this.setState(getProductSelectorState())
   },
 
   componentDidMount: function() {
-    ProductStore.addChangeListener(this._onChange);
-    ProductActions.init();
+    ProductStore.addChangeListener(this._onChange)
+    ProductActions.init()
   },
 
   componentWillUnmount: function() {
-    ProductStore.removeChangeListener(this._onChange);
+    ProductStore.removeChangeListener(this._onChange)
   },
 
   render: function() {
@@ -53,14 +53,14 @@ export default React.createClass({
                   <li key={`product-selector-${product.id}`}>
                     <Link to="product" params={{ id: product.id }} className="btn btn-default btn-block">{product.name}</Link>
                   </li>
-                );
+                )
               })}
               </ul>
             </Well>
           </div>
         </div>
       </div>
-    );
+    )
   }
 
-});
+})

@@ -1,10 +1,10 @@
-import _ from 'lodash';
-import sinon from 'sinon';
-import {assert} from 'chai';
-import React from 'react/addons';
-import NoSearchResults from './no-search-results';
+/* eslint-env mocha, node */
+import sinon from 'sinon'
+import {assert} from 'chai'
+import React from 'react/addons'
+import NoSearchResults from './no-search-results'
 import FiltersActions from '../../../actions/filter-actions'
-let TestUtils = React.addons.TestUtils;
+let TestUtils = React.addons.TestUtils
 
 describe('NoSearchResults', function() {
   beforeEach(function() {
@@ -27,7 +27,7 @@ describe('NoSearchResults', function() {
     }
 
     this.component = TestUtils.renderIntoDocument(<NoSearchResults {...props} />)
-    this.clearButton = TestUtils.findRenderedDOMComponentWithClass(this.component, 'clear-filters');
+    this.clearButton = TestUtils.findRenderedDOMComponentWithClass(this.component, 'clear-filters')
   })
 
   afterEach(function() {
@@ -35,12 +35,12 @@ describe('NoSearchResults', function() {
   })
 
   it('renders a clear filter button', function() {
-    assert.isDefined(this.clearButton);
+    assert.isDefined(this.clearButton)
   })
 
   it('clear filters is called when clear fitlers button clicked', function() {
-    TestUtils.Simulate.click(this.clearButton);
+    TestUtils.Simulate.click(this.clearButton)
 
-    assert.isTrue(this.stubs.clearFilters.calledWith(['sarah'],['mvp']));
+    assert.isTrue(this.stubs.clearFilters.calledWith(['sarah'],['mvp']))
   })
 })

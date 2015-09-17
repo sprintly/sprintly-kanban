@@ -1,14 +1,13 @@
-import React from 'react/addons';
-import _ from 'lodash';
-import helpers from '../../components/helpers';
-import TagsInput from '../../components/tags-input';
-import ItemDetailMixin from './detail-mixin';
-import ItemTitle from './item-title';
-import ItemAttachments from './item-attachments';
-import ProductActions from '../../../actions/product-actions';
-import {State} from 'react-router';
-import ScoreMap from '../../../lib/score-map';
-import STATUS_MAP from '../../../lib/statuses-map';
+import React from 'react/addons'
+import _ from 'lodash'
+import helpers from '../../components/helpers'
+import TagsInput from '../../components/tags-input'
+import ItemDetailMixin from './detail-mixin'
+import ItemTitle from './item-title'
+import ItemAttachments from './item-attachments'
+import {State} from 'react-router'
+import ScoreMap from '../../../lib/score-map'
+import STATUS_MAP from '../../../lib/statuses-map'
 const INVERTED_STATUS_MAP = _.zipObject(_.values(STATUS_MAP), _.keys(STATUS_MAP))
 
 var ItemDetails = React.createClass({
@@ -55,7 +54,7 @@ var ItemDetails = React.createClass({
   },
 
   toggleActionControl(type, ev) {
-    let actionControls = this.controlToggle(this.state.actionControls, type);
+    let actionControls = this.controlToggle(this.state.actionControls, type)
 
     this.setState({actionControls: actionControls})
   },
@@ -75,17 +74,17 @@ var ItemDetails = React.createClass({
   },
 
   toggleTagsEdit() {
-    const TAGS_ATTR = 'tags';
+    const TAGS_ATTR = 'tags'
 
     if (this.state.tagsEditable) {
       this.updateAttribute(this.props.number, TAGS_ATTR, this.props.tags)
     }
 
-    this.setState({tagsEditable: !this.state.tagsEditable});
+    this.setState({tagsEditable: !this.state.tagsEditable})
   },
 
   toggleButton() {
-    let buttonCopy = this.state.tagsEditable ? 'Save' : 'Add Tag';
+    let buttonCopy = this.state.tagsEditable ? 'Save' : 'Add Tag'
 
     return (
       <div className="tags__edit">
@@ -97,18 +96,18 @@ var ItemDetails = React.createClass({
   },
 
   updateTags(value) {
-    let tags = value.join(',');
+    let tags = value.join(',')
 
     this.props.setItem('tags', null, tags)
   },
 
   editTagsInput() {
-    let tags = this.props.tags.split(',');
+    let tags = this.props.tags.split(',')
     if (tags.length === 1 && !tags[0]) {
-      tags = ""
+      tags = ''
     }
 
-    let tagOptions = _.pluck(this.props.productTags, 'tag');
+    let tagOptions = _.pluck(this.props.productTags, 'tag')
 
     return (
       <div className="tags__wrapper">
@@ -121,17 +120,16 @@ var ItemDetails = React.createClass({
     if (this.state.tagsEditable) {
       return this.editTagsInput()
     } else {
-      return this.buildTags(this.props.tags);
+      return this.buildTags(this.props.tags)
     }
   },
 
   infoSection() {
-    let type = helpers.toTitleCase(this.props.type);
+    let type = helpers.toTitleCase(this.props.type)
     let ticketId = `#${this.props.number}`
-    let title = this.buildTitle();
-    let tags = this.tags();
-    let createdByTimestamp = this.createdByTimestamp(this.props.createdAt, this.props.createdBy);
-    let toggleButton = this.toggleButton();
+    let title = this.buildTitle()
+    let tags = this.tags()
+    let toggleButton = this.toggleButton()
 
     return (
       <div className="col-xs-12 col-lg-9 info">
@@ -159,13 +157,11 @@ var ItemDetails = React.createClass({
   },
 
   actionControl () {
-    let members = helpers.formatSelectMembers(this.props.members);
-    let scores = helpers.formatForSelect(ScoreMap);
-    let statuses = helpers.formatStatusesForSelect(INVERTED_STATUS_MAP);
+    let members = helpers.formatSelectMembers(this.props.members)
+    let scores = helpers.formatForSelect(ScoreMap)
+    let statuses = helpers.formatStatusesForSelect(INVERTED_STATUS_MAP)
 
-    let productId = this.getParams().id;
-    let itemId = this.getParams().number;
-    let assigneeToId = (this.props.assignee && this.props.assignee.id) ? this.props.assignee.id : '';
+    let assigneeToId = (this.props.assignee && this.props.assignee.id) ? this.props.assignee.id : ''
 
     let itemParams = {
       score: this.props.score,
@@ -175,9 +171,9 @@ var ItemDetails = React.createClass({
       assigned_to: assigneeToId
     }
 
-    let statusPicker = this.selector(itemParams, itemParams.status, statuses, 'status');
-    let scoreSelector = this.selector(itemParams, itemParams.score, scores, 'score');
-    let assigneeSelector = this.assigneeSelector(itemParams, members);
+    let statusPicker = this.selector(itemParams, itemParams.status, statuses, 'status')
+    let scoreSelector = this.selector(itemParams, itemParams.score, scores, 'score')
+    let assigneeSelector = this.assigneeSelector(itemParams, members)
 
     return (
       <div className="col-xs-12 control">
@@ -195,10 +191,10 @@ var ItemDetails = React.createClass({
   },
 
   actionsSection() {
-    let itemStatus = this.itemStatus(this.props.status);
-    let email = this.props.assignee ? this.props.assignee.email: '';
-    let assigneeGravatar = this.assigneeGravatar(email);
-    let itemSizeButton = this.itemScoreButton(this.props.type, this.props.score);
+    let itemStatus = this.itemStatus(this.props.status)
+    let email = this.props.assignee ? this.props.assignee.email: ''
+    let assigneeGravatar = this.assigneeGravatar(email)
+    let itemSizeButton = this.itemScoreButton(this.props.type, this.props.score)
     let actionControl = this.actionControl()
 
     return (
@@ -239,10 +235,10 @@ var ItemDetails = React.createClass({
   },
 
   render: function() {
-    let infoSection = this.infoSection();
-    let actionsSection = this.actionsSection();
+    let infoSection = this.infoSection()
+    let actionsSection = this.actionsSection()
 
-    let attachments = this.props.attachments || [];
+    let attachments = this.props.attachments || []
     let mobileAttachments = <ItemAttachments attachments={attachments}
                                                   size={'medium'} />
 
@@ -254,6 +250,6 @@ var ItemDetails = React.createClass({
       </div>
     )
   }
-});
+})
 
-export default ItemDetails;
+export default ItemDetails

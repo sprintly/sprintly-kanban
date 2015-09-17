@@ -1,5 +1,5 @@
-import React from 'react/addons';
-import Bootstrap from 'react-bootstrap';
+import React from 'react/addons'
+import Bootstrap from 'react-bootstrap'
 
 let Summary = React.createClass({
   render() {
@@ -8,8 +8,8 @@ let Summary = React.createClass({
         {this.props.startDate}
         <Bootstrap.Label>{this.props.points} points</Bootstrap.Label>
       </div>
-    );
+    )
   }
 })
 
-export default Summary;
+export default Summary

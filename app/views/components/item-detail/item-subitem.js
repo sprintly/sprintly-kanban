@@ -1,15 +1,13 @@
-import React from 'react/addons';
-import _ from 'lodash';
-import helpers from '../../components/helpers';
-import ItemDetailMixin from './detail-mixin';
-import ItemDescription from './item-description';
-import SubitemHeader from './item-subitem-header';
-import {State, Link} from 'react-router';
-import ProductActions from '../../../actions/product-actions';
-import ItemActions from '../../../actions/item-actions';
-import classNames from "classnames";
-import ScoreMap from '../../../lib/score-map';
-import STATUS_MAP from '../../../lib/statuses-map';
+import React from 'react/addons'
+import _ from 'lodash'
+import helpers from '../../components/helpers'
+import ItemDetailMixin from './detail-mixin'
+import ItemDescription from './item-description'
+import SubitemHeader from './item-subitem-header'
+import {State, Link} from 'react-router'
+import classNames from 'classnames'
+import ScoreMap from '../../../lib/score-map'
+import STATUS_MAP from '../../../lib/statuses-map'
 const INVERTED_STATUS_MAP = _.zipObject(_.values(STATUS_MAP), _.keys(STATUS_MAP))
 
 var ItemSubitem = React.createClass({
@@ -50,12 +48,12 @@ var ItemSubitem = React.createClass({
   },
 
   subitemActions() {
-    let members = helpers.formatSelectMembers(this.props.members);
-    let scores = helpers.formatForSelect(ScoreMap);
-    let statuses = helpers.formatStatusesForSelect(INVERTED_STATUS_MAP);
+    let members = helpers.formatSelectMembers(this.props.members)
+    let scores = helpers.formatForSelect(ScoreMap)
+    let statuses = helpers.formatStatusesForSelect(INVERTED_STATUS_MAP)
 
-    let subitem = this.props.subitem;
-    let assigneeToId = (subitem.assigned_to && subitem.assigned_to.id) ? subitem.assigned_to.id : '';
+    let subitem = this.props.subitem
+    let assigneeToId = (subitem.assigned_to && subitem.assigned_to.id) ? subitem.assigned_to.id : ''
     let itemParams = {
       score: subitem.score,
       number: subitem.number,
@@ -64,9 +62,9 @@ var ItemSubitem = React.createClass({
       assigned_to: assigneeToId
     }
 
-    let statusPicker = this.selector(itemParams, itemParams.status, statuses, 'status');
-    let scoreSelector = this.selector(itemParams, itemParams.score, scores, 'score');
-    let assigneeSelector = this.assigneeSelector(itemParams, members);
+    let statusPicker = this.selector(itemParams, itemParams.status, statuses, 'status')
+    let scoreSelector = this.selector(itemParams, itemParams.score, scores, 'score')
+    let assigneeSelector = this.assigneeSelector(itemParams, members)
 
     return (
       <div className="state">
@@ -108,23 +106,23 @@ var ItemSubitem = React.createClass({
   },
 
   render() {
-    let header = this.subitemHeader();
-    let description = this.description();
-    let subitemActions = this.subitemActions();
+    let header = this.subitemHeader()
+    let description = this.description()
+    let subitemActions = this.subitemActions()
     let contentClasses = classNames({
       'content-dark': true,
       'open': this.props.header
-    });
-    let contentStyles = !this.props.header ? {overflow: 'hidden', display: 'none'} : {};
+    })
+    let contentStyles = !this.props.header ? {overflow: 'hidden', display: 'none'} : {}
     let descriptionClasses = classNames({
-      "col-xs-8 col-lg-9": true,
-      "collapse-left": true,
-      "description": true,
+      'col-xs-8 col-lg-9': true,
+      'collapse-left': true,
+      'description': true,
       'italicize': !this.props.subitem.description
     })
-    let tags = this.buildTags(this.props.subitem.tags);
-    let createdByTimestamp = this.createdByTimestamp(this.props.subitem.created_at, this.props.subitem.created_by);
-    let viewTicketURL = `/product/${this.getParams().id}/item/${this.props.subitem.number}`;
+    let tags = this.buildTags(this.props.subitem.tags)
+    let createdByTimestamp = this.createdByTimestamp(this.props.subitem.created_at, this.props.subitem.created_by)
+    let viewTicketURL = `/product/${this.getParams().id}/item/${this.props.subitem.number}`
 
     return (
       <div className="subitem">
@@ -151,4 +149,4 @@ var ItemSubitem = React.createClass({
   }
 })
 
-export default ItemSubitem;
+export default ItemSubitem

@@ -1,12 +1,13 @@
-var Hapi = require('hapi');
-var server = new Hapi.Server();
-var path = require('path');
-var config = require('config');
+/* eslint-env node */
+var Hapi = require('hapi')
+var server = new Hapi.Server()
+var path = require('path')
+var config = require('config')
 
 server.connection({
   host: '0.0.0.0',
   port: process.env.PORT || 3600
-});
+})
 
 server.views({
   engines: {
@@ -17,7 +18,7 @@ server.views({
   compileOptions: {
     isPretty: true
   }
-});
+})
 
 server.register([
   {
@@ -35,9 +36,9 @@ server.register([
   require('./lib/sprintly-oauth')
 ], function(err) {
   if (err) {
-    throw err;
+    throw err
   }
-});
+})
 
 function serveApp(request, reply) {
   reply.view('layout.html', {
@@ -53,7 +54,7 @@ server.route([
     config: {
       auth: 'session',
       handler: serveApp
-    },
+    }
   },
   {
     method: 'GET',
@@ -61,7 +62,7 @@ server.route([
     config: {
       auth: 'session',
       handler: serveApp
-    },
+    }
   },
   {
     method: 'GET',
@@ -69,7 +70,7 @@ server.route([
     config: {
       auth: 'session',
       handler: serveApp
-    },
+    }
   },
   {
     method: 'GET',
@@ -77,7 +78,7 @@ server.route([
     config: {
       auth: 'session',
       handler: serveApp
-    },
+    }
   },
   {
     method: 'POST',
@@ -114,8 +115,8 @@ server.route([
       }
     }
   }
-]);
+])
 
 server.start(function() {
-  console.log('server started on port 3600');
-});
+  console.log('server started on port 3600') // eslint-disable-line no-console
+})

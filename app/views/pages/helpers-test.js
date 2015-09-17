@@ -1,29 +1,30 @@
-var assert = require('chai').assert;
-var helpers = require('./helpers');
+/* eslint-env mocha, node */
+var assert = require('chai').assert
+var helpers = require('./helpers')
 
-var EL_WIDTH = 320;
-var COL_COUNT = 5;
-var UPPER_BOUND = COL_COUNT-1;
-var LOWER_BOUND = 0;
+var EL_WIDTH = 320
+var COL_COUNT = 5
+var UPPER_BOUND = COL_COUNT-1
+var LOWER_BOUND = 0
 
 describe('Pages/helpers', function() {
   describe('#isMobile', function() {
     // 420 is iPhone 6+ size
     it('returns true for over 420px', function() {
-      var window = {innerWidth: 419};
+      var window = {innerWidth: 419}
 
-      assert.isTrue(helpers.isMobile(window));
+      assert.isTrue(helpers.isMobile(window))
     })
     it('returns false for over 420px', function() {
-      var window = {innerWidth: 421};
+      var window = {innerWidth: 421}
 
-      assert.isFalse(helpers.isMobile(window));
+      assert.isFalse(helpers.isMobile(window))
     })
   })
   describe('#generateTranslation', function() {
     describe('increment', function() {
       beforeEach(function() {
-        this.increment = true;
+        this.increment = true
       })
 
       context('Lower Bounds', function() {
@@ -41,7 +42,7 @@ describe('Pages/helpers', function() {
           var result = helpers.generateTranslation(currentTranslation, COL_COUNT, EL_WIDTH, this.increment)
           assert.deepEqual(result, target)
         })
-      });
+      })
 
       context('Upper Bounds', function() {
         it('returns original position and value', function() {
@@ -53,12 +54,12 @@ describe('Pages/helpers', function() {
           var result = helpers.generateTranslation(currentTranslation, COL_COUNT, EL_WIDTH, this.increment)
           assert.deepEqual(result, currentTranslation)
         })
-      });
+      })
     })
 
     describe('decrement', function() {
       beforeEach(function() {
-        this.increment = false;
+        this.increment = false
       })
 
       context('Lower Bounds', function() {
@@ -93,14 +94,14 @@ describe('Pages/helpers', function() {
   describe('#browserPrefix', function() {
     it('returns the prefixed version of the attr && value pair', function() {
       var target = {
-        '-webkit-transform': "translateX(-320px)",
-        '-moz-transform': "translateX(-320px)",
-        '-o-transform': "translateX(-320px)"
+        '-webkit-transform': 'translateX(-320px)',
+        '-moz-transform': 'translateX(-320px)',
+        '-o-transform': 'translateX(-320px)'
       }
 
       var result = helpers.browserPrefix('transform', 'translateX(-320px)')
 
-      assert.deepEqual(result, target);
+      assert.deepEqual(result, target)
     })
   })
 })

@@ -1,25 +1,25 @@
-import _ from 'lodash';
-import React from 'react/addons';
-import classNames from "classnames";
+import _ from 'lodash'
+import React from 'react/addons'
+import classNames from 'classnames'
 
 const TITLE_ATTRS = {
   who: {
-    title: "As an",
-    placeholder: "e.g. an accountant"
+    title: 'As an',
+    placeholder: 'e.g. an accountant'
   },
   what: {
-    title: "I want",
-    placeholder: "e.g. Quickbooks integration"
+    title: 'I want',
+    placeholder: 'e.g. Quickbooks integration'
   },
   why: {
-    title: "so that",
+    title: 'so that',
     placeholder: "e.g. I don't have to import CSV's daily"
   }
-};
-const STORY_ATTRS = ['who', 'what', 'why'];
+}
+const STORY_ATTRS = ['who', 'what', 'why']
 
 function toTitleCase(str) {
-  return str.charAt(0).toUpperCase() + str.substr(1).toLowerCase();
+  return str.charAt(0).toUpperCase() + str.substr(1).toLowerCase()
 }
 
 let AddItemStoryTitle = React.createClass({
@@ -32,15 +32,15 @@ let AddItemStoryTitle = React.createClass({
   },
 
   componentDidMount() {
-    React.findDOMNode(this.refs.whoInput).focus();
+    React.findDOMNode(this.refs.whoInput).focus()
   },
 
   titleNodes() {
     return _.map(STORY_ATTRS, (attr, i) => {
       var classes = classNames({
-        "form-control": true,
+        'form-control': true,
         'invalid': !this.props.validation.value[attr]
-      });
+      })
 
       return (
         <div className={`add-item__field ${attr}`} key={i}>
@@ -66,6 +66,6 @@ let AddItemStoryTitle = React.createClass({
       </div>
     )
   }
-});
+})
 
-export default AddItemStoryTitle;
+export default AddItemStoryTitle

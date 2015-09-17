@@ -1,5 +1,5 @@
-var React = require('react/addons');
-var crypto = require('crypto');
+import React from 'react/addons'
+import crypto from 'crypto'
 
 var Gravatar = React.createClass({
 
@@ -11,22 +11,21 @@ var Gravatar = React.createClass({
   getDefaultProps: function() {
     return {
       size: 36
-    };
+    }
   },
 
   getAvatar: function(email) {
     var hash = crypto.createHash('md5')
     hash.update(this.props.email.toLowerCase().trim())
     var url = `//www.gravatar.com/avatar/${hash.digest('hex')}.jpg\
-      ?d=identicon&s=${this.props.size}`;
-    return <img src={url} {...this.props} />;
+      ?d=identicon&s=${this.props.size}`
+    return <img src={url} {...this.props} />
   },
 
   render: function() {
     return this.props.email != null ?
-      this.getAvatar(this.props.email) : <span />;
+      this.getAvatar(this.props.email) : <span />
   }
-});
+})
 
-module.exports = Gravatar;
-
+export default Gravatar

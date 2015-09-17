@@ -1,15 +1,13 @@
-import React from 'react/addons';
-import _ from 'lodash';
-import helpers from '../../components/helpers';
-import ItemDetailMixin from './detail-mixin';
-import ItemHeader from './item-header';
-import {State} from 'react-router';
-import ProductActions from '../../../actions/product-actions';
-import Markdown from 'react-markdown';
-import classNames from 'classnames';
+import React from 'react/addons'
+import _ from 'lodash'
+import helpers from '../../components/helpers'
+import ItemDetailMixin from './detail-mixin'
+import {State} from 'react-router'
+import Markdown from 'react-markdown'
+import classNames from 'classnames'
 
-const placeholder = "Use '@' to mention another Sprintly user.  Use #[item number] (e.g. #1234) to reference another Sprintly item.";
-const readOnlyPlaceholder = "View full ticket to edit it's description";
+const placeholder = "Use '@' to mention another Sprintly user.  Use #[item number] (e.g. #1234) to reference another Sprintly item."
+const readOnlyPlaceholder = "View full ticket to edit it's description"
 
 var ItemDescription = React.createClass({
 
@@ -34,43 +32,41 @@ var ItemDescription = React.createClass({
   },
 
   saveItemDescription() {
-    const DESCRIPTION_ATTR = 'description';
-    this.toggleDescriptionEdit();
+    const DESCRIPTION_ATTR = 'description'
+    this.toggleDescriptionEdit()
     this.updateAttribute(this.props.itemId, DESCRIPTION_ATTR, this.props.description)
   },
 
   descriptionMention() {
-    let mentionsComponent = this.mentionsComponent(this.props.description, placeholder, this.props.members, _.partial(this.props.setItem, 'description'));
+    let mentionsComponent = this.mentionsComponent(this.props.description, placeholder, this.props.members, _.partial(this.props.setItem, 'description'))
 
     return ([
-        mentionsComponent,
-        this.toggleButton(null, this.saveItemDescription)
-      ]
-    )
+      mentionsComponent,
+      this.toggleButton(null, this.saveItemDescription)
+    ])
   },
 
   descriptionMarkdown() {
-    let description = this.props.description;
+    let description = this.props.description
 
     if (!description) {
-      description = this.props.readOnly ? `_${readOnlyPlaceholder}_` : `_${placeholder}_`;
+      description = this.props.readOnly ? `_${readOnlyPlaceholder}_` : `_${placeholder}_`
     } else {
-      description = helpers.formatTextForMarkdown(description);
+      description = helpers.formatTextForMarkdown(description)
     }
     let markdown = <Markdown key="description" source={description} />
-    let toggle = this.props.readOnly ? null : this.toggleButton("min-button-alignment", this.toggleDescriptionEdit);
+    let toggle = this.props.readOnly ? null : this.toggleButton('min-button-alignment', this.toggleDescriptionEdit)
 
     return ([
-        markdown,
-        toggle
-      ]
-    )
+      markdown,
+      toggle
+    ])
   },
 
   toggleButton(alignmentClass, clickHandler) {
-    let buttonSide = this.props.alternateLayout ? 'left': 'right';
-    let classes = `description__control pull-${buttonSide} ${alignmentClass}`;
-    let buttonCopy = this.state.descriptionEditable ? 'Save' : 'Edit';
+    let buttonSide = this.props.alternateLayout ? 'left': 'right'
+    let classes = `description__control pull-${buttonSide} ${alignmentClass}`
+    let buttonCopy = this.state.descriptionEditable ? 'Save' : 'Edit'
 
     return (
       <div key="toggle" className={classes}>
@@ -82,21 +78,21 @@ var ItemDescription = React.createClass({
   },
 
   toggleDescriptionEdit() {
-    this.setState({descriptionEditable: !this.state.descriptionEditable});
+    this.setState({descriptionEditable: !this.state.descriptionEditable})
   },
 
   render: function() {
-    let descriptionEl;
+    let descriptionEl
     if (!this.props.readOnly && this.state.descriptionEditable) {
-      descriptionEl = this.descriptionMention();
+      descriptionEl = this.descriptionMention()
     } else {
-      descriptionEl = this.descriptionMarkdown();
+      descriptionEl = this.descriptionMarkdown()
     }
 
     let descriptionClasses = classNames({
-      "col-xs-12": true,
-      "item__description": true,
-      "collapse-left": !this.props.alternateLayout
+      'col-xs-12': true,
+      'item__description': true,
+      'collapse-left': !this.props.alternateLayout
     })
 
     return (
@@ -106,6 +102,6 @@ var ItemDescription = React.createClass({
     )
   }
 
-});
+})
 
-export default ItemDescription;
+export default ItemDescription

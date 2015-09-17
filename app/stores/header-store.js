@@ -1,14 +1,14 @@
-import _ from 'lodash';
-import AppDispatcher from '../dispatchers/app-dispatcher';
-import ActionTypes from '../constants/header-constants';
-import {EventEmitter} from 'events';
+import _ from 'lodash'
+import AppDispatcher from '../dispatchers/app-dispatcher'
+import ActionTypes from '../constants/header-constants'
+import {EventEmitter} from 'events'
 
-var HeaderStore = module.exports = _.assign({}, EventEmitter.prototype, {
+var HeaderStore = _.assign({}, EventEmitter.prototype, {
   openAddItemModal: function() {
-    var addItemButton = document.getElementsByClassName('add-item')[0];
+    var addItemButton = document.getElementsByClassName('add-item')[0]
 
     if (addItemButton) {
-      addItemButton.click();
+      addItemButton.click()
     }
   }
 })
@@ -16,9 +16,11 @@ var HeaderStore = module.exports = _.assign({}, EventEmitter.prototype, {
 AppDispatcher.register(function(action) {
   switch(action.actionType) {
     case ActionTypes.OPEN_MODAL:
-      HeaderStore.openAddItemModal();
-      break;
+      HeaderStore.openAddItemModal()
+      break
 
     default:
   }
-});
+})
+
+export default HeaderStore

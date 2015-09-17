@@ -1,6 +1,6 @@
-import _ from 'lodash';
-import React from "react";
-import ItemCard from '../item-card';
+import _ from 'lodash'
+import React from 'react'
+import ItemCard from '../item-card'
 
 var SearchResults = React.createClass({
 
@@ -18,12 +18,12 @@ var SearchResults = React.createClass({
   },
 
   nextPage() {
-    this.setState({ currentPage: this.state.currentPage + 1 });
+    this.setState({ currentPage: this.state.currentPage + 1 })
   },
 
   itemCardNodes() {
-    let items = this.props.results.items;
-    let page = items.slice(0, this.state.perPage * this.state.currentPage);
+    let items = this.props.results.items
+    let page = items.slice(0, this.state.perPage * this.state.currentPage)
 
     return (
       _.map(page, (item, index) => {
@@ -34,18 +34,18 @@ var SearchResults = React.createClass({
             productId={item.product.id}
             sortField="relevance"
           />
-        );
+        )
       })
     )
   },
 
   pageControls() {
-    let items = this.props.results.items;
+    let items = this.props.results.items
     let cannotLoadMore = items.length <= this.state.perPage * this.state.currentPage
 
     let controls = cannotLoadMore ? '' : <button onClick={this.nextPage} className="btn btn-block btn-default">Load More</button>
 
-    return controls;
+    return controls
   },
 
   render() {
@@ -54,8 +54,8 @@ var SearchResults = React.createClass({
         {this.itemCardNodes()}
         {this.pageControls()}
       </div>
-    );
+    )
   }
-});
+})
 
-export default SearchResults;
+export default SearchResults

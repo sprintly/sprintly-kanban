@@ -1,6 +1,6 @@
-import _ from 'lodash';
-import React from 'react/addons';
-import {SelectorMenu} from 'sprintly-ui';
+import _ from 'lodash'
+import React from 'react/addons'
+import {SelectorMenu} from 'sprintly-ui'
 
 let MembersDropdown = React.createClass({
 
@@ -11,21 +11,21 @@ let MembersDropdown = React.createClass({
   },
 
   render() {
-    let active = _.findWhere(this.props.members, { id: this.props.assigned_to });
-    let selection = 'Unassigned';
+    let active = _.findWhere(this.props.members, { id: this.props.assigned_to })
+    let selection = 'Unassigned'
     let members = _.map(this.props.members, function(member) {
-      let title = `${member.first_name} ${member.last_name.slice(0,1)}.`;
+      let title = `${member.first_name} ${member.last_name.slice(0,1)}.`
       return {
         title,
         id: member.id
       }
-    });
+    })
 
-    members = _.sortBy(members, 'title');
+    members = _.sortBy(members, 'title')
 
     if (active) {
-      selection = `${active.first_name} ${active.last_name.slice(0,1)}.`;
-      members.unshift({ title: 'Unassigned', id: '' });
+      selection = `${active.first_name} ${active.last_name.slice(0,1)}.`
+      members.unshift({ title: 'Unassigned', id: '' })
     }
 
     return (
@@ -34,13 +34,13 @@ let MembersDropdown = React.createClass({
           optionslist={members}
           selection={selection}
           onSelectionChange={(title) => {
-            this.onChange(_.findWhere(members, { title }).id);
+            this.onChange(_.findWhere(members, { title }).id)
           }}
         />
       </div>
-    );
+    )
   }
 
-});
+})
 
-export default MembersDropdown;
+export default MembersDropdown

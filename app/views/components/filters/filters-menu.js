@@ -1,34 +1,34 @@
-import _ from 'lodash';
-import React from 'react/addons';
-import MembersFilter from './forms/members-filter';
-import CheckboxFilter from './forms/checkbox-filter';
-import TagsFilter from './forms/tags-filter';
-import classNames from "classnames";
-import onClickOutside from '@sprintly/react-onclickoutside';
-import FilterActions from '../../../actions/filter-actions';
+import _ from 'lodash'
+import React from 'react/addons'
+import MembersFilter from './forms/members-filter'
+import CheckboxFilter from './forms/checkbox-filter'
+import TagsFilter from './forms/tags-filter'
+import classNames from 'classnames'
+import onClickOutside from '@sprintly/react-onclickoutside'
+import FilterActions from '../../../actions/filter-actions'
 
 let MyItems = React.createClass({
   render() {
-    let labelText = this.props.active ? 'Everything' : 'My Items';
+    let labelText = this.props.active ? 'Everything' : 'My Items'
     return (
       <a href="#" onClick={this.props.onClick} className="filters-menu__mine">{labelText}</a>
-    );
+    )
   }
-});
+})
 
 let FiltersMenu = React.createClass({
 
   getDefaultProps() {
     return {
       disableOnClickOutside: true
-    };
+    }
   },
 
   getInitialState() {
     return {
       showPopup: false,
       visibleFilters: []
-    };
+    }
   },
 
   mixins: [
@@ -44,55 +44,55 @@ let FiltersMenu = React.createClass({
   handleClickOutside() {
     this.setState({
       showPopup: false
-    });
-    this.disableOnClickOutside();
+    })
+    this.disableOnClickOutside()
   },
 
   toggleFiltersMenu() {
-    let showPopup = !this.state.showPopup;
+    let showPopup = !this.state.showPopup
 
     if (showPopup) {
-      this.enableOnClickOutside();
+      this.enableOnClickOutside()
     } else {
-      this.disableOnClickOutside();
+      this.disableOnClickOutside()
     }
-    this.setState({ showPopup });
+    this.setState({ showPopup })
   },
 
   toggleVisible(filter) {
-    let visibleFilters = _.clone(this.state.visibleFilters);
+    let visibleFilters = _.clone(this.state.visibleFilters)
     if (_.contains(visibleFilters, filter)) {
       this.setState({ visibleFilters: _.without(visibleFilters, filter) })
     } else {
-      visibleFilters.push(filter);
-      this.setState({ visibleFilters });
+      visibleFilters.push(filter)
+      this.setState({ visibleFilters })
     }
   },
 
   renderForm(filter) {
-    var form;
+    var form
     let formProps = {
       name: filter.field,
       updateFilters: FilterActions.update,
       options: filter.criteriaOptions,
       criteria: filter.criteria,
       visible: true
-    };
+    }
     switch (filter.type) {
       case 'members':
-        form = <MembersFilter {...formProps} members={this.props.members}/>;
-        break;
+        form = <MembersFilter {...formProps} members={this.props.members}/>
+        break
       case 'checkbox':
-        form = <CheckboxFilter {...formProps} />;
-        break;
+        form = <CheckboxFilter {...formProps} />
+        break
       case 'tags':
-        form = <TagsFilter {...formProps} />;
-        break;
+        form = <TagsFilter {...formProps} />
+        break
       default:
-        form = '';
-        break;
+        form = ''
+        break
     }
-    return form;
+    return form
   },
 
   buildFilters() {
@@ -100,26 +100,26 @@ let FiltersMenu = React.createClass({
       _.map(this.props.allFilters, function(filter, i) {
         var classes = classNames({
           'show-form': _.contains(this.state.visibleFilters, filter.field)
-        });
+        })
 
         return (
           <li className={classes} key={i}>
             <h3 onClick={_.partial(this.toggleVisible, filter.field)}>{filter.label}</h3>
             {this.renderForm(filter)}
           </li>
-        );
+        )
       }, this)
-    );
+    )
   },
 
   mine(ev) {
-    ev.preventDefault();
-    let activeFilters = _.findWhere(this.props.activeFilters, { field: 'assigned_to' });
+    ev.preventDefault()
+    let activeFilters = _.findWhere(this.props.activeFilters, { field: 'assigned_to' })
 
     if (activeFilters) {
-      FilterActions.clear();
+      FilterActions.clear()
     } else {
-      FilterActions.update('assigned_to', this.props.user.id);
+      FilterActions.update('assigned_to', this.props.user.id)
     }
   },
 
@@ -128,9 +128,9 @@ let FiltersMenu = React.createClass({
       'col-sm-2': true,
       'filters-menu': true,
       'show-popup': this.state.showPopup
-    });
-    let filters = this.buildFilters();
-    let activeFiltersCount = _.where(this.props.activeFilters, { active: true }).length;
+    })
+    let filters = this.buildFilters()
+    let activeFiltersCount = _.where(this.props.activeFilters, { active: true }).length
 
     return (
       <div className={classes}>
@@ -146,8 +146,8 @@ let FiltersMenu = React.createClass({
           </div>
         </div>
       </div>
-    );
+    )
   }
-});
+})
 
-export default FiltersMenu;
+export default FiltersMenu

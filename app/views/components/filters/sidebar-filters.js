@@ -1,15 +1,13 @@
-import _ from 'lodash';
-import React from 'react/addons';
+import _ from 'lodash'
+import React from 'react/addons'
 
 // Components
-import TagsInput from '../tags-input.js';
-import Select from 'react-select';
+import TagsInput from '../tags-input.js'
+import Select from 'react-select'
 
 // Flux
-import FiltersStore from '../../../stores/filters-store';
-import ProductStore from '../../../stores/product-store';
-import FiltersActions from '../../../actions/filter-actions';
-import {State} from 'react-router';
+import FiltersActions from '../../../actions/filter-actions'
+import {State} from 'react-router'
 
 var SidebarFilters = React.createClass({
 
@@ -26,28 +24,28 @@ var SidebarFilters = React.createClass({
   },
 
   updateFilters(field, criteria, options) {
-    FiltersActions.update(field, criteria, options);
+    FiltersActions.update(field, criteria, options)
   },
 
   addTags(tags) {
-    FiltersActions.update('tags', tags);
+    FiltersActions.update('tags', tags)
   },
 
   tagsInput() {
     let tags = _.map(this.props.tags, (tag) => {
-      return tag.tag;
-    });
+      return tag.tag
+    })
 
     let activeTags = _.find(this.props.activeFilters, {field: 'tags'})
     if (!activeTags) {
-      activeTags = [];
+      activeTags = []
     } else {
       activeTags = activeTags.criteria
     }
 
     return ([
       <li className="drawer-header" key="drawer-header">
-        <a className='drawer-header' href="#">Tags</a>
+        <a className="drawer-header" href="#">Tags</a>
       </li>,
       <li className="drawer-subheader" key="drawer-subheader">
         <div className="form-group">
@@ -82,23 +80,23 @@ var SidebarFilters = React.createClass({
     let person = _.find(this.props.members, {id: parseInt(filter.criteria)})
 
     if (person) {
-      return `${person.first_name} ${person.last_name}`;
+      return `${person.first_name} ${person.last_name}`
     } else {
-      return 'Unassigned';
+      return 'Unassigned'
     }
   },
 
   buildAssignFilter(field) {
-    let filter = _.find(this.props.allFilters, {field: field});
-    let activeAssignee = this.selectedPerson(this.props.members, filter);
-    let members = this.prepareMembersForSelect(this.props.members);
+    let filter = _.find(this.props.allFilters, {field: field})
+    let activeAssignee = this.selectedPerson(this.props.members, filter)
+    let members = this.prepareMembersForSelect(this.props.members)
 
     return ([
       <li className="drawer-header">
-        <a className='drawer-header' href="#">{filter.label}</a>
+        <a className="drawer-header" href="#">{filter.label}</a>
       </li>,
       <li className="drawer-subheader">
-        <Select placeholder='Unassigned'
+        <Select placeholder="Unassigned"
                 name={filter.field}
                 className="assign-dropdown"
                 value={activeAssignee}
@@ -110,10 +108,10 @@ var SidebarFilters = React.createClass({
   },
 
   render() {
-    let tagsInput = this.tagsInput();
+    let tagsInput = this.tagsInput()
     let assignmentFields = _.map(['assigned_to', 'created_by'], (field) => {
-      return this.buildAssignFilter(field);
-    }, this);
+      return this.buildAssignFilter(field)
+    }, this)
 
     return (
       <div className="filters-menu__scroll-wrapper">
@@ -122,9 +120,9 @@ var SidebarFilters = React.createClass({
           {assignmentFields}
         </ul>
       </div>
-    );
+    )
   }
 
-});
+})
 
-module.exports = SidebarFilters;
+export default SidebarFilters

@@ -1,8 +1,7 @@
-import _ from 'lodash';
-import React from 'react/addons';
-import classNames from "classnames";
-import {Input} from 'react-bootstrap';
-import TagsInput from '../../tags-input';
+import _ from 'lodash'
+import React from 'react/addons'
+import classNames from 'classnames'
+import TagsInput from '../../tags-input'
 
 var TagsFilter = React.createClass({
 
@@ -19,11 +18,11 @@ var TagsFilter = React.createClass({
   },
 
   update: function(tags) {
-    var options = {};
+    var options = {}
     if (tags.length === 0) {
-      options.unset = true;
+      options.unset = true
     }
-    this.props.updateFilters(this.props.name, _.clone(tags), options);
+    this.props.updateFilters(this.props.name, _.clone(tags), options)
   },
 
   render: function() {
@@ -31,14 +30,14 @@ var TagsFilter = React.createClass({
       'form-horizontal': true,
       'filter__criteria-selector': true,
       visible: this.props.visible
-    });
-    var tags = _.pluck(this.props.options, 'tag');
-    var criteria;
+    })
+    var tags = _.pluck(this.props.options, 'tag')
+    var criteria
     if (this.props.criteria) {
       criteria = _.isArray(this.props.criteria) ?
-        this.props.criteria : [this.props.criteria];
+        this.props.criteria : [this.props.criteria]
     } else {
-      criteria = [];
+      criteria = []
     }
 
     return (
@@ -56,4 +55,4 @@ var TagsFilter = React.createClass({
   }
 })
 
-export default TagsFilter;
+export default TagsFilter

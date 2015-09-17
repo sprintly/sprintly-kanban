@@ -1,15 +1,15 @@
-import _ from 'lodash';
-import Filter from './filters-toolbar-filter';
-import FiltersMenu from './filters-menu';
-import FilterAction from '../../../actions/filter-actions';
-import VelocityComponent from './velocity-component';
-import React from 'react/addons';
+import _ from 'lodash'
+import Filter from './filters-toolbar-filter'
+import FiltersMenu from './filters-menu'
+import FilterAction from '../../../actions/filter-actions'
+import VelocityComponent from './velocity-component'
+import React from 'react/addons'
 
 var FiltersToolbar = React.createClass({
   getInitialState() {
     return {
       showFiltersMenu: false
-    };
+    }
   },
 
   propTypes: {
@@ -20,11 +20,11 @@ var FiltersToolbar = React.createClass({
   },
 
   updateFilters(field, criteria, options) {
-    FilterAction.update(field, criteria, options);
+    FilterAction.update(field, criteria, options)
   },
 
   toggleFiltersMenu() {
-    this.setState({ showFiltersMenu: !!this.state.showFiltersMenu });
+    this.setState({ showFiltersMenu: !!this.state.showFiltersMenu })
   },
 
   buildFilters() {
@@ -37,12 +37,12 @@ var FiltersToolbar = React.createClass({
           updateFilters={this.updateFilters}
           {...filter}
         />
-      );
-    });
+      )
+    })
   },
 
   render() {
-    let filters = this.buildFilters();
+    let filters = this.buildFilters()
 
     return (
       <div className="hidden-xs">
@@ -62,8 +62,8 @@ var FiltersToolbar = React.createClass({
           />
         </div>
       </div>
-    );
+    )
   }
-});
+})
 
-export default FiltersToolbar;
+export default FiltersToolbar

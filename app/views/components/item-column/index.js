@@ -1,27 +1,27 @@
-import _ from 'lodash';
-import React, { PropTypes } from 'react/addons';
-import classNames from 'classnames';
-import STATUS_MAP from '../../../lib/status-map';
+import _ from 'lodash'
+import React, { PropTypes } from 'react/addons'
+import classNames from 'classnames'
+import STATUS_MAP from '../../../lib/status-map'
 // Components
-import ItemCard from '../item-card';
-import PlaceholderCards from './placeholder-cards';
-import SprintGroup from './sprint-group';
-import ColumnHeader from './header';
-import NoSearchResults from './no-search-results';
+import ItemCard from '../item-card'
+import PlaceholderCards from './placeholder-cards'
+import SprintGroup from './sprint-group'
+import ColumnHeader from './header'
+import NoSearchResults from './no-search-results'
 // Flux
-import ProductStore from '../../../stores/product-store';
-import ProductActions from '../../../actions/product-actions';
+import ProductStore from '../../../stores/product-store'
+import ProductActions from '../../../actions/product-actions'
 
-import { DropTarget } from 'react-dnd';
+import { DropTarget } from 'react-dnd'
 
 const dropSpec = {
-  drop(props, monitor, component) {
+  drop(_props, monitor, component) {
     if (monitor.didDrop()) {
-      return;
+      return
     }
 
-    let item = monitor.getItem();
-    let { props } = component;
+    let item = monitor.getItem()
+    let { props } = component
 
     if (item.status !== props.status) {
       ProductActions.updateItem(
@@ -29,12 +29,12 @@ const dropSpec = {
         item.number,
         { status: props.status },
         { wait: false }
-      );
+      )
     }
 
-    return { moved: true };
+    return { moved: true }
   }
-};
+}
 
 function collect(connect, monitor) {
   return {
@@ -43,7 +43,7 @@ function collect(connect, monitor) {
     isOverCurrent: monitor.isOver({ shallow: true }),
     canDrop: monitor.canDrop(),
     itemType: monitor.getItemType()
-  };
+  }
 }
 
 let ItemColumn = React.createClass({
@@ -68,21 +68,21 @@ let ItemColumn = React.createClass({
     return {
       condensed: false,
       hideLoadMore: false
-    };
+    }
   },
 
   setSortCriteria(field=this.props.sortField, direction=this.props.sortDirection, status=this.props.status) {
-    let items = ProductStore.getItemsCollection(this.props.product.id, status);
+    let items = ProductStore.getItemsCollection(this.props.product.id, status)
     if (!items) {
-      return;
+      return
     }
 
     let options = {
       field,
       direction,
       status
-    };
-    ProductActions.changeSortCriteria(items, options);
+    }
+    ProductActions.changeSortCriteria(items, options)
   },
 
   getItems(product, options={ hideLoader: false }) {
@@ -91,25 +91,25 @@ let ItemColumn = React.createClass({
       status: this.props.status,
       sortField: this.props.sortField,
       sortDirection: this.props.sortDirection
-    });
+    })
   },
 
   loadMoreItems() {
-    let items = ProductStore.getItemsCollection(this.props.product.id, this.props.status);
+    let items = ProductStore.getItemsCollection(this.props.product.id, this.props.status)
     if (!items) {
-      return;
+      return
     }
-    ProductActions.loadMoreItems(items);
+    ProductActions.loadMoreItems(items)
   },
 
   renderLoadMore() {
-    var loadMore = <button className="load-more" onClick={this.loadMoreItems}>Load More</button>;
+    var loadMore = <button className="load-more" onClick={this.loadMoreItems}>Load More</button>
 
     if (this.state.hideLoadMore || _.isEmpty(this.props.items) || this.props.items.length < this.props.limit) {
-      return '';
+      return ''
     }
 
-    return loadMore;
+    return loadMore
   },
 
   renderItemCard(item, index) {
@@ -129,12 +129,12 @@ let ItemColumn = React.createClass({
   },
 
   productHasItemsToRender() {
-    return ProductStore.hasItemsToRender(this.props.product.id);
+    return ProductStore.hasItemsToRender(this.props.product.id)
   },
 
   renderItemCards() {
     if (this.props.loading) {
-      return <div className="loading">...</div>;
+      return <div className="loading">...</div>
     }
 
     if (this.productHasItems()) {
@@ -143,9 +143,9 @@ let ItemColumn = React.createClass({
 
         return <div>{itemCards}</div>
       } else if (this.props.status === 'in-progress') {
-        return <NoSearchResults product={this.props.product} />;
+        return <NoSearchResults product={this.props.product} />
       } else {
-        return '';
+        return ''
       }
     } else {
       return <PlaceholderCards status={this.props.status} />
@@ -159,58 +159,58 @@ let ItemColumn = React.createClass({
       velocity={this.props.velocity}
       sortField={this.props.sortField}
       productId={this.props.product.id}
-    />;
+    />
   },
 
   columnContent() {
-    let showSprints = this.props.status === 'backlog' && this.props.sortField === 'priority';
+    let showSprints = this.props.status === 'backlog' && this.props.sortField === 'priority'
     if (showSprints) {
       return this.renderSprintGroup()
     } else {
-      return this.renderItemCards();
+      return this.renderItemCards()
     }
   },
 
   // React functions
 
   componentDidMount() {
-    this.getItems(this.props.product);
+    this.getItems(this.props.product)
   },
 
   componentWillReceiveProps(nextProps) {
-    var reload = false;
+    var reload = false
 
     if (nextProps.product.id !== this.props.product.id) {
-      reload = true;
+      reload = true
     }
 
     if (_.isEqual(nextProps.filters, this.props.filters) === false) {
-      reload = true;
+      reload = true
     }
 
     if (reload) {
       this.getItems(nextProps.product, {
         filters: nextProps.filters
-      });
+      })
     }
   },
 
   toggleCondensed() {
-    this.setState({ condensed: !this.state.condensed });
+    this.setState({ condensed: !this.state.condensed })
   },
 
   render() {
     let reverseSort = (ev) => {
-      let direction = this.props.sortDirection === 'desc' ? 'asc' : 'desc';
-      this.setSortCriteria(this.props.sortField, direction);
-    };
+      let direction = this.props.sortDirection === 'desc' ? 'asc' : 'desc'
+      this.setSortCriteria(this.props.sortField, direction)
+    }
 
     let classes = classNames({
       column: true,
       condensed: this.state.condensed,
       [this.props.status]: true,
       'dropzone-active': this.props.canDrop && this.props.isOverCurrent
-    });
+    })
 
     return this.props.connectDropTarget(
       <div style={this.props.colWidth} className={classes} {...this.props}>
@@ -228,8 +228,8 @@ let ItemColumn = React.createClass({
           <h3>Move to {STATUS_MAP[this.props.status]}</h3>
         </div>
       </div>
-    );
+    )
   }
-});
+})
 
-export default DropTarget('ITEM_CARD', dropSpec, collect)(ItemColumn);
+export default DropTarget('ITEM_CARD', dropSpec, collect)(ItemColumn)

@@ -1,58 +1,58 @@
-import _ from 'lodash';
-import AppDispatcher from '../dispatchers/app-dispatcher';
-import {EventEmitter} from 'events';
+import _ from 'lodash'
+import AppDispatcher from '../dispatchers/app-dispatcher'
+import {EventEmitter} from 'events'
 
-var payload = [];
-var isLoading = false;
+var payload = []
+var isLoading = false
 
 var internals = {
   populateCounts(results) {
-    results.products = _.pluck(payload, 'product');
+    results.products = _.pluck(payload, 'product')
 
     if (results.products.length > 0) {
-      results.products = _.uniq(results.products, 'id');
+      results.products = _.uniq(results.products, 'id')
     }
 
     _.each(payload, function(item) {
       switch(item.status) {
         case 'accepted':
-          results.accepted.push(item);
-          break;
+          results.accepted.push(item)
+          break
         case 'completed':
-          results.complete.push(item);
-          break;
+          results.complete.push(item)
+          break
         case 'in-progress':
-          results.current.push(item);
-          break;
+          results.current.push(item)
+          break
         case 'backlog':
-          results.backlog.push(item);
-          break;
+          results.backlog.push(item)
+          break
         case 'someday':
-          results.someday.push(item);
-          break;
+          results.someday.push(item)
+          break
         default:
-          break;
+          break
       }
 
       switch(item.type) {
         case 'story':
-          results.stories.push(item);
-          break;
+          results.stories.push(item)
+          break
         case 'task':
-          results.tasks.push(item);
-          break;
+          results.tasks.push(item)
+          break
         case 'defect':
-          results.defects.push(item);
-          break;
+          results.defects.push(item)
+          break
         case 'test':
-          results.tests.push(item);
-          break;
+          results.tests.push(item)
+          break
       }
     })
 
-    return results;
+    return results
   }
-};
+}
 
 var SearchStore = _.assign({}, EventEmitter.prototype, {
   getResults() {
@@ -70,41 +70,41 @@ var SearchStore = _.assign({}, EventEmitter.prototype, {
       current: [],
       backlog: [],
       someday: []
-    };
+    }
 
-    return internals.populateCounts(results);
+    return internals.populateCounts(results)
   },
 
   emitChange() {
-    this.emit('change');
+    this.emit('change')
   },
 
   addChangeListener(callback) {
-    this.on('change', callback);
+    this.on('change', callback)
   },
 
   removeChangeListener(callback) {
-    this.removeListener('change', callback);
+    this.removeListener('change', callback)
   }
-});
+})
 
 
 AppDispatcher.register(function(action) {
 
   switch(action.actionType) {
     case 'SEARCH_START':
-      isLoading = true;
-      SearchStore.emitChange();
-      break;
+      isLoading = true
+      SearchStore.emitChange()
+      break
     case 'SEARCH_SUCCESS':
-      isLoading = false;
-      payload = action.payload;
-      SearchStore.emitChange();
-      break;
+      isLoading = false
+      payload = action.payload
+      SearchStore.emitChange()
+      break
     default:
-      break;
+      break
   }
 
-});
+})
 
-export default SearchStore;
+export default SearchStore

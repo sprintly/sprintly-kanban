@@ -1,19 +1,15 @@
-import _ from 'lodash';
-import React from 'react/addons';
-import classNames from "classnames";
-import Gravatar from './gravatar';
-import FiltersMenu from './filters/filters-menu';
-import {ModalTrigger} from 'react-bootstrap';
-import {Link, Navigation, State} from 'react-router';
+import _ from 'lodash'
+import React from 'react/addons'
+import classNames from 'classnames'
+import Gravatar from './gravatar'
+import {Link, Navigation, State} from 'react-router'
 
-import SidebarActions from  '../../actions/sidebar-actions';
-
-import helpers from  '../pages/helpers';
+import SidebarActions from  '../../actions/sidebar-actions'
 
 // compose to confidence
 const ACCOUNT_SETTINGS = [
   'Profile', 'Plan', 'Billing', 'Invoices', 'Products', 'Members', 'Notifications', 'Services'
-];
+]
 
 let KanbanHeader = React.createClass({
 
@@ -46,27 +42,27 @@ let KanbanHeader = React.createClass({
   },
 
   search(ev) {
-    ev.preventDefault();
-    let value = this.refs.search.getDOMNode().value;
+    ev.preventDefault()
+    let value = this.refs.search.getDOMNode().value
     if (this.props.product.id && this.state.scoped) {
-      value = `product:${this.props.product.id} ${value}`;
+      value = `product:${this.props.product.id} ${value}`
     }
-    let url = `/search?q=${encodeURIComponent(value)}`;
-    this.transitionTo(url);
+    let url = `/search?q=${encodeURIComponent(value)}`
+    this.transitionTo(url)
   },
 
   onKeyDown(ev) {
     if (ev.keyCode === 8 && ev.target.value === '') {
-      this.setState({ scoped: false });
+      this.setState({ scoped: false })
     }
   },
 
   closeModal() {
-    this.setState({ showModal: false });
+    this.setState({ showModal: false })
   },
 
   openModal() {
-    this.setState({ showModal: true });
+    this.setState({ showModal: true })
   },
 
   renderAddItem() {
@@ -77,19 +73,19 @@ let KanbanHeader = React.createClass({
             <span className="glyphicon glyphicon-plus-sign"/> Add Item
           </Link>
         </div>
-      );
+      )
     }
 
-    return '';
+    return ''
   },
 
   getScope() {
-    let scope = '';
+    let scope = ''
     if (this.props.product.id && this.state.scoped) {
       scope = <span className="header-search__scope label label-info">{this.props.product.name}</span>
     }
 
-    return scope;
+    return scope
   },
 
   renderSearch() {
@@ -101,36 +97,36 @@ let KanbanHeader = React.createClass({
         </div>
         <input type="submit" className="hidden" />
       </form>
-    );
+    )
   },
 
   smallScreenHeader() {
-    let navClasses = this.getClasses('small');
+    let navClasses = this.getClasses('small')
     let burgerClasses = classNames({
       '_burger': true,
       'open': this.state.drawerOpen === 'left'
-    });
-    let openRightSide = _.partial(SidebarActions.show, 'right');
-    let openLeftSide = _.partial(SidebarActions.show, 'left');
+    })
+    let openRightSide = _.partial(SidebarActions.show, 'right')
+    let openLeftSide = _.partial(SidebarActions.show, 'left')
 
-    let hideRightMenuTrigger = this.getPathname() === '/' || this.getPathname() === '/search';
+    let hideRightMenuTrigger = this.getPathname() === '/' || this.getPathname() === '/search'
     let filterClasses = classNames({
       'btn filter-icon': true,
       'hidden': hideRightMenuTrigger
-    });
-    let hideLeftMenuTrigger = this.getPathname() === '/';
+    })
+    let hideLeftMenuTrigger = this.getPathname() === '/'
     let menuClasses = classNames({
-      "small-menu": true,
+      'small-menu': true,
       'hidden': hideLeftMenuTrigger
-    });
+    })
 
-    let searchBarStyle;
+    let searchBarStyle
     if (hideLeftMenuTrigger && hideRightMenuTrigger) {
-      searchBarStyle = {width: '100%'};
+      searchBarStyle = {width: '100%'}
     } else if (hideRightMenuTrigger) {
-      searchBarStyle = {width: '85%'};
+      searchBarStyle = {width: '85%'}
     } else {
-      searchBarStyle = {width: '70%'};
+      searchBarStyle = {width: '70%'}
     }
 
     return (
@@ -159,23 +155,23 @@ let KanbanHeader = React.createClass({
           </li>
         </ul>
       </header>
-    );
+    )
   },
 
   getClasses: function(size) {
     var visibilityClasses = {
       'small': { 'visible-xs': true },
       'large': { 'hidden-xs': true }
-    };
+    }
 
     var defaults = {
       'product__header': true,
       'container-fluid': true
-    };
+    }
 
     return _.keys(
       _.extend(defaults, visibilityClasses[size])
-    ).join(' ');
+    ).join(' ')
   },
 
   sprintlyFlask() {
@@ -231,7 +227,7 @@ let KanbanHeader = React.createClass({
           <Link to="product" params={{ id: product.id }}>{product.name}</Link>
         </li>
       )
-    });
+    })
 
     return (
       <nav className="product__dropdown">
@@ -244,10 +240,10 @@ let KanbanHeader = React.createClass({
   },
 
   largeScreenHeader() {
-    let headerClasses = this.getClasses('large');
+    let headerClasses = this.getClasses('large')
     let products = this.productsDropdown()
-    let accountSettings = this.settingsDropdown();
-    let searchBar = this.props.searchBar ? this.renderSearch() : '';
+    let accountSettings = this.settingsDropdown()
+    let searchBar = this.props.searchBar ? this.renderSearch() : ''
 
     return (
       <header className={headerClasses}>
@@ -264,16 +260,16 @@ let KanbanHeader = React.createClass({
   },
 
   render() {
-    var smallScreenHeader = this.smallScreenHeader();
-    var largeScreenHeader = this.largeScreenHeader();
+    var smallScreenHeader = this.smallScreenHeader()
+    var largeScreenHeader = this.largeScreenHeader()
 
     return (
       <div className="header-group">
         {smallScreenHeader}
         {largeScreenHeader}
       </div>
-    );
-  },
-});
+    )
+  }
+})
 
-export default KanbanHeader;
+export default KanbanHeader

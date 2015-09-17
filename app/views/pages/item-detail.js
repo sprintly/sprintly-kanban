@@ -1,28 +1,29 @@
-import React from 'react/addons';
-import _ from 'lodash';
-import helpers from './helpers';
+import React from 'react/addons'
+import _ from 'lodash'
+import helpers from './helpers'
 // Stores
-import ProductStore from '../../stores/product-store';
-import ItemActions from '../../actions/item-actions';
+import ProductStore from '../../stores/product-store'
+import ItemActions from '../../actions/item-actions'
+import ProductActions from '../../actions/product-actions'
 // Components
-import ItemHeader from '../components/item-detail/item-header';
-import DrawerStripe from '../components/drawer-stripe';
-import ItemDetails from '../components/item-detail/item-details';
-import ItemDescription from '../components/item-detail/item-description';
-import ItemAttachments from '../components/item-detail/item-attachments';
-import ItemSubitems from '../components/item-detail/item-subitems';
-import ItemComments from '../components/item-detail/item-comments';
-import ItemActivity from '../components/item-detail/item-activity';
-import ItemDetailMixin from '../components/item-detail/detail-mixin';
+import ItemHeader from '../components/item-detail/item-header'
+import DrawerStripe from '../components/drawer-stripe'
+import ItemDetails from '../components/item-detail/item-details'
+import ItemDescription from '../components/item-detail/item-description'
+import ItemAttachments from '../components/item-detail/item-attachments'
+import ItemSubitems from '../components/item-detail/item-subitems'
+import ItemComments from '../components/item-detail/item-comments'
+import ItemActivity from '../components/item-detail/item-activity'
+import ItemDetailMixin from '../components/item-detail/detail-mixin'
 // Libs
-import {State,Link} from 'react-router';
+import {State} from 'react-router'
 
 var ItemDetail = React.createClass({
 
   mixins: [State, ItemDetailMixin],
 
   getInitialState() {
-    let product = ProductStore.getProduct(this.getParams().id);
+    let product = ProductStore.getProduct(this.getParams().id)
 
     return {
       item: {},
@@ -30,12 +31,12 @@ var ItemDetail = React.createClass({
       attachmentsPanel: false,
       stripeHeight: helpers.stripeHeight(),
       descriptionEditable: false
-    };
+    }
   },
 
   updateStripeHeight() {
-    let content = document.getElementsByClassName('drawer__content')[0];
-    let height = content ? content.getBoundingClientRect().height : 0;
+    let content = document.getElementsByClassName('drawer__content')[0]
+    let height = content ? content.getBoundingClientRect().height : 0
 
     if (height > this.state.stripeHeight) {
       this.setState({stripeHeight: height})
@@ -43,31 +44,31 @@ var ItemDetail = React.createClass({
   },
 
   toggleAttachments() {
-    this.setState({attachmentsOpen: !this.state.attachmentsOpen});
+    this.setState({attachmentsOpen: !this.state.attachmentsOpen})
   },
 
   setItem(key, ev, value) {
-    let newVal = _.isUndefined(value) ? ev.currentTarget.value : value;
+    let newVal = _.isUndefined(value) ? ev.currentTarget.value : value
 
-    let item = _.cloneDeep(this.state.item);
-    item[key] = newVal;
+    let item = _.cloneDeep(this.state.item)
+    item[key] = newVal
 
-    this.setState({item: item});
+    this.setState({item: item})
   },
 
   setSubitem(subitemId, key, ev, value) {
-    let item = _.cloneDeep(this.state.item);
+    let item = _.cloneDeep(this.state.item)
     let subitem = _.findWhere(item.sub_items, {number: subitemId})
-    subitem[key] = value;
+    subitem[key] = value
 
-    this.setState({item: item});
+    this.setState({item: item})
   },
 
   updateItem() {
-    let productId = this.getParams().id;
-    let itemId = this.getParams().number;
+    let productId = this.getParams().id
+    let itemId = this.getParams().number
 
-    ProductActions.updateItem(productId, itemId, { description: this.state.item.description });
+    ProductActions.updateItem(productId, itemId, { description: this.state.item.description })
   },
 
   itemDetails() {
@@ -108,7 +109,7 @@ var ItemDetail = React.createClass({
 
   itemSubitems() {
     if (this.state.item.type == 'story' && this.state.item.sub_items) {
-      let subitems = this.state.item.sub_items || [];
+      let subitems = this.state.item.sub_items || []
 
       return (
         <ItemSubitems    item={this.state.item}
@@ -127,13 +128,13 @@ var ItemDetail = React.createClass({
   },
 
   itemActivity() {
-    let activityClone;
-    let activity = this.state.item.activity;
+    let activityClone
+    let activity = this.state.item.activity
 
     if (activity && activity.activities && activity.activities.length) {
 
-      activityClone = _.cloneDeep(activity);
-      activityClone.activities.reverse();
+      activityClone = _.cloneDeep(activity)
+      activityClone.activities.reverse()
     }
 
     return (
@@ -144,10 +145,10 @@ var ItemDetail = React.createClass({
   },
 
   itemAttachments() {
-    let attachments = [];
-    let item = this.state.item;
+    let attachments = []
+    let item = this.state.item
     if (item.attachments && item.attachments.length) {
-      attachments = item.attachments;
+      attachments = item.attachments
     }
     return (
       <ItemAttachments attachments={attachments}
@@ -157,30 +158,30 @@ var ItemDetail = React.createClass({
   },
 
   componentWillReceiveProps(nextProps) {
-    this.updateStripeHeight();
+    this.updateStripeHeight()
 
     if (this.props.number != nextProps.number) {
-      this._fetchItemData();
+      this._fetchItemData()
       this.setState({
         attachmentsOpen: false
       })
-      this._onChange();
+      this._onChange()
     }
   },
 
   componentDidMount() {
-    ProductStore.addChangeListener(this._onChange);
-    this._fetchItemData();
+    ProductStore.addChangeListener(this._onChange)
+    this._fetchItemData()
   },
 
   componentWillUnmount() {
-    ProductStore.removeChangeListener(this._onChange);
+    ProductStore.removeChangeListener(this._onChange)
   },
 
   render() {
     if (!this.state.item.number) {
       // Update to loading state where correct
-      return <div/>;
+      return <div/>
     }
 
     return (
@@ -200,21 +201,21 @@ var ItemDetail = React.createClass({
   },
 
   _onChange() {
-    let item = ProductStore.getItem(this.getParams().id, this.getParams().number);
-    let product = ProductStore.getProduct(this.getParams().id);
+    let item = ProductStore.getItem(this.getParams().id, this.getParams().number)
+    let product = ProductStore.getProduct(this.getParams().id)
 
     if (item) {
       this.setState({
         item,
         product
-      });
+      })
     }
   },
 
   _fetchItemData() {
-    ItemActions.fetchItem(this.getParams().id, this.getParams().number);
-    ItemActions.fetchActivity(this.getParams().id, this.getParams().number);
-    ItemActions.fetchAttachments(this.getParams().id, this.getParams().number);
+    ItemActions.fetchItem(this.getParams().id, this.getParams().number)
+    ItemActions.fetchActivity(this.getParams().id, this.getParams().number)
+    ItemActions.fetchAttachments(this.getParams().id, this.getParams().number)
   }
 })
 
