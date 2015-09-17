@@ -4,6 +4,8 @@ build:
     - script:
         name: cleanup
         code: git clean -dfx
+    - install-packages:
+        packages: rsync
     - npm-install
     - npm-test
     - script:
