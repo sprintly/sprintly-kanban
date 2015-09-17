@@ -1,15 +1,10 @@
-box: dignifiedquire/node-firefox-headless@0.3.0
+box: node:0.12
 build:
   steps:
     - script:
-        name: Use latest npm
-        code: sudo npm update -g npm
+        name: cleanup
+        code: git clean -dfx
     - npm-install
-    - script:
-        name: Setup firefox
-        code: |
-          export DISPLAY=:99.0
-          sh -e /etc/init.d/xvfb start
     - npm-test
     - script:
         name: Build and Cache Production Assets
@@ -19,9 +14,6 @@ build:
 
 deploy:
   steps:
-    - script:
-        name: Use latest npm
-        code: sudo npm update -g npm
     - npm-install
     - script:
         name: Build assets
