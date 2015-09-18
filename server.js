@@ -41,6 +41,7 @@ server.register([
 
 function serveApp(request, reply) {
   reply.view('layout.html', {
+    config: config,
     token: request.auth.credentials.token
   })
 }
