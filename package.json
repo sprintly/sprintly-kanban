@@ -31,6 +31,7 @@
     "gulp-less": "^3.0.3",
     "gulp-rename": "^1.2.2",
     "gulp-sourcemaps": "^1.5.2",
+    "hapi-cache-buster": "^0.4.0",
     "karma": "^0.12.31",
     "karma-browserify": "~4.0.0",
     "karma-chrome-launcher": "^0.1.7",

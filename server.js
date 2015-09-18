@@ -3,6 +3,7 @@ var Hapi = require('hapi')
 var server = new Hapi.Server()
 var path = require('path')
 var config = require('config')
+var pkg = require('./package.json')
 
 server.connection({
   host: '0.0.0.0',
@@ -31,6 +32,12 @@ server.register([
           events: { log: '*', response: '*', error: '*' }
         }
       ]
+    }
+  },
+  {
+    register: require('hapi-cache-buster'),
+    options: {
+      version: pkg.hash || pkg.version
     }
   },
   require('./lib/sprintly-oauth')

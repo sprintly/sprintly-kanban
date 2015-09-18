@@ -5,6 +5,7 @@ var exec = require('child_process').exec
 var sourcemaps = require('gulp-sourcemaps')
 var csso = require('gulp-csso')
 var rename = require('gulp-rename')
+var fs = require('fs')
 
 function run(command) {
   var child = exec(command)
@@ -26,7 +27,7 @@ gulp.task('less', function() {
     .pipe(gulp.dest('public/css'))
 })
 
-gulp.task('cssmin', ['less'], function() {
+gulp.task('cssmin', function() {
   return gulp.src('public/css/main.css')
     .pipe(csso())
     .pipe(rename({
@@ -45,7 +46,17 @@ gulp.task('dev', ['default'], function() {
   run('npm start')
 })
 
-gulp.task('css', ['less', 'cssmin'])
+gulp.task('hash', function(done) {
+  exec('md5 -q public/js/main.js', function(err, hash) {
+    fs.readFile('./package.json', 'utf8', function(err, pkg) {
+      var json = JSON.parse(pkg)
+      json.hash = hash.trim()
+      fs.writeFile('package.json', JSON.stringify(json, null, 2), done)
+    })
+  })
+})
+
+gulp.task('css', ['less', 'cssmin']);
 
 gulp.task('default', ['less', 'watch'])
 
