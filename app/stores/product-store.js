@@ -7,14 +7,20 @@ import {EventEmitter} from 'events';
 // Flux
 import AppDispatcher from '../dispatchers/app-dispatcher';
 import ProductConstants from '../constants/product-constants';
+import VelocityConstants from '../constants/velocity-constants';
 import FilterActions from '../actions/filter-actions';
 
-import STATUSES from '../lib/status-map';
-const ITEM_STATUSES = _.keys(STATUSES);
+import {ITEM_STATUS_MAP, STATUS_CODE_MAP} from '../lib/status-map';
+import SCORES from '../lib/score-map';
+
+const ITEM_STATUSES = _.keys(ITEM_STATUS_MAP);
+const DEFAULT_VELOCITY = 10;
+const DEFAULT_ITERATION_LENGTH = 7;
 
 let productVelocity = {};
-let columnCollections = {};
 let itemCounts = {}
+
+let columnCollections = {};
 let columnsLoading = {
   'someday': true,
   'backlog': true,
@@ -212,12 +218,22 @@ var internals = ProductStore.internals = {
         if (collection) {
           collection.add(model);
         }
-        internals.updateCounts(product.id, status, previousStatus);
+        internals.updateCounts(product.id, SCORES[model.get('score')], status, previousStatus);
         ProductStore.emitChange();
       }
     });
 
     internals.createSubscription(product);
+  },
+
+  updateCounts(productId, score, newStatus, previousStatus) {
+    let itemCountNew = itemCounts[productId][newStatus];
+    itemCountNew.items += 1;
+    itemCountNew.points += score;
+
+    let itemCountOld = itemCounts[productId][previousStatus];
+    itemCountOld.items -= 1;
+    itemCountOld.points -= score;
   },
 
   ingestItem(product, item_data) {
@@ -272,12 +288,6 @@ var internals = ProductStore.internals = {
     }
 
     return attrs
-  },
-
-  updateCounts(productId, newStatus, previousStatus) {
-    itemCounts[productId][newStatus] += 1;
-    itemCounts[productId][previousStatus] -= 1;
-    ProductStore.emitChange();
   },
 
   matchesFilter(item, filter) {
@@ -421,12 +431,36 @@ var internals = ProductStore.internals = {
     newAttr[key] = payload;
 
     item.set(newAttr, { silent: true })
+  },
+
+  calculateAverageVelocity(velocity={}) {
+    velocity.average = Math.round(velocity.average * DEFAULT_ITERATION_LENGTH);
+
+    if (velocity.average < 1) {
+      velocity.average = DEFAULT_VELOCITY;
+    }
+
+    return velocity;
+  },
+
+  countsByStatus(totals={}) {
+    let result = {};
+    _.each(STATUS_CODE_MAP, (v, k) => {
+      let items = _.omit(totals[k], 'points');
+      let points = totals[k].points;
+      result[v] = {
+        items: _.reduce(items, (p, c) => { return p + c; }),
+        points: _.reduce(points, (p, c) => { return p + c; })
+      };
+    });
+
+    return result;
   }
 };
 
 ProductStore.dispatchToken = AppDispatcher.register(function(action) {
   switch(action.actionType) {
-    case 'INIT_PRODUCTS':
+    case ProductConstants.INIT_PRODUCTS:
       if (action.product) {
         internals.initProduct(action.product);
       } else {
@@ -440,18 +474,17 @@ ProductStore.dispatchToken = AppDispatcher.register(function(action) {
       ProductStore.emitChange();
       break;
 
-    case 'ADD_ITEM':
+    case ProductConstants.ADD_ITEM:
       let item = internals.addItem(action.product.id, action.item);
       ProductStore.emitChange('afterCreate', item);
-
       break;
-    case 'ADD_ITEMS':
+
+    case ProductConstants.ADD_ITEMS:
       internals.addItems(action.product.id, action.items);
       ProductStore.emitChange();
-
       break;
 
-    case 'DELETE_ITEM':
+    case ProductConstants.DELETE_ITEM:
       internals.deleteItem(action.product, action.itemData);
       ProductStore.emitChange();
       break;
@@ -460,29 +493,34 @@ ProductStore.dispatchToken = AppDispatcher.register(function(action) {
     case ProductConstants.UPDATE_ITEM_PRIORITY:
     case ProductConstants.CHANGE_SORT_CRITERIA:
     case ProductConstants.LOAD_MORE:
-    case 'ITEM_UPDATED':
+    case ProductConstants.ITEM_UPDATED:
       ProductStore.emitChange();
       break;
 
-    case 'PRODUCT_VELOCITY':
-      productVelocity[action.productId] = action.payload;
+    case VelocityConstants.PRODUCT_VELOCITY:
+      productVelocity[action.productId] = action.userOverride ? action.payload :
+        internals.calculateAverageVelocity(action.payload);
       ProductStore.emitChange();
       break;
 
-    case 'ITEM_COUNTS':
-      itemCounts[action.productId] = action.payload;
+    case VelocityConstants.STATUS_COUNTS:
+      itemCounts[action.productId] = internals.countsByStatus(action.payload);
       ProductStore.emitChange();
       break;
 
-    case 'ITEM_ACTIVITY':
+    case ProductConstants.ITEM_ACTIVITY:
       internals.extendItem(action.productId, action.itemId, 'activity', action.payload);
       ProductStore.emitChange();
       break;
 
-    case 'ITEM_ATTACHMENTS':
+    case ProductConstants.ITEM_ATTACHMENTS:
       internals.extendItem(action.productId, action.itemId, 'attachments', action.payload);
       ProductStore.emitChange();
       break;
+
+    case ProductConstants.ITEM_COMMENTED:
+      ProductStore.emitChange();
+      break
 
     case 'ITEM_ATTACHMENTS_ERROR':
       console.log('ITEM_ATTACHMENTS_ERROR: ', action.err)
@@ -494,9 +532,6 @@ ProductStore.dispatchToken = AppDispatcher.register(function(action) {
       break;
     case 'ITEM_COMMENT_ERROR':
       console.log('ITEM_ACTIVITY_ERROR: ', action.err)
-      ProductStore.emitChange();
-      break
-    case 'ITEM_COMMENTED':
       ProductStore.emitChange();
       break
 

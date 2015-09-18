@@ -81,7 +81,7 @@ var ProductActions = {
     fetchDependencies
       .then(function() {
         let action = {
-          actionType: 'INIT_PRODUCTS',
+          actionType: ProductConstants.INIT_PRODUCTS,
           payload: products
         };
         if (productId) {
@@ -92,7 +92,7 @@ var ProductActions = {
       .catch(function(err) {
         // console.error(err)
         AppDispatcher.dispatch({
-          actionType: 'INIT_PRODUCTS_ERROR',
+          actionType: ProductConstants.INIT_PRODUCTS_ERROR,
           payload: err
         });
       });

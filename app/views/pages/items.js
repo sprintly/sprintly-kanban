@@ -16,7 +16,7 @@ import ProductActions from '../../actions/product-actions';
 import VelocityActions from '../../actions/velocity-actions';
 
 import helpers from './helpers';
-import ITEM_STATUSES from '../../lib/status-map';
+import {ITEM_STATUS_MAP} from '../../lib/status-map';
 
 let ItemsViewController = React.createClass({
 
@@ -113,12 +113,12 @@ let ItemsViewController = React.createClass({
   },
 
   colCount() {
-    return _.keys(ITEM_STATUSES).length;
+    return _.keys(ITEM_STATUS_MAP).length;
   },
 
   colHeaders() {
-    return _.map(ITEM_STATUSES, function(label, status) {
-      let index = _.keys(ITEM_STATUSES).indexOf(status)
+    return _.map(ITEM_STATUS_MAP, function(label, status) {
+      let index = _.keys(ITEM_STATUS_MAP).indexOf(status)
 
       let prevClasses = '';
       let nextClasses = '';
@@ -196,7 +196,7 @@ let ItemsViewController = React.createClass({
         />
         <div style={trayStyles} className="tray">
           <div className="column__nav">
-            {_.map(ITEM_STATUSES, function(label, status) {
+            {_.map(ITEM_STATUS_MAP, function(label, status) {
               return (
                 <nav key={`header-nav-${status}`}>
                   <h3>{label}</h3>
@@ -205,7 +205,7 @@ let ItemsViewController = React.createClass({
             }, this)}
             {colHeaders}
           </div>
-          {_.map(ITEM_STATUSES, this.renderColumn)}
+          {_.map(ITEM_STATUS_MAP, this.renderColumn)}
         </div>
       </div>
     );

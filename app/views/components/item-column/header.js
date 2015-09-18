@@ -29,11 +29,7 @@ let ColumnHeader = React.createClass({
 
   getItemCount: function(status) {
     let counts = this.props.itemCounts;
-    debugger;
-    return (
-      counts && counts[status] ? { items: counts[status], points: counts.points[counts[status]] } :
-        { items: 0, points: 0 }
-    );
+    return counts && counts[status] ? counts[status] : { items: 0, points: 0 };
   },
 
   onCondensedClick() {
@@ -41,12 +37,13 @@ let ColumnHeader = React.createClass({
   },
 
   render: function() {
+    let itemCounts = this.getItemCount(this.props.status);
+
     let directionClasses = {
       'glyphicon': true,
       'glyphicon-sort-by-attributes': this.props.sortDirection === 'desc',
       'glyphicon-sort-by-attributes-alt': this.props.sortDirection === 'asc',
     };
-    let itemCounts = this.getItemCount(this.props.status);
 
     let condensedClasses = {
       'glyphicon': true,

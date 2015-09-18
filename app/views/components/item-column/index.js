@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React, { PropTypes } from 'react/addons';
 import classNames from 'classnames';
-import STATUS_MAP from '../../../lib/status-map';
+import {ITEM_STATUS_MAP} from '../../../lib/status-map';
 // Components
 import ItemCard from '../item-card';
 import PlaceholderCards from './placeholder-cards';
@@ -225,7 +225,7 @@ let ItemColumn = React.createClass({
         {this.columnContent()}
         {this.renderLoadMore()}
         <div className="column__dropzone">
-          <h3>Move to {STATUS_MAP[this.props.status]}</h3>
+          <h3>Move to {ITEM_STATUS_MAP[this.props.status]}</h3>
         </div>
       </div>
     );
