@@ -31,8 +31,7 @@ deploy:
           git config --global user.name "Wercker Bot"
           git checkout -b wercker-build
           npm run build-production-css
-          npm shrinkwrap
-          git add public/js/manifold.min.js public/css/main.min.css npm-shrinkwrap.json
+          git add public/js/manifold.min.js public/css/main.min.css
           git commit -am 'asset compile'
     - heroku-deploy:
         key-name: DEPLOY_KEY
