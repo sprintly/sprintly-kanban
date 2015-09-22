@@ -1,11 +1,14 @@
 /*eslint-env node */
 
-if (typeof window.__manifold_config !== "object") {
+var config;
+if (window && window.__manifold_config) {
+  config = window.__manifold_config
+} else {
   console.warn("__manifold_config is missing!");
-  var __manifold_config = {};
+  config = {};
 }
 
-export default window.__manifold_config;
-export const BASE_URL = window.__manifold_config.BASE_URL;
-export const PUSHER_KEY = window.__manifold_config.PUSHER_KEY;
-export const CHANNEL_PREFIX = window.__manifold_config.CHANNEL_PREFIX;
+export default config;
+export const BASE_URL = config.BASE_URL;
+export const PUSHER_KEY = config.PUSHER_KEY;
+export const CHANNEL_PREFIX = config.CHANNEL_PREFIX;
