@@ -17,6 +17,8 @@ build:
 deploy:
   steps:
     - npm-install
+    - install-packages:
+        packages: rsync
     - script:
         name: Build assets
         code: |
