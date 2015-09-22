@@ -92,7 +92,7 @@
     "marked": "^0.3.3",
     "moment": "~2.10.3",
     "react-dnd": "^1.1.4",
-    "sprintly-data": "^2.0.5",
+    "sprintly-data": "^2.1.0",
     "superagent": "^1.2.0",
     "swig": "^1.4.2"
   },
