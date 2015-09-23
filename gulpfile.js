@@ -18,15 +18,15 @@ function run(command) {
 }
 
 gulp.task('less', function() {
-  gulp.src('public/less/main.less')
+  return gulp.src('public/less/main.less')
     .pipe(sourcemaps.init())
     .pipe(less())
     .pipe(sourcemaps.write('.'))
     .pipe(gulp.dest('public/css'));
 });
 
-gulp.task('cssmin', function() {
-  gulp.src('public/css/main.css')
+gulp.task('cssmin', ['less'], function() {
+  return gulp.src('public/css/main.css')
     .pipe(csso())
     .pipe(rename({
       suffix: '.min'
