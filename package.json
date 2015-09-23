@@ -63,7 +63,7 @@
   },
   "scripts": {
     "dev": "gulp dev",
-    "build": "BASE_URL=https://local.sprint.ly:9000/api browserify app -d | exorcist -b './app' public/js/manifold.js.map > public/js/manifold.js",
+    "build": "browserify app -d | exorcist -b './app' public/js/manifold.js.map > public/js/manifold.js",
     "build-less": "gulp less",
     "build-production": "npm run build-production-js && npm run build-production-css",
     "build-production-css": "gulp css",
@@ -72,7 +72,7 @@
     "start": "node server.js",
     "test": "NODE_ENV=test ./node_modules/karma/bin/karma start --browsers PhantomJS --single-run",
     "watch-test": "NODE_ENV=test ./node_modules/karma/bin/karma start",
-    "watchify": "BASE_URL=https://local.sprint.ly:9000/api watchify app -d -v -o 'exorcist -b './app' public/js/manifold.js.map > public/js/manifold.js'",
+    "watchify": "watchify app -d -v -o 'exorcist -b './app' public/js/manifold.js.map > public/js/manifold.js'",
     "watchify-test": "NODE_ENV=test watchify test/index.js -o 'exorcist -b './app' test/test-bundle.js.map > test/test-bundle.js' -t rewireify -t babelify -t envify -dv"
   },
   "browserify": {
@@ -92,7 +92,7 @@
     "marked": "^0.3.3",
     "moment": "~2.10.3",
     "react-dnd": "^1.1.4",
-    "sprintly-data": "^2.0.5",
+    "sprintly-data": "^2.1.0",
     "superagent": "^1.2.0",
     "swig": "^1.4.2"
   },

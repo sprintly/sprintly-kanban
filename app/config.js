@@ -1,7 +1,14 @@
 /*eslint-env node */
-export const CHANNEL_PREFIX = process.env.NODE_ENV === 'production' ?
-  'api-product_sprintly-aws' : 'api-product_sprintly-development-justinlilly';
 
-export const BASE_URL = process.env.NODE_ENV === 'production' ? 'https://sprint.ly' : 'https://local.sprint.ly:9000';
+var config;
+if (window && window.__manifold_config) {
+  config = window.__manifold_config
+} else {
+  console.warn("__manifold_config is missing!");
+  config = {};
+}
 
-export const PUSHER_KEY = process.env.PUSHER_KEY || '';
+export default config;
+export const BASE_URL = config.BASE_URL;
+export const PUSHER_KEY = config.PUSHER_KEY;
+export const CHANNEL_PREFIX = config.CHANNEL_PREFIX;
