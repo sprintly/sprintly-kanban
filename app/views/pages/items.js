@@ -16,7 +16,7 @@ import ProductActions from '../../actions/product-actions';
 import VelocityActions from '../../actions/velocity-actions';
 
 import helpers from './helpers';
-import ITEM_STATUSES from '../../lib/status-map';
+import {ITEM_STATUS_MAP} from '../../lib/status-map';
 
 let ItemsViewController = React.createClass({
 
@@ -59,6 +59,7 @@ let ItemsViewController = React.createClass({
     ProductStore.addChangeListener(this._onProductChange);
     ProductActions.init(this.getParams().id);
     VelocityActions.getVelocity(this.getParams().id);
+    VelocityActions.getItemCounts(this.getParams().id);
 
     if (helpers.isMobile(window)) {
       this.setState({
@@ -72,6 +73,7 @@ let ItemsViewController = React.createClass({
     if (this.state.product && this.getParams().id != this.state.product.id) {
       ProductActions.init(this.getParams().id);
       VelocityActions.getVelocity(this.getParams().id);
+      VelocityActions.getItemCounts(this.getParams().id);
     }
   },
 
@@ -97,10 +99,11 @@ let ItemsViewController = React.createClass({
       filters: this.state.filtersObject,
       key: `col-${this.state.product.id}-${status}`,
       velocity: this.state.velocity,
+      itemCounts: this.state.itemCounts,
       colWidth: this.state.colWidth
     }, items);
 
-    return <ItemColumn {...props} />;
+    return <ItemColumn {...props}/>;
   },
 
   translateColumns(direction) {
@@ -110,12 +113,12 @@ let ItemsViewController = React.createClass({
   },
 
   colCount() {
-    return _.keys(ITEM_STATUSES).length;
+    return _.keys(ITEM_STATUS_MAP).length;
   },
 
   colHeaders() {
-    return _.map(ITEM_STATUSES, function(label, status) {
-      let index = _.keys(ITEM_STATUSES).indexOf(status)
+    return _.map(ITEM_STATUS_MAP, function(label, status) {
+      let index = _.keys(ITEM_STATUS_MAP).indexOf(status)
 
       let prevClasses = '';
       let nextClasses = '';
@@ -193,9 +196,16 @@ let ItemsViewController = React.createClass({
         />
         <div style={trayStyles} className="tray">
           <div className="column__nav">
+            {_.map(ITEM_STATUS_MAP, function(label, status) {
+              return (
+                <nav key={`header-nav-${status}`}>
+                  <h3>{label}</h3>
+                </nav>
+              );
+            }, this)}
             {colHeaders}
           </div>
-          {_.map(ITEM_STATUSES, this.renderColumn)}
+          {_.map(ITEM_STATUS_MAP, this.renderColumn)}
         </div>
       </div>
     );

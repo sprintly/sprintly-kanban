@@ -10,7 +10,7 @@ import Subitems from '../subitems'
 import {TagEditor, Tags} from 'sprintly-ui';
 import {DropdownButton, MenuItem, OverlayTrigger, Tooltip, Button, Input} from 'react-bootstrap';
 
-import STATUSES from '../../../lib/status-map';
+import {ITEM_STATUS_MAP} from '../../../lib/status-map';
 
 var ItemCardDetails = React.createClass({
 
@@ -134,7 +134,7 @@ var ItemCardDetails = React.createClass({
   },
 
   renderMenuItems() {
-    let statusOptions = _.omit(STATUSES, this.props.item.status);
+    let statusOptions = _.omit(ITEM_STATUS_MAP, this.props.item.status);
     let menuItems = _.map(statusOptions, function(label, status) {
       return <MenuItem eventKey={status} key={status}>Move to {label}</MenuItem>
     });
@@ -147,7 +147,7 @@ var ItemCardDetails = React.createClass({
     let item = this.props.item;
     let hasTags = _.isString(item.tags) && !_.isEmpty(item.tags);
     let tags = hasTags ? item.tags.split(',') : item.tags || [];
-    let statusOptions = _.omit(STATUSES, item.status);
+    let statusOptions = _.omit(ITEM_STATUS_MAP, item.status);
 
     return (
       <div className="item-card__details">

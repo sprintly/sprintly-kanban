@@ -166,7 +166,12 @@
 
 .column__summary {
   float: right;
-  display: none; // backing data not yet implemented
+  margin-bottom: 10px;
+}
+@media (max-width: 1920px) {
+  .column__summary {
+    float: none;
+  }
 }
 
 .load-more {

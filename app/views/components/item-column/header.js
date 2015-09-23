@@ -27,11 +27,18 @@ let ColumnHeader = React.createClass({
     }
   },
 
+  getItemCount: function(status) {
+    let counts = this.props.itemCounts;
+    return counts && counts[status] ? counts[status] : { items: 0, points: 0 };
+  },
+
   onCondensedClick() {
     this.props.toggleCondensed()
   },
 
   render: function() {
+    let itemCounts = this.getItemCount(this.props.status);
+
     let directionClasses = {
       'glyphicon': true,
       'glyphicon-sort-by-attributes': this.props.sortDirection === 'desc',
@@ -64,8 +71,12 @@ let ColumnHeader = React.createClass({
 
         <div className="column__summary">
           <ButtonGroup>
-            <button className="btn btn-sm btn-default">42 points</button>
-            <button className="btn btn-sm btn-default">36 items</button>
+            <button className="btn btn-sm btn-default">
+              {itemCounts.points} points
+            </button>
+            <button className="btn btn-sm btn-default">
+              {itemCounts.items} items
+            </button>
           </ButtonGroup>
         </div>
       </header>

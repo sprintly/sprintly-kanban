@@ -1,5 +1,6 @@
 var _ = require('lodash');
 var ProductStore = require('./product-store');
+import {STATUS_CODE_MAP} from '../lib/status-map';
 var Backbone = require('backdash');
 var assert = require('chai').assert;
 var sinon = require('sinon');
@@ -116,7 +117,7 @@ describe('ProductStore', function() {
 
       assert.isFalse(result)
     })
-    
+
     it('returns true when the product has items', function() {
       let mockProduct  = {
         get: function(id) {
@@ -161,6 +162,35 @@ describe('ProductStore', function() {
 
     it('updates the items collection filter config', function() {
 
+    });
+  });
+
+  describe('product velocity', function() {
+    it('overrides average weekly velocity if less than 1', function() {
+      let payload = {average: 0.01}; // daily average
+      assert.isTrue(Math.round(payload.average * 7) < 1);
+      assert.isTrue(ProductStore.internals.calculateAverageVelocity(payload).average > 1);
+    });
+
+    it('totals the item and points counts for each status', function() {
+      let payload = {};
+      _.each(STATUS_CODE_MAP, (v, k) => {
+        payload[k] = {story: 1, task: 1, test: 1, defect: 1, points: {
+          story: 3, task: 3, test: 3, defect: 3
+        }};
+      });
+      // tweak someday so we have a control key to test variance
+      payload[5] = {story: 5, task: 5, test: 5, defect: 5, points: {
+          story: 10, task: 10, test: 10, defect: 10
+        }}
+
+      assert.deepEqual(ProductStore.internals.countsByStatus(payload), {
+        someday: {items: 20, points: 40},
+        backlog: {items: 4, points: 12},
+        'in-progress': {items: 4, points: 12},
+        completed: {items: 4, points: 12},
+        accepted: {items: 4, points: 12}
+      });
     });
   });
 });

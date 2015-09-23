@@ -1,4 +1,4 @@
-const STATUSES = {
+export const ITEM_STATUS_MAP = {
   'someday': 'Someday',
   'backlog': 'Backlog',
   'in-progress': 'Current',
@@ -6,5 +6,11 @@ const STATUSES = {
   'accepted': 'Accepted'
 };
 
-export default STATUSES;
+export const STATUS_CODE_MAP = {
+  5: 'someday',
+  10: 'backlog',
+  20: 'in-progress',
+  30: 'completed',
+  40: 'accepted'
+};
 
