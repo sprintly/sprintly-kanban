@@ -194,13 +194,3 @@ describe('ProductStore', function() {
     });
   });
 });
-
-
-
-
-
-
-
-
-
-
