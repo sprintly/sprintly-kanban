@@ -42,7 +42,8 @@ var ItemActivity = React.createClass({
       activity: {
         total_count: [],
         activities: []
-      }
+      },
+      members: []
     }
   },
 
@@ -170,7 +171,7 @@ var ItemActivity = React.createClass({
       let toggleActivityCopy = this.state.showAll ? 'Show Less Activity' : 'Show More Activity'
 
       return (
-        <button className="load-more" onClick={this.showAllToggle}>
+        <button ref='show-all' className="load-more" onClick={this.showAllToggle}>
           {toggleActivityCopy}
         </button>
       )
@@ -227,15 +228,16 @@ var ItemActivity = React.createClass({
   },
 
   render: function() {
-    let totalActivityCount = this.props.activity.total_count || 0
-    let activityItems = this.activityItems(totalActivityCount)
+    let totalActivityCount = this.props.activity.total_count[0] || 0;
+    let activityItems = this.activityItems(totalActivityCount);
+    let activityCount = `${totalActivityCount} items`;
 
     return (
       <div className="col-xs-12 section activity">
         <div className="col-xs-12">
           <div className="header">
             <div className="title">{helpers.toTitleCase('activity')}</div>
-            <div className="activity__counter">{totalActivityCount} items</div>
+            <div className="activity__counter">{activityCount}</div>
             <div className="sep"></div>
           </div>
           {activityItems}
