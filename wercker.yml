@@ -2,27 +2,25 @@ box: node:0.12
 build:
   steps:
     - script:
+        name: Use latest npm
+        code: sudo npm install -g npm@3
+    - script:
         name: cleanup
         code: git clean -dfx
-    - install-packages:
-        packages: rsync
     - npm-install
     - npm-test
-    - script:
-        name: Build and Cache Production Assets
-        code: |
-          npm run build-production
-          rsync -avzv "$WERCKER_SOURCE_DIR/public" "$WERCKER_CACHE_DIR/$WERCKER_GIT_COMMIT/"
 
 deploy:
   steps:
+    - script:
+        name: Use latest npm
+        code: sudo npm install -g npm@3
     - npm-install
-    - install-packages:
-        packages: rsync
     - script:
         name: Build assets
         code: |
-          if test -d "$WERCKER_CACHE_DIR/$WERCKER_GIT_COMMIT"; then rsync -avzv "$WERCKER_CACHE_DIR/$WERCKER_GIT_COMMIT/" "$WERCKER_SOURCE_DIR" ; else npm run build-production ; fi
+          npm run build-production
+          npm run build-production-css
     - analogj/git-configure@0.0.3
     - script:
         name: Commit Assets
@@ -30,7 +28,6 @@ deploy:
           git config --global user.email "sam@quickleft.com"
           git config --global user.name "Wercker Bot"
           git checkout -b wercker-build
-          npm run build-production-css
           git add public/js/manifold.min.js public/css/main.min.css
           git commit -am 'asset compile'
     - heroku-deploy:
@@ -38,5 +35,3 @@ deploy:
   after-steps:
     - wantedly/pretty-slack-notify:
         webhook_url: $SLACK_WEBHOOK_URL
-
-
