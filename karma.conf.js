@@ -1,5 +1,6 @@
 // Karma configuration
 // Generated on Fri Mar 13 2015 10:55:15 GMT-0700 (PDT)
+/* eslint-env node */
 
 module.exports = function(config) {
   config.set({
@@ -29,7 +30,7 @@ module.exports = function(config) {
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
       'app/**/*.js': [
-        'browserify',
+        'browserify'
         // 'coverage'
       ]
     },
@@ -40,10 +41,9 @@ module.exports = function(config) {
         'app/**/*-test.js'
       ],
       transform: [
-        'rewireify',
-        ['babelify', { sourceMapRelative: './app' }],
+        ['babelify', { sourceMapRelative: './app', plugins: ['rewire'] }],
         ['envify', { NODE_ENV: 'test' }],
-        ['browserify-istanbul', { ignore: ['**/*-test.js'] }],
+        ['browserify-istanbul', { ignore: ['**/*-test.js'] }]
       ]
     },
 
@@ -55,7 +55,7 @@ module.exports = function(config) {
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
     reporters: [
-      'dots',
+      'dots'
       // 'coverage'
     ],
 
@@ -86,5 +86,5 @@ module.exports = function(config) {
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
     singleRun: false
-  });
-};
+  })
+}

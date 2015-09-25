@@ -1,8 +1,8 @@
-import _ from 'lodash';
-import React from 'react/addons';
-import classNames from "classnames";
-import {ListGroup, ListGroupItem} from 'react-bootstrap';
-import fuzzy from 'fuzzy';
+import _ from 'lodash'
+import React from 'react/addons'
+import classNames from 'classnames'
+import {ListGroup, ListGroupItem} from 'react-bootstrap'
+import fuzzy from 'fuzzy'
 
 var TagsInput = React.createClass({
 
@@ -17,7 +17,7 @@ var TagsInput = React.createClass({
   getDefaultProps() {
     return {
       onChange() {}
-    };
+    }
   },
 
   getInitialState() {
@@ -28,72 +28,72 @@ var TagsInput = React.createClass({
   },
 
   addTag(value) {
-    let tags = React.addons.update(this.props.value || [], { $push: [value] });
-    this.setState({ filteredTags: [] });
-    this.refs.input.getDOMNode().value = '';
-    this.props.onChange(_.unique(tags));
+    let tags = React.addons.update(this.props.value || [], { $push: [value] })
+    this.setState({ filteredTags: [] })
+    this.refs.input.getDOMNode().value = ''
+    this.props.onChange(_.unique(tags))
   },
 
   removeTag(value) {
-    let tags = this.props.value || [];
-    this.props.onChange(_.without(tags, value));
+    let tags = this.props.value || []
+    this.props.onChange(_.without(tags, value))
   },
 
   filterTags(ev) {
-    let value = ev.target.value;
+    let value = ev.target.value
     if (value === '') {
-      this.setState({ filteredTags: [] });
-      return;
+      this.setState({ filteredTags: [] })
+      return
     }
-    let results = fuzzy.filter(value, this.props.tags);
-    this.setState({ filteredTags: _.pluck(results, 'string') });
+    let results = fuzzy.filter(value, this.props.tags)
+    this.setState({ filteredTags: _.pluck(results, 'string') })
   },
 
   onKeyDown(ev) {
-    let node = this.refs.input.getDOMNode();
+    let node = this.refs.input.getDOMNode()
 
     switch (ev.keyCode) {
       case 8: // backspace
         if (node.value.length === 0) {
-          this.removeTag(_.last(this.props.value));
+          this.removeTag(_.last(this.props.value))
         }
-      break;
+        break
 
       case 9: // tab
-        if (node.value === "") {
-          return;
+        if (node.value === '') {
+          return
         }
-        ev.preventDefault();
-        this.addTag(node.value);
-      break
+        ev.preventDefault()
+        this.addTag(node.value)
+        break
 
       case 13: // enter
-        ev.preventDefault();
+        ev.preventDefault()
         if (this.state.focusedOption) {
-          this.addTag(this.state.focusedOption);
+          this.addTag(this.state.focusedOption)
         } else {
-          this.addTag(node.value);
+          this.addTag(node.value)
         }
-      break;
+        break
 
       case 188: // comma
         if (node.value.length > 0 && ev.shiftKey !== true) {
-          ev.preventDefault();
-          this.addTag(node.value);
+          ev.preventDefault()
+          this.addTag(node.value)
         }
-      break;
+        break
 
       case 38: // up
-        this.focusOption('previous');
-      break;
+        this.focusOption('previous')
+        break
 
       case 40: // down
-        this.focusOption('next');
-      break;
+        this.focusOption('next')
+        break
 
       case 27: // esc
-        console.log('ESCAPE');
-      break;
+        // console.log('ESCAPE');
+        break
 
       default:
         this.setState({
@@ -109,37 +109,37 @@ var TagsInput = React.createClass({
   },
 
   getFocusedOptionIndex() {
-    let tags = this.state.filteredTags;
-    let focusedIndex = -1;
+    let tags = this.state.filteredTags
+    let focusedIndex = -1
 
     for (var i = 0; i < tags.length; i++) {
       if (this.state.focusedOption === tags[i]) {
-        focusedIndex = i;
-        break;
+        focusedIndex = i
+        break
       }
     }
 
-    return focusedIndex;
+    return focusedIndex
   },
 
   focusOption(direction) {
-    let tags = this.state.filteredTags;
-    let tagCount = tags.length;
+    let tags = this.state.filteredTags
+    let tagCount = tags.length
 
     if (!tagCount) {
-      return;
+      return
     }
 
-    let focusedIndex = this.getFocusedOptionIndex();
-    let focusedOption = tags[0];
+    let focusedIndex = this.getFocusedOptionIndex()
+    let focusedOption = tags[0]
 
     if (direction === 'next' && focusedIndex > -1 && focusedIndex < tagCount - 1) {
-      focusedOption = tags[focusedIndex + 1];
+      focusedOption = tags[focusedIndex + 1]
     } else if (direction === 'previous') {
       if (focusedIndex > 0) {
-        focusedOption = tags[focusedIndex - 1];
+        focusedOption = tags[focusedIndex - 1]
       } else {
-        focusedOption = tags[tagCount - 1];
+        focusedOption = tags[tagCount - 1]
       }
     }
 
@@ -151,10 +151,10 @@ var TagsInput = React.createClass({
   renderValues() {
     if (this.props.value && this.props.defaultValue) {
       // TODO: lookup warning conventions in React
-      console.warn('Warning: you have provided both a `value` and `defaultValue` to a form element. Check the render method of TagsInput');
+      console.warn('Warning: you have provided both a `value` and `defaultValue` to a form element. Check the render method of TagsInput') // eslint-disable-line no-console
     }
 
-    let tags = this.props.value || this.props.defaultValue || [];
+    let tags = this.props.value || this.props.defaultValue || []
 
     return _.map(tags, (value, i) => {
       return (
@@ -168,60 +168,60 @@ var TagsInput = React.createClass({
               <span aria-hidden="true">&times;</span>
           </button>
         </div>
-      );
-    });
+      )
+    })
   },
 
   handleInputFocus: function() {
     this.setState({
       isOpen: true
     }, function() {
-      this._bindCloseMenuIfClickedOutside();
-    });
+      this._bindCloseMenuIfClickedOutside()
+    })
   },
 
   clickedOutsideElement(element, event) {
-    var eventTarget = (event.target) ? event.target : event.srcElement;
+    var eventTarget = (event.target) ? event.target : event.srcElement
     while (eventTarget != null) {
-      if (eventTarget === element) return false;
-      eventTarget = eventTarget.offsetParent;
+      if (eventTarget === element) return false
+      eventTarget = eventTarget.offsetParent
     }
-    return true;
+    return true
   },
 
   componentDidMount() {
     this._closeMenuIfClickedOutside = function(event) {
 
-      var menuElem = this.refs.listGroup.getDOMNode();
-      var controlElem = this.refs.input.getDOMNode();
+      var menuElem = this.refs.listGroup.getDOMNode()
+      var controlElem = this.refs.input.getDOMNode()
 
-      var eventOccuredOutsideMenu = this.clickedOutsideElement(menuElem, event);
-      var eventOccuredOutsideControl = this.clickedOutsideElement(controlElem, event);
+      var eventOccuredOutsideMenu = this.clickedOutsideElement(menuElem, event)
+      var eventOccuredOutsideControl = this.clickedOutsideElement(controlElem, event)
 
       // Hide dropdown menu if click occurred outside of menu
       if (eventOccuredOutsideMenu && eventOccuredOutsideControl) {
         this.setState({
           isOpen: false
-        }, this._unbindCloseMenuIfClickedOutside);
+        }, this._unbindCloseMenuIfClickedOutside)
       }
-    }.bind(this);
+    }.bind(this)
 
     this._bindCloseMenuIfClickedOutside = function() {
-      document.addEventListener('click', this._closeMenuIfClickedOutside);
-    };
+      document.addEventListener('click', this._closeMenuIfClickedOutside)
+    }
 
     this._unbindCloseMenuIfClickedOutside = function() {
-      document.removeEventListener('click', this._closeMenuIfClickedOutside);
-    };
+      document.removeEventListener('click', this._closeMenuIfClickedOutside)
+    }
   },
 
   componentWillUnmount() {
-    this._unbindCloseMenuIfClickedOutside();
+    this._unbindCloseMenuIfClickedOutside()
   },
 
   renderMenu() {
     if (this.state.filteredTags.length === 0 || !this.state.isOpen) {
-      return '';
+      return ''
     }
 
     return (
@@ -232,7 +232,7 @@ var TagsInput = React.createClass({
           })
 
           let props = {
-            href: "#",
+            href: '#',
             key: index,
             className: focusedClass,
             onMouseOver: this.updateFocusedOption,
@@ -241,7 +241,7 @@ var TagsInput = React.createClass({
 
           return (
             <ListGroupItem {...props}>{value}</ListGroupItem>
-          );
+          )
         })}
       </ListGroup>
     )
@@ -249,7 +249,7 @@ var TagsInput = React.createClass({
 
   render() {
     return (
-      <div className="tags-input" ref='listGroup'>
+      <div className="tags-input" ref="listGroup">
         {this.renderValues()}
         <input
           ref="input"
@@ -257,13 +257,13 @@ var TagsInput = React.createClass({
           onKeyDown={this.onKeyDown}
           onChange={this.filterTags}
           onFocus={this.handleInputFocus}
-          placeholder={this.props.placeholder || "Type to Search and Tab to Add Tags..."}
+          placeholder={this.props.placeholder || 'Type to Search and Tab to Add Tags...'}
         />
         {this.renderMenu()}
       </div>
     )
   }
 
-});
+})
 
-export default TagsInput;
+export default TagsInput

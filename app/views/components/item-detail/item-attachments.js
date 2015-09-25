@@ -1,17 +1,15 @@
-import React from 'react/addons';
-import _ from 'lodash';
-import helpers from '../../components/helpers';
-import ItemDetailMixin from './detail-mixin';
-import ItemHeader from './item-header';
+import React from 'react/addons'
+import _ from 'lodash'
+import ItemDetailMixin from './detail-mixin'
 import {State} from 'react-router'
-import Slick from 'react-slick';
-import classNames from "classnames";
+import Slick from 'react-slick'
+import classNames from 'classnames'
 
 const CarouselSettings = {
   dots: false,
   draggable: false,
   speed: 750
-};
+}
 
 let ItemAttachments = React.createClass({
 
@@ -38,9 +36,9 @@ let ItemAttachments = React.createClass({
   },
 
   counts() {
-    let counts = [];
-    let imageCount = this.images().length;
-    let fileCount = this.files().length;
+    let counts = []
+    let imageCount = this.images().length
+    let fileCount = this.files().length
 
     if (!imageCount && !fileCount) {
       counts.push(<li key="no-attachment">No Attachments</li>)
@@ -50,23 +48,23 @@ let ItemAttachments = React.createClass({
       counts.push(<li key="count__images">Images: {imageCount}</li>)
     }
     if (fileCount) {
-      counts.push(<li key="count__files">Files: {fileCount}</li>);
+      counts.push(<li key="count__files">Files: {fileCount}</li>)
     }
 
-    return counts;
+    return counts
   },
 
   attachmentsHeader() {
-    let counts = this.counts();
+    let counts = this.counts()
     let headerClasses = classNames({
       'header-dark': true,
       'open': this.props.open
-    });
+    })
     let toggleClasses = classNames({
       'toggle': true,
       'transparent': !this.props.attachments.length
     })
-    let caretClasses = `glyphicon glyphicon-menu-${this.caretState()}`;
+    let caretClasses = `glyphicon glyphicon-menu-${this.caretState()}`
 
     return (
       <div className={headerClasses}>
@@ -80,39 +78,39 @@ let ItemAttachments = React.createClass({
     )
   },
 
-  imageViewer(images) {
-    let images = this.images();
+  imageViewer() {
+    let images = this.images()
     if (images && images.length) {
-      let styles = { 'height': '170px' };
+      let styles = { 'height': '170px' }
       let imageSlides = _.map(images, (image, i) => {
-                          // Carousel didnt function correctly with a ReactSubcomponent
+        // Carousel didnt function correctly with a ReactSubcomponent
 
-                          return (
-                            <div key={i} className="attachment__slide">
-                              <img className="image" style={styles} src={image.href}></img>
-                              <button onClick={_.partial(this.showAttachment,image.href)} className="btn btn-primary preview">{`View Image ${i+1}`}</button>
-                            </div>
-                          )
-                        });
+        return (
+          <div key={i} className="attachment__slide">
+            <img className="image" style={styles} src={image.href}></img>
+            <button onClick={_.partial(this.showAttachment,image.href)} className="btn btn-primary preview">{`View Image ${i+1}`}</button>
+          </div>
+        )
+      })
 
       return (
         <Slick className="attachments__carousel" {...CarouselSettings}>
           {imageSlides}
         </Slick>
-      );
+      )
     }
   },
 
   showAttachment(src, ev) {
-    window.open(src);
+    window.open(src)
   },
 
   caretState() {
-    return this.props.open ? 'down' : 'right';
+    return this.props.open ? 'down' : 'right'
   },
 
   fileList() {
-    let files = this.files();
+    let files = this.files()
 
     if (files && files.length) {
       return _.map(files, (file, i) => {
@@ -132,22 +130,22 @@ let ItemAttachments = React.createClass({
     return _.chain(this.props.attachments)
                     .map((attachment) => {
                       if (this.imageFileExt(attachment._href)) {
-                        return attachment;
+                        return attachment
                       }
                     })
                     .compact()
-                    .value();
+                    .value()
   },
 
   files() {
-    return _.difference(this.props.attachments, this.images());
+    return _.difference(this.props.attachments, this.images())
   },
 
   attachmentsContent() {
     if (this.props.attachments.length) {
-      let imageViewer = this.imageViewer();
-      let fileList = this.fileList();
-      let fileCount = fileList.length || 0;
+      let imageViewer = this.imageViewer()
+      let fileList = this.fileList()
+      let fileCount = fileList.length || 0
 
       return ([
         <div key="attachments" className="col-xs-9">
@@ -165,20 +163,20 @@ let ItemAttachments = React.createClass({
   },
 
   imageFileExt(url) {
-    return (/\.(gif|jpg|jpeg|tiff|png)/i).test(url);
+    return (/\.(gif|jpg|jpeg|tiff|png)/i).test(url)
   },
 
   render: function() {
-    let content = this.attachmentsContent();
+    let content = this.attachmentsContent()
     let containerClasses = classNames({
-      "section attachments no-gutter": true,
-      "col-xs-12 visible-lg-block": this.props.size === 'large',
-      "col-xs-12 col-sm-6 visible-md-block visible-sm-block visible-xs-block": this.props.size === 'medium'
+      'section attachments no-gutter': true,
+      'col-xs-12 visible-lg-block': this.props.size === 'large',
+      'col-xs-12 col-sm-6 visible-md-block visible-sm-block visible-xs-block': this.props.size === 'medium'
     })
     let contentClasses = classNames({
       'content-dark': true,
       'open': this.props.open
-    });
+    })
 
     return (
       <div className={containerClasses}>
@@ -195,6 +193,6 @@ let ItemAttachments = React.createClass({
       </div>
     )
   }
-});
+})
 
-export default ItemAttachments;
+export default ItemAttachments

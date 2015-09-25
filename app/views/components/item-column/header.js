@@ -1,13 +1,13 @@
-import _ from 'lodash';
-import React from 'react/addons';
-import classNames from "classnames";
-import {SplitButton, ButtonGroup, MenuItem} from 'react-bootstrap';
+import _ from 'lodash'
+import React from 'react/addons'
+import classNames from 'classnames'
+import {SplitButton, ButtonGroup, MenuItem} from 'react-bootstrap'
 
 const SORT_OPTIONS = {
   created_at: 'Created At',
   priority: 'Priority',
   last_modified: 'Recent'
-};
+}
 
 let ColumnHeader = React.createClass({
 
@@ -18,12 +18,12 @@ let ColumnHeader = React.createClass({
   },
 
   onSelect: function(field) {
-    this.props.setSortCriteria(field);
+    this.props.setSortCriteria(field)
   },
 
   onReverseClick: function() {
     if (this.props.sortField !== 'priority') {
-      this.props.reverse();
+      this.props.reverse()
     }
   },
 
@@ -35,8 +35,8 @@ let ColumnHeader = React.createClass({
     let directionClasses = {
       'glyphicon': true,
       'glyphicon-sort-by-attributes': this.props.sortDirection === 'desc',
-      'glyphicon-sort-by-attributes-alt': this.props.sortDirection === 'asc',
-    };
+      'glyphicon-sort-by-attributes-alt': this.props.sortDirection === 'asc'
+    }
 
     let condensedClasses = {
       'glyphicon': true,
@@ -51,7 +51,7 @@ let ColumnHeader = React.createClass({
             {_.map(_.omit(SORT_OPTIONS, this.props.sortField), function(label, field) {
               return (
                 <MenuItem eventKey={field} key={field}>{label}</MenuItem>
-              );
+              )
             }, this)}
           </SplitButton>
           <button className="reverse-sort" disabled={this.props.sortField === 'priority'} type="button" onClick={this.onReverseClick} aria-label="Change sort direction">

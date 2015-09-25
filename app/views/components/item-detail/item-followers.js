@@ -1,9 +1,8 @@
-import React from 'react/addons';
-import _ from 'lodash';
-import ItemDetailMixin from './detail-mixin';
-import ItemHeader from './item-header';
+import React from 'react/addons'
+import _ from 'lodash'
+import ItemDetailMixin from './detail-mixin'
+import ItemHeader from './item-header'
 import {State} from 'react-router'
-import ProductActions from '../../../actions/product-actions';
 
 var ItemFollowers = React.createClass({
 
@@ -15,7 +14,7 @@ var ItemFollowers = React.createClass({
   },
 
   followItem() {
-    console.log('Follow the item');
+    // TODO
   },
 
   followerNodes() {
@@ -33,11 +32,11 @@ var ItemFollowers = React.createClass({
   },
 
   render() {
-    let followerNodes = this.followerNodes();
+    let followerNodes = this.followerNodes()
 
     return (
       <div className="col-xs-3 followers">
-        <ItemHeader title='followers' />
+        <ItemHeader title="followers" />
         <ul>
           {followerNodes}
         </ul>
@@ -47,4 +46,4 @@ var ItemFollowers = React.createClass({
   }
 })
 
-export default ItemFollowers;
+export default ItemFollowers

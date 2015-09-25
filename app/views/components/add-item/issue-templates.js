@@ -1,5 +1,5 @@
-module.exports = {
-  defect: "#### User Story \n\
+export default {
+  defect: '#### User Story \n\
 \n\
 #### Steps to reproduce: \n\
 \n\
@@ -21,5 +21,5 @@ module.exports = {
 #### Reporting Customer Info: \n\
 - Email Address: customer@email.com \n\
 - Ticket URL: https://mycompany.ticketservice.com/admin/tickets/123\n\
-"
+'
 }

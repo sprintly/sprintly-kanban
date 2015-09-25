@@ -1,29 +1,29 @@
-import _ from "lodash";
-import React from "react/addons";
-import {RouteHandler, State,Link} from 'react-router';
+import _ from 'lodash'
+import React from 'react/addons'
+import { RouteHandler, State } from 'react-router'
 
 // Components
-import ItemColumn from "../components/item-column";
-import FiltersToolbar from '../components/filters/filters-toolbar';
-import Header from '../components/header';
-import ob from 'oblique-strategies';
+import ItemColumn from '../components/item-column'
+import FiltersToolbar from '../components/filters/filters-toolbar'
+import Header from '../components/header'
+import ob from 'oblique-strategies'
 
 // Flux
-import FiltersStore from '../../stores/filters-store';
+import FiltersStore from '../../stores/filters-store'
 
-import ProductStore from '../../stores/product-store';
-import ProductActions from '../../actions/product-actions';
-import VelocityActions from '../../actions/velocity-actions';
+import ProductStore from '../../stores/product-store'
+import ProductActions from '../../actions/product-actions'
+import VelocityActions from '../../actions/velocity-actions'
 
-import helpers from './helpers';
-import ITEM_STATUSES from '../../lib/status-map';
+import helpers from './helpers'
+import ITEM_STATUSES from '../../lib/status-map'
 
 let ItemsViewController = React.createClass({
 
   mixins: [State],
 
   getInitialState: function() {
-    var product = ProductStore.getProduct(this.getParams().id) || {};
+    var product = ProductStore.getProduct(this.getParams().id) || {}
     return _.assign({
       allFilters: FiltersStore.all(),
       activeFilters: FiltersStore.getActiveOrDefault(),
@@ -35,30 +35,30 @@ let ItemsViewController = React.createClass({
         position: 0,
         value: '0px'
       }
-    }, product);
+    }, product)
   },
 
   _onProductChange() {
-    var product = ProductStore.getProduct(this.getParams().id) || {};
+    var product = ProductStore.getProduct(this.getParams().id) || {}
     this.setState(_.assign({
       allProducts: ProductStore.getAll(),
       itemsByStatus: ProductStore.getItemsByStatus(this.getParams().id)
-    }, product));
+    }, product))
   },
 
   _onFilterChange() {
     this.setState({
       allFilters: FiltersStore.all(),
       activeFilters: FiltersStore.getActiveOrDefault(),
-      filtersObject: FiltersStore.getFlatObject(),
+      filtersObject: FiltersStore.getFlatObject()
     })
   },
 
   componentDidMount: function() {
-    FiltersStore.addChangeListener(this._onFilterChange);
-    ProductStore.addChangeListener(this._onProductChange);
-    ProductActions.init(this.getParams().id);
-    VelocityActions.getVelocity(this.getParams().id);
+    FiltersStore.addChangeListener(this._onFilterChange)
+    ProductStore.addChangeListener(this._onProductChange)
+    ProductActions.init(this.getParams().id)
+    VelocityActions.getVelocity(this.getParams().id)
 
     if (helpers.isMobile(window)) {
       this.setState({
@@ -70,26 +70,26 @@ let ItemsViewController = React.createClass({
 
   componentWillReceiveProps: function(nextProps) {
     if (this.state.product && this.getParams().id != this.state.product.id) {
-      ProductActions.init(this.getParams().id);
-      VelocityActions.getVelocity(this.getParams().id);
+      ProductActions.init(this.getParams().id)
+      VelocityActions.getVelocity(this.getParams().id)
     }
   },
 
   componentWillUnmount: function() {
-    FiltersStore.removeChangeListener(this._onFilterChange);
-    ProductStore.removeChangeListener(this._onProductChange);
+    FiltersStore.removeChangeListener(this._onFilterChange)
+    ProductStore.removeChangeListener(this._onProductChange)
   },
 
   selectItem: function(activeItem, event) {
-    this.setState({ activeItem });
+    this.setState({ activeItem })
   },
 
   renderColumn: function(label, status) {
     // If we don't have items or velocity yet, there's nothing to do
     if (!this.state.itemsByStatus || !this.state.velocity) {
-      return '';
+      return ''
     }
-    let items = this.state.itemsByStatus[status];
+    let items = this.state.itemsByStatus[status]
     let props = _.assign({
       status,
       product: this.state.product,
@@ -98,31 +98,31 @@ let ItemsViewController = React.createClass({
       key: `col-${this.state.product.id}-${status}`,
       velocity: this.state.velocity,
       colWidth: this.state.colWidth
-    }, items);
+    }, items)
 
-    return <ItemColumn {...props} />;
+    return <ItemColumn {...props} />
   },
 
   translateColumns(direction) {
-    var increment = direction === 'next';
-    var newTranslation = helpers.generateTranslation(this.state.translation, this.colCount(), window.innerWidth, increment);
-    this.setState({translation: newTranslation});
+    var increment = direction === 'next'
+    var newTranslation = helpers.generateTranslation(this.state.translation, this.colCount(), window.innerWidth, increment)
+    this.setState({translation: newTranslation})
   },
 
   colCount() {
-    return _.keys(ITEM_STATUSES).length;
+    return _.keys(ITEM_STATUSES).length
   },
 
   colHeaders() {
     return _.map(ITEM_STATUSES, function(label, status) {
       let index = _.keys(ITEM_STATUSES).indexOf(status)
 
-      let prevClasses = '';
-      let nextClasses = '';
+      let prevClasses = ''
+      let nextClasses = ''
       if (index === 0) {
-        prevClasses = ' inactive';
+        prevClasses = ' inactive'
       } else if (index === this.colCount()-1) {
-        nextClasses = ' inactive';
+        nextClasses = ' inactive'
       }
 
       return (
@@ -135,7 +135,7 @@ let ItemsViewController = React.createClass({
               <span className="glyphicon glyphicon-chevron-right"></span>
             </button>
           </nav>
-      );
+      )
     }, this)
   },
 
@@ -150,24 +150,24 @@ let ItemsViewController = React.createClass({
           <small><i>{ob.draw()}</i></small>
         </div>
       </div>
-    );
+    )
   },
 
   trayStyles() {
     var transform = helpers.browserPrefix('transform', `translateX(${this.state.translation.value})`)
-    return _.merge(this.state.trayWidth, transform);
+    return _.merge(this.state.trayWidth, transform)
   },
 
   render: function() {
     if (_.isUndefined(this.state.product)) {
-      return this.loadingColumn();
+      return this.loadingColumn()
     }
 
     var velocity =  this.state.velocity && this.state.velocity.average ?
-      this.state.velocity.average : '~';
+      this.state.velocity.average : '~'
 
-    var colHeaders = this.colHeaders();
-    var trayStyles = this.trayStyles();
+    var colHeaders = this.colHeaders()
+    var trayStyles = this.trayStyles()
 
     return (
       <div className="container-tray">
@@ -198,8 +198,8 @@ let ItemsViewController = React.createClass({
           {_.map(ITEM_STATUSES, this.renderColumn)}
         </div>
       </div>
-    );
+    )
   }
-});
+})
 
-export default ItemsViewController;
+export default ItemsViewController

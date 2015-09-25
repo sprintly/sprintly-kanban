@@ -1,8 +1,7 @@
-import _ from 'lodash';
-import React from 'react/addons';
-import {Popover} from 'react-bootstrap';
-import VelocityActions from '../../../actions/velocity-actions';
-import onClickOutside from '@sprintly/react-onclickoutside';
+import React from 'react/addons'
+import {Popover} from 'react-bootstrap'
+import VelocityActions from '../../../actions/velocity-actions'
+import onClickOutside from '@sprintly/react-onclickoutside'
 
 var VelocityComponent = React.createClass({
 
@@ -10,7 +9,7 @@ var VelocityComponent = React.createClass({
     return {
       showFiltersMenu: false,
       showVelocityPopover: false
-    };
+    }
   },
 
   mixins: [
@@ -18,47 +17,47 @@ var VelocityComponent = React.createClass({
   ],
 
   changeVelocity(e) {
-    e.preventDefault();
-    let newVelocity = this.refs.velocity_input.getDOMNode().value;
-    VelocityActions.setVelocity(this.props.productId, newVelocity);
-    this.setState({ showVelocityInput: false });
-    this.hideVelocityPopover();
+    e.preventDefault()
+    let newVelocity = this.refs.velocity_input.getDOMNode().value
+    VelocityActions.setVelocity(this.props.productId, newVelocity)
+    this.setState({ showVelocityInput: false })
+    this.hideVelocityPopover()
   },
 
   showVelocityPopover() {
     this.setState({
       showVelocityPopover: true
     }, () => {
-      this.refs.velocity_input.getDOMNode().focus();
-    });
+      this.refs.velocity_input.getDOMNode().focus()
+    })
   },
 
   hideVelocityPopover() {
     this.setState({
       showVelocityPopover: false
-    });
+    })
   },
 
   handleClickOutside() {
-    this.hideVelocityPopover();
+    this.hideVelocityPopover()
   },
 
   escapePopover(e) {
     if (e.keyCode === 27) { // ESC
-      return this.hideVelocityPopover();
+      return this.hideVelocityPopover()
     }
   },
 
   placeCursor() {
     // http://stackoverflow.com/questions/511088/use-javascript-to-place-cursor-at-end-of-text-in-text-input-element
     // Moves cursor to the end of the input
-    this.refs.velocity_input.getDOMNode().value = this.refs.velocity_input.getDOMNode().value;
+    this.refs.velocity_input.getDOMNode().value = this.refs.velocity_input.getDOMNode().value
   },
 
   renderVelocityPopover() {
     return (
       <Popover
-        placement='bottom'
+        placement="bottom"
         positionLeft={8}
         positionTop={18}
         className="velocity__popover" >
@@ -83,11 +82,11 @@ var VelocityComponent = React.createClass({
           </div>
         </form>
       </Popover>
-    );
+    )
   },
 
   render() {
-    let velocityPopover = this.renderVelocityPopover();
+    let velocityPopover = this.renderVelocityPopover()
     return (
       <div>
         {this.state.showVelocityPopover ? velocityPopover : ''}
@@ -98,6 +97,6 @@ var VelocityComponent = React.createClass({
       </div>
     )
   }
-});
+})
 
-export default VelocityComponent;
+export default VelocityComponent

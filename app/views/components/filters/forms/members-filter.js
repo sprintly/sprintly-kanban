@@ -1,9 +1,8 @@
-import _ from 'lodash';
-import React from 'react/addons';
-import classNames from "classnames";
-import {Input} from 'react-bootstrap';
-import {SelectorMenu} from 'sprintly-ui';
-import Select from 'react-select';
+import _ from 'lodash'
+import React from 'react/addons'
+import classNames from 'classnames'
+import {Input} from 'react-bootstrap'
+import Select from 'react-select'
 
 var MembersFilter = React.createClass({
 
@@ -28,23 +27,23 @@ var MembersFilter = React.createClass({
   onChange: function(value) {
     let options = {}
     if (value === '') {
-      options.unset = true;
+      options.unset = true
     }
     this.props.updateFilters(this.props.name, value, options)
   },
 
   update: function(field, value, ev) {
-    let checked = ev.target.checked;
-    let criteria = '';
-    let options = {};
+    let checked = ev.target.checked
+    let criteria = ''
+    let options = {}
 
     if (checked) {
-      criteria = value;
+      criteria = value
     } else {
-      options.unset = true;
+      options.unset = true
     }
 
-    this.props.updateFilters(this.props.name, criteria, options);
+    this.props.updateFilters(this.props.name, criteria, options)
   },
 
   prepareMembersForSelect(members) {
@@ -54,26 +53,26 @@ var MembersFilter = React.createClass({
                 return {
                   label: `${member.first_name} ${member.last_name}`,
                   value: member.id
-                };
+                }
               }
             })
             .compact()
-            .value();
+            .value()
   },
 
   selectedPerson(members, criteria) {
     let person = _.find(members, { id: criteria })
 
     if (person) {
-      return `${person.first_name} ${person.last_name}`;
+      return `${person.first_name} ${person.last_name}`
     } else {
-      return 'Unassigned';
+      return 'Unassigned'
     }
   },
 
   renderMembers: function(option) {
-    let activeAssignee = this.selectedPerson(this.props.members, this.props.criteria);
-    let members = this.prepareMembersForSelect(this.props.members);
+    let activeAssignee = this.selectedPerson(this.props.members, this.props.criteria)
+    let members = this.prepareMembersForSelect(this.props.members)
     var props = {
       placeholder: 'All',
       name: option.field,
@@ -82,21 +81,21 @@ var MembersFilter = React.createClass({
       onChange: this.onChange,
       clearable: true,
       value: null
-    };
+    }
     if (this.props.criteria) {
-      props.value = activeAssignee;
+      props.value = activeAssignee
     }
 
     return (
       <div className="form-group selector" key="members-dropdown">
         <Select {...props}/>
       </div>
-    );
+    )
   },
 
   renderCriteriaFormField: function(option, index) {
     if (option.members) {
-      return this.renderMembers(option);
+      return this.renderMembers(option)
     }
 
     let props = {
@@ -111,7 +110,7 @@ var MembersFilter = React.createClass({
 
     return (
       <Input {...props}/>
-    );
+    )
   },
 
   render: function() {
@@ -119,7 +118,7 @@ var MembersFilter = React.createClass({
       'form-horizontal': true,
       'filter__criteria-selector': true,
       visible: this.props.visible
-    });
+    })
     return (
       <form className={classes} onClick={(e) => e.stopPropagation() }>
         {_.map(this.props.options, this.renderCriteriaFormField)}
@@ -128,4 +127,4 @@ var MembersFilter = React.createClass({
   }
 })
 
-export default MembersFilter;
+export default MembersFilter

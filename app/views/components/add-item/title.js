@@ -1,5 +1,5 @@
-import React from 'react/addons';
-import classNames from "classnames";
+import React from 'react/addons'
+import classNames from 'classnames'
 
 let AddItemTitle = React.createClass({
   propTypes: {
@@ -8,14 +8,14 @@ let AddItemTitle = React.createClass({
   },
 
   componentDidMount() {
-    React.findDOMNode(this.refs.titleInput).focus();
+    React.findDOMNode(this.refs.titleInput).focus()
   },
 
   render() {
     var classes = classNames({
-      "form-group": true,
+      'form-group': true,
       'has-error': !this.props.validation.value['title']
-    });
+    })
 
     return (
       <div className={classes}>
@@ -25,8 +25,8 @@ let AddItemTitle = React.createClass({
           ref="titleInput"
           valueLink={this.props.title} />
       </div>
-    );
+    )
   }
-});
+})
 
-export default AddItemTitle;
+export default AddItemTitle

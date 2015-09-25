@@ -1,7 +1,7 @@
-import _ from 'lodash';
-import React from 'react/addons';
-import classNames from "classnames";
-import {Input} from 'react-bootstrap';
+import _ from 'lodash'
+import React from 'react/addons'
+import classNames from 'classnames'
+import {Input} from 'react-bootstrap'
 
 var CheckboxFilter = React.createClass({
 
@@ -18,26 +18,26 @@ var CheckboxFilter = React.createClass({
   },
 
   update: function(field, ev) {
-    let value = ev.target.checked;
+    let value = ev.target.checked
     let criteria = this.props.criteria.length === 0 ?
-        _.pluck(this.props.options, 'field') : _.clone(this.props.criteria);
+        _.pluck(this.props.options, 'field') : _.clone(this.props.criteria)
 
     if (value && _.contains(criteria, field) === false) {
-      criteria.push(field);
+      criteria.push(field)
     } else if (value === false) {
-      criteria = _.without(criteria, field);
+      criteria = _.without(criteria, field)
     }
 
     if (criteria && criteria.length < 1) {
-      ev.preventDefault();
-      return false;
+      ev.preventDefault()
+      return false
     }
-    this.props.updateFilters(this.props.name, criteria);
+    this.props.updateFilters(this.props.name, criteria)
   },
 
   renderCriteriaFormField: function(option) {
     let checked = this.props.criteria.length === 0 ? option.default :
-      _.contains(this.props.criteria, option.field);
+      _.contains(this.props.criteria, option.field)
 
     return (
       <Input
@@ -47,7 +47,7 @@ var CheckboxFilter = React.createClass({
         wrapperClassName="col-xs-offset-1"
         onChange={_.partial(this.update, option.field)}
         checked={checked} />
-    );
+    )
   },
 
   render: function() {
@@ -55,7 +55,7 @@ var CheckboxFilter = React.createClass({
       'form-horizontal': true,
       'filter__criteria-selector': true,
       visible: this.props.visible
-    });
+    })
     return (
       <form className={classes} onClick={(e) => e.stopPropagation() }>
         {_.map(this.props.options, this.renderCriteriaFormField)}
@@ -64,4 +64,4 @@ var CheckboxFilter = React.createClass({
   }
 })
 
-export default CheckboxFilter;
+export default CheckboxFilter

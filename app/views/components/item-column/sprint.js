@@ -1,8 +1,8 @@
-import _ from 'lodash';
-import React from 'react/addons';
-import ItemCard from '../item-card';
-import {Label, Popover} from 'react-bootstrap';
-import onClickOutside from '@sprintly/react-onclickoutside';
+import _ from 'lodash'
+import React from 'react/addons'
+import ItemCard from '../item-card'
+import {Label, Popover} from 'react-bootstrap'
+import onClickOutside from '@sprintly/react-onclickoutside'
 
 let Sprint = React.createClass({
 
@@ -10,7 +10,7 @@ let Sprint = React.createClass({
     return {
       expanded: this.props.startOpen,
       teamStrength: 1
-    };
+    }
   },
 
   mixins: [
@@ -18,50 +18,50 @@ let Sprint = React.createClass({
   ],
 
   toggleTeamStrengthPopover(e) {
-    e.stopPropagation();
+    e.stopPropagation()
     this.setState({
       showingTeamStrengthPopover: !this.state.showingTeamStrengthPopover
     },
     function() {
-      this.refs.team_strength_input.getDOMNode().focus();
-    });
+      this.refs.team_strength_input.getDOMNode().focus()
+    })
   },
 
   adjustTeamStrength(e) {
-    e.preventDefault();
-    e.stopPropagation();
+    e.preventDefault()
+    e.stopPropagation()
 
-    let newStrength = this.refs.team_strength_input.getDOMNode().value / 100;
+    let newStrength = this.refs.team_strength_input.getDOMNode().value / 100
     this.setState({
       teamStrength: newStrength,
       showingTeamStrengthPopover: false
     }, () => {
       this.props.onChangeTeamStrength(this)
-    });
+    })
   },
 
   toggleItemCards() {
-    this.setState({ expanded: !this.state.expanded });
+    this.setState({ expanded: !this.state.expanded })
   },
 
   handleClickOutside() {
-    this.setState({ showingTeamStrengthPopover: false });
+    this.setState({ showingTeamStrengthPopover: false })
   },
 
   escapeTeamStrengthPopover(e) {
     if (e.keyCode === 27) { // ESC
-      this.setState({ showingTeamStrengthPopover: false });
+      this.setState({ showingTeamStrengthPopover: false })
     }
   },
 
   placeCursor() {
     // http://stackoverflow.com/questions/511088/use-javascript-to-place-cursor-at-end-of-text-in-text-input-element
     // Moves cursor to the end of the input
-    this.refs.team_strength_input.getDOMNode().value = this.refs.team_strength_input.getDOMNode().value;
+    this.refs.team_strength_input.getDOMNode().value = this.refs.team_strength_input.getDOMNode().value
   },
 
   renderItemCard(item, index) {
-    if (!item) { return; }
+    if (!item) { return }
     let card = (
       <ItemCard
         item={item}
@@ -70,14 +70,14 @@ let Sprint = React.createClass({
         members={this.props.members}
         key={`item-${this.props.productId}${item.number}`}
       />
-    );
-    return card;
+    )
+    return card
   },
 
   renderTeamStrengthPopover() {
     return (
       <Popover
-        placement='top'
+        placement="top"
         positionLeft={-22}
         positionTop={-7}
         onClick={(e) => e.stopPropagation()}
@@ -102,13 +102,12 @@ let Sprint = React.createClass({
           </div>
         </form>
       </Popover>
-    );
+    )
   },
 
   render() {
-    let itemCards = _.map(this.props.items, this.renderItemCard);
-    let teamStrength = `${Math.round(this.state.teamStrength * 100, 2)}%`;
-    let chevronClass = `sprint__chevron glyphicon glyphicon-menu-${this.state.expanded ? 'up' : 'down'}`;
+    let itemCards = _.map(this.props.items, this.renderItemCard)
+    let chevronClass = `sprint__chevron glyphicon glyphicon-menu-${this.state.expanded ? 'up' : 'down'}`
     return (
       <div className={`sprint sprint-${this.state.expanded ? 'open' : 'closed'}`}>
         <div className="panel panel-default">
@@ -123,8 +122,8 @@ let Sprint = React.createClass({
           </div>
         </div>
       </div>
-    );
+    )
   }
 })
 
-export default Sprint;
+export default Sprint

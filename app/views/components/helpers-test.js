@@ -1,6 +1,6 @@
-var _ = require('lodash');
-var assert = require('chai').assert;
-var helpers = require('./helpers');
+/* eslint-env mocha, node */
+var assert = require('chai').assert
+var helpers = require('./helpers')
 
 describe('Component/Helpers', function() {
   it('#formatMentionMembers', function() {
@@ -28,8 +28,8 @@ describe('Component/Helpers', function() {
       }
     ]
 
-    var result = helpers.formatMentionMembers(input);
+    var result = helpers.formatMentionMembers(input)
 
-    assert.deepEqual(result, target);
+    assert.deepEqual(result, target)
   })
 })

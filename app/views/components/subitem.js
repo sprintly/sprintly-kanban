@@ -1,5 +1,5 @@
-import React from 'react/addons';
-import _ from 'lodash';
+import React from 'react/addons'
+import _ from 'lodash'
 
 let Subitem = React.createClass({
 
@@ -23,7 +23,7 @@ let Subitem = React.createClass({
   },
 
   subitemNumber() {
-    let subitemURL = this.props.subitem.short_url;
+    let subitemURL = this.props.subitem.short_url
 
     if (subitemURL) {
       return (
@@ -72,8 +72,8 @@ let Subitem = React.createClass({
           {this.deleteButton()}
         </div>
       </li>
-    );
+    )
   }
-});
+})
 
-module.exports = Subitem;
+export default Subitem

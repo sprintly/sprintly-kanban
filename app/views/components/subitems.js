@@ -1,8 +1,6 @@
-import React from 'react/addons';
-import _ from 'lodash';
-import Subitem from './subitem';
-import ProductActions from '../../actions/product-actions';
-import ItemActions from '../../actions/item-actions';
+import React from 'react/addons'
+import _ from 'lodash'
+import Subitem from './subitem'
 
 var Subitems = React.createClass({
 
@@ -11,18 +9,18 @@ var Subitems = React.createClass({
     createItem: React.PropTypes.func.isRequired,
     deleteItem: React.PropTypes.oneOfType([
       React.PropTypes.bool,
-      React.PropTypes.func,
+      React.PropTypes.func
     ]),
     updateItem: React.PropTypes.oneOfType([
       React.PropTypes.bool,
-      React.PropTypes.func,
+      React.PropTypes.func
     ])
   },
 
   subitemsList() {
     if (this.props.subitems.length) {
       let subitems = _.map(this.props.subitems, (subitem, i) => {
-        let checked = subitem.status === 'completed' || subitem.status === 'accepted';
+        let checked = subitem.status === 'completed' || subitem.status === 'accepted'
 
         return (
           <Subitem key={i}
@@ -32,7 +30,7 @@ var Subitems = React.createClass({
             updateItem={this.props.updateItem}
                checked={checked} />
         )
-      }, this);
+      }, this)
 
       return (
         <ul>
@@ -43,17 +41,17 @@ var Subitems = React.createClass({
   },
 
   addItemText() {
-    return this.props.subitems.length ? 'Add another task' : 'Add a task';
+    return this.props.subitems.length ? 'Add another task' : 'Add a task'
   },
 
   extractValue(ev) {
-    ev.preventDefault();
-    let node = this.refs.addItemInput.getDOMNode();
+    ev.preventDefault()
+    let node = this.refs.addItemInput.getDOMNode()
     if (node.value) {
-      this.props.createItem(node.value);
-      node.value = '';
+      this.props.createItem(node.value)
+      node.value = ''
     }
-    node.focus();
+    node.focus()
   },
 
   newSubitemInput() {
@@ -71,8 +69,8 @@ var Subitems = React.createClass({
         {this.newSubitemInput()}
         {this.subitemsList()}
       </div>
-    );
+    )
   }
-});
+})
 
-export default Subitems;
+export default Subitems

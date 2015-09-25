@@ -1,10 +1,10 @@
-import React from 'react/addons';
-import ItemActions from '../../../actions/item-actions';
-import ItemDetailMixin from './detail-mixin';
-import ItemHeader from './item-header';
+import React from 'react/addons'
+import ItemActions from '../../../actions/item-actions'
+import ItemDetailMixin from './detail-mixin'
+import ItemHeader from './item-header'
 import {State} from 'react-router'
 
-const placeholder = "Use '@' to mention another Sprintly user.  Use #[item number] (e.g. #1234) to reference another Sprintly item.";
+const placeholder = "Use '@' to mention another Sprintly user.  Use #[item number] (e.g. #1234) to reference another Sprintly item."
 
 var TicketComments = React.createClass({
   mixins: [State, ItemDetailMixin],
@@ -21,7 +21,7 @@ var TicketComments = React.createClass({
 
   saveComment(ev) {
     ItemActions.createComment(this.getParams().id, this.getParams().number, this.state.comment)
-    this.setState({comment: ''});
+    this.setState({comment: ''})
   },
 
   updateComment(ev, value) {
@@ -29,12 +29,12 @@ var TicketComments = React.createClass({
   },
 
   render: function() {
-    let mentionsComponent = this.mentionsComponent(this.state.comment, placeholder, this.props.members, this.updateComment);
+    let mentionsComponent = this.mentionsComponent(this.state.comment, placeholder, this.props.members, this.updateComment)
 
     return (
       <div className="col-xs-12 section comments">
         <div className="col-xs-12">
-          <ItemHeader title='comments' />
+          <ItemHeader title="comments" />
           <div className="comment__form">
             <div className="col-xs-12 no-gutter">
               {mentionsComponent}
@@ -52,9 +52,9 @@ var TicketComments = React.createClass({
       </div>
     )
   }
-});
+})
 
-export default TicketComments;
+export default TicketComments
 /*
   When attachmetns are supported:
   <div className="upload">Drag and drop or <span className="blue__light">click here</span> to attach files</div>

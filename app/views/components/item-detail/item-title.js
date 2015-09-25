@@ -1,26 +1,26 @@
-import React from 'react/addons';
-import _ from 'lodash';
-import helpers from '../../components/helpers';
-import ItemDetailMixin from './detail-mixin';
+import React from 'react/addons'
+import _ from 'lodash'
+import helpers from '../../components/helpers'
+import ItemDetailMixin from './detail-mixin'
 import {State} from 'react-router'
-import ProductActions from '../../../actions/product-actions';
-import classNames from "classnames";
+import ProductActions from '../../../actions/product-actions'
+import classNames from 'classnames'
 
 const TITLE_ATTRS = {
   who: {
-    title: "As an",
-    placeholder: "e.g. an accountant"
+    title: 'As an',
+    placeholder: 'e.g. an accountant'
   },
   what: {
-    title: "I want",
-    placeholder: "e.g. Quickbooks integration"
+    title: 'I want',
+    placeholder: 'e.g. Quickbooks integration'
   },
   why: {
-    title: "so that",
+    title: 'so that',
     placeholder: "e.g. I don't have to import CSV's daily"
   }
-};
-const STORY_ATTRS = ['who', 'what', 'why'];
+}
+const STORY_ATTRS = ['who', 'what', 'why']
 
 var ItemTitle = React.createClass({
 
@@ -52,8 +52,8 @@ var ItemTitle = React.createClass({
 
   presentationTitle() {
     if (this.props.type === 'story') {
-      var whoFirstWord = this.props.who.split(' ')[0];
-      var whoPre = helpers.vowelSound(whoFirstWord) ? 'As an ' : 'As a ' ;
+      var whoFirstWord = this.props.who.split(' ')[0]
+      var whoPre = helpers.vowelSound(whoFirstWord) ? 'As an ' : 'As a ' 
 
       return  [
         <span key="who" className="italicize">{whoPre}</span>,
@@ -71,9 +71,9 @@ var ItemTitle = React.createClass({
   storyTitleInput() {
     return _.map(STORY_ATTRS, (attr, i) => {
       var classes = classNames({
-        "form-control": true,
-        "title-input": true,
-      });
+        'form-control': true,
+        'title-input': true
+      })
 
       return (
         <div className={`item-title__field ${attr}`} key={i} >
@@ -110,36 +110,36 @@ var ItemTitle = React.createClass({
 
   editTitle() {
     if (this.props.type === 'story') {
-      return this.storyTitleInput();
+      return this.storyTitleInput()
     } else {
-      return this.defaultTitleInput();
+      return this.defaultTitleInput()
     }
   },
 
   toggleTitleEdit() {
     if (this.state.titleEditable) {
-      const TITLE_ATTR = 'title';
+      const TITLE_ATTR = 'title'
 
       if (this.props.type === 'story') {
-        let productId = this.getParams().id;
-        let itemId = this.getParams().number;
+        let productId = this.getParams().id
+        let itemId = this.getParams().number
         let newAttrs = {
           who: this.props.who,
           what: this.props.what,
           why: this.props.why
         }
 
-        ProductActions.updateItem(productId, itemId, newAttrs);
+        ProductActions.updateItem(productId, itemId, newAttrs)
       } else {
         this.updateAttribute(this.props.itemId, TITLE_ATTR, this.props.title)
       }
     }
 
-    this.setState({titleEditable: !this.state.titleEditable});
+    this.setState({titleEditable: !this.state.titleEditable})
   },
 
   toggleButton() {
-    let buttonCopy = this.state.titleEditable ? 'Save' : 'Edit';
+    let buttonCopy = this.state.titleEditable ? 'Save' : 'Edit'
 
     return (
       <div className="title__edit">
@@ -152,9 +152,9 @@ var ItemTitle = React.createClass({
 
   render() {
     let titleClass = `title ${this.props.type}`
-    let title = this.state.titleEditable ? this.editTitle() : this.presentationTitle();
-    let toggleButton = this.toggleButton();
-    let createdByTimestamp = this.createdByTimestamp(this.props.createdAt, this.props.createdBy);
+    let title = this.state.titleEditable ? this.editTitle() : this.presentationTitle()
+    let toggleButton = this.toggleButton()
+    let createdByTimestamp = this.createdByTimestamp(this.props.createdAt, this.props.createdBy)
 
     return (
       <div className={titleClass}>
@@ -172,4 +172,4 @@ var ItemTitle = React.createClass({
   }
 })
 
-export default ItemTitle;
+export default ItemTitle

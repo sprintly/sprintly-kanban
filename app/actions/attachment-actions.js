@@ -1,5 +1,5 @@
-import AppDispatcher from '../dispatchers/app-dispatcher.js';
-import TransloaditUpload from '../lib/transloadit';
+import AppDispatcher from '../dispatchers/app-dispatcher.js'
+import TransloaditUpload from '../lib/transloadit'
 
 let AttachmentActions = {
 
@@ -8,7 +8,7 @@ let AttachmentActions = {
     AppDispatcher.dispatch({
       actionType: 'UPLOAD_START',
       file: file
-    });
+    })
 
     new TransloaditUpload()
       .uploadFile(file)
@@ -17,14 +17,14 @@ let AttachmentActions = {
           actionType: 'UPLOAD_COMPLETE',
           payload: upload,
           file: file
-        });
-      });
+        })
+      })
   },
 
   createAttachment() {
 
   }
 
-};
+}
 
-export default AttachmentActions;
+export default AttachmentActions

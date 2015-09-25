@@ -1,22 +1,22 @@
-import _ from 'lodash';
-import moment from 'moment';
-import helpers from '../../components/helpers';
-import Gravatar from '../../components/gravatar';
-import OwnerAvatar from '../../components/item-card/owner';
-import Select from 'react-select';
-import {MentionsInput, Mention} from '@sprintly/react-mentions';
-import ProductActions from '../../../actions/product-actions';
-import ScoreMap from '../../../lib/score-map';
-import classNames from "classnames";
-import STATUS_MAP from '../../../lib/statuses-map';
+import _ from 'lodash'
+import moment from 'moment'
+import helpers from '../../components/helpers'
+import Gravatar from '../../components/gravatar'
+import OwnerAvatar from '../../components/item-card/owner'
+import Select from 'react-select'
+import {MentionsInput, Mention} from '@sprintly/react-mentions'
+import ProductActions from '../../../actions/product-actions'
+import ScoreMap from '../../../lib/score-map'
+import classNames from 'classnames'
+import STATUS_MAP from '../../../lib/statuses-map'
 
 const selectPlaceholderMap = {
-  'assigned_to': "Choose assignee"
+  'assigned_to': 'Choose assignee'
 }
 
 var DetailMixin = {
   header(title) {
-    var titleCased = helpers.toTitleCase(title);
+    var titleCased = helpers.toTitleCase(title)
 
     return (
       <div className="header">
@@ -27,11 +27,11 @@ var DetailMixin = {
   },
 
   caretDirection(open) {
-    return open ? 'down' : 'right';
+    return open ? 'down' : 'right'
   },
 
   mentionsComponent(value, placeholder, members, changeFn) {
-    let mentions = helpers.formatMentionMembers(members);
+    let mentions = helpers.formatMentionMembers(members)
 
     return (
       <MentionsInput
@@ -45,14 +45,14 @@ var DetailMixin = {
   },
 
   parseTags(tags) {
-    return _.reject(tags.split(','), (text) => { return text === ','});
+    return _.reject(tags.split(','), (text) => { return text === ','})
   },
 
   buildTags(tags) {
     if (tags) {
       let tagIcon = <li key="tag"><span className="glyphicon glyphicon-tag"></span></li>
-      let parsedTags = this.parseTags(tags);
-      let commas = _.map(_.times(parsedTags.length-1), function() {return ','});
+      let parsedTags = this.parseTags(tags)
+      let commas = _.map(_.times(parsedTags.length-1), function() {return ','})
 
       let tagListEls = _.map(parsedTags, (tag, i) => {
         return (
@@ -76,22 +76,22 @@ var DetailMixin = {
   },
 
   timeSinceNow(time) {
-    return moment(time).fromNow();
+    return moment(time).fromNow()
   },
 
   createdByTimestamp(createdAt, createdBy) {
     if (createdBy) {
-      let timestamp = this.timeSinceNow(createdAt);
-      let creator = `${createdBy.first_name} ${createdBy.last_name}`;
+      let timestamp = this.timeSinceNow(createdAt)
+      let creator = `${createdBy.first_name} ${createdBy.last_name}`
 
-      return `Created by ${creator} ${timestamp}`;
+      return `Created by ${creator} ${timestamp}`
     }
   },
 
   itemStatus(status) {
-    let status = helpers.itemStatusMap(status);
+    status = helpers.itemStatusMap(status)
 
-    return helpers.toTitleCase(status);
+    return helpers.toTitleCase(status)
   },
 
   assigneeGravatar(email) {
@@ -104,19 +104,19 @@ var DetailMixin = {
 
   itemScoreButton(type, score) {
     // TODO: let the user toggle state between t-shirt and fibonnaci sizes
-    let buttonClass = `estimator__button ${type}`;
+    let buttonClass = `estimator__button ${type}`
     return (
       <button className={buttonClass}>{score}</button>
     )
   },
 
   estimator(item) {
-    const SCORE_ATTR = 'score';
+    const SCORE_ATTR = 'score'
 
     var options = _.map(_.keys(ScoreMap), (key, i) => {
       let estimatorClasses = classNames({
-        "estimator-option": true,
-        "selected": key === item.score
+        'estimator-option': true,
+        'selected': key === item.score
       })
 
       return (
@@ -136,14 +136,14 @@ var DetailMixin = {
   },
 
   statusPicker(item, hoverHandler, hoverReset) {
-    const STATUS_ATTR = 'status';
+    const STATUS_ATTR = 'status'
 
     var options = _.map(_.keys(STATUS_MAP), (key, i) => {
       let estimatorClasses = classNames({
-        "estimator-option": true,
-        "selected": STATUS_MAP[key] === item.status
-      });
-      let value = helpers.toTitleCase(key.charAt(0));
+        'estimator-option': true,
+        'selected': STATUS_MAP[key] === item.status
+      })
+      let value = helpers.toTitleCase(key.charAt(0))
 
       return (
         <li key={`${i}-${key}`}
@@ -153,7 +153,7 @@ var DetailMixin = {
           {this.itemScoreButton(STATUS_ATTR, value)}
         </li>
       )
-    });
+    })
 
     return (
       <ul onMouseLeave={_.partial(hoverReset, item.number)} className="estimator">
@@ -163,7 +163,7 @@ var DetailMixin = {
   },
 
   actionRestricted(status) {
-    let currentStatus = helpers.toTitleCase(status);
+    let currentStatus = helpers.toTitleCase(status)
 
     return (
       <div className="action__restricted">
@@ -175,8 +175,8 @@ var DetailMixin = {
 
   assigneeSelector(item, members) {
     if (this.canBeReassigned(item.status)) {
-      let currentAssignee = this.currentAssignee(members, item.assigned_to);
-      return this.selector(item, currentAssignee, members, 'assigned_to');
+      let currentAssignee = this.currentAssignee(members, item.assigned_to)
+      return this.selector(item, currentAssignee, members, 'assigned_to')
     } else {
       return this.actionRestricted(item.status)
     }
@@ -196,39 +196,39 @@ var DetailMixin = {
   },
 
   canBeReassigned(status) {
-    return _.contains(['someday', 'backlog', 'in-progress'], status);
+    return _.contains(['someday', 'backlog', 'in-progress'], status)
   },
 
   updateAttribute(itemId, attr, value) {
-    let productId = this.getParams().id;
+    let productId = this.getParams().id
 
-    let newAttrs = {};
-    newAttrs[attr] = value;
+    let newAttrs = {}
+    newAttrs[attr] = value
 
-    ProductActions.updateItem(productId, itemId, newAttrs);
+    ProductActions.updateItem(productId, itemId, newAttrs)
   },
 
   componentVisible(state, type) {
-    return (state && state[type]) ? 'visible' : 'hidden';
+    return (state && state[type]) ? 'visible' : 'hidden'
   },
 
   currentAssignee(members, assigneeId) {
-    let member = _.findWhere(members, {value: assigneeId});
+    let member = _.findWhere(members, {value: assigneeId})
 
-    return member ? member.label : null;
+    return member ? member.label : null
   },
 
   controlToggle(state, type) {
     return _.reduce(state, (memo, val, key) => {
       if (key == type) {
-        memo[key] = true;
+        memo[key] = true
       } else {
-        memo[key] = false;
+        memo[key] = false
       }
 
-      return memo;
-    }, {});
+      return memo
+    }, {})
   }
-};
+}
 
-export default DetailMixin;
+export default DetailMixin

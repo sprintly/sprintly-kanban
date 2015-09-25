@@ -1,15 +1,15 @@
-import _ from 'lodash';
+import _ from 'lodash'
 import React from 'react/addons'
-import classNames from "classnames";
-import {State,Link} from 'react-router';
-import Gravatar from '../gravatar';
+import classNames from 'classnames'
+import {State,Link} from 'react-router'
+import Gravatar from '../gravatar'
 
 // Flux
-import ProductStore from '../../../stores/product-store';
+import ProductStore from '../../../stores/product-store'
 
 const ACCOUNT_SETTINGS = [
   'Profile', 'Plan', 'Billing', 'Invoices', 'Products', 'Members', 'Notifications', 'Services'
-];
+]
 
 let MenuSidebar = React.createClass({
 
@@ -29,16 +29,16 @@ let MenuSidebar = React.createClass({
 
   getInitialState() {
     return {
-      allProducts: ProductStore.getAll(),
+      allProducts: ProductStore.getAll()
     }
   },
 
   componentDidMount() {
-    ProductStore.addChangeListener(this._onChange);
+    ProductStore.addChangeListener(this._onChange)
   },
 
   componentWillUnmount() {
-    ProductStore.removeChangeListener(this._onChange);
+    ProductStore.removeChangeListener(this._onChange)
   },
 
   buildMenuSide() {
@@ -48,12 +48,12 @@ let MenuSidebar = React.createClass({
       'col-sm-3': true,
       'sidebar-offcanvas': true,
       'visible-xs': true
-    });
+    })
 
-    let productLinks = this.productLinks();
-    let settingsLinks = this.settingsLinks();
-    let menuContent = productLinks.concat(settingsLinks);
-    let maxHeight = { maxHeight: `${window.innerHeight}px` };
+    let productLinks = this.productLinks()
+    let settingsLinks = this.settingsLinks()
+    let menuContent = productLinks.concat(settingsLinks)
+    let maxHeight = { maxHeight: `${window.innerHeight}px` }
 
     return (
       <div style={maxHeight} className={classes}>
@@ -67,52 +67,50 @@ let MenuSidebar = React.createClass({
 
   settingsLinks() {
     let settingsLinks = _.map(ACCOUNT_SETTINGS, function(setting, i) {
-      let subheaderKey = `drawer-subheader-${i} ${setting}`;
+      let subheaderKey = `drawer-subheader-${i} ${setting}`
       let settingsURI = `https://sprint.ly/account/settings/${setting.toLowerCase()}`
 
       return (
         <li key={subheaderKey}>
-          <a className='drawer-subheader' href={settingsURI}>{setting}</a>
+          <a className="drawer-subheader" href={settingsURI}>{setting}</a>
         </li>
       )
     })
 
     return ([
-        <li className="drawer-header" key="settings-drawer-header">
-          <a className='drawer-header' href="#">Settings</a>
-        </li>
-      ].concat(settingsLinks).concat([this.logoutSection()])
-    )
+      <li className="drawer-header" key="settings-drawer-header">
+        <a className="drawer-header" href="#">Settings</a>
+      </li>
+    ].concat(settingsLinks).concat([this.logoutSection()]))
   },
 
   logoutSection() {
-    let user = this.props.user;
-    let email = user.get('email');
-    let name = `${user.get('first_name')} ${user.get('last_name')}`;
+    let user = this.props.user
+    let email = user.get('email')
+    let name = `${user.get('first_name')} ${user.get('last_name')}`
 
     return (
       <li className="logout" key="logout-button">
         <div className="profile">
-          <div className='gravatar'>
+          <div className="gravatar">
             <Gravatar email={email} className="img-rounded" size={40} />
           </div>
-          <div className='username'>
+          <div className="username">
             {name}
           </div>
         </div>
-        <a href="/logout" className='btn btn-danger btn-sm btn-block'>Logout</a>
+        <a href="/logout" className="btn btn-danger btn-sm btn-block">Logout</a>
       </li>
     )
   },
 
   productLinks() {
     let productLinks = _.map(this.state.allProducts, (product, i) => {
-      let subheaderKey = `drawer-subheader-${i} product-${product.id}`;
-      let productURI = `/${product.id}`;
+      let subheaderKey = `drawer-subheader-${i} product-${product.id}`
 
       return (
         <li key={subheaderKey}>
-          <Link className='drawer-subheader' to="product" params={{ id: product.id }}>{product.name}</Link>
+          <Link className="drawer-subheader" to="product" params={{ id: product.id }}>{product.name}</Link>
         </li>
       )
     })
@@ -128,8 +126,8 @@ let MenuSidebar = React.createClass({
     let classes = classNames({
       'left-off-canvas-menu': true,
       'hidden': this.props.side !== 'left'
-    });
-    var sidebar = this.buildMenuSide();
+    })
+    var sidebar = this.buildMenuSide()
 
     return (
       <div className={classes}>

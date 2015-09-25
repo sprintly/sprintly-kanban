@@ -1,4 +1,4 @@
-import keymirror from 'keymirror';
+import keymirror from 'keymirror'
 
 export default keymirror({
   INIT_PRODUCTS: null,
@@ -8,4 +8,4 @@ export default keymirror({
   UPDATE_ITEM: null,
   CHANGE_SORT_CRITERIA: null,
   UPDATE_ITEM_PRIORITY: null
-});
+})

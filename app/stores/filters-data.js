@@ -45,4 +45,4 @@ export default [
     criteria: '',
     criteriaOptions: []
   }
-];
+]

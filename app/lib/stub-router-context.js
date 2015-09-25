@@ -1,5 +1,5 @@
-import _ from 'lodash';
-import React from 'react/addons';
+import _ from 'lodash'
+import React from 'react/addons'
 
 var stubRouterContext = (Component, props, stubs) => {
   function RouterStub() {}
@@ -18,7 +18,7 @@ var stubRouterContext = (Component, props, stubs) => {
     isActive () {},
     getRouteAtDepth() {},
     setRouteComponentAtDepth() {}
-  }, stubs);
+  }, stubs)
 
   return React.createClass({
     childContextTypes: {
@@ -34,9 +34,9 @@ var stubRouterContext = (Component, props, stubs) => {
     },
 
     render: function() {
-      return <Component ref='stub' {...props} />;
+      return <Component ref="stub" {...props} />
     }
-  });
-};
+  })
+}
 
-export default stubRouterContext;
+export default stubRouterContext

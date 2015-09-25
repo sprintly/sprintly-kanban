@@ -1,6 +1,6 @@
-import _ from 'lodash';
-import React from 'react/addons';
-import ProductActions from '../../../actions/product-actions';
+import _ from 'lodash'
+import React from 'react/addons'
+import ProductActions from '../../../actions/product-actions'
 
 const CONTROL_BUTTONS = {
   'someday': [
@@ -58,7 +58,7 @@ const CONTROL_BUTTONS = {
     }
   ]
 
-};
+}
 
 var Controls = React.createClass({
 
@@ -70,23 +70,23 @@ var Controls = React.createClass({
   updateItemStatus: function(status, closeReason) {
     let payload = {
       status
-    };
-
-    if (typeof closeReason === 'string') {
-      payload.close_reason = closeReason;
     }
 
-    ProductActions.updateItem(this.props.productId, this.props.number, payload);
+    if (typeof closeReason === 'string') {
+      payload.close_reason = closeReason
+    }
+
+    ProductActions.updateItem(this.props.productId, this.props.number, payload)
   },
 
   renderButtons: function(action, i) {
     var props = {
-      className: `btn btn-${action.style} btn-sm`,
+      className: `btn btn-${action.style} btn-sm`
     }
     if (action.status) {
-      props.onClick = _.partial(this.updateItemStatus, action.status);
+      props.onClick = _.partial(this.updateItemStatus, action.status)
     }
-    return <button key={i} {...props}>{action.label}</button>;
+    return <button key={i} {...props}>{action.label}</button>
   },
 
   render: function() {
@@ -95,8 +95,8 @@ var Controls = React.createClass({
       <div className="item-card__controls">
         {_.map(CONTROL_BUTTONS[this.props.status], this.renderButtons)}
       </div>
-    );
+    )
   }
-});
+})
 
-export default Controls;
+export default Controls

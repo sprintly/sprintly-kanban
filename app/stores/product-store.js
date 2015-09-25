@@ -1,80 +1,80 @@
-import _ from 'lodash';
-import Promise from 'bluebird';
-import { products, user } from '../lib/sprintly-client';
-import {PUSHER_KEY, CHANNEL_PREFIX} from '../config';
-import {EventEmitter} from 'events';
+import _ from 'lodash'
+import Promise from 'bluebird'
+import { products } from '../lib/sprintly-client'
+import {PUSHER_KEY, CHANNEL_PREFIX} from '../config'
+import {EventEmitter} from 'events'
 
 // Flux
-import AppDispatcher from '../dispatchers/app-dispatcher';
-import ProductConstants from '../constants/product-constants';
-import FilterActions from '../actions/filter-actions';
+import AppDispatcher from '../dispatchers/app-dispatcher'
+import ProductConstants from '../constants/product-constants'
+import FilterActions from '../actions/filter-actions'
 
-import STATUSES from '../lib/status-map';
-const ITEM_STATUSES = _.keys(STATUSES);
+import STATUSES from '../lib/status-map'
+const ITEM_STATUSES = _.keys(STATUSES)
 
-let productVelocity = {};
-let columnCollections = {};
+let productVelocity = {}
+let columnCollections = {}
 let columnsLoading = {
   'someday': true,
   'backlog': true,
   'in-progress': true,
   'completed': true,
   'accepted': true
-};
+}
 
-var ProductStore = module.exports = _.assign({}, EventEmitter.prototype, {
+var ProductStore = _.assign({}, EventEmitter.prototype, {
   emitChange(type, record) {
-    this.emit('change', type, record);
+    this.emit('change', type, record)
   },
 
   addChangeListener(callback) {
-    this.on('change', callback);
+    this.on('change', callback)
   },
 
   removeChangeListener(callback) {
-    this.removeListener('change', callback);
+    this.removeListener('change', callback)
   },
 
   getAll() {
-    let activeProducts = products.where({ archived: false });
-    return _.sortBy(_.invoke(activeProducts, 'toJSON'), 'name');
+    let activeProducts = products.where({ archived: false })
+    return _.sortBy(_.invoke(activeProducts, 'toJSON'), 'name')
   },
 
   getProduct(id) {
-    let product = products.get(id);
+    let product = products.get(id)
     if (!product) {
-      return false;
+      return false
     }
     return {
       members: product.members.toJSON(),
       product: product.toJSON(),
       tags: product.tags.toJSON(),
       velocity: productVelocity[id] || null
-    };
+    }
   },
 
   getItemsByStatus(productId) {
     return _.transform(ITEM_STATUSES, (result, status) => {
-      result[status] = this.getItems(productId, status);
-    });
+      result[status] = this.getItems(productId, status)
+    })
   },
 
   getItem(productId, number) {
-    let product = products.get(productId);
+    let product = products.get(productId)
     if (!product) {
-      return;
+      return
     }
 
-    let item = product.items.get(number);
+    let item = product.items.get(number)
     if (!item) {
-      return;
+      return
     }
 
-    return item.toJSON();
+    return item.toJSON()
   },
 
   getItems(productId, status) {
-    let items = ProductStore.getItemsCollection(productId, status);
+    let items = ProductStore.getItemsCollection(productId, status)
     if (!items) {
       return {
         items: [],
@@ -86,7 +86,7 @@ var ProductStore = module.exports = _.assign({}, EventEmitter.prototype, {
       }
     }
 
-    let [sortField, sortDirection] = ProductStore.getSortCriteria(items);
+    let [sortField, sortDirection] = ProductStore.getSortCriteria(items)
 
     if (sortField === 'priority') {
       items.comparator = 'sort'
@@ -94,11 +94,11 @@ var ProductStore = module.exports = _.assign({}, EventEmitter.prototype, {
 
     let itemsJSON = _.compact(_.map(items.sort().toJSON(), function(model) {
       if (model.parent) {
-        return;
+        return
       } else {
-        return model;
+        return model
       }
-    }));
+    }))
 
 
     return {
@@ -108,7 +108,7 @@ var ProductStore = module.exports = _.assign({}, EventEmitter.prototype, {
       loading: columnsLoading[status],
       sortDirection,
       sortField
-    };
+    }
   },
 
   hasItems(productId) {
@@ -118,52 +118,52 @@ var ProductStore = module.exports = _.assign({}, EventEmitter.prototype, {
   hasItemsToRender(productId) {
     let collections = internals.itemsForProduct(productId)
     if (collections.length > 0) {
-      let hasItems = false;
+      let hasItems = false
 
       _.each(collections, (col) => {
         if(col.items.length > 0) {
-          hasItems = true;
+          hasItems = true
         }
       })
 
-      return hasItems;
+      return hasItems
     } else {
-      return false;
+      return false
     }
   },
 
   getItemsCollection(productId, status) {
-    let collection = columnCollections[`${productId}-${status}`];
-    return collection;
+    let collection = columnCollections[`${productId}-${status}`]
+    return collection
   },
 
   getSortCriteria(collection) {
-    let orderBy = collection.config.get('order_by');
-    let direction;
-    let field = orderBy;
+    let orderBy = collection.config.get('order_by')
+    let direction
+    let field = orderBy
 
     switch(orderBy) {
       case 'stale':
-        field = 'last_modified';
-        direction = 'asc';
-        break;
+        field = 'last_modified'
+        direction = 'asc'
+        break
       case 'recent':
-        field = 'last_modified';
-        direction = 'desc';
-        break;
+        field = 'last_modified'
+        direction = 'desc'
+        break
       case 'oldest':
-        field = 'created_at';
-        direction = 'asc';
-        break;
+        field = 'created_at'
+        direction = 'asc'
+        break
       case 'newest':
         field = 'created_at'
-        direction = 'desc';
-        break;
+        direction = 'desc'
+        break
       case 'priority':
-        direction = 'asc';
-        break;
+        direction = 'asc'
+        break
       default:
-        break;
+        break
     }
 
     return [field, direction]
@@ -171,78 +171,77 @@ var ProductStore = module.exports = _.assign({}, EventEmitter.prototype, {
 
   refreshColumns() {
     Promise.all(_.map(columnCollections, function(column) {
-      column.fetch();
+      column.fetch()
     })).then(function() {
-      ProductStore.emitChange();
-    });
+      ProductStore.emitChange()
+    })
   }
-});
+})
 
 
 var internals = ProductStore.internals = {
   initProduct(product) {
     _.each(columnsLoading, function(val, status) {
-      columnsLoading[status] = true;
-    });
-    FilterActions.init(product);
+      columnsLoading[status] = true
+    })
+    FilterActions.init(product)
     product.items.on('change:status', function(model) {
-      let status = model.get('status');
-      let collection = product.getItemsByStatus(status);
-      let config = collection.config.toJSON();
+      let status = model.get('status')
+      let collection = product.getItemsByStatus(status)
       // Prevent "jumpy" items
-      model.set(internals.getUpdatedTimestamps(model, status), { silent: true });
+      model.set(internals.getUpdatedTimestamps(model, status), { silent: true })
 
       /*
         let [activeFilterCount, matchingFilters] = internals.matchesFilter(model, config);
         if (activeFilterCount === 0 || activeFilterCount === matchingFilters.length) {
         Swap items between status collections.
       */
-      let previousStatus = model.previous('status');
-      let previousCollection = product.getItemsByStatus(previousStatus);
+      let previousStatus = model.previous('status')
+      let previousCollection = product.getItemsByStatus(previousStatus)
       if (previousCollection) {
-        let oldItem = previousCollection.remove(model.id);
+        let oldItem = previousCollection.remove(model.id)
         if (oldItem === undefined) {
           previousCollection.models = previousCollection.filter(function(m) {
-            return m.id !== model.id;
-          });
+            return m.id !== model.id
+          })
         }
       }
       if (collection) {
-        collection.add(model);
+        collection.add(model)
       }
-      ProductStore.emitChange();
+      ProductStore.emitChange()
       // }
-    });
+    })
 
-    internals.createSubscription(product);
+    internals.createSubscription(product)
   },
 
   ingestItem(product, item_data) {
-    var item = product.items.get(item_data.number);
+    var item = product.items.get(item_data.number)
     if (item) {
       /*
         Ignore stale timestamps. By using optimistic timestamps, items stay in
         the correct positions relative to one another.
       */
       if (item_data.last_modified < item.get('last_modified')) {
-        item_data.last_modified = item.get('last_modified');
+        item_data.last_modified = item.get('last_modified')
       }
 
-      item.set(_.omit(item_data, 'number'));
+      item.set(_.omit(item_data, 'number'))
     } else {
-      internals.createItem(product, item_data);
+      internals.createItem(product, item_data)
     }
 
-    ProductStore.emitChange();
+    ProductStore.emitChange()
   },
 
   createItem(product, item_data) {
-    let item = product.createItem(item_data);
+    let item = product.createItem(item_data)
     let collection = product.getItemsByStatus(item.get('status'))
     if (collection) {
-      collection.add(item);
+      collection.add(item)
     }
-    return item;
+    return item
   },
 
   getUpdatedTimestamps(model, status) {
@@ -254,62 +253,62 @@ var internals = ProductStore.internals = {
     */
     let attrs = {
       last_modified: +new Date()
-    };
-    let progress = model.get('progress');
+    }
+    let progress = model.get('progress')
 
     if (progress) {
       if (status === 'in-progress') {
-        progress.started_at = +new Date();
+        progress.started_at = +new Date()
       } else if (status === 'completed') {
-        progress.closed_at = +new Date();
+        progress.closed_at = +new Date()
       } else if (status === 'accepted') {
-        progress.accepted_at = +new Date();
+        progress.accepted_at = +new Date()
       }
-      attrs.progress = progress;
+      attrs.progress = progress
     }
 
     return attrs
   },
 
   matchesFilter(item, filter) {
-    let fields = ['tags', 'assigned_to', 'created_by', 'estimate', 'type'];
-    let activeFilters = 0;
+    let fields = ['tags', 'assigned_to', 'created_by', 'estimate', 'type']
+    let activeFilters = 0
     let matchingFilters = _.filter(fields, function(field) {
-      let criteria = filter[field];
+      let criteria = filter[field]
       if (criteria) {
-        activeFilters++;
+        activeFilters++
         if (_.isArray(criteria)) {
           if (_.isArray(item.get(field))) {
-            return _.intersection(criteria, item.get(field)).length > 0;
+            return _.intersection(criteria, item.get(field)).length > 0
           } else {
             return _.contains(criteria, item.get(field))
           }
         } else {
           if (field === 'assigned_to' || field === 'created_by') {
-            return item.get(field).id === criteria;
+            return item.get(field).id === criteria
           } else {
-            return item.get(field) === criteria;
+            return item.get(field) === criteria
           }
         }
       } else {
-        return false;
+        return false
       }
-    });
+    })
 
-    return [activeFilters, matchingFilters];
+    return [activeFilters, matchingFilters]
   },
 
   deleteItem(product, item_data) {
-    product.items.remove(item_data.number);
-    let col = product._filters[item_data.status];
+    product.items.remove(item_data.number)
+    let col = product._filters[item_data.status]
     if (col) {
-      col.remove(item_data.number);
+      col.remove(item_data.number)
     }
-    ProductStore.emitChange();
+    ProductStore.emitChange()
   },
 
   createSubscription(product) {
-    var channelName = `${CHANNEL_PREFIX}_${product.id}`;
+    var channelName = `${CHANNEL_PREFIX}_${product.id}`
     var options = {
       encrypted: false,
       auth: {
@@ -317,176 +316,178 @@ var internals = ProductStore.internals = {
           product: product.id
         }
       }
-    };
+    }
 
-    var socket = new window.Pusher(PUSHER_KEY, options);
-    var productChannel = socket.subscribe(channelName);
+    var socket = new window.Pusher(PUSHER_KEY, options)
+    var productChannel = socket.subscribe(channelName)
 
     productChannel.bind('changed', function(msg) {
-      let model = msg['class'];
+      let model = msg['class']
 
       switch(model) {
         case 'Item':
-          internals.ingestItem(product, msg.data);
-          break;
+          internals.ingestItem(product, msg.data)
+          break
         default:
-          break;
+          break
       }
-    });
+    })
 
     productChannel.bind('deleted', function(msg) {
-      let model = msg['class'];
+      let model = msg['class']
 
       switch(model) {
         case 'Item':
           internals.deleteItem(product, msg.data)
-          break;
+          break
         default:
-          break;
+          break
       }
-    });
+    })
 
-    var refresh = _.debounce(ProductStore.refreshColumns, 500);
+    var refresh = _.debounce(ProductStore.refreshColumns, 500)
     var pusherStates = ['connecting', 'connected', 'unavailable', 'failed', 'disconnected']
     _.forEach(pusherStates, function(state) {
       socket.connection.bind(state, function() {
-        refresh();
-      });
-    });
+        refresh()
+      })
+    })
   },
 
   mergeFilters(configModel, filters) {
-    var defaultFilters = configModel.toJSON();
-    var updatedFilters = _.extend(defaultFilters, filters);
+    var defaultFilters = configModel.toJSON()
+    var updatedFilters = _.extend(defaultFilters, filters)
 
     // unset previously-set global filters
     _.each(['tags', 'assigned_to', 'created_by', 'estimate', 'members'], function(field) {
       if (_.has(filters, field) === false && _.has(updatedFilters, field)) {
-        configModel.unset(field, { silent: true });
-        delete updatedFilters[field];
+        configModel.unset(field, { silent: true })
+        delete updatedFilters[field]
       }
-    });
+    })
 
     if (updatedFilters.assigned_to === 'unassigned') {
-      updatedFilters.assigned_to = '';
+      updatedFilters.assigned_to = ''
     }
-    return updatedFilters;
+    return updatedFilters
   },
 
   addItem(productId, item) {
-    let product = products.get(productId);
-    let col = product.getItemsByStatus(item.status);
+    let product = products.get(productId)
+    let col = product.getItemsByStatus(item.status)
 
     if (col) {
-      col.add(item);
+      col.add(item)
     }
 
-    return item;
+    return item
   },
 
   addItems(productId, items) {
-    let product = products.get(productId);
+    let product = products.get(productId)
 
     _.each(items, (item) => {
-      let col = product.getItemsByStatus(item.status);
+      let col = product.getItemsByStatus(item.status)
 
       if (col) {
         col.add(item)
       }
-    });
+    })
   },
 
   itemsForProduct(productId) {
     return _.chain(ITEM_STATUSES)
             .map((status) => {
-              return ProductStore.getItems(productId, status);
+              return ProductStore.getItems(productId, status)
             })
             .compact()
             .value()
   },
 
   extendItem(productId, itemId, key, payload) {
-    let product = products.get(productId);
-    let item = product.items.get(itemId);
-    let newAttr = {};
-    newAttr[key] = payload;
+    let product = products.get(productId)
+    let item = product.items.get(itemId)
+    let newAttr = {}
+    newAttr[key] = payload
 
     item.set(newAttr, { silent: true })
   }
-};
+}
 
 ProductStore.dispatchToken = AppDispatcher.register(function(action) {
   switch(action.actionType) {
     case 'INIT_PRODUCTS':
       if (action.product) {
-        internals.initProduct(action.product);
+        internals.initProduct(action.product)
       } else {
-        ProductStore.emitChange();
+        ProductStore.emitChange()
       }
-      break;
+      break
 
     case ProductConstants.GET_ITEMS:
-      columnCollections[`${action.product.id}-${action.status}`] = action.itemsCollection;
-      columnsLoading[action.status] = false;
-      ProductStore.emitChange();
-      break;
+      columnCollections[`${action.product.id}-${action.status}`] = action.itemsCollection
+      columnsLoading[action.status] = false
+      ProductStore.emitChange()
+      break
 
     case 'ADD_ITEM':
-      let item = internals.addItem(action.product.id, action.item);
-      ProductStore.emitChange('afterCreate', item);
+      let item = internals.addItem(action.product.id, action.item)
+      ProductStore.emitChange('afterCreate', item)
 
-      break;
+      break
     case 'ADD_ITEMS':
-      internals.addItems(action.product.id, action.items);
-      ProductStore.emitChange();
+      internals.addItems(action.product.id, action.items)
+      ProductStore.emitChange()
 
-      break;
+      break
 
     case 'DELETE_ITEM':
-      internals.deleteItem(action.product, action.itemData);
-      ProductStore.emitChange();
-      break;
+      internals.deleteItem(action.product, action.itemData)
+      ProductStore.emitChange()
+      break
 
     case ProductConstants.UPDATE_ITEM:
     case ProductConstants.UPDATE_ITEM_PRIORITY:
     case ProductConstants.CHANGE_SORT_CRITERIA:
     case ProductConstants.LOAD_MORE:
     case 'ITEM_UPDATED':
-      ProductStore.emitChange();
-      break;
+      ProductStore.emitChange()
+      break
 
     case 'PRODUCT_VELOCITY':
-      productVelocity[action.productId] = action.payload;
-      ProductStore.emitChange();
-      break;
+      productVelocity[action.productId] = action.payload
+      ProductStore.emitChange()
+      break
 
     case 'ITEM_ACTIVITY':
-      internals.extendItem(action.productId, action.itemId, 'activity', action.payload);
+      internals.extendItem(action.productId, action.itemId, 'activity', action.payload)
 
-      ProductStore.emitChange();
-      break;
+      ProductStore.emitChange()
+      break
     case 'ITEM_ATTACHMENTS':
-      internals.extendItem(action.productId, action.itemId, 'attachments', action.payload);
+      internals.extendItem(action.productId, action.itemId, 'attachments', action.payload)
 
-      ProductStore.emitChange();
+      ProductStore.emitChange()
 
-      break;
+      break
     case 'ITEM_ATTACHMENTS_ERROR':
-      console.log('ITEM_ATTACHMENTS_ERROR: ', action.err)
-      ProductStore.emitChange();
+      console.log('ITEM_ATTACHMENTS_ERROR: ', action.err) // eslint-disable-line no-console
+      ProductStore.emitChange()
       break
     case 'ITEM_ACTIVITY_ERROR':
-      console.log('ITEM_ACTIVITY_ERROR: ', action.err)
-      ProductStore.emitChange();
-      break;
+      console.log('ITEM_ACTIVITY_ERROR: ', action.err) // eslint-disable-line no-console
+      ProductStore.emitChange()
+      break
     case 'ITEM_COMMENT_ERROR':
-      console.log('ITEM_ACTIVITY_ERROR: ', action.err)
-      ProductStore.emitChange();
+      console.log('ITEM_ACTIVITY_ERROR: ', action.err) // eslint-disable-line no-console
+      ProductStore.emitChange()
       break
     case 'ITEM_COMMENTED':
-      ProductStore.emitChange();
+      ProductStore.emitChange()
       break
     default:
-      break;
+      break
   }
-});
+})
+
+export default ProductStore

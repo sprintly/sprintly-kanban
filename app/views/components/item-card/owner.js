@@ -1,16 +1,16 @@
-import React from 'react/addons';
-import Gravatar from '../gravatar';
+import React from 'react/addons'
+import Gravatar from '../gravatar'
 
 var Owner = React.createClass({
 
   getDefaultProps: function() {
     return {
       size: 36
-    };
+    }
   },
 
   personaImage() {
-    let person = this.props.person;
+    let person = this.props.person
 
     if (person) {
       if (person === 'placeholder-light') {
@@ -18,7 +18,7 @@ var Owner = React.createClass({
       } else if (person === 'placeholder-dark') {
         return <div className="item-card__owner-placeholder-dark"></div>
       } else {
-        return <Gravatar email={this.props.person.email} size={this.props.size} />;
+        return <Gravatar email={this.props.person.email} size={this.props.size} />
       }
     } else {
       return <span className="item-card__owner-unassigned">+</span>
@@ -32,6 +32,6 @@ var Owner = React.createClass({
       </div>
     )
   }
-});
+})
 
-module.exports = Owner;
+export default Owner

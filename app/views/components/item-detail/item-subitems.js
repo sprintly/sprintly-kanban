@@ -1,14 +1,12 @@
-import React from 'react/addons';
-import _ from 'lodash';
-import helpers from '../../components/helpers';
-import ItemDetailMixin from './detail-mixin';
-import Subitem from './item-subitem';
-import ShortSubitems from '../../components/subitems';
-import {State, Link} from 'react-router';
-import ProductActions from '../../../actions/product-actions';
-import ItemActions from '../../../actions/item-actions';
-import Select from 'react-select';
-import STATUS_MAP from '../../../lib/statuses-map';
+import React from 'react/addons'
+import _ from 'lodash'
+import helpers from '../../components/helpers'
+import ItemDetailMixin from './detail-mixin'
+import Subitem from './item-subitem'
+import ShortSubitems from '../../components/subitems'
+import {State} from 'react-router'
+import ProductActions from '../../../actions/product-actions'
+import ItemActions from '../../../actions/item-actions'
 
 var ItemSubitems = React.createClass({
   mixins: [State, ItemDetailMixin],
@@ -28,18 +26,18 @@ var ItemSubitems = React.createClass({
   },
 
   toggleSubitem(id, ev) {
-    let subitemsStates = _.cloneDeep(this.state.subitemsStates);
-    subitemsStates[id].header = !subitemsStates[id].header;
+    let subitemsStates = _.cloneDeep(this.state.subitemsStates)
+    subitemsStates[id].header = !subitemsStates[id].header
 
     this.setState({subitemsStates: subitemsStates})
   },
 
   updateSubitem(subitem, ev) {
-    let status;
+    let status
     if (_.contains(['someday', 'backlog', 'in-progress'], subitem.status)) {
-      status = 'accepted';
+      status = 'accepted'
     } else if (_.contains(['completed', 'accepted'], subitem.status)) {
-      status = 'in-progress';
+      status = 'in-progress'
     }
 
     ProductActions.updateItem(
@@ -47,24 +45,24 @@ var ItemSubitems = React.createClass({
       subitem.number,
       _.assign({}, subitem, { status }),
       { wait: false }
-    );
+    )
   },
 
   toggleActionControl(subitem, type) {
-    let id = subitem.number;
-    let subitemsStates = _.cloneDeep(this.state.subitemsStates);
-    subitemsStates[id].header = true;
-    subitemsStates[id].controls = this.controlToggle(subitemsStates[id].controls, type);
+    let id = subitem.number
+    let subitemsStates = _.cloneDeep(this.state.subitemsStates)
+    subitemsStates[id].header = true
+    subitemsStates[id].controls = this.controlToggle(subitemsStates[id].controls, type)
 
-    this.setState({subitemsStates: subitemsStates});
+    this.setState({subitemsStates: subitemsStates})
   },
 
   maxId() {
     let maxIdSubitem = _.max(this.props.subitems, (subitem) => {
-      return subitem.number;
-    });
+      return subitem.number
+    })
 
-    return maxIdSubitem.number.toString().length;
+    return maxIdSubitem.number.toString().length
   },
 
   subitems() {
@@ -86,7 +84,7 @@ var ItemSubitems = React.createClass({
                  maxId={this.maxId()}
             {...subitemState} />
       )
-    });
+    })
   },
 
   shortSubitems() {
@@ -102,17 +100,17 @@ var ItemSubitems = React.createClass({
 
   subheaderOpen(id) {
     let subitemsStates = _.values(this.state.subitemsStates[id])
-    return _.contains(subitemsStates, true);
+    return _.contains(subitemsStates, true)
   },
 
   addNewSubitemState(newSubitems) {
-    let requiresUpdate = false;
-    let subitemsStates = _.cloneDeep(this.state.subitemsStates);
-    let existingSubitems = _.keys(subitemsStates);
+    let requiresUpdate = false
+    let subitemsStates = _.cloneDeep(this.state.subitemsStates)
+    let existingSubitems = _.keys(subitemsStates)
 
     _.each(newSubitems, function(item) {
       if (!_.contains(existingSubitems, item.number.toString())) {
-        requiresUpdate = true;
+        requiresUpdate = true
         subitemsStates[item.number] = {
           header: false,
           controls: {
@@ -125,12 +123,12 @@ var ItemSubitems = React.createClass({
     })
 
     if (requiresUpdate) {
-      this.setState({subitemsStates: subitemsStates});
+      this.setState({subitemsStates: subitemsStates})
     }
   },
 
   componentWillReceiveProps(nextProps) {
-    let newSubitems = _.difference(nextProps.subitems, this.props.subitems);
+    let newSubitems = _.difference(nextProps.subitems, this.props.subitems)
 
     if (newSubitems) {
       this.addNewSubitemState(nextProps.subitems)
@@ -138,9 +136,9 @@ var ItemSubitems = React.createClass({
   },
 
   collapseSubitems() {
-    let subitemsStates = _.cloneDeep(this.state.subitemsStates);
+    let subitemsStates = _.cloneDeep(this.state.subitemsStates)
     _.each(subitemsStates, function(val, key) {
-      subitemsStates[key].header = false;
+      subitemsStates[key].header = false
     })
 
     this.setState({subitemsStates: subitemsStates})
@@ -156,14 +154,14 @@ var ItemSubitems = React.createClass({
       type: 'task',
       parent: this.props.item.number
     }).then(function() {
-      node.value = '';
+      node.value = ''
     })
   },
 
   render: function() {
-    let collapseAllLink = this.props.subitems ? <a className="collapse__subitems hidden-xs" onClick={this.collapseSubitems}>collapse all</a> : '';
-    let subitems = this.props.subitems ? this.subitems() : [];
-    let shortSubitems = this.props.item && this.props.subitems ? this.shortSubitems() : [];
+    let collapseAllLink = this.props.subitems ? <a className="collapse__subitems hidden-xs" onClick={this.collapseSubitems}>collapse all</a> : ''
+    let subitems = this.props.subitems ? this.subitems() : []
+    let shortSubitems = this.props.item && this.props.subitems ? this.shortSubitems() : []
 
     return (
       <div className="col-xs-12 section subitems">
@@ -191,6 +189,6 @@ var ItemSubitems = React.createClass({
       </div>
     )
   }
-});
+})
 
-export default ItemSubitems;
+export default ItemSubitems

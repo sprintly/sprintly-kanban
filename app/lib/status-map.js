@@ -4,7 +4,7 @@ const STATUSES = {
   'in-progress': 'Current',
   'completed': 'Complete',
   'accepted': 'Accepted'
-};
+}
 
-export default STATUSES;
+export default STATUSES
 

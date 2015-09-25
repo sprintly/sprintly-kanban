@@ -1,25 +1,23 @@
-import AppDispatcher from '../dispatchers/app-dispatcher';
-import {products} from '../lib/sprintly-client';
-import request from 'superagent';
-import Promise from 'bluebird';
-import _ from 'lodash';
-import {BASE_URL} from '../config';
+import AppDispatcher from '../dispatchers/app-dispatcher'
+import {products} from '../lib/sprintly-client'
+import request from 'superagent'
+import Promise from 'bluebird'
+import {BASE_URL} from '../config'
 
-const token = window.__token;
-const SUBITEMS = 'subitems';
-const ATTACHMENTS = 'attachments';
+const token = window.__token
+const SUBITEMS = 'subitems'
 
 let ItemActions = {
   addItem(productId, data) {
-    let product = products.get(productId);
+    let product = products.get(productId)
 
     if (!product) {
-      throw new Error('Missing product: %s', productId);
+      throw new Error('Missing product: %s', productId)
     }
 
-    data.product = product.toJSON();
-    let item = product.createItem(data, { silent: true });
-    let saved = item.save();
+    data.product = product.toJSON()
+    let item = product.createItem(data, { silent: true })
+    let saved = item.save()
 
     if (saved) {
       return saved.then(function(item) {
@@ -28,9 +26,9 @@ let ItemActions = {
           product,
           item
         })
-      });
+      })
     } else {
-      return Promise.reject(item);
+      return Promise.reject(item)
     }
   },
 
@@ -45,28 +43,28 @@ let ItemActions = {
   },
 
   bulkAdd(type, productId, parent, data) {
-    let product = products.get(productId);
+    let product = products.get(productId)
 
     Promise.map(data, (newItem) => {
-      let newItemData = this.itemForType(type, newItem, parent.number);
-      let item = product.createItem(newItemData, { silent: true });
+      let newItemData = this.itemForType(type, newItem, parent.number)
+      let item = product.createItem(newItemData, { silent: true })
 
-      item.save();
+      item.save()
 
-      return item;
+      return item
     }).then(function(items) {
       AppDispatcher.dispatch({
         actionType: 'ADD_ITEMS',
         product,
         items
-      });
+      })
     }).catch( (e) => {
-       return Promise.reject();
-    });
+      return Promise.reject()
+    })
   },
 
   createComment(productId, itemId, comment) {
-    var commentsEndpoint = `${BASE_URL}/api/products/${productId}/items/${itemId}/comments.json`;
+    var commentsEndpoint = `${BASE_URL}/api/products/${productId}/items/${itemId}/comments.json`
 
     request
       .post(commentsEndpoint)
@@ -78,28 +76,28 @@ let ItemActions = {
           AppDispatcher.dispatch({
             actionType: 'ITEM_COMMENT_ERROR',
             err
-          });
-          return;
+          })
+          return
         }
 
         if (res.body) {
           /*
             TODO: Should activity be its own BB collection?
           */
-          this.fetchActivity(productId, itemId);
+          this.fetchActivity(productId, itemId)
 
           AppDispatcher.dispatch({
             actionType: 'ITEM_COMMENTED',
             payload: res.body,
             productId,
             itemId
-          });
+          })
         }
-      });
+      })
   },
 
   fetchActivity(productId, itemId) {
-    var activityEndpoint = `${BASE_URL}/api/products/${productId}/items/${itemId}/activities.json`;
+    var activityEndpoint = `${BASE_URL}/api/products/${productId}/items/${itemId}/activities.json`
 
     request
       .get(activityEndpoint)
@@ -109,8 +107,8 @@ let ItemActions = {
           AppDispatcher.dispatch({
             actionType: 'ITEM_ACTIVITY_ERROR',
             err
-          });
-          return;
+          })
+          return
         }
 
         if (res.body) {
@@ -119,13 +117,13 @@ let ItemActions = {
             payload: res.body,
             productId,
             itemId
-          });
+          })
         }
-      });
+      })
   },
 
   fetchAttachments(productId, itemId) {
-    let attachmentsEndpoint = `${BASE_URL}/api/products/${productId}/items/${itemId}/attachments.json`;
+    let attachmentsEndpoint = `${BASE_URL}/api/products/${productId}/items/${itemId}/attachments.json`
 
     request
       .get(attachmentsEndpoint)
@@ -135,8 +133,8 @@ let ItemActions = {
           AppDispatcher.dispatch({
             actionType: 'ITEM_ATTACHMENTS_ERROR',
             err
-          });
-          return;
+          })
+          return
         }
 
         if (res.body) {
@@ -145,19 +143,19 @@ let ItemActions = {
             payload: res.body,
             productId,
             itemId
-          });
+          })
         }
-      });
+      })
   },
 
   fetchItem(productId, number) {
-    let product = products.get(productId);
+    let product = products.get(productId)
 
     if (!product) {
-      throw new Error('Missing product: %s', productId);
+      throw new Error('Missing product: %s', productId)
     }
 
-    let item = product.items.get(item);
+    let item = product.items.get(item)
 
     if (!item) {
       item = product.createItem({
@@ -171,7 +169,7 @@ let ItemActions = {
         actionType: 'ITEM_UPDATED',
         product,
         item
-      });
+      })
     }
 
     return item.fetch()
@@ -181,34 +179,34 @@ let ItemActions = {
           product,
           item
         })
-      });
+      })
   },
 
   deleteItem(productId, itemId) {
-    let product = products.get(productId);
-    let item = product.items.get(itemId);
-    let itemData = item.attributes;
-    let destroyed = item.destroy();
+    let product = products.get(productId)
+    let item = product.items.get(itemId)
+    let itemData = item.attributes
+    let destroyed = item.destroy()
 
     if (destroyed) {
       return destroyed.then(function() {
         AppDispatcher.dispatch({
-        actionType: 'DELETE_ITEM',
-        product,
-        itemData
-        });
-      });
+          actionType: 'DELETE_ITEM',
+          product,
+          itemData
+        })
+      })
     } else {
       return new Promise(function(resolve) {
         AppDispatcher.dispatch({
           actionType: 'DELETE_ITEM_ERROR',
           product,
           itemData
-        });
-        resolve();
-      });
+        })
+        resolve()
+      })
     }
   }
-};
+}
 
-export default ItemActions;
+export default ItemActions

@@ -1,4 +1,4 @@
-import React from 'react/addons';
+import React from 'react/addons'
 
 let AddItemActions = React.createClass({
 
@@ -29,8 +29,8 @@ let AddItemActions = React.createClass({
           </label>
         </div>
       </div>
-    );
+    )
   }
-});
+})
 
-module.exports = AddItemActions;
+export default AddItemActions

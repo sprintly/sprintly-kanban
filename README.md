@@ -39,10 +39,16 @@ Browserify/Less watch task:
 $ make watch
 ```
 
-Run tests and coverage report with Karma:
+Run lint and tests and coverage report with Karma:
 
 ```bash
 $ npm test
+```
+
+Attempt to auto-fix certain lint errors:
+
+```base
+$ npm run test-lint -- --fix
 ```
 
 Run tests to run in a browser:

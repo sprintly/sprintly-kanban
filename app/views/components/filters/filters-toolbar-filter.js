@@ -1,9 +1,8 @@
-import _ from 'lodash';
-import React from 'react/addons';
-import {Input} from 'react-bootstrap';
-import CheckboxFilter from './forms/checkbox-filter';
-import MembersFilter from './forms/members-filter';
-import TagsFilter from './forms/tags-filter';
+import _ from 'lodash'
+import React from 'react/addons'
+import CheckboxFilter from './forms/checkbox-filter'
+import MembersFilter from './forms/members-filter'
+import TagsFilter from './forms/tags-filter'
 
 var Filter = React.createClass({
 
@@ -38,20 +37,20 @@ var Filter = React.createClass({
   },
 
   toggleSelector: function() {
-    this.setState({ selectorVisible: !this.state.selectorVisible });
+    this.setState({ selectorVisible: !this.state.selectorVisible })
   },
 
   clearFilter: function(ev) {
-    ev.preventDefault();
+    ev.preventDefault()
     this.props.updateFilters(
       this.props.field,
       _.isArray(this.props.criteria) ? [] : '',
       { unset: true }
-    );
+    )
   },
 
   renderLabel: function() {
-    let criteriaLabel = this.props.defaultCriteriaLabel;
+    let criteriaLabel = this.props.defaultCriteriaLabel
 
     if (_.isArray(this.props.criteria)) {
       if(this.props.criteria.length > 0 &&
@@ -62,18 +61,18 @@ var Filter = React.createClass({
 
     if (_.isString(this.props.criteria)) {
       if (this.props.criteria !== '') {
-        criteriaLabel = this.props.criteria;
+        criteriaLabel = this.props.criteria
       }
     }
 
     if (this.props.type === 'members') {
       if (this.props.user.id == this.props.criteria) {
-        criteriaLabel = 'Me';
+        criteriaLabel = 'Me'
       } else if (this.props.criteria == 'unassigned' || this.props.criteria === 'None' || this.props.criteria === '') {
-        criteriaLabel = 'Unassigned';
+        criteriaLabel = 'Unassigned'
       } else {
-        let member = _.findWhere(this.props.members, { id: parseInt(this.props.criteria, 10) });
-        criteriaLabel = `${member.first_name} ${member.last_name.slice(0,1)}.`;
+        let member = _.findWhere(this.props.members, { id: parseInt(this.props.criteria, 10) })
+        criteriaLabel = `${member.first_name} ${member.last_name.slice(0,1)}.`
       }
     }
 
@@ -84,33 +83,33 @@ var Filter = React.createClass({
           <button type="button" className="close" onClick={this.clearFilter} aria-label="Remove"><span aria-hidden="true">&times;</span></button>
         }
       </div>
-    );
+    )
   },
 
   renderForm: function() {
-    var form;
+    var form
     var formProps = {
       name: this.props.field,
       updateFilters: this.props.updateFilters,
       options: this.props.criteriaOptions,
       criteria: this.props.criteria,
       visible: this.state.selectorVisible
-    };
+    }
     switch (this.props.type) {
       case 'members':
         form = <MembersFilter {...formProps} members={this.props.members}/>
-        break;
+        break
       case 'checkbox':
         form = <CheckboxFilter {...formProps} />
-        break;
+        break
       case 'tags':
         form = <TagsFilter {...formProps} />
-        break;
+        break
       default:
-        form = <span/>;
-        break;
+        form = <span/>
+        break
     }
-    return form;
+    return form
   },
 
   render: function() {
@@ -122,6 +121,6 @@ var Filter = React.createClass({
       </div>
     )
   }
-});
+})
 
-export default Filter;
+export default Filter

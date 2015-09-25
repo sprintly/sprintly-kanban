@@ -1,22 +1,21 @@
-var _ = require('lodash');
-var assert = require('chai').assert;
-var React = require('react/addons');
-var TestUtils = React.addons.TestUtils;
-var stubRouterContext = require('../../../lib/stub-router-context');
+/* eslint-env mocha, node */
+var assert = require('chai').assert
+var React = require('react/addons')
+var TestUtils = React.addons.TestUtils
+var stubRouterContext = require('../../../lib/stub-router-context')
 var sinon = require('sinon')
-var SidebarIndex = require('./index');
-var MenuSidebar = require('./menu');
-var FiltersSidebar = require('./filters');
-var SearchSidebar = require('./search');
-var ProductStore = require('../../../stores/product-store');
+var SidebarIndex = require('./index')
+var MenuSidebar = require('./menu')
+var FiltersSidebar = require('./filters')
+var SearchSidebar = require('./search')
 var user = {
   user: { get: function() {} }
 }
 
 describe('Sidebars/Index', function() {
   beforeEach(function() {
-    this.sinon = sinon.sandbox.create();
-    this.ProductStore = SidebarIndex.__get__('ProductStore');
+    this.sinon = sinon.sandbox.create()
+    this.ProductStore = SidebarIndex.__get__('ProductStore')
 
     this.stubs = {
       productGet: this.sinon.stub(this.ProductStore, 'getProduct'),
@@ -39,19 +38,19 @@ describe('Sidebars/Index', function() {
             return '/'
           }
         })
-        this.component = TestUtils.renderIntoDocument(<Component />);
+        this.component = TestUtils.renderIntoDocument(<Component />)
       })
 
       it('renders the MenuSidebar', function() {
-        var menuSidebarEl = TestUtils.findRenderedComponentWithType(this.component, MenuSidebar).getDOMNode();
+        var menuSidebarEl = TestUtils.findRenderedComponentWithType(this.component, MenuSidebar).getDOMNode()
 
-        assert.isDefined(menuSidebarEl);
+        assert.isDefined(menuSidebarEl)
       })
 
       it('renders the Filters sidebar', function() {
-        var filtersSidebarEl = TestUtils.findRenderedComponentWithType(this.component, FiltersSidebar).getDOMNode();
+        var filtersSidebarEl = TestUtils.findRenderedComponentWithType(this.component, FiltersSidebar).getDOMNode()
 
-        assert.isDefined(filtersSidebarEl);
+        assert.isDefined(filtersSidebarEl)
       })
     })
 
@@ -66,11 +65,11 @@ describe('Sidebars/Index', function() {
           }
         })
 
-        var component = TestUtils.renderIntoDocument(<Component />);
+        var component = TestUtils.renderIntoDocument(<Component />)
 
-        var searchSidebarEl = TestUtils.findRenderedComponentWithType(component, SearchSidebar).getDOMNode();
+        var searchSidebarEl = TestUtils.findRenderedComponentWithType(component, SearchSidebar).getDOMNode()
 
-        assert.isDefined(searchSidebarEl);
+        assert.isDefined(searchSidebarEl)
       })
     })
   })
