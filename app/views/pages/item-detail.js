@@ -92,12 +92,13 @@ var ItemDetail = React.createClass({
     )
   },
 
-  itemDescription() {
+  itemDescription() {    
     return (
       <div className="col-xs-12 section description">
         <div className="col-xs-12">
           <ItemHeader title="description" />
           <ItemDescription    itemId={this.state.item.number}
+                           productId={this.props.product.id}
                          description={this.state.item.description}
                              members={this.props.members}
                              setItem={this.setItem}
