@@ -16,13 +16,19 @@ export default {
     var values = _.keys(options)
 
     return _.map(values, (value) => {
-      return {label: this.toTitleCase(value), value: value}
+      return {
+        label: this.toTitleCase(value),
+        value: value
+      }
     })
   },
 
   formatStatusesForSelect(options) {
     return _.map(options, (value, key) => {
-      return {label: this.toTitleCase(value), value: key}
+      return {
+        label: this.toTitleCase(value),
+        value: key
+      }
     })
   },
 
@@ -30,7 +36,10 @@ export default {
     return _.chain(members)
             .map(function(member){
               if (!member.revoked) {
-                return {label: `${member.first_name} ${member.last_name}`, value: member.id}
+                return {
+                  label: `${member.first_name} ${member.last_name}`,
+                  value: member.id
+                }
               }
             })
             .compact()
@@ -48,8 +57,13 @@ export default {
   },
 
   vowelSound(word) {
+<<<<<<< HEAD
     let firstLetter = word.charAt(0).toLowerCase()
     let vowelSounds = ['a','e','i','o']
+=======
+    let firstLetter = word.charAt(0).toLowerCase();
+    let vowelSounds = ['a','e','i','o','u'];
+>>>>>>> Cover component helpers with tests
 
     return _.contains(vowelSounds, firstLetter)
   },
@@ -66,6 +80,7 @@ export default {
     return ITEM_STATUS_MAP[status]
   },
 
+<<<<<<< HEAD
   formatTextForMarkdown(description) {
     let names = internals.parseNames(description)
     let ids = internals.parseIds(description)
@@ -73,19 +88,52 @@ export default {
     if (names && ids) {
       let links = internals.buildLinks(ids, names)
       var merged = _.map(_.zip(names,ids), function(pair) {return pair[0]+pair[1]})
+=======
+  formatTextForMarkdown(text, productId) {
+    let names = internals.parseNames(text);
+    let ids = internals.parseIds(text);
+    let links = internals.parseLinks(text);
+
+    if (names && ids) {
+      let memberLinks = internals.buildMemberLinks(ids, names, productId);
+      var merged = _.map(_.zip(names,ids), function(pair) {
+        return pair[0]+pair[1]
+      });
+>>>>>>> Cover component helpers with tests
 
       _.each(merged, function(merge, i) {
-        description = description.replace(merge, links[i])
+        text = text.replace(merge, memberLinks[i])
       })
+<<<<<<< HEAD
 
       return description
     } else {
       return description
+=======
+>>>>>>> Cover component helpers with tests
     }
+    if (links) {
+      text = internals.replaceWithContentLinks(text, links);
+    }
+
+    return text
+  },
+
+  formatLinksForMarkdown(text) {
+    return text;
   }
 }
 
 var internals = {
+  replaceWithContentLinks(text, links) {
+    let contentLinks = internals.buildContentLinks(links);
+    _.each(contentLinks, function(contentLink, i) {
+      text = text.replace(links[i], contentLink)
+    })
+
+    return text
+  },
+
   parseNames(text) {
     return text.match(/@\[(.*?)\]/g)
   },
@@ -94,7 +142,17 @@ var internals = {
     return text.match(/\((.*?)\)/g)
   },
 
-  buildLinks(ids, names) {
+  parseLinks(text) {
+    return text.match(/(https?:\/\/(?:www\.|(?!www))[^\s\.]+\.[^\s]{2,}|www\.[^\s]+\.[^\s]{2,})/g);
+  },
+
+  buildContentLinks(links) {
+    return _.map(links, function(link) {
+      return `[${link}](${link})`;
+    })
+  },
+
+  buildMemberLinks(ids, names, productId) {
     /*
       Member link format: https://sprint.ly/product/24067/organizer/?members=19470
     */
@@ -102,7 +160,7 @@ var internals = {
     let strippedNames = internals.strippedNames(names)
 
     return _.map(strippedIds, function(id, i) {
-      return `[${strippedNames[i]}](https://sprint.ly/product/24067/organizer/?members=${id})`
+      return `[${strippedNames[i]}](https://sprint.ly/product/${productId}/organizer/planning?members=${id}&order=priority)`;
     })
   },
 
@@ -124,3 +182,5 @@ var internals = {
     })
   }
 }
+
+module.exports.internals = internals;
