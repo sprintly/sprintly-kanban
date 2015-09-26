@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import sinon from 'sinon';
 import {assert} from 'chai';
 import React from 'react/addons';
 let TestUtils = React.addons.TestUtils;
@@ -16,10 +15,8 @@ const stubMember = {
   "id": 35507
 }
 
-describe.only('ItemActivityTest', function() {
+describe('ItemActivityTest', function() {
   beforeEach(function() {
-    this.sinon = sinon.sandbox.create()
-
     this.componentProps = function(itemCount, activities, members) {
       return {
        members: members,
@@ -31,16 +28,12 @@ describe.only('ItemActivityTest', function() {
     }
   })
 
-  afterEach(function() {
-    this.sinon.restore()
-  })
-
   describe('#componentDidMount', function() {
     beforeEach(function() {
       this.component = TestUtils.renderIntoDocument(<ItemActivity />)
     })
 
-    it('renders the a ItemActivity component', function(){
+    it('renders the a ItemActivity component', function() {
       let itemActivityComponent = TestUtils.findRenderedComponentWithType(this.component, ItemActivity);
       assert.isDefined(itemActivityComponent)
     })
@@ -48,7 +41,6 @@ describe.only('ItemActivityTest', function() {
 
   describe('#activityCounter', function() {
     it('renders the number of activities in the header', function() {
-      // The API responds with count in an array :|
       let componentProps = this.componentProps(6,[],[stubMember])
       let component = TestUtils.renderIntoDocument(<ItemActivity {...componentProps} />)
       let result = TestUtils.findRenderedDOMComponentWithClass(component, 'activity__counter').getDOMNode()
@@ -68,7 +60,7 @@ describe.only('ItemActivityTest', function() {
 
       assert.lengthOf(result, numberOfItems)
     })
-    describe('loading', function(){
+    describe('loading', function() {
       it('has items to load but no activities yet', function() {
         let componentProps = this.componentProps(1, false, [stubMember]);
 
@@ -88,7 +80,7 @@ describe.only('ItemActivityTest', function() {
         assert.equal(result.textContent, target)
       })
     })
-    describe('#showAllActivityButton', function (){
+    describe('#showAllActivityButton', function () {
       it('renders when there are more than the min number of items', function() {
         let numberOfItems = 16;
         let activities = _.map(_.times(numberOfItems), (i) => {return ActivityFixtures.actionType.updated });
