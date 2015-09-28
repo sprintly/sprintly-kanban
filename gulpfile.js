@@ -6,6 +6,7 @@ var sourcemaps = require('gulp-sourcemaps')
 var csso = require('gulp-csso')
 var rename = require('gulp-rename')
 var fs = require('fs')
+var hasha = require('hasha')
 
 function run(command) {
   var child = exec(command)
@@ -47,10 +48,10 @@ gulp.task('dev', ['default'], function() {
 })
 
 gulp.task('hash', function(done) {
-  exec('md5 -q public/js/main.js', function(err, hash) {
+  hasha.fromFile('./public/js/main.js', { algorithm: 'md5' }).then(function(hash) {
     fs.readFile('./package.json', 'utf8', function(err, pkg) {
       var json = JSON.parse(pkg)
-      json.hash = hash.trim()
+      json.hash = hash
       fs.writeFile('package.json', JSON.stringify(json, null, 2), done)
     })
   })
