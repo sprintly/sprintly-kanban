@@ -1,3 +1,4 @@
+ /*eslint-env node, mocha */
 import _ from 'lodash'
 
 export default {

@@ -1,3 +1,4 @@
+ /*eslint-env node, mocha */
 import _ from 'lodash'
 import {assert} from 'chai'
 import React from 'react/addons'
@@ -21,8 +22,8 @@ describe('ItemActivityTest', function() {
       return {
         members: members,
         activity: {
-         total_count: [itemCount],
-         activities: activities
+          total_count: [itemCount],
+          activities: activities
         }
       }
     }

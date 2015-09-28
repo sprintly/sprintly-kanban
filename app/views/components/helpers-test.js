@@ -62,19 +62,19 @@ describe('Component/Helpers', function() {
       assert.equal(result, target)
     })
     it('returns \'someday\' for \'someday\'', function() {
-      var target = 'someday';
+      var target = 'someday'
       let result = helpers.itemStatusMap('someday')
-      assert.equal(result, target);
+      assert.equal(result, target)
     })
     it('returns \'backlog\' for \'backlog\'', function() {
-      var target = 'backlog';
+      var target = 'backlog'
       let result = helpers.itemStatusMap('backlog')
-      assert.equal(result, target);
+      assert.equal(result, target)
     })
     it('returns \'accepted\' for \'accepted\'', function() {
-      var target = 'accepted';
+      var target = 'accepted'
       let result = helpers.itemStatusMap('accepted')
-      assert.equal(result, target);
+      assert.equal(result, target)
     })
   })
   describe('#toTitleCase', function() {
@@ -100,11 +100,11 @@ describe('Component/Helpers', function() {
       let target = [
         {
           id: 'pk:1',
-          display: 'Bob B',
+          display: 'Bob B'
         },
         {
           id: 'pk:2',
-          display: 'Sarah S',
+          display: 'Sarah S'
         }
       ]
       let result = helpers.formatMentionMembers(members)
@@ -120,11 +120,11 @@ describe('Component/Helpers', function() {
       let target = [
         {
           label: 'Bing',
-          value: 'bing',
+          value: 'bing'
         },
         {
           label: 'Bong',
-          value: 'bong',
+          value: 'bong'
         }
       ]
       let result = helpers.formatForSelect(options)
@@ -138,11 +138,11 @@ describe('Component/Helpers', function() {
       let target = [
         {
           label: 'Result',
-          value: 'example',
+          value: 'example'
         },
         {
           label: 'B',
-          value: 'a',
+          value: 'a'
         }
       ]
       let result = helpers.formatStatusesForSelect(options)
@@ -262,7 +262,7 @@ describe('Component/Helpers', function() {
       ]
       var target = [
         '[sarah](https://sprint.ly/product/1000/organizer/planning?members=123&order=priority)',
-        '[alice](https://sprint.ly/product/1000/organizer/planning?members=456&order=priority)',
+        '[alice](https://sprint.ly/product/1000/organizer/planning?members=456&order=priority)'
       ]
       var result = helpers.internals.buildMemberLinks(ids, names, productId)
 

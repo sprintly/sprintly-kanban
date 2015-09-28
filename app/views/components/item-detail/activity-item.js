@@ -99,7 +99,7 @@ let ActivityItem = React.createClass({
         description = activityHelpers.itemReassigned(activity.meta)
         break
       default:
-        console.log(`DESCRIPTION CASE NOT HANDLED: cls:${activity.cls}, label:${this.props.activity.label}`)
+        throw new Error('DESCRIPTION CASE NOT HANDLED:  %s', `cls:${activity.cls}, label:${this.props.activity.label}`)
     }
 
     return description

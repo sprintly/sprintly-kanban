@@ -1,20 +1,21 @@
 import helpers from '../../components/helpers'
-
-const ITEM_CLOSE_MAP = {
-  10: 'invalid',
-  20: 'fixed',
-  30: 'duplicate',
-  40: 'incomplete',
-  50: 'wont fix',
-  60: 'works for me'
-}
+/*
+  const ITEM_CLOSE_MAP = {
+    10: 'invalid',
+    20: 'fixed',
+    30: 'duplicate',
+    40: 'incomplete',
+    50: 'wont fix',
+    60: 'works for me'
+  }
+**/
 
 const SCORE_TO_SHIRT_SIZES = {
   0: '~',
   1: 'S',
   3: 'M',
   5: 'L',
-  8: 'XL',
+  8: 'XL'
 }
 
 const STATUS_MAP = {
@@ -33,7 +34,7 @@ const ACTIVITY_TYPES = {
   '': 'commented'
 }
 
-module.exports = {
+export default {
   attachmentDesc(data) {
     var pre = helpers.vowelSound(data.type) ? 'An' : 'A'
     let type = helpers.toTitleCase(data.type)

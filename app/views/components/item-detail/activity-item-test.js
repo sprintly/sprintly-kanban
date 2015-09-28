@@ -1,15 +1,16 @@
+ /*eslint-env node, mocha */
 import {assert} from 'chai'
 import React from 'react/addons'
 let TestUtils = React.addons.TestUtils
 import ActivityItem from './activity-item'
 
 const stubMember = {
-  "first_name": "Chris",
-  "last_name": "McAvoy",
-  "revoked": false,
-  "admin": true,
-  "email": "cmcavoy@quickleft.com",
-  "id": 35507
+  'first_name': 'Chris',
+  'last_name': 'McAvoy',
+  'revoked': false,
+  'admin': true,
+  'email': 'cmcavoy@quickleft.com',
+  'id': 35507
 }
 
 describe('ActivityItemTest', function() {
