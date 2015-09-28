@@ -57,13 +57,8 @@ export default {
   },
 
   vowelSound(word) {
-<<<<<<< HEAD
-    let firstLetter = word.charAt(0).toLowerCase()
-    let vowelSounds = ['a','e','i','o']
-=======
     let firstLetter = word.charAt(0).toLowerCase();
     let vowelSounds = ['a','e','i','o','u'];
->>>>>>> Cover component helpers with tests
 
     return _.contains(vowelSounds, firstLetter)
   },
@@ -80,15 +75,6 @@ export default {
     return ITEM_STATUS_MAP[status]
   },
 
-<<<<<<< HEAD
-  formatTextForMarkdown(description) {
-    let names = internals.parseNames(description)
-    let ids = internals.parseIds(description)
-
-    if (names && ids) {
-      let links = internals.buildLinks(ids, names)
-      var merged = _.map(_.zip(names,ids), function(pair) {return pair[0]+pair[1]})
-=======
   formatTextForMarkdown(text, productId) {
     let names = internals.parseNames(text);
     let ids = internals.parseIds(text);
@@ -99,18 +85,10 @@ export default {
       var merged = _.map(_.zip(names,ids), function(pair) {
         return pair[0]+pair[1]
       });
->>>>>>> Cover component helpers with tests
 
       _.each(merged, function(merge, i) {
         text = text.replace(merge, memberLinks[i])
       })
-<<<<<<< HEAD
-
-      return description
-    } else {
-      return description
-=======
->>>>>>> Cover component helpers with tests
     }
     if (links) {
       text = internals.replaceWithContentLinks(text, links);
