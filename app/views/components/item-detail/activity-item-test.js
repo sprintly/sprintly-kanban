@@ -15,25 +15,25 @@ const stubMember = {
   "id": 35507
 }
 
-describe('ItemActivityTest', function() {
+describe('ActivityItemTest', function() {
   beforeEach(function() {
     this.componentProps = function(itemCount, activities, members) {
       return {
-       members: members,
-       activity: {
-         total_count: [itemCount],
-         activities: activities
-       }
+        author: stubMember,
+        members: members,
+        activity: {
+          action: 'item created',
+          total_count: [itemCount],
+          activities: activities
+        }
       }
     }
   })
 
-  afterEach(function() {
-  })
-
   describe('#componentDidMount', function() {
     beforeEach(function() {
-      this.component = TestUtils.renderIntoDocument(<ActivityItem />)
+      let componentProps = this.componentProps(6,[],[stubMember])
+      this.component = TestUtils.renderIntoDocument(<ActivityItem {...componentProps}/>)
     })
 
     it('renders an ActivityItem component', function() {

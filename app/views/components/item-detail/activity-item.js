@@ -93,11 +93,6 @@ let ActivityItem = React.createClass({
         description = ''
         break;
       case ActivityTypes.CHANGED:
-        let thing = activityHelpers.fieldToValueMap(activity.meta)
-        // let text = `the ${activityHelpers.fieldChanged(meta)}`;
-        // let formatted = helpers.formatTextForMarkdown(text);
-        // description = <Markdown source={formatted} />
-
         description = `the ${activity.meta.field}`;
         break;
       case ActivityTypes.ATTACHMENT:
