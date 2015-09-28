@@ -67,7 +67,7 @@
     "dev": "gulp dev",
     "build": "browserify app -d | exorcist -b './app' public/js/manifold.js.map > public/js/manifold.js",
     "build-less": "gulp less",
-    "build-production": "npm run build-production-js && npm run build-production-css",
+    "build-production": "npm run build-production-js && npm run build-production-css && gulp hash",
     "build-production-css": "gulp css",
     "build-production-js": "NODE_ENV=production browserify app | uglifyjs -cm > public/js/manifold.min.js",
     "build-test": "NODE_ENV=test browserify test/index.js -t [ babelify --plugins rewire ] -t envify -d | exorcist -b './app' test/test-bundle.js.map > test/test-bundle.js",

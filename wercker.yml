@@ -14,14 +14,12 @@ deploy:
         name: Build assets
         code: |
           npm run build-production
-          npm run build-production-css
     - analogj/git-configure@0.0.3
     - script:
         name: Commit Assets
         code: |
-          git config --global user.email "sam@quickleft.com"
+          git config --global user.email "ops@sprint.ly"
           git config --global user.name "Wercker Bot"
-          git checkout -b wercker-build
           git add public/js/manifold.min.js public/css/main.min.css
           git commit -am 'asset compile'
     - heroku-deploy:
