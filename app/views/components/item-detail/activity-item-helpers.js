@@ -35,7 +35,7 @@ const ACTIVITY_TYPES = {
 
 module.exports = {
   attachmentDesc(data) {
-    var pre = helpers.vowelSound(data.type) ? 'An ' : 'A ';
+    var pre = helpers.vowelSound(data.type) ? 'An' : 'A';
     let type = helpers.toTitleCase(data.type);
 
     return `${pre} ${type}: ${data.title}`;
