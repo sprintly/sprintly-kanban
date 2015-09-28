@@ -57,8 +57,8 @@ export default {
   },
 
   vowelSound(word) {
-    let firstLetter = word.charAt(0).toLowerCase();
-    let vowelSounds = ['a','e','i','o','u'];
+    let firstLetter = word.charAt(0).toLowerCase()
+    let vowelSounds = ['a','e','i','o','u']
 
     return _.contains(vowelSounds, firstLetter)
   },
@@ -76,35 +76,35 @@ export default {
   },
 
   formatTextForMarkdown(text, productId) {
-    let names = internals.parseNames(text);
-    let ids = internals.parseIds(text);
-    let links = internals.parseLinks(text);
+    let names = internals.parseNames(text)
+    let ids = internals.parseIds(text)
+    let links = internals.parseLinks(text)
 
     if (names && ids) {
-      let memberLinks = internals.buildMemberLinks(ids, names, productId);
+      let memberLinks = internals.buildMemberLinks(ids, names, productId)
       var merged = _.map(_.zip(names,ids), function(pair) {
         return pair[0]+pair[1]
-      });
+      })
 
       _.each(merged, function(merge, i) {
         text = text.replace(merge, memberLinks[i])
       })
     }
     if (links) {
-      text = internals.replaceWithContentLinks(text, links);
+      text = internals.replaceWithContentLinks(text, links)
     }
 
     return text
   },
 
   formatLinksForMarkdown(text) {
-    return text;
+    return text
   }
 }
 
 var internals = {
   replaceWithContentLinks(text, links) {
-    let contentLinks = internals.buildContentLinks(links);
+    let contentLinks = internals.buildContentLinks(links)
     _.each(contentLinks, function(contentLink, i) {
       text = text.replace(links[i], contentLink)
     })
@@ -121,12 +121,12 @@ var internals = {
   },
 
   parseLinks(text) {
-    return text.match(/(https?:\/\/(?:www\.|(?!www))[^\s\.]+\.[^\s]{2,}|www\.[^\s]+\.[^\s]{2,})/g);
+    return text.match(/(https?:\/\/(?:www\.|(?!www))[^\s\.]+\.[^\s]{2,}|www\.[^\s]+\.[^\s]{2,})/g)
   },
 
   buildContentLinks(links) {
     return _.map(links, function(link) {
-      return `[${link}](${link})`;
+      return `[${link}](${link})`
     })
   },
 
@@ -138,7 +138,7 @@ var internals = {
     let strippedNames = internals.strippedNames(names)
 
     return _.map(strippedIds, function(id, i) {
-      return `[${strippedNames[i]}](https://sprint.ly/product/${productId}/organizer/planning?members=${id}&order=priority)`;
+      return `[${strippedNames[i]}](https://sprint.ly/product/${productId}/organizer/planning?members=${id}&order=priority)`
     })
   },
 
@@ -161,4 +161,4 @@ var internals = {
   }
 }
 
-module.exports.internals = internals;
+module.exports.internals = internals

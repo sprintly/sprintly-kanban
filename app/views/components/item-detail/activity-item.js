@@ -1,12 +1,9 @@
-import React from 'react/addons';
-import ItemActions from '../../../actions/item-actions';
-import ItemDetailMixin from './detail-mixin';
-import Markdown from 'react-markdown';
-import _ from 'lodash';
-import helpers from '../../components/helpers';
-import activityHelpers from './activity-item-helpers';
-import classNames from "classnames";
-import Gravatar from '../../components/gravatar';
+import React from 'react/addons'
+import ItemDetailMixin from './detail-mixin'
+import Markdown from 'react-markdown'
+import helpers from '../../components/helpers'
+import activityHelpers from './activity-item-helpers'
+import Gravatar from '../../components/gravatar'
 const ActivityTypes = {
   CREATED: 'item created',
   CHANGED: 'item changed',
@@ -86,37 +83,37 @@ let ActivityItem = React.createClass({
 
   description() {
     let activity = this.props.activity
-    let description;
+    let description
 
     switch (activity.action) {
       case ActivityTypes.CREATED:
         description = ''
-        break;
+        break
       case ActivityTypes.CHANGED:
-        description = `the ${activity.meta.field}`;
-        break;
+        description = `the ${activity.meta.field}`
+        break
       case ActivityTypes.ATTACHMENT:
-        description = activityHelpers.attachmentDesc(activity.meta);
-        break;
+        description = activityHelpers.attachmentDesc(activity.meta)
+        break
       case ActivityTypes.ASSIGNED:
-        description = activityHelpers.itemReassigned(activity.meta);
-        break;
+        description = activityHelpers.itemReassigned(activity.meta)
+        break
       default:
         console.log(`DESCRIPTION CASE NOT HANDLED: cls:${activity.cls}, label:${this.props.activity.label}`)
     }
 
-    return description;
+    return description
   },
 
   render: function() {
-    let type = activityHelpers.activityTypeMap(this.props.activity.action);
-    let description;
+    let type = activityHelpers.activityTypeMap(this.props.activity.action)
+    let description
 
-    if (this.props.activity.cls === "Comment") {
-      let formatted = helpers.formatTextForMarkdown(this.props.activity.meta.body, this.props.activity.product);
+    if (this.props.activity.cls === 'Comment') {
+      let formatted = helpers.formatTextForMarkdown(this.props.activity.meta.body, this.props.activity.product)
       description = <Markdown source={`${type} ${formatted}`} />
     } else {
-      description = `${type} ${this.description()}`;
+      description = `${type} ${this.description()}`
     }
 
     return (
@@ -130,7 +127,7 @@ let ActivityItem = React.createClass({
         <div className="type no-gutter no-wrap-truncate">
           {description}
         </div>
-        <div className="col-xs-12 timestamp pull-right">
+        <div className="timestamp pull-right">
           {this.timeSinceNow(this.props.activity.created)}
         </div>
       </li>

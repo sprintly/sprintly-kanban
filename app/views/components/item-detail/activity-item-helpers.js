@@ -1,4 +1,4 @@
-import helpers from '../../components/helpers';
+import helpers from '../../components/helpers'
 
 const ITEM_CLOSE_MAP = {
   10: 'invalid',
@@ -35,31 +35,31 @@ const ACTIVITY_TYPES = {
 
 module.exports = {
   attachmentDesc(data) {
-    var pre = helpers.vowelSound(data.type) ? 'An' : 'A';
-    let type = helpers.toTitleCase(data.type);
+    var pre = helpers.vowelSound(data.type) ? 'An' : 'A'
+    let type = helpers.toTitleCase(data.type)
 
-    return `${pre} ${type}: ${data.title}`;
+    return `${pre} ${type}: ${data.title}`
   },
 
   fieldToValueMap(data) {
-    let oldVal;
-    let newVal;
+    let oldVal
+    let newVal
 
     switch (data.field) {
       case 'score':
-        oldVal = SCORE_TO_SHIRT_SIZES[data.old];
-        newVal = SCORE_TO_SHIRT_SIZES[data.new];
+        oldVal = SCORE_TO_SHIRT_SIZES[data.old]
+        newVal = SCORE_TO_SHIRT_SIZES[data.new]
 
-        break;
+        break
       case 'status':
-        oldVal = STATUS_MAP[data.old];
-        newVal = STATUS_MAP[data.new];
+        oldVal = STATUS_MAP[data.old]
+        newVal = STATUS_MAP[data.new]
 
-        break;
+        break
       default:
-        oldVal = data.old;
-        newVal = data.new;
-        break;
+        oldVal = data.old
+        newVal = data.new
+        break
     }
 
 
@@ -70,7 +70,7 @@ module.exports = {
   },
 
   activityTypeMap(action) {
-    return ACTIVITY_TYPES[action];
+    return ACTIVITY_TYPES[action]
   },
 
   authorName(author) {
@@ -78,13 +78,13 @@ module.exports = {
   },
 
   itemReassigned(meta) {
-    let from;
+    let from
     let to = `to ${this.authorName(meta.new)}`
 
     if (meta.old) {
       from = `from ${this.authorName(meta.old)}`
     }
 
-    return [from, to].join(' ');
-  },
+    return [from, to].join(' ')
+  }
 }

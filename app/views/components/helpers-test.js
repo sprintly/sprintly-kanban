@@ -33,33 +33,33 @@ describe('Component/Helpers', function() {
     assert.deepEqual(result, target)
   })
   it('#formatTextForMarkdown', function() {
-    var input = "item description http://google.com @[shane](pk:1234) for this @[sprintly](pk:9999)";
-    var target = "item description [http://google.com](http://google.com) [shane](https://sprint.ly/product/1000/organizer/planning?members=1234&order=priority) for this [sprintly](https://sprint.ly/product/1000/organizer/planning?members=9999&order=priority)"
+    var input = 'item description http://google.com @[shane](pk:1234) for this @[sprintly](pk:9999)'
+    var target = 'item description [http://google.com](http://google.com) [shane](https://sprint.ly/product/1000/organizer/planning?members=1234&order=priority) for this [sprintly](https://sprint.ly/product/1000/organizer/planning?members=9999&order=priority)'
 
-    var result = helpers.formatTextForMarkdown(input, 1000);
+    var result = helpers.formatTextForMarkdown(input, 1000)
 
-    assert.deepEqual(result, target);
+    assert.deepEqual(result, target)
   })
   describe('#vowelSound', function() {
     it('returns true for vowelSound', function() {
-      var testWord = 'accountant';
-      assert.isTrue(helpers.vowelSound(testWord));
+      var testWord = 'accountant'
+      assert.isTrue(helpers.vowelSound(testWord))
     })
     it('returns false for non vowelSound', function() {
-      var testWord = 'doctor';
-      assert.isFalse(helpers.vowelSound(testWord));
+      var testWord = 'doctor'
+      assert.isFalse(helpers.vowelSound(testWord))
     })
   })
   describe('#itemStatusMap', function() {
     it('returns \'current\' for \'in-progress\'', function() {
-      var target = 'current';
+      var target = 'current'
       let result = helpers.itemStatusMap('in-progress')
-      assert.equal(result, target);
+      assert.equal(result, target)
     })
     it('returns \'done\' for \'completed\'', function() {
-      var target = 'done';
+      var target = 'done'
       let result = helpers.itemStatusMap('completed')
-      assert.equal(result, target);
+      assert.equal(result, target)
     })
     it('returns \'someday\' for \'someday\'', function() {
       var target = 'someday';
@@ -79,8 +79,8 @@ describe('Component/Helpers', function() {
   })
   describe('#toTitleCase', function() {
     it('returns the title cased version of the word', function() {
-      let result = helpers.toTitleCase('accepted');
-      assert.equal(result, 'Accepted');
+      let result = helpers.toTitleCase('accepted')
+      assert.equal(result, 'Accepted')
     })
   })
   describe('#formatMentionMembers', function() {
@@ -107,8 +107,8 @@ describe('Component/Helpers', function() {
           display: 'Sarah S',
         }
       ]
-      let result = helpers.formatMentionMembers(members);
-      assert.deepEqual(result, target);
+      let result = helpers.formatMentionMembers(members)
+      assert.deepEqual(result, target)
     })
   })
   describe('#formatForSelect', function() {
@@ -127,9 +127,9 @@ describe('Component/Helpers', function() {
           value: 'bong',
         }
       ]
-      let result = helpers.formatForSelect(options);
+      let result = helpers.formatForSelect(options)
 
-      assert.deepEqual(result, target);
+      assert.deepEqual(result, target)
     })
   })
   describe('#formatStatusesForSelect', function() {
@@ -145,8 +145,8 @@ describe('Component/Helpers', function() {
           value: 'a',
         }
       ]
-      let result = helpers.formatStatusesForSelect(options);
-      assert.deepEqual(result, target);
+      let result = helpers.formatStatusesForSelect(options)
+      assert.deepEqual(result, target)
     })
   })
   describe('#formatSelectMembers', function() {
@@ -171,9 +171,9 @@ describe('Component/Helpers', function() {
           value: 2
         }
       ]
-      let result = helpers.formatSelectMembers(members);
+      let result = helpers.formatSelectMembers(members)
 
-      assert.deepEqual(result, target);
+      assert.deepEqual(result, target)
     })
   })
   describe('internals', function() {
@@ -187,52 +187,52 @@ describe('Component/Helpers', function() {
         var target = 'first [http://first-link.com](http://first-link.com) second [http://second-link.com](http://second-link.com)'
 
         let result = helpers.internals.replaceWithContentLinks(text, links)
-        assert.equal(result, target);
+        assert.equal(result, target)
       })
     })
     it('#parseNames', function() {
-      var input = "something @[sarah] another @[alice]";
+      var input = 'something @[sarah] another @[alice]'
       var target = [
-        "@[sarah]",
-        "@[alice]"
+        '@[sarah]',
+        '@[alice]'
       ]
-      var result = helpers.internals.parseNames(input);
+      var result = helpers.internals.parseNames(input)
 
       assert.deepEqual(result, target)
     })
     it('#parseIds', function() {
-      var input = "something (pk:123) another (pk:456)";
+      var input = 'something (pk:123) another (pk:456)'
       var target = [
-        "(pk:123)",
-        "(pk:456)"
+        '(pk:123)',
+        '(pk:456)'
       ]
-      var result = helpers.internals.parseIds(input);
+      var result = helpers.internals.parseIds(input)
 
       assert.deepEqual(result, target)
     })
     it('#strippedIds', function () {
       var ids = [
-        "(pk:123)",
-        "(pk:456)"
+        '(pk:123)',
+        '(pk:456)'
       ]
       var target = [
-        "123",
-        "456"
+        '123',
+        '456'
       ]
-      var result = helpers.internals.strippedIds(ids);
+      var result = helpers.internals.strippedIds(ids)
 
       assert.deepEqual(result, target)
     })
     it('#strippedNames', function () {
       var names = [
-        "@[sarah]",
-        "@[alice]"
+        '@[sarah]',
+        '@[alice]'
       ]
       var target = [
-        "sarah",
-        "alice"
+        'sarah',
+        'alice'
       ]
-      var result = helpers.internals.strippedNames(names);
+      var result = helpers.internals.strippedNames(names)
 
       assert.deepEqual(result, target)
     })
@@ -245,36 +245,36 @@ describe('Component/Helpers', function() {
         '[http://first-link.com](http://first-link.com)',
         '[http://second-link.com](http://second-link.com)'
       ]
-      var result = helpers.internals.buildContentLinks(links);
+      var result = helpers.internals.buildContentLinks(links)
 
       assert.deepEqual(result, target)
     })
 
     it('#buildMemberLinks', function() {
-      var productId = 1000;
+      var productId = 1000
       var ids = [
-        "(pk:123)",
-        "(pk:456)"
+        '(pk:123)',
+        '(pk:456)'
       ]
       var names = [
-        "@[sarah]",
-        "@[alice]"
+        '@[sarah]',
+        '@[alice]'
       ]
       var target = [
-        "[sarah](https://sprint.ly/product/1000/organizer/planning?members=123&order=priority)",
-        "[alice](https://sprint.ly/product/1000/organizer/planning?members=456&order=priority)",
-      ];
-      var result = helpers.internals.buildMemberLinks(ids, names, productId);
+        '[sarah](https://sprint.ly/product/1000/organizer/planning?members=123&order=priority)',
+        '[alice](https://sprint.ly/product/1000/organizer/planning?members=456&order=priority)',
+      ]
+      var result = helpers.internals.buildMemberLinks(ids, names, productId)
 
       assert.deepEqual(result, target)
     })
     it('#parseLinks', function() {
-      var input = "things https://google.com https://facebook.com http://banana"
+      var input = 'things https://google.com https://facebook.com http://banana'
       var target = [
-        "https://google.com",
-        "https://facebook.com"
+        'https://google.com',
+        'https://facebook.com'
       ]
-      var result = helpers.internals.parseLinks(input);
+      var result = helpers.internals.parseLinks(input)
 
       assert.deepEqual(result, target)
     })

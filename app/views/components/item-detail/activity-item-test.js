@@ -1,10 +1,7 @@
-import _ from 'lodash';
-import sinon from 'sinon';
-import {assert} from 'chai';
-import React from 'react/addons';
-let TestUtils = React.addons.TestUtils;
-import ActivityFixtures from './item-activity-fixtures';
-import ActivityItem from './activity-item';
+import {assert} from 'chai'
+import React from 'react/addons'
+let TestUtils = React.addons.TestUtils
+import ActivityItem from './activity-item'
 
 const stubMember = {
   "first_name": "Chris",
@@ -37,7 +34,7 @@ describe('ActivityItemTest', function() {
     })
 
     it('renders an ActivityItem component', function() {
-      let activityItemComponent = TestUtils.findRenderedComponentWithType(this.component, ActivityItem);
+      let activityItemComponent = TestUtils.findRenderedComponentWithType(this.component, ActivityItem)
       assert.isDefined(activityItemComponent)
     })
   })
