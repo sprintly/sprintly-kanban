@@ -1,14 +1,11 @@
-import React from 'react/addons';
-import ItemActions from '../../../actions/item-actions';
-import ItemDetailMixin from './detail-mixin';
-import ActivityItem from './activity-item';
-import Markdown from 'react-markdown';
-import {State} from 'react-router';
-import _ from 'lodash';
-import helpers from '../../components/helpers';
-import classNames from "classnames";
+import React from 'react/addons'
+import ItemDetailMixin from './detail-mixin'
+import ActivityItem from './activity-item'
+import {State} from 'react-router'
+import _ from 'lodash'
+import helpers from '../../components/helpers'
 
-const MIN_ACTIVITY_NUMBER = 15;
+const MIN_ACTIVITY_NUMBER = 15
 
 var ItemActivity = React.createClass({
 
@@ -48,7 +45,7 @@ var ItemActivity = React.createClass({
       let toggleActivityCopy = this.state.showAll ? 'Show Less Activity' : 'Show More Activity'
 
       return (
-        <button ref='show-all' className="load-more" onClick={this.showAllToggle}>
+        <button ref="show-all" className="load-more" onClick={this.showAllToggle}>
           {toggleActivityCopy}
         </button>
       )
@@ -68,10 +65,10 @@ var ItemActivity = React.createClass({
   },
 
   activityItems(activityCount) {
-    let activityItems;
+    let activityItems
     if (this.props.activity.activities && this.props.members.length) {
       activityItems = _.map(this.itemsToShow(), _.bind(function(activity , i) {
-        let author = _.findWhere(this.props.members, {id: activity.user});
+        let author = _.findWhere(this.props.members, {id: activity.user})
 
         return (
           <ActivityItem key={i}
@@ -97,9 +94,9 @@ var ItemActivity = React.createClass({
   },
 
   render: function() {
-    let totalActivityCount = this.props.activity.total_count[0] || 0;
-    let activityItems = this.activityItems(totalActivityCount);
-    let activityCount = `${totalActivityCount} items`;
+    let totalActivityCount = this.props.activity.total_count[0] || 0
+    let activityItems = this.activityItems(totalActivityCount)
+    let activityCount = `${totalActivityCount} items`
 
     return (
       <div className="col-xs-12 section activity">

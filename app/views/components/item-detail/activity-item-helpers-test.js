@@ -1,9 +1,6 @@
-import _ from 'lodash';
-import {assert} from 'chai';
-import React from 'react/addons';
-let TestUtils = React.addons.TestUtils;
-import ActivityFixtures from './item-activity-fixtures';
-import ActivityItemHelpers from './activity-item-helpers';
+var assert = require('chai').assert
+import React from 'react/addons'
+import ActivityItemHelpers from './activity-item-helpers'
 
 describe('ActivityItemHelpers', function() {
   describe('#attachmentDesc', function() {
@@ -13,50 +10,50 @@ describe('ActivityItemHelpers', function() {
         title: 'mockups'
       }
       let target = 'An Attachment: mockups'
-      let result = ActivityItemHelpers.attachmentDesc(input);
+      let result = ActivityItemHelpers.attachmentDesc(input)
 
-      assert.equal(result, target);
+      assert.equal(result, target)
     })
   })
 
   describe('#activityTypeMap', function() {
     it('created', function() {
-      let result = ActivityItemHelpers.activityTypeMap('item created');
+      let result = ActivityItemHelpers.activityTypeMap('item created')
 
-      assert.equal(result, 'created this');
-    });
+      assert.equal(result, 'created this')
+    })
     it('updated', function() {
-      let result = ActivityItemHelpers.activityTypeMap('item changed');
+      let result = ActivityItemHelpers.activityTypeMap('item changed')
 
-      assert.equal(result, 'updated');
-    });
+      assert.equal(result, 'updated')
+    })
     it('attached', function() {
-      let result = ActivityItemHelpers.activityTypeMap('attachment');
+      let result = ActivityItemHelpers.activityTypeMap('attachment')
 
-      assert.equal(result, 'attached');
+      assert.equal(result, 'attached')
     })
     it('reassigned', function() {
-      let result = ActivityItemHelpers.activityTypeMap('assigned');
+      let result = ActivityItemHelpers.activityTypeMap('assigned')
 
-      assert.equal(result, 'reassigned');
-    });
+      assert.equal(result, 'reassigned')
+    })
     it('commented', function() {
-      let result = ActivityItemHelpers.activityTypeMap('');
+      let result = ActivityItemHelpers.activityTypeMap('')
 
-      assert.equal(result, 'commented');
-    });
-  });
+      assert.equal(result, 'commented')
+    })
+  })
   describe('#authorName', function() {
     it('generates the authors name', function() {
       let input = {
         first_name: 'Sarah',
         last_name: 'Sprintly'
       }
-      let result = ActivityItemHelpers.authorName(input);
+      let result = ActivityItemHelpers.authorName(input)
 
-      assert.equal(result, 'Sarah S.');
-    });
-  });
+      assert.equal(result, 'Sarah S.')
+    })
+  })
   describe('#itemReassigned', function() {
     it('generates the reassignment description', function() {
       let input = {
@@ -70,9 +67,9 @@ describe('ActivityItemHelpers', function() {
         }
       }
 
-      let result = ActivityItemHelpers.itemReassigned(input);
+      let result = ActivityItemHelpers.itemReassigned(input)
 
-      assert.equal(result, 'from Anna P. to Sarah S.');
+      assert.equal(result, 'from Anna P. to Sarah S.')
     })
-  });
-});
+  })
+})
