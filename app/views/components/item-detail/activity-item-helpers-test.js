@@ -1,5 +1,5 @@
-var assert = require('chai').assert
-import React from 'react/addons'
+ /*eslint-env node, mocha */
+import {assert} from 'chai'
 import ActivityItemHelpers from './activity-item-helpers'
 
 describe('ActivityItemHelpers', function() {

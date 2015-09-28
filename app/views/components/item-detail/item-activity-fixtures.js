@@ -1,4 +1,5 @@
-module.exports = {
+ /*eslint-env node, mocha */
+export default {
   actionType: {
     updated: {
       'item': [
