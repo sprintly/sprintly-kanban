@@ -23,7 +23,7 @@
     "eslint": "^1.5.1",
     "eslint-plugin-babel": "^2.1.1",
     "eslint-plugin-react": "^3.4.2",
-    "exorcist": "^0.3.0",
+    "exorcist": "^0.4.0",
     "flux": "^2.0.1",
     "fuzzy": "^0.1.0",
     "gulp": "^3.9.0",

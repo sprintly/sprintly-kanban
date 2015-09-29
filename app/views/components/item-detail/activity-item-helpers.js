@@ -1,3 +1,4 @@
+/* eslint-env mocha, node */
 import helpers from '../../components/helpers'
 /*
   const ITEM_CLOSE_MAP = {

@@ -1,4 +1,4 @@
- /*eslint-env node, mocha */
+/* eslint-env mocha, node */
 import {assert} from 'chai'
 import ActivityItemHelpers from './activity-item-helpers'
 
