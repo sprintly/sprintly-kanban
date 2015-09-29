@@ -31,9 +31,10 @@ emailing [support@sprint.ly](mailto:support@sprint.ly).
 ```bash
 $ node server
 server started on port 3600
+visit http://local.sprint.ly:3600/
 ```
 
-Browserify/Less watch task:
+#### Browserify/Less watch task:
 
 ```bash
 $ make watch
@@ -45,17 +46,24 @@ Run lint and tests and coverage report with Karma:
 $ npm test
 ```
 
-Attempt to auto-fix certain lint errors:
+#### Attempt to auto-fix certain lint errors:
 
 ```base
 $ npm run test-lint -- --fix
 ```
 
-Run tests to run in a browser:
+#### Run tests to run in a browser:
 
 ```bash
 $ make test-server
 $ npm run watchify-test
+```
+
+#### Writing Tests
+
+Tests require this comment at the top for linting.
+```javascript
+/* eslint-env mocha, node */
 ```
 
 #### npm shrinkwrap

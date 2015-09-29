@@ -18,6 +18,7 @@ var ItemDescription = React.createClass({
       React.PropTypes.string,
       React.PropTypes.number
     ]),
+    productId: React.PropTypes.number,
     description: React.PropTypes.string,
     members: React.PropTypes.array,
     setItem: React.PropTypes.func,
@@ -46,13 +47,13 @@ var ItemDescription = React.createClass({
     ])
   },
 
-  descriptionMarkdown() {
+  descriptionMarkdown(productId) {
     let description = this.props.description
 
     if (!description) {
       description = this.props.readOnly ? `_${readOnlyPlaceholder}_` : `_${placeholder}_`
     } else {
-      description = helpers.formatTextForMarkdown(description)
+      description = helpers.formatTextForMarkdown(description, productId)
     }
     let markdown = <Markdown key="description" source={description} />
     let toggle = this.props.readOnly ? null : this.toggleButton('min-button-alignment', this.toggleDescriptionEdit)
@@ -86,7 +87,7 @@ var ItemDescription = React.createClass({
     if (!this.props.readOnly && this.state.descriptionEditable) {
       descriptionEl = this.descriptionMention()
     } else {
-      descriptionEl = this.descriptionMarkdown()
+      descriptionEl = this.descriptionMarkdown(this.props.productId)
     }
 
     let descriptionClasses = classNames({
