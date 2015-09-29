@@ -1,7 +1,7 @@
  /*eslint-env node, mocha */
 import _ from 'lodash'
 
-export default {
+module.exports = {
   formatMentionMembers(members) {
     return _.map(members, function(member) {
       return {
