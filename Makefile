@@ -19,6 +19,29 @@ bootstrap:
 	mkdir -p public/less/bootstrap
 	cp -r node_modules/bootstrap/less/* public/less/bootstrap
 
+check_status:
+	@status=$$(git status --porcelain); \
+	if test "x$${status}" = x; then \
+		echo "Working directory clean..."; \
+	else \
+		git status; \
+		echo "Working directory is dirty"; \
+		false; \
+	fi
+
+deploy: check_status
+	@echo "Starting deploy..."
+	git branch -f cli-deploy
+	git checkout cli-deploy
+	npm run build-production
+	rm npm-shrinkwrap.json
+	npm shrinkwrap
+	git add public package.json npm-shrinkwrap.json
+	git commit -m 'asset compile for deploy'
+	git push -f heroku cli-deploy:master
+	git checkout -
+	@echo "\nDone deploying to git deployment branch."
+
 react-select:
 	mkdir -p public/less/react-select
 	cp -r node_modules/react-select/less/* public/less/react-select

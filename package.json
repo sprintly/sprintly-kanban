@@ -31,6 +31,7 @@
     "gulp-less": "^3.0.3",
     "gulp-rename": "^1.2.2",
     "gulp-sourcemaps": "^1.5.2",
+    "hasha": "^2.0.2",
     "karma": "^0.12.31",
     "karma-browserify": "~4.0.0",
     "karma-chrome-launcher": "^0.1.7",
@@ -67,7 +68,7 @@
     "dev": "gulp dev",
     "build": "browserify app -d | exorcist -b './app' public/js/manifold.js.map > public/js/manifold.js",
     "build-less": "gulp less",
-    "build-production": "npm run build-production-js && npm run build-production-css",
+    "build-production": "npm run build-production-js && npm run build-production-css && gulp hash",
     "build-production-css": "gulp css",
     "build-production-js": "NODE_ENV=production browserify app | uglifyjs -cm > public/js/manifold.min.js",
     "build-test": "NODE_ENV=test browserify test/index.js -t [ babelify --plugins rewire ] -t envify -d | exorcist -b './app' test/test-bundle.js.map > test/test-bundle.js",
@@ -96,13 +97,13 @@
     "marked": "^0.3.3",
     "moment": "~2.10.3",
     "react-dnd": "^1.1.4",
-    "sprintly-data": "^2.2.0",
+    "sprintly-data": "2.1.0",
     "superagent": "^1.2.0",
     "swig": "^1.4.2"
   },
   "engines": {
     "node": "0.12.x",
-    "npm": "2.7.x"
+    "npm": "3.x.x"
   },
   "description": "Oauth2 Client App w/ Hapi, React, Flux, and Sprinlty-Data",
   "main": "server.js",
