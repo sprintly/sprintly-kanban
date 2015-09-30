@@ -10,7 +10,7 @@
     "@sprintly/react-onclickoutside": "^1.0.0",
     "babel-eslint": "^4.1.3",
     "babel-plugin-rewire": "^0.1.22",
-    "babelify": "^6.3.0",
+    "babelify": "^5.0.5",
     "backdash": "^1.1.2-2.4.1",
     "bluebird": "^2.5.3",
     "bootstrap": "^3.3.1",
