@@ -6,20 +6,32 @@
     padding-left: 0px;
   }
 }
-.activity__item .creator {
-  font-weight: @fontWeight-6;
-  font-size: 14px;
-  text-align: center;
-
-  @media (max-width: @screen-xs-min) {
-    text-align: left;
-  }
-}
+.activity__item .creator,
 .activity__item .type {
   font-size: 12px;
-  color: @sprintly-blue;
-  text-align: right;
+  text-align: left;
   line-height: 23px;
+  display: inline-block;
+  float: left;
+  position: relative;
+  line-height: 30px;
+  margin-left: 15px;
+}
+.activity__item .creator {
+  width: 100px;
+}
+.activity__item .type {
+  width: 65%;
+  word-wrap: normal;
+  white-space: initial;
+}
+.activity__item .type span {
+  display: inline-block;
+  float: left;
+  margin-right: 5px;
+}
+.activity__item .type p {
+  margin: 0;
 }
 .activity__item .description {
   font-size: 14px;
