@@ -57,7 +57,7 @@ gulp.task('hash', function(done) {
   })
 })
 
-gulp.task('css', ['less', 'cssmin']);
+gulp.task('css', ['less', 'cssmin'])
 
 gulp.task('default', ['less', 'watch'])
 
