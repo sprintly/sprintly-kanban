@@ -51,7 +51,7 @@ gulp.task('hash', function(done) {
   hasha.fromFile('./public/js/main.js', { algorithm: 'md5' }).then(function(hash) {
     fs.readFile('./package.json', 'utf8', function(err, pkg) {
       var json = JSON.parse(pkg)
-      json.hash = hash
+      json.cache = hash
       fs.writeFile('package.json', JSON.stringify(json, null, 2), done)
     })
   })

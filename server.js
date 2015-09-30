@@ -37,7 +37,7 @@ server.register([
   {
     register: require('hapi-cache-buster'),
     options: {
-      version: pkg.hash || pkg.version
+      version: pkg.cache || pkg.version
     }
   },
   require('./lib/sprintly-oauth')
