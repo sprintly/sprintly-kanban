@@ -1,20 +1,12 @@
 import _ from 'lodash'
 import React from 'react/addons'
 import MembersFilter from './forms/members-filter'
+import MyItems from './forms/my-items'
 import CheckboxFilter from './forms/checkbox-filter'
 import TagsFilter from './forms/tags-filter'
 import classNames from 'classnames'
 import onClickOutside from '@sprintly/react-onclickoutside'
 import FilterActions from '../../../actions/filter-actions'
-
-let MyItems = React.createClass({
-  render() {
-    let labelText = this.props.active ? 'Everything' : 'My Items'
-    return (
-      <a href="#" onClick={this.props.onClick} className="filters-menu__mine">{labelText}</a>
-    )
-  }
-})
 
 let FiltersMenu = React.createClass({
 

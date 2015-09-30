@@ -7,6 +7,7 @@ require("../app/stores/product-store-test.js");
 require("../app/stores/sidebar-store-test.js");
 require("../app/views/components/filters/filter-component-test.js");
 require("../app/views/components/filters/forms/members-filter-test.js");
+require("../app/views/components/filters/forms/my-items-test.js");
 require("../app/views/components/filters/velocity-component-test.js");
 require("../app/views/components/header-test.js");
 require("../app/views/components/helpers-test.js");
