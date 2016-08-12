@@ -8,6 +8,9 @@
 * [Production - https://kanban.sprint.ly](https://kanban.sprint.ly)
 * [Staging - https://sprintly-manifold.herokuapp.com](https://sprintly-manifold.herokuapp.com)
 
+## Note
+This repository is no longer in active development and is now for example purposes only. We are not currently providing OAuth tokens for this application.
+
 ## Setup
 
 **Prerequisites**
