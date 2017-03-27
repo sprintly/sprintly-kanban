@@ -1,5 +1,7 @@
 # Sprintly Kanban
 
+[![Join the chat at https://gitter.im/sprintly/sprintly-kanban](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/sprintly/sprintly-kanban?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 > Oauth2 Client App w/ Hapi, React, Flux, and Sprinlty-Data
 
 [![wercker status](https://app.wercker.com/status/43e50b14b2bd09d40a96c8bb04b095c8/m/master "wercker status")](https://app.wercker.com/project/bykey/43e50b14b2bd09d40a96c8bb04b095c8)
